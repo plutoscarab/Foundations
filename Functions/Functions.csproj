@@ -46,10 +46,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CarlsonSymmetric.tt</DependentUpon>
     </Compile>
-    <Compile Include="Numerics\EllipticGen.cs">
+    <Compile Include="Numerics\Elliptic.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>EllipticGen.tt</DependentUpon>
+      <DependentUpon>Elliptic.tt</DependentUpon>
     </Compile>
     <Compile Include="Numerics\Function.cs" />
     <Compile Include="Numerics\Jacobi.cs">
@@ -74,9 +74,9 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>CarlsonSymmetric.cs</LastGenOutput>
     </Content>
-    <Content Include="Numerics\EllipticGen.tt">
+    <Content Include="Numerics\Elliptic.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>EllipticGen.cs</LastGenOutput>
+      <LastGenOutput>Elliptic.cs</LastGenOutput>
     </Content>
     <Content Include="Numerics\Jacobi.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
