@@ -10,14 +10,14 @@ using System.Numerics;
 
 namespace Foundations.Functions.Numerics
 {
-	/// <summary>
-	/// Jacobi Theta functions.
-	/// </summary>
-	/// <remarks>
-	/// Computation is by Fourier series definitions at http://dlmf.nist.gov/20.2#i
-	/// </remarks>
-	public partial class Theta
-	{
+    /// <summary>
+    /// Jacobi Theta functions.
+    /// </summary>
+    /// <remarks>
+    /// Computation is by Fourier series definitions at http://dlmf.nist.gov/20.2#i
+    /// </remarks>
+    public partial class Theta
+    {
 <#
 MakeTheta1("Complex", "Complex", "Complex", "Complex");
 MakeTheta1("Complex", "Complex", "Double", "Math");
@@ -35,7 +35,7 @@ MakeTheta4("Complex", "Complex", "Complex", "Complex");
 MakeTheta4("Complex", "Complex", "Double", "Math");
 MakeTheta4("Double", "Math", "Double", "Math");
 #>
-	}
+    }
 }
 
 <#+
@@ -44,417 +44,417 @@ const int maxTerms = 20;
 void MakeTheta1(string T, string math, string Q, string qmath)
 {
 #>
-		/// <summary>
-		/// Jacobi θ1(z, q) where q is the nome.
-		/// If you need to evaluate many times using the same q value, 
-		/// use <see cref="Theta.θ1<#= T #>ForNome" /> to create a function of z alone.
-		/// </summary>
-		public static <#= T #> θ1(<#= T #> z, <#= Q #> q)
-		{
-			<#= Q #>
-				qs = q * q,
-				qsp = 1;
+        /// <summary>
+        /// Jacobi θ1(z, q) where q is the nome.
+        /// If you need to evaluate many times using the same q value, 
+        /// use <see cref="Theta.θ1<#= T #>ForNome" /> to create a function of z alone.
+        /// </summary>
+        public static <#= T #> θ1(<#= T #> z, <#= Q #> q)
+        {
+            <#= Q #>
+                qs = q * q,
+                qsp = 1;
 
-			<#= T #>
-				sum = 0,
-				qp = <#= math #>.Pow(q, .25);
+            <#= T #>
+                sum = 0,
+                qp = <#= math #>.Pow(q, .25);
 
-			int n = 0;
-			
-			while (n < <#= maxTerms #>)
-			{
-				<#= T #> 
-					term = qp * <#= math #>.Sin((2 * n + 1) * z),
-					sum0 = sum;
+            int n = 0;
+            
+            while (n < <#= maxTerms #>)
+            {
+                <#= T #> 
+                    term = qp * <#= math #>.Sin((2 * n + 1) * z),
+                    sum0 = sum;
 
-				if ((sum += term) == sum0) break;
-				n++;
-				qsp *= qs;
-				qp *= -qsp;
-			}
+                if ((sum += term) == sum0) break;
+                n++;
+                qsp *= qs;
+                qp *= -qsp;
+            }
 
-			return 2 * sum;
-		}
+            return 2 * sum;
+        }
 
 <#+ 
-	if (T == Q)
-	{
+    if (T == Q)
+    {
 #>
-		/// <summary>
-		/// Returns function θ1(z) for a fixed value of nome q.
-		/// </summary>
-		public static Func<<#= T #>, <#= T #>> θ1<#= T #>ForNome(<#= Q #> q)
-		{
-			var qn = new <#= T #>[<#= maxTerms #>];
+        /// <summary>
+        /// Returns function θ1(z) for a fixed value of nome q.
+        /// </summary>
+        public static Func<<#= T #>, <#= T #>> θ1<#= T #>ForNome(<#= Q #> q)
+        {
+            var qn = new <#= T #>[<#= maxTerms #>];
 
-			<#= Q #>
-				qs = q * q,
-				qsp = 1;
+            <#= Q #>
+                qs = q * q,
+                qsp = 1;
 
-			<#= T #>
-				qp = <#= math #>.Pow(q, .25);
+            <#= T #>
+                qp = <#= math #>.Pow(q, .25);
 
-			for (int n = 0; n < <#= maxTerms #>; n++)
-			{
-				qn[n] = qp;
-				qsp *= qs;
-				qp *= -qsp;
-			}
+            for (int n = 0; n < <#= maxTerms #>; n++)
+            {
+                qn[n] = qp;
+                qsp *= qs;
+                qp *= -qsp;
+            }
 
-			return z =>
-			{
-				<#= T #> sum = 0;
-				int n = 0;
-			
-				while (n < <#= maxTerms #>)
-				{
-					<#= T #> 
-						term = qn[n] * <#= math #>.Sin((2 * n + 1) * z),
-						sum0 = sum;
+            return z =>
+            {
+                <#= T #> sum = 0;
+                int n = 0;
+            
+                while (n < <#= maxTerms #>)
+                {
+                    <#= T #> 
+                        term = qn[n] * <#= math #>.Sin((2 * n + 1) * z),
+                        sum0 = sum;
 
-					if ((sum += term) == sum0) break;
-					n++;
-				}
+                    if ((sum += term) == sum0) break;
+                    n++;
+                }
 
-				return 2 * sum;
-			};
-		}
+                return 2 * sum;
+            };
+        }
 
 <#+
-	}
+    }
 }
 
 void MakeTheta2(string T, string math, string Q, string qmath)
 {
 #>
-		/// <summary>
-		/// Jacobi θ2(z, q) where q is the nome.
-		/// If you need to evaluate many times using the same q value, 
-		/// use <see cref="Theta.θ2<#= T #>ForNome" /> to create a function of z alone.
-		/// </summary>
-		public static <#= T #> θ2(<#= T #> z, <#= Q #> q)
-		{
-			if (z == 0)
-				return θ2atZero(q);
+        /// <summary>
+        /// Jacobi θ2(z, q) where q is the nome.
+        /// If you need to evaluate many times using the same q value, 
+        /// use <see cref="Theta.θ2<#= T #>ForNome" /> to create a function of z alone.
+        /// </summary>
+        public static <#= T #> θ2(<#= T #> z, <#= Q #> q)
+        {
+            if (z == 0)
+                return θ2atZero(q);
 
-			<#= Q #>
-				qs = q * q,
-				qsp = 1;
+            <#= Q #>
+                qs = q * q,
+                qsp = 1;
 
-			<#= T #>
-				sum = 0,
-				qp = <#= math #>.Pow(q, .25);
+            <#= T #>
+                sum = 0,
+                qp = <#= math #>.Pow(q, .25);
 
-			int n = 0;
-			
-			while (n < <#= maxTerms #>)
-			{
-				<#= T #> 
-					term = qp * <#= math #>.Cos((2 * n + 1) * z),
-					sum0 = sum;
+            int n = 0;
+            
+            while (n < <#= maxTerms #>)
+            {
+                <#= T #> 
+                    term = qp * <#= math #>.Cos((2 * n + 1) * z),
+                    sum0 = sum;
 
-				if ((sum += term) == sum0) break;
-				n++;
-				qsp *= qs;
-				qp *= qsp;
-			}
+                if ((sum += term) == sum0) break;
+                n++;
+                qsp *= qs;
+                qp *= qsp;
+            }
 
-			return 2 * sum;
-		}
+            return 2 * sum;
+        }
 
 <#+
-	if (T == Q) 
-	{ 
+    if (T == Q) 
+    { 
 #>
-		/// <summary>
-		/// Returns function θ2(z) for a fixed value of nome q.
-		/// </summary>
-		public static Func<<#= T #>, <#= T #>> θ2<#= T #>ForNome(<#= Q #> q)
-		{
-			var atz = θ2atZero(q);
-			var qn = new <#= T #>[<#= maxTerms #>];
+        /// <summary>
+        /// Returns function θ2(z) for a fixed value of nome q.
+        /// </summary>
+        public static Func<<#= T #>, <#= T #>> θ2<#= T #>ForNome(<#= Q #> q)
+        {
+            var atz = θ2atZero(q);
+            var qn = new <#= T #>[<#= maxTerms #>];
 
-			{
-				<#= Q #>
-					qs = q * q,
-					qsp = 1;
+            {
+                <#= Q #>
+                    qs = q * q,
+                    qsp = 1;
 
-				<#= T #> qp = <#= math #>.Pow(q, .25);
+                <#= T #> qp = <#= math #>.Pow(q, .25);
 
-				for (int n = 0; n < <#= maxTerms #>; n++)
-				{
-					qn[n] = qp;
-					qsp *= qs;
-					qp *= qsp;
-				}
-			}
+                for (int n = 0; n < <#= maxTerms #>; n++)
+                {
+                    qn[n] = qp;
+                    qsp *= qs;
+                    qp *= qsp;
+                }
+            }
 
-			return z => 
-			{
-				if (z == 0)
-					return atz;
+            return z => 
+            {
+                if (z == 0)
+                    return atz;
 
-				<#= T #> sum = 0;
-				int n = 0;
-			
-				while (n < <#= maxTerms #>)
-				{
-					<#= T #> 
-						term = qn[n] * <#= math #>.Cos((2 * n + 1) * z),
-						sum0 = sum;
+                <#= T #> sum = 0;
+                int n = 0;
+            
+                while (n < <#= maxTerms #>)
+                {
+                    <#= T #> 
+                        term = qn[n] * <#= math #>.Cos((2 * n + 1) * z),
+                        sum0 = sum;
 
-					if ((sum += term) == sum0) break;
-					n++;
-				}
+                    if ((sum += term) == sum0) break;
+                    n++;
+                }
 
-				return 2 * sum;
-			};
-		}
+                return 2 * sum;
+            };
+        }
 
-		private static <#= T #> θ2atZero(<#= Q #> q)
-		{
-			<#= Q #>
-				qs = q * q,
-				qsp = 1;
+        private static <#= T #> θ2atZero(<#= Q #> q)
+        {
+            <#= Q #>
+                qs = q * q,
+                qsp = 1;
 
-			<#= T #>
-				sum = 0,
-				qp = <#= math #>.Pow(q, .25);
+            <#= T #>
+                sum = 0,
+                qp = <#= math #>.Pow(q, .25);
 
-			int n = 0;
-			
-			while (n < <#= maxTerms #>)
-			{
-				<#= T #> sum0 = sum;
-				if ((sum += qp) == sum0) break;
-				n++;
-				qsp *= qs;
-				qp *= qsp;
-			}
+            int n = 0;
+            
+            while (n < <#= maxTerms #>)
+            {
+                <#= T #> sum0 = sum;
+                if ((sum += qp) == sum0) break;
+                n++;
+                qsp *= qs;
+                qp *= qsp;
+            }
 
-			return 2 * sum;
-		}
+            return 2 * sum;
+        }
 
 <#+
-	}
+    }
 }
 
 void MakeTheta3(string T, string math, string Q, string qmath)
 {
 #>
-		/// <summary>
-		/// Jacobi θ3(z, q) where q is the nome.
-		/// If you need to evaluate many times using the same q value, 
-		/// use <see cref="Theta.θ3<#= T #>ForNome" /> to create a function of z alone.
-		/// </summary>
-		public static <#= T #> θ3(<#= T #> z, <#= Q #> q)
-		{
-			if (z == 0)
-				return θ3atZero(q);
+        /// <summary>
+        /// Jacobi θ3(z, q) where q is the nome.
+        /// If you need to evaluate many times using the same q value, 
+        /// use <see cref="Theta.θ3<#= T #>ForNome" /> to create a function of z alone.
+        /// </summary>
+        public static <#= T #> θ3(<#= T #> z, <#= Q #> q)
+        {
+            if (z == 0)
+                return θ3atZero(q);
 
-			<#= Q #>
-				qp = q,
-				qsp = q,
-				qs = q * q;
+            <#= Q #>
+                qp = q,
+                qsp = q,
+                qs = q * q;
 
-			<#= T #> sum = 0;
-			int n = 1;
-			
-			while (n < <#= maxTerms #>)
-			{
-				<#= T #> 
-					term = qp * <#= math #>.Cos(2 * n * z),
-					sum0 = sum;
+            <#= T #> sum = 0;
+            int n = 1;
+            
+            while (n < <#= maxTerms #>)
+            {
+                <#= T #> 
+                    term = qp * <#= math #>.Cos(2 * n * z),
+                    sum0 = sum;
 
-				if ((sum += term) == sum0) break;
-				n++;
-				qsp *= qs;
-				qp *= qsp;
-			}
+                if ((sum += term) == sum0) break;
+                n++;
+                qsp *= qs;
+                qp *= qsp;
+            }
 
-			return 1 + 2 * sum;
-		}
+            return 1 + 2 * sum;
+        }
 
 <#+
-	if (T == Q)
-	{
+    if (T == Q)
+    {
 #>
-		/// <summary>
-		/// Returns function θ3(z) for a fixed value of nome q.
-		/// </summary>
-		public static Func<<#= T #>, <#= T #>> θ3<#= T #>ForNome(<#= Q #> q)
-		{
-			var atz = θ3atZero(q);
-			var qn = new <#= T #>[<#= maxTerms #>];
+        /// <summary>
+        /// Returns function θ3(z) for a fixed value of nome q.
+        /// </summary>
+        public static Func<<#= T #>, <#= T #>> θ3<#= T #>ForNome(<#= Q #> q)
+        {
+            var atz = θ3atZero(q);
+            var qn = new <#= T #>[<#= maxTerms #>];
 
-			<#= Q #>
-				qp = q,
-				qsp = q,
-				qs = q * q;
+            <#= Q #>
+                qp = q,
+                qsp = q,
+                qs = q * q;
 
-			for (int n = 0; n < <#= maxTerms #>; n++)
-			{
-				qn[n] = qp;
-				qsp *= qs;
-				qp *= qsp;
-			}
+            for (int n = 0; n < <#= maxTerms #>; n++)
+            {
+                qn[n] = qp;
+                qsp *= qs;
+                qp *= qsp;
+            }
 
-			return z => 
-			{
-				if (z == 0)
-					return atz;
+            return z => 
+            {
+                if (z == 0)
+                    return atz;
 
-				<#= T #> sum = 0;
-				int n = 1;
-			
-				while (n < <#= maxTerms #>)
-				{
-					<#= T #> 
-						term = qn[n] * <#= math #>.Cos(2 * n * z),
-						sum0 = sum;
+                <#= T #> sum = 0;
+                int n = 1;
+            
+                while (n < <#= maxTerms #>)
+                {
+                    <#= T #> 
+                        term = qn[n] * <#= math #>.Cos(2 * n * z),
+                        sum0 = sum;
 
-					if ((sum += term) == sum0) break;
-					n++;
-				}
+                    if ((sum += term) == sum0) break;
+                    n++;
+                }
 
-				return 1 + 2 * sum;
-			};
-		}
+                return 1 + 2 * sum;
+            };
+        }
 
-		private static <#= T #> θ3atZero(<#= T #> q)
-		{
-			<#= Q #>
-				qp = q,
-				qsp = q,
-				qs = q * q;
+        private static <#= T #> θ3atZero(<#= T #> q)
+        {
+            <#= Q #>
+                qp = q,
+                qsp = q,
+                qs = q * q;
 
-			<#= T #> sum = 0;
-			int n = 1;
-			
-			while (n < <#= maxTerms #>)
-			{
-				<#= T #> sum0 = sum;
-				if ((sum += qp) == sum0) break;
-				n++;
-				qsp *= qs;
-				qp *= qsp;
-			}
+            <#= T #> sum = 0;
+            int n = 1;
+            
+            while (n < <#= maxTerms #>)
+            {
+                <#= T #> sum0 = sum;
+                if ((sum += qp) == sum0) break;
+                n++;
+                qsp *= qs;
+                qp *= qsp;
+            }
 
-			return 1 + 2 * sum;
-		}
+            return 1 + 2 * sum;
+        }
 
 <#+
-	}
+    }
 }
 
 void MakeTheta4(string T, string math, string Q, string qmath)
 {
 #>
-		/// <summary>
-		/// Jacobi θ4(z, q) where q is the nome.
-		/// If you need to evaluate many times using the same q value, 
-		/// use <see cref="Theta.θ4<#= T #>ForNome" /> to create a function of z alone.
-		/// </summary>
-		public static <#= T #> θ4(<#= T #> z, <#= Q #> q)
-		{
-			if (z == 0)
-				return θ4atZero(q);
+        /// <summary>
+        /// Jacobi θ4(z, q) where q is the nome.
+        /// If you need to evaluate many times using the same q value, 
+        /// use <see cref="Theta.θ4<#= T #>ForNome" /> to create a function of z alone.
+        /// </summary>
+        public static <#= T #> θ4(<#= T #> z, <#= Q #> q)
+        {
+            if (z == 0)
+                return θ4atZero(q);
 
-			<#= Q #>
-				qp = -q,
-				qs = q * q,
-				qsp = q;
+            <#= Q #>
+                qp = -q,
+                qs = q * q,
+                qsp = q;
 
-			<#= T #> sum = 0;
-			int n = 1;
-			
-			while (n < <#= maxTerms #>)
-			{
-				<#= T #> 
-					term = qp * <#= math #>.Cos(2 * n * z),
-					sum0 = sum;
+            <#= T #> sum = 0;
+            int n = 1;
+            
+            while (n < <#= maxTerms #>)
+            {
+                <#= T #> 
+                    term = qp * <#= math #>.Cos(2 * n * z),
+                    sum0 = sum;
 
-				if ((sum += term) == sum0) break;
-				n++;
-				qsp *= qs;
-				qp *= -qsp;
-			}
+                if ((sum += term) == sum0) break;
+                n++;
+                qsp *= qs;
+                qp *= -qsp;
+            }
 
-			return 1 + 2 * sum;
-		}
+            return 1 + 2 * sum;
+        }
 
 <#+
-	if (T == Q) 
-	{
+    if (T == Q) 
+    {
 #>
-		/// <summary>
-		/// Returns function θ4(z) for a fixed value of nome q.
-		/// </summary>
-		public static Func<<#= T #>, <#= T #>> θ4<#= T #>ForNome(<#= Q #> q)
-		{
-			var atz = θ4atZero(q);
-			var qn = new <#= Q #>[<#= maxTerms #>];
+        /// <summary>
+        /// Returns function θ4(z) for a fixed value of nome q.
+        /// </summary>
+        public static Func<<#= T #>, <#= T #>> θ4<#= T #>ForNome(<#= Q #> q)
+        {
+            var atz = θ4atZero(q);
+            var qn = new <#= Q #>[<#= maxTerms #>];
 
-			{
-				<#= Q #>
-					qp = -q,
-					qs = q * q,
-					qsp = q;
+            {
+                <#= Q #>
+                    qp = -q,
+                    qs = q * q,
+                    qsp = q;
 
-				for (int n = 1; n < <#= maxTerms #>; n++)
-				{
-					qn[n] = qp;
-					qsp *= qs;
-					qp *= -qsp;
-				}
-			}
+                for (int n = 1; n < <#= maxTerms #>; n++)
+                {
+                    qn[n] = qp;
+                    qsp *= qs;
+                    qp *= -qsp;
+                }
+            }
 
-			return z =>
-			{
-				if (z == 0)
-					return atz;
+            return z =>
+            {
+                if (z == 0)
+                    return atz;
 
-				<#= T #> sum = 0;
-				int n = 1;
-			
-				while (n < <#= maxTerms #>)
-				{
-					<#= T #> 
-						term = qn[n] * <#= math #>.Cos(2 * n * z),
-						sum0 = sum;
+                <#= T #> sum = 0;
+                int n = 1;
+            
+                while (n < <#= maxTerms #>)
+                {
+                    <#= T #> 
+                        term = qn[n] * <#= math #>.Cos(2 * n * z),
+                        sum0 = sum;
 
-					if ((sum += term) == sum0) break;
-					n++;
-				}
+                    if ((sum += term) == sum0) break;
+                    n++;
+                }
 
-				return 1 + 2 * sum;
-			};
-		}
+                return 1 + 2 * sum;
+            };
+        }
 
-		private static <#= T #> θ4atZero(<#= Q #> q)
-		{
-			<#= Q #>
-				qp = -q,
-				qs = q * q,
-				qsp = q;
+        private static <#= T #> θ4atZero(<#= Q #> q)
+        {
+            <#= Q #>
+                qp = -q,
+                qs = q * q,
+                qsp = q;
 
-			<#= T #> sum = 0;
-			int n = 1;
-			
-			while (n < <#= maxTerms #>)
-			{
-				<#= T #> sum0 = sum;
+            <#= T #> sum = 0;
+            int n = 1;
+            
+            while (n < <#= maxTerms #>)
+            {
+                <#= T #> sum0 = sum;
 
-				if ((sum += qp) == sum0) break;
-				n++;
-				qsp *= qs;
-				qp *= -qsp;
-			}
+                if ((sum += qp) == sum0) break;
+                n++;
+                qsp *= qs;
+                qp *= -qsp;
+            }
 
-			return 1 + 2 * sum;
-		}
+            return 1 + 2 * sum;
+        }
 
 <#+
-	}
+    }
 }
 #>

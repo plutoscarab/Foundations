@@ -15,29 +15,29 @@ namespace Foundations.Functions.Numerics
         public static double ε = Math.Pow(2, -53);
     }
 
-	/// <summary>
-	/// Elliptic integrals in Carlson symmetric form.
-	/// </summary>
-	/// <remarks>
-	/// B. C. Carlson (1995) Numerical computation of real or complex elliptic integrals.  Numer. Algorithms 10 (1-2),  pp. 13–26. 
-	/// Implements the enhancements described in http://dlmf.nist.gov/19.36
-	/// </remarks>
-	public static partial class CarlsonSymmetric
-	{
+    /// <summary>
+    /// Elliptic integrals in Carlson symmetric form.
+    /// </summary>
+    /// <remarks>
+    /// B. C. Carlson (1995) Numerical computation of real or complex elliptic integrals.  Numer. Algorithms 10 (1-2),  pp. 13–26. 
+    /// Implements the enhancements described in http://dlmf.nist.gov/19.36
+    /// </remarks>
+    public static partial class CarlsonSymmetric
+    {
 <# 
 MakeRF("Complex", "Complex"); 
 MakeRF("Double", "Math"); 
 #>
-	}
+    }
 }
 
 <#+
 public void MakeRF(string T, string math)
 {
 #>
-		/// <summary>
-		/// Symmetric elliptic integral of the first kind.
-		/// </summary>
+        /// <summary>
+        /// Symmetric elliptic integral of the first kind.
+        /// </summary>
         public static <#= T #> RF(<#= T #> x, <#= T #> y, <#= T #> z)
         {
             switch ((x == 0 ? 1 : 0) + (y == 0 ? 1 : 0) + (z == 0 ? 1 : 0))

@@ -10,66 +10,66 @@ using System.Numerics;
 
 namespace Foundations.Functions.Numerics
 {
-	/// <summary>
-	/// Elliptic integrals.
-	/// </summary>
-	/// <remarks>
-	/// Evaluated using Carlson symmetric form.
-	/// </remarks>
-	public partial class Elliptic
-	{
-		const double π =  Math.PI;
+    /// <summary>
+    /// Elliptic integrals.
+    /// </summary>
+    /// <remarks>
+    /// Evaluated using Carlson symmetric form.
+    /// </remarks>
+    public partial class Elliptic
+    {
+        const double π =  Math.PI;
 
-		/// <summary>
-		/// Complete elliptic integral of the first kind.
-		/// </summary>
+        /// <summary>
+        /// Complete elliptic integral of the first kind.
+        /// </summary>
         public static double K(double m)
         {
-			if (m == 1) return double.PositiveInfinity;
+            if (m == 1) return double.PositiveInfinity;
             return CarlsonSymmetric.RF(0, 1 - m, 1);
         }
 
-		/// <summary>
-		/// Compute the nome for parameter m.
-		/// </summary>
-		public static double Nome(double m)
-		{
+        /// <summary>
+        /// Compute the nome for parameter m.
+        /// </summary>
+        public static double Nome(double m)
+        {
             return Math.Exp(-π * Elliptic.K(1 - m) / Elliptic.K(m));
-		}
+        }
 
-		/// <summary>
-		/// Compute the nome for parameter m.
-		/// </summary>
-		public static double Nome(double m, out double K)
-		{
-			K = Elliptic.K(m);
+        /// <summary>
+        /// Compute the nome for parameter m.
+        /// </summary>
+        public static double Nome(double m, out double K)
+        {
+            K = Elliptic.K(m);
             return Math.Exp(-π * Elliptic.K(1 - m) / K);
-		}
+        }
 
-		/// <summary>
-		/// Compute the nome for parameter m, as well as <see cref="K"/>(m) and K'(m) = <see cref="K"/>(1 - m).
-		/// </summary>
-		public static double Nome(double m, out double K, out double Kprime)
-		{
-			K = Elliptic.K(m);
-			Kprime = Elliptic.K(1 - m);
+        /// <summary>
+        /// Compute the nome for parameter m, as well as <see cref="K"/>(m) and K'(m) = <see cref="K"/>(1 - m).
+        /// </summary>
+        public static double Nome(double m, out double K, out double Kprime)
+        {
+            K = Elliptic.K(m);
+            Kprime = Elliptic.K(1 - m);
             return Math.Exp(-π * Kprime / K);
-		}
+        }
 <#
 MakeF("Complex", "{0}.Real", "Complex");
 MakeF("Double", "{0}", "Math");
 #>
-	}
+    }
 }
 <#+
 public void MakeF(string T, string realFmt, string sincos)
 {
-	var φreal = string.Format(realFmt, "φ");
+    var φreal = string.Format(realFmt, "φ");
 #>
 
-		/// <summary>
+        /// <summary>
         /// Incomplete elliptic integral of the first kind F(φ | m).
-		/// </summary>
+        /// </summary>
         /// <param name="φ">Argument.</param>
         /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
         public static <#= T #> F(<#= T #> φ, double m)
@@ -87,33 +87,33 @@ public void MakeF(string T, string realFmt, string sincos)
             return sinφ * CarlsonSymmetric.RF(cosφ * cosφ, 1 - m * sinφ * sinφ, 1);
         }
 
-		/// <summary>
+        /// <summary>
         /// Get a function F(φ) that computes the incomplete elliptic integral of the first kind F(φ | m)
-		/// for a constant parameter m. Use this instead of F(φ, m) if you use the same value of m many times.
-		/// </summary>
+        /// for a constant parameter m. Use this instead of F(φ, m) if you use the same value of m many times.
+        /// </summary>
         /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
-		public static Func<<#= T #>, <#= T #>> F<#= T #>(double m)
-		{
-			var k = K(m);
+        public static Func<<#= T #>, <#= T #>> F<#= T #>(double m)
+        {
+            var k = K(m);
 
-			return φ => 
-			{
-				<#= T #> offset = 0;
+            return φ => 
+            {
+                <#= T #> offset = 0;
 
-				if (Math.Abs(<#= φreal #>) > π / 2)
-				{
-					int n = (int)Math.Round(<#= φreal #> / π);
-					φ -= n * π;
-					offset = n * 2 * k;
-				}
+                if (Math.Abs(<#= φreal #>) > π / 2)
+                {
+                    int n = (int)Math.Round(<#= φreal #> / π);
+                    φ -= n * π;
+                    offset = n * 2 * k;
+                }
 
-				<#= T #>
-					sinφ = <#= sincos #>.Sin(φ),
-					cosφ = <#= sincos #>.Cos(φ);
+                <#= T #>
+                    sinφ = <#= sincos #>.Sin(φ),
+                    cosφ = <#= sincos #>.Cos(φ);
 
-				return sinφ * CarlsonSymmetric.RF(cosφ * cosφ, 1 - m * sinφ * sinφ, 1) + offset;
-			};
-		}
+                return sinφ * CarlsonSymmetric.RF(cosφ * cosφ, 1 - m * sinφ * sinφ, 1) + offset;
+            };
+        }
 <#+
 }
 #>

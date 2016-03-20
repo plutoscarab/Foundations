@@ -9,18 +9,18 @@ namespace Foundations.Functions.Numerics
         public static double ε = Math.Pow(2, -53);
     }
 
-	/// <summary>
-	/// Elliptic integrals in Carlson symmetric form.
-	/// </summary>
-	/// <remarks>
-	/// B. C. Carlson (1995) Numerical computation of real or complex elliptic integrals.  Numer. Algorithms 10 (1-2),  pp. 13–26. 
-	/// Implements the enhancements described in http://dlmf.nist.gov/19.36
-	/// </remarks>
-	public static partial class CarlsonSymmetric
-	{
-		/// <summary>
-		/// Symmetric elliptic integral of the first kind.
-		/// </summary>
+    /// <summary>
+    /// Elliptic integrals in Carlson symmetric form.
+    /// </summary>
+    /// <remarks>
+    /// B. C. Carlson (1995) Numerical computation of real or complex elliptic integrals.  Numer. Algorithms 10 (1-2),  pp. 13–26. 
+    /// Implements the enhancements described in http://dlmf.nist.gov/19.36
+    /// </remarks>
+    public static partial class CarlsonSymmetric
+    {
+        /// <summary>
+        /// Symmetric elliptic integral of the first kind.
+        /// </summary>
         public static Complex RF(Complex x, Complex y, Complex z)
         {
             switch ((x == 0 ? 1 : 0) + (y == 0 ? 1 : 0) + (z == 0 ? 1 : 0))
@@ -62,9 +62,9 @@ namespace Foundations.Functions.Numerics
             return (1 + E3 * (1 / 14d + 3 * E3 / 104) + E2 * (1 / 10d + 3 * E3 / 44 + E2 * (1 / 24d + E3 / 16 + 5 * E2 / 208))) / Complex.Sqrt(A);
         }
 
-		/// <summary>
-		/// Symmetric elliptic integral of the first kind.
-		/// </summary>
+        /// <summary>
+        /// Symmetric elliptic integral of the first kind.
+        /// </summary>
         public static Double RF(Double x, Double y, Double z)
         {
             switch ((x == 0 ? 1 : 0) + (y == 0 ? 1 : 0) + (z == 0 ? 1 : 0))
@@ -106,6 +106,6 @@ namespace Foundations.Functions.Numerics
             return (1 + E3 * (1 / 14d + 3 * E3 / 104) + E2 * (1 / 10d + 3 * E3 / 44 + E2 * (1 / 24d + E3 / 16 + 5 * E2 / 208))) / Math.Sqrt(A);
         }
 
-	}
+    }
 }
 

@@ -7,44 +7,44 @@
 
 namespace Foundations.Functions.Numerics
 {
-	/// <summary>
-	/// Extension method wrappers for System.Math functions.
-	/// </summary>
-	public static partial class MathExtensions
-	{
+    /// <summary>
+    /// Extension method wrappers for System.Math functions.
+    /// </summary>
+    public static partial class MathExtensions
+    {
 <#
-	foreach (var method in typeof(Math).GetMethods().Where(m => m.IsStatic).OrderBy(m => m.Name))
-	{
-		var args = method.GetParameters();
-		var paramList = new StringBuilder();
-		var argList = new StringBuilder();
-		var typeList = new StringBuilder();
+    foreach (var method in typeof(Math).GetMethods().Where(m => m.IsStatic).OrderBy(m => m.Name))
+    {
+        var args = method.GetParameters();
+        var paramList = new StringBuilder();
+        var argList = new StringBuilder();
+        var typeList = new StringBuilder();
 
-		for (int i = 0; i < args.Length; i++)
-		{
-			if (i > 0) { paramList.Append(", "); argList.Append(", "); typeList.Append(", "); }
-			if (args[i].IsOut) 
-			{
-				paramList.Append("out ");
-				argList.Append("out ");
-				typeList.Append("out ");
-			}
-			var argType = args[i].ParameterType.ToString().Replace("&", "");
-			typeList.Append(argType);
-			paramList.Append(argType + " " + args[i].Name);
-			argList.Append(args[i].Name);
-		}
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (i > 0) { paramList.Append(", "); argList.Append(", "); typeList.Append(", "); }
+            if (args[i].IsOut) 
+            {
+                paramList.Append("out ");
+                argList.Append("out ");
+                typeList.Append("out ");
+            }
+            var argType = args[i].ParameterType.ToString().Replace("&", "");
+            typeList.Append(argType);
+            paramList.Append(argType + " " + args[i].Name);
+            argList.Append(args[i].Name);
+        }
 #>
-		/// <summary>
-		/// Get the value of <see cref="System.Math.<#= method.Name #>(<#= typeList #>)"/> for this <see cref="<#= method.ReturnType #>"/> value.
-		/// </summary>
-		public static <#= method.ReturnType #> <#= method.Name #>(this <#= paramList #>)
-		{
-			return System.Math.<#= method.Name #>(<#= argList #>);
-		}
+        /// <summary>
+        /// Get the value of <see cref="System.Math.<#= method.Name #>(<#= typeList #>)"/> for this <see cref="<#= method.ReturnType #>"/> value.
+        /// </summary>
+        public static <#= method.ReturnType #> <#= method.Name #>(this <#= paramList #>)
+        {
+            return System.Math.<#= method.Name #>(<#= argList #>);
+        }
 
 <#
-	}
+    }
 #>
-	}
+    }
 }
