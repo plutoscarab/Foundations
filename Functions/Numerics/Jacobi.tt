@@ -6,8 +6,10 @@
 <#@ output extension=".cs" #>
 
 using System;
-using System.Collections.Generic;
 using System.Numerics;
+
+using static Foundations.Functions.Numerics.Elliptic;
+using static Foundations.Functions.Numerics.Theta;
 
 namespace Foundations.Functions.Numerics
 {
@@ -36,9 +38,9 @@ public void MakeJ(string T, string math)
 		/// <param name="m">Parameter.</param>
 		public static <#= T #> cn(<#= T #> φ, double m)
 		{
-            double K, q = Elliptic.Nome(m, out K);
+            double K, q = Nome(m, out K);
             <#= T #> ζ = π * φ / (2 * K);
-			return (Theta.θ4(0, q) / Theta.θ2(0, q)) * (Theta.θ2(ζ, q) / Theta.θ4(ζ, q));
+			return (θ4(0, q) / θ2(0, q)) * (θ2(ζ, q) / θ4(ζ, q));
 		}
 
 		/// <summary>
@@ -53,10 +55,10 @@ public void MakeJ(string T, string math)
 			double kf;
 
 			{
-				double K, q = Elliptic.Nome(m, out K);
+				double K, q = Nome(m, out K);
 				kf = π / (2 * K);
-				t2 = Theta.θ2<#= T #>ForNome(q);
-				t4 = Theta.θ4<#= T #>ForNome(q);
+				t2 = θ2<#= T #>ForNome(q);
+				t4 = θ4<#= T #>ForNome(q);
 				f = t4(0) / t2(0);
 			}
 
@@ -74,9 +76,9 @@ public void MakeJ(string T, string math)
 		/// <param name="m">Parameter.</param>
 		public static <#= T #> sn(<#= T #> φ, double m)
 		{
-            double K, q = Elliptic.Nome(m, out K);
+            double K, q = Nome(m, out K);
             <#= T #> ζ = π * φ / (2 * K);
-			return (Theta.θ3(0, q) / Theta.θ2(0, q)) * (Theta.θ1(ζ, q) / Theta.θ4(ζ, q));
+			return (θ3(0, q) / θ2(0, q)) * (θ1(ζ, q) / θ4(ζ, q));
 		}
 
 		/// <summary>
@@ -86,9 +88,9 @@ public void MakeJ(string T, string math)
 		/// <param name="m">Parameter.</param>
 		public static <#= T #> dn(<#= T #> φ, double m)
 		{
-            double K, q = Elliptic.Nome(m, out K);
+            double K, q = Nome(m, out K);
             <#= T #> ζ = π * φ / (2 * K);
-			return (Theta.θ4(0, q) / Theta.θ3(0, q)) * (Theta.θ3(ζ, q) / Theta.θ4(ζ, q));
+			return (θ4(0, q) / θ3(0, q)) * (θ3(ζ, q) / θ4(ζ, q));
 		}
 
 		/// <summary>
@@ -120,19 +122,19 @@ public void MakeJ(string T, string math)
 		/// <param name="m">Parameter.</param>
 		public static Jacobi<#= T #> Multi(<#= T #> φ, double m)
 		{
-            double K, q = Elliptic.Nome(m, out K);
+            double K, q = Nome(m, out K);
 
             <#= T #> 
 				ζ = π * φ / (2 * K),
-				z2 = Theta.θ2(0, q),
-				z3 = Theta.θ3(0, q),
-				z4 = Theta.θ4(0, q),
-				t4 = Theta.θ4(ζ, q);
+				z2 = θ2(0, q),
+				z3 = θ3(0, q),
+				z4 = θ4(0, q),
+				t4 = θ4(ζ, q);
 
 			return new Jacobi<#= T #>(
-				(z3 / z2) * (Theta.θ1(ζ, q) / t4),
-				(z4 / z2) * (Theta.θ2(ζ, q) / t4),
-				(z4 / z3) * (Theta.θ3(ζ, q) / t4));
+				(z3 / z2) * (θ1(ζ, q) / t4),
+				(z4 / z2) * (θ2(ζ, q) / t4),
+				(z4 / z3) * (θ3(ζ, q) / t4));
 		}
 
 		/// <summary>
@@ -148,7 +150,7 @@ public void MakeJ(string T, string math)
 		/// </summary>
 		public static <#= T #> arccn(<#= T #> z, double m)
 		{
-			return Elliptic.F(<#= math #>.Acos(z), m);
+			return F(<#= math #>.Acos(z), m);
 		}
 
 		/// <summary>
@@ -157,7 +159,7 @@ public void MakeJ(string T, string math)
 		/// </summary>
 		public static Func<<#= T #>, <#= T #>> arccn<#= T #>(double m)
 		{
-			var ef = Elliptic.F<#= T #>(m);
+			var ef = F<#= T #>(m);
 			return z => ef(<#= math #>.Acos(z));
 		}
 
@@ -166,7 +168,7 @@ public void MakeJ(string T, string math)
 		/// </summary>
 		public static <#= T #> arcsn(<#= T #> z, double m)
 		{
-			return Elliptic.F(<#= math #>.Asin(z), m);
+			return F(<#= math #>.Asin(z), m);
 		}
 <#+
 }

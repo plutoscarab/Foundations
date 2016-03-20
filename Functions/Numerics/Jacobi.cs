@@ -1,7 +1,9 @@
 ﻿
 using System;
-using System.Collections.Generic;
 using System.Numerics;
+
+using static Foundations.Functions.Numerics.Elliptic;
+using static Foundations.Functions.Numerics.Theta;
 
 namespace Foundations.Functions.Numerics
 {
@@ -20,9 +22,9 @@ namespace Foundations.Functions.Numerics
 		/// <param name="m">Parameter.</param>
 		public static Complex cn(Complex φ, double m)
 		{
-            double K, q = Elliptic.Nome(m, out K);
+            double K, q = Nome(m, out K);
             Complex ζ = π * φ / (2 * K);
-			return (Theta.θ4(0, q) / Theta.θ2(0, q)) * (Theta.θ2(ζ, q) / Theta.θ4(ζ, q));
+			return (θ4(0, q) / θ2(0, q)) * (θ2(ζ, q) / θ4(ζ, q));
 		}
 
 		/// <summary>
@@ -37,10 +39,10 @@ namespace Foundations.Functions.Numerics
 			double kf;
 
 			{
-				double K, q = Elliptic.Nome(m, out K);
+				double K, q = Nome(m, out K);
 				kf = π / (2 * K);
-				t2 = Theta.θ2ComplexForNome(q);
-				t4 = Theta.θ4ComplexForNome(q);
+				t2 = θ2ComplexForNome(q);
+				t4 = θ4ComplexForNome(q);
 				f = t4(0) / t2(0);
 			}
 
@@ -58,9 +60,9 @@ namespace Foundations.Functions.Numerics
 		/// <param name="m">Parameter.</param>
 		public static Complex sn(Complex φ, double m)
 		{
-            double K, q = Elliptic.Nome(m, out K);
+            double K, q = Nome(m, out K);
             Complex ζ = π * φ / (2 * K);
-			return (Theta.θ3(0, q) / Theta.θ2(0, q)) * (Theta.θ1(ζ, q) / Theta.θ4(ζ, q));
+			return (θ3(0, q) / θ2(0, q)) * (θ1(ζ, q) / θ4(ζ, q));
 		}
 
 		/// <summary>
@@ -70,9 +72,9 @@ namespace Foundations.Functions.Numerics
 		/// <param name="m">Parameter.</param>
 		public static Complex dn(Complex φ, double m)
 		{
-            double K, q = Elliptic.Nome(m, out K);
+            double K, q = Nome(m, out K);
             Complex ζ = π * φ / (2 * K);
-			return (Theta.θ4(0, q) / Theta.θ3(0, q)) * (Theta.θ3(ζ, q) / Theta.θ4(ζ, q));
+			return (θ4(0, q) / θ3(0, q)) * (θ3(ζ, q) / θ4(ζ, q));
 		}
 
 		/// <summary>
@@ -104,19 +106,19 @@ namespace Foundations.Functions.Numerics
 		/// <param name="m">Parameter.</param>
 		public static JacobiComplex Multi(Complex φ, double m)
 		{
-            double K, q = Elliptic.Nome(m, out K);
+            double K, q = Nome(m, out K);
 
             Complex 
 				ζ = π * φ / (2 * K),
-				z2 = Theta.θ2(0, q),
-				z3 = Theta.θ3(0, q),
-				z4 = Theta.θ4(0, q),
-				t4 = Theta.θ4(ζ, q);
+				z2 = θ2(0, q),
+				z3 = θ3(0, q),
+				z4 = θ4(0, q),
+				t4 = θ4(ζ, q);
 
 			return new JacobiComplex(
-				(z3 / z2) * (Theta.θ1(ζ, q) / t4),
-				(z4 / z2) * (Theta.θ2(ζ, q) / t4),
-				(z4 / z3) * (Theta.θ3(ζ, q) / t4));
+				(z3 / z2) * (θ1(ζ, q) / t4),
+				(z4 / z2) * (θ2(ζ, q) / t4),
+				(z4 / z3) * (θ3(ζ, q) / t4));
 		}
 
 		/// <summary>
@@ -132,7 +134,7 @@ namespace Foundations.Functions.Numerics
 		/// </summary>
 		public static Complex arccn(Complex z, double m)
 		{
-			return Elliptic.F(Complex.Acos(z), m);
+			return F(Complex.Acos(z), m);
 		}
 
 		/// <summary>
@@ -141,7 +143,7 @@ namespace Foundations.Functions.Numerics
 		/// </summary>
 		public static Func<Complex, Complex> arccnComplex(double m)
 		{
-			var ef = Elliptic.FComplex(m);
+			var ef = FComplex(m);
 			return z => ef(Complex.Acos(z));
 		}
 
@@ -150,7 +152,7 @@ namespace Foundations.Functions.Numerics
 		/// </summary>
 		public static Complex arcsn(Complex z, double m)
 		{
-			return Elliptic.F(Complex.Asin(z), m);
+			return F(Complex.Asin(z), m);
 		}
 
 		/// <summary>
@@ -160,9 +162,9 @@ namespace Foundations.Functions.Numerics
 		/// <param name="m">Parameter.</param>
 		public static Double cn(Double φ, double m)
 		{
-            double K, q = Elliptic.Nome(m, out K);
+            double K, q = Nome(m, out K);
             Double ζ = π * φ / (2 * K);
-			return (Theta.θ4(0, q) / Theta.θ2(0, q)) * (Theta.θ2(ζ, q) / Theta.θ4(ζ, q));
+			return (θ4(0, q) / θ2(0, q)) * (θ2(ζ, q) / θ4(ζ, q));
 		}
 
 		/// <summary>
@@ -177,10 +179,10 @@ namespace Foundations.Functions.Numerics
 			double kf;
 
 			{
-				double K, q = Elliptic.Nome(m, out K);
+				double K, q = Nome(m, out K);
 				kf = π / (2 * K);
-				t2 = Theta.θ2DoubleForNome(q);
-				t4 = Theta.θ4DoubleForNome(q);
+				t2 = θ2DoubleForNome(q);
+				t4 = θ4DoubleForNome(q);
 				f = t4(0) / t2(0);
 			}
 
@@ -198,9 +200,9 @@ namespace Foundations.Functions.Numerics
 		/// <param name="m">Parameter.</param>
 		public static Double sn(Double φ, double m)
 		{
-            double K, q = Elliptic.Nome(m, out K);
+            double K, q = Nome(m, out K);
             Double ζ = π * φ / (2 * K);
-			return (Theta.θ3(0, q) / Theta.θ2(0, q)) * (Theta.θ1(ζ, q) / Theta.θ4(ζ, q));
+			return (θ3(0, q) / θ2(0, q)) * (θ1(ζ, q) / θ4(ζ, q));
 		}
 
 		/// <summary>
@@ -210,9 +212,9 @@ namespace Foundations.Functions.Numerics
 		/// <param name="m">Parameter.</param>
 		public static Double dn(Double φ, double m)
 		{
-            double K, q = Elliptic.Nome(m, out K);
+            double K, q = Nome(m, out K);
             Double ζ = π * φ / (2 * K);
-			return (Theta.θ4(0, q) / Theta.θ3(0, q)) * (Theta.θ3(ζ, q) / Theta.θ4(ζ, q));
+			return (θ4(0, q) / θ3(0, q)) * (θ3(ζ, q) / θ4(ζ, q));
 		}
 
 		/// <summary>
@@ -244,19 +246,19 @@ namespace Foundations.Functions.Numerics
 		/// <param name="m">Parameter.</param>
 		public static JacobiDouble Multi(Double φ, double m)
 		{
-            double K, q = Elliptic.Nome(m, out K);
+            double K, q = Nome(m, out K);
 
             Double 
 				ζ = π * φ / (2 * K),
-				z2 = Theta.θ2(0, q),
-				z3 = Theta.θ3(0, q),
-				z4 = Theta.θ4(0, q),
-				t4 = Theta.θ4(ζ, q);
+				z2 = θ2(0, q),
+				z3 = θ3(0, q),
+				z4 = θ4(0, q),
+				t4 = θ4(ζ, q);
 
 			return new JacobiDouble(
-				(z3 / z2) * (Theta.θ1(ζ, q) / t4),
-				(z4 / z2) * (Theta.θ2(ζ, q) / t4),
-				(z4 / z3) * (Theta.θ3(ζ, q) / t4));
+				(z3 / z2) * (θ1(ζ, q) / t4),
+				(z4 / z2) * (θ2(ζ, q) / t4),
+				(z4 / z3) * (θ3(ζ, q) / t4));
 		}
 
 		/// <summary>
@@ -272,7 +274,7 @@ namespace Foundations.Functions.Numerics
 		/// </summary>
 		public static Double arccn(Double z, double m)
 		{
-			return Elliptic.F(Math.Acos(z), m);
+			return F(Math.Acos(z), m);
 		}
 
 		/// <summary>
@@ -281,7 +283,7 @@ namespace Foundations.Functions.Numerics
 		/// </summary>
 		public static Func<Double, Double> arccnDouble(double m)
 		{
-			var ef = Elliptic.FDouble(m);
+			var ef = FDouble(m);
 			return z => ef(Math.Acos(z));
 		}
 
@@ -290,7 +292,7 @@ namespace Foundations.Functions.Numerics
 		/// </summary>
 		public static Double arcsn(Double z, double m)
 		{
-			return Elliptic.F(Math.Asin(z), m);
+			return F(Math.Asin(z), m);
 		}
 	}
 }
