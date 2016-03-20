@@ -7,10 +7,11 @@
     <ProjectGuid>{CA80F343-3468-4FF2-B368-9A75E51A1776}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Functions</RootNamespace>
-    <AssemblyName>Functions</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <RootNamespace>Foundations.Functions</RootNamespace>
+    <AssemblyName>Foundations.Functions</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -20,6 +21,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Debug\Foundations.Functions.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,13 +32,67 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Release\Foundations.Functions.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Numerics\CarlsonSymmetric.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CarlsonSymmetric.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Numerics\EllipticGen.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EllipticGen.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Numerics\Function.cs" />
+    <Compile Include="Numerics\Jacobi.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Jacobi.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Numerics\MathExtensions.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MathExtensions.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Numerics\Theta.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Theta.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Numerics\CarlsonSymmetric.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>CarlsonSymmetric.cs</LastGenOutput>
+    </Content>
+    <Content Include="Numerics\EllipticGen.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>EllipticGen.cs</LastGenOutput>
+    </Content>
+    <Content Include="Numerics\Jacobi.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Jacobi.cs</LastGenOutput>
+    </Content>
+    <Content Include="Numerics\MathExtensions.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MathExtensions.cs</LastGenOutput>
+    </Content>
+    <Content Include="Numerics\Theta.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Theta.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

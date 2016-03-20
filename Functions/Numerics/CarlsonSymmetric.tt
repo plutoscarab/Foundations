@@ -1,0 +1,85 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+using System;
+using System.Collections.Generic;
+using System.Numerics;
+
+namespace Foundations.Functions.Numerics
+{
+    internal static class Machine
+    {
+        public static double ε = Math.Pow(2, -53);
+    }
+
+	/// <summary>
+	/// Elliptic integrals in Carlson symmetric form.
+	/// </summary>
+	/// <remarks>
+	/// B. C. Carlson (1995) Numerical computation of real or complex elliptic integrals.  Numer. Algorithms 10 (1-2),  pp. 13–26. 
+	/// Implements the enhancements described in http://dlmf.nist.gov/19.36
+	/// </remarks>
+	public static partial class CarlsonSymmetric
+	{
+<# 
+MakeRF("Complex", "Complex"); 
+MakeRF("Double", "Math"); 
+#>
+	}
+}
+
+<#+
+public void MakeRF(string T, string math)
+{
+#>
+		/// <summary>
+		/// Symmetric elliptic integral of the first kind.
+		/// </summary>
+        public static <#= T #> RF(<#= T #> x, <#= T #> y, <#= T #> z)
+        {
+            switch ((x == 0 ? 1 : 0) + (y == 0 ? 1 : 0) + (z == 0 ? 1 : 0))
+            {
+                case 2:
+                    return double.PositiveInfinity;
+            }
+
+            <#= T #>
+                A0 = (x + y + z) / 3,
+                A = A0;
+
+            double
+                r = 10 * Machine.ε,
+                Q = Math.Pow(3 * r, -1 / 8d) * Math.Max(Math.Max(<#= math #>.Abs(A - x), <#= math #>.Abs(A - y)), <#= math #>.Abs(A - z));
+
+            while (Q >= <#= math #>.Abs(A))
+            {
+                <#= T #>
+                    sx = <#= math #>.Sqrt(x),
+                    sy = <#= math #>.Sqrt(y),
+                    sz = <#= math #>.Sqrt(z),
+                    λ = sx * sy + sy * sz + sz * sx;
+
+                A = (A + λ) / 4;
+                x = (x + λ) / 4;
+                y = (y + λ) / 4;
+                z = (z + λ) / 4;
+                Q /= 4;
+            }
+
+            <#= T #>
+                X = 1 - x / A,
+                Y = 1 - y / A,
+                Z = - X - Y,
+                E2 = Z * Z - X * Y,
+                E3 = X * Y * Z;
+
+            return (1 + E3 * (1 / 14d + 3 * E3 / 104) + E2 * (1 / 10d + 3 * E3 / 44 + E2 * (1 / 24d + E3 / 16 + 5 * E2 / 208))) / <#= math #>.Sqrt(A);
+        }
+
+<#+
+}
+#>
