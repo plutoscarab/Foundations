@@ -42,7 +42,7 @@ public void MakeJ(string T, string math)
 #>
 
         /// <summary>
-        /// Jacobi elliptic cosine.
+        /// Jacobi elliptic cn.
         /// </summary>
         /// <param name="φ">Amplitude.</param>
         /// <param name="m">Parameter.</param>
@@ -54,22 +54,21 @@ public void MakeJ(string T, string math)
         }
 
         /// <summary>
-        /// Gets a function that computes the Jacobi elliptic cosine for parameter m.
+        /// Gets a function that computes the Jacobi elliptic cn for parameter m.
         /// Use this instead of <see cref="cn(<#= T #>, double)"/> if the same value of m is used many times.
         /// </summary>
         /// <param name="m">Parameter.</param>
         public static Func<<#= T #>, <#= T #>> cn<#= T #>(double m)
         {
+            double kf, f;
             Func<<#= T #>, <#= T #>> t2, t4;
-            <#= T #> f;
-            double kf;
 
             {
                 double K, q = Nome(m, out K);
                 kf = π / (2 * K);
+                f = θ4(0, q) / θ2(0, q);
                 t2 = θ2<#= T #>ForNome(q);
                 t4 = θ4<#= T #>ForNome(q);
-                f = t4(0) / t2(0);
             }
 
             return φ => 
@@ -80,7 +79,7 @@ public void MakeJ(string T, string math)
         }
 
         /// <summary>
-        /// Jacobi elliptic sine.
+        /// Jacobi elliptic sn.
         /// </summary>
         /// <param name="φ">Amplitude.</param>
         /// <param name="m">Parameter.</param>
@@ -92,7 +91,32 @@ public void MakeJ(string T, string math)
         }
 
         /// <summary>
-        /// Jacobi elliptic tangent.
+        /// Gets a function that computes the Jacobi elliptic sn for parameter m.
+        /// Use this instead of <see cref="sn(<#= T #>, double)"/> if the same value of m is used many times.
+        /// </summary>
+        /// <param name="m">Parameter.</param>
+        public static Func<<#= T #>, <#= T #>> sn<#= T #>(double m)
+        {
+            double kf, f;
+            Func<<#= T #>, <#= T #>> t1, t4;
+
+            {
+                double K, q = Nome(m, out K);
+                kf = π / (2 * K);
+                f = θ3(0, q) / θ2(0, q);
+                t1 = θ1<#= T #>ForNome(q);
+                t4 = θ4<#= T #>ForNome(q);
+            }
+
+            return φ =>
+            {
+                <#= T #> ζ = kf * φ;
+                return f * (t1(ζ) / t4(ζ));
+            };
+        }
+
+        /// <summary>
+        /// Jacobi elliptic dn.
         /// </summary>
         /// <param name="φ">Amplitude.</param>
         /// <param name="m">Parameter.</param>
@@ -104,17 +128,42 @@ public void MakeJ(string T, string math)
         }
 
         /// <summary>
-        /// Jacobi elliptic sine, cosine, and tangent.
+        /// Gets a function that computes the Jacobi elliptic dn for parameter m.
+        /// Use this instead of <see cref="dn(<#= T #>, double)"/> if the same value of m is used many times.
+        /// </summary>
+        /// <param name="m">Parameter.</param>
+        public static Func<<#= T #>, <#= T #>> dn<#= T #>(double m)
+        {
+            double kf, f;
+            Func<<#= T #>, <#= T #>> t3, t4;
+
+            {
+                double K, q = Nome(m, out K);
+                kf = π / (2 * K);
+                f = θ4(0, q) / θ3(0, q);
+                t3 = θ3<#= T #>ForNome(q);
+                t4 = θ4<#= T #>ForNome(q);
+            }
+
+            return φ =>
+            {
+                <#= T #> ζ = kf * φ;
+                return f * (t3(ζ) / t4(ζ));
+            };
+        }
+
+        /// <summary>
+        /// Jacobi elliptic sn, cn, dn.
         /// </summary>
         public struct Jacobi<#= T #>
         {
-            /// <summary>Jacobi elliptic sine.</summary>
+            /// <summary>Jacobi elliptic sn.</summary>
             public readonly <#= T #> sn;
 
-            /// <summary>Jacobi elliptic cosine.</summary>
+            /// <summary>Jacobi elliptic cn.</summary>
             public readonly <#= T #> cn;
 
-            /// <summary>Jacobi elliptic tangent.</summary>
+            /// <summary>Jacobi elliptic dn.</summary>
             public readonly <#= T #> dn;
 
             /// <summary>Constructor.</summary>
@@ -148,6 +197,48 @@ public void MakeJ(string T, string math)
         }
 
         /// <summary>
+        /// Gets a function that computes the Jacobi elliptic cn, sn, and dn.
+        /// This is faster than calling each function individually if you need two or all three of the results.
+        /// Use this instead of <see cref="Multi(<#= T #>, double)"/> if the same value of m is used many times.
+        /// </summary>
+        public static Func<<#= T #>, Jacobi<#= T #>> Multi<#= T #>(double m)
+        {
+            double kf, z32, z42, z43;
+            Func<<#= T #>, <#= T #>> t1, t2, t3, t4;
+
+            {
+                double K, q = Nome(m, out K);
+                kf = π / (2 * K);
+                t1 = θ1<#= T #>ForNome(q);
+                t2 = θ2<#= T #>ForNome(q);
+                t3 = θ3<#= T #>ForNome(q);
+                t4 = θ4<#= T #>ForNome(q);
+
+                double
+                    z2 = θ2(0, q),
+                    z3 = θ3(0, q),
+                    z4 = θ4(0, q);
+
+                z32 = z3 / z2;
+                z42 = z4 / z2;
+                z43 = z4 / z3;
+            }
+
+            return φ => 
+            {
+                <#= T #> 
+                    ζ = kf * φ,
+                    d4 = t4(ζ);
+
+                return new Jacobi<#= T #>(
+                    z32 * t1(ζ) / d4,
+                    z42 * t2(ζ) / d4,
+                    z43 * t3(ζ) / d4
+                );
+            };
+        }
+
+        /// <summary>
         /// Jacobi elliptic amplitude.
         /// </summary>
         public static <#= T #> am(<#= T #> u, double m)
@@ -156,7 +247,17 @@ public void MakeJ(string T, string math)
         }
 
         /// <summary>
-        /// Jacobi elliptic arccosine.
+        /// Gets a function that computes the Jacobi elliptic amplitude function for parameter m.
+        /// Use this instead of <see cref="am(<#= T #>, double)"/> if you use the same value of m many times.
+        /// </summary>
+        public static Func<<#= T #>, <#= T #>> am<#= T #>(double m)
+        {
+            var fsn = sn<#= T #>(m);
+            return u => <#= math #>.Asin(fsn(u));
+        }
+
+        /// <summary>
+        /// Jacobi elliptic inverse cn.
         /// </summary>
         public static <#= T #> arccn(<#= T #> z, double m)
         {
@@ -164,7 +265,7 @@ public void MakeJ(string T, string math)
         }
 
         /// <summary>
-        /// Gets a function that computes the Jacobi elliptic arccosine for parameter m.
+        /// Gets a function that computes the Jacobi elliptic inverse cn for parameter m.
         /// Use this instead of <see cref="arccn(<#= T #>, double)"/> if you use the same value of m many times.
         /// </summary>
         public static Func<<#= T #>, <#= T #>> arccn<#= T #>(double m)
@@ -179,6 +280,16 @@ public void MakeJ(string T, string math)
         public static <#= T #> arcsn(<#= T #> z, double m)
         {
             return F(<#= math #>.Asin(z), m);
+        }
+
+        /// <summary>
+        /// Gets a function that computes the Jacobi elliptic inverse sn for parameter m.
+        /// Use this instead of <see cref="arcsn(<#= T #>, double)"/> if you use the same value of m many times.
+        /// </summary>
+        public static Func<<#= T #>, <#= T #>> arcsn<#= T #>(double m)
+        {
+            var ef = F<#= T #>(m);
+            return z => ef(<#= math #>.Asin(z));
         }
 <#+
 }

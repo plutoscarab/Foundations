@@ -22,7 +22,7 @@ namespace Foundations.Functions.Numerics
     /// </remarks>
     public partial class Elliptic
     {
-        const double π =  Math.PI;
+        const double π = Math.PI;
 
         /// <summary>
         /// Complete elliptic integral of the first kind.
@@ -38,7 +38,7 @@ namespace Foundations.Functions.Numerics
         /// </summary>
         public static double Nome(double m)
         {
-            return Math.Exp(-π * Elliptic.K(1 - m) / Elliptic.K(m));
+            return Math.Exp(-π * K(1 - m) / K(m));
         }
 
         /// <summary>

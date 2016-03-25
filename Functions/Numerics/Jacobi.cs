@@ -26,7 +26,7 @@ namespace Foundations.Functions.Numerics
 
 
         /// <summary>
-        /// Jacobi elliptic cosine.
+        /// Jacobi elliptic cn.
         /// </summary>
         /// <param name="φ">Amplitude.</param>
         /// <param name="m">Parameter.</param>
@@ -38,22 +38,21 @@ namespace Foundations.Functions.Numerics
         }
 
         /// <summary>
-        /// Gets a function that computes the Jacobi elliptic cosine for parameter m.
+        /// Gets a function that computes the Jacobi elliptic cn for parameter m.
         /// Use this instead of <see cref="cn(Complex, double)"/> if the same value of m is used many times.
         /// </summary>
         /// <param name="m">Parameter.</param>
         public static Func<Complex, Complex> cnComplex(double m)
         {
+            double kf, f;
             Func<Complex, Complex> t2, t4;
-            Complex f;
-            double kf;
 
             {
                 double K, q = Nome(m, out K);
                 kf = π / (2 * K);
+                f = θ4(0, q) / θ2(0, q);
                 t2 = θ2ComplexForNome(q);
                 t4 = θ4ComplexForNome(q);
-                f = t4(0) / t2(0);
             }
 
             return φ => 
@@ -64,7 +63,7 @@ namespace Foundations.Functions.Numerics
         }
 
         /// <summary>
-        /// Jacobi elliptic sine.
+        /// Jacobi elliptic sn.
         /// </summary>
         /// <param name="φ">Amplitude.</param>
         /// <param name="m">Parameter.</param>
@@ -76,7 +75,32 @@ namespace Foundations.Functions.Numerics
         }
 
         /// <summary>
-        /// Jacobi elliptic tangent.
+        /// Gets a function that computes the Jacobi elliptic sn for parameter m.
+        /// Use this instead of <see cref="sn(Complex, double)"/> if the same value of m is used many times.
+        /// </summary>
+        /// <param name="m">Parameter.</param>
+        public static Func<Complex, Complex> snComplex(double m)
+        {
+            double kf, f;
+            Func<Complex, Complex> t1, t4;
+
+            {
+                double K, q = Nome(m, out K);
+                kf = π / (2 * K);
+                f = θ3(0, q) / θ2(0, q);
+                t1 = θ1ComplexForNome(q);
+                t4 = θ4ComplexForNome(q);
+            }
+
+            return φ =>
+            {
+                Complex ζ = kf * φ;
+                return f * (t1(ζ) / t4(ζ));
+            };
+        }
+
+        /// <summary>
+        /// Jacobi elliptic dn.
         /// </summary>
         /// <param name="φ">Amplitude.</param>
         /// <param name="m">Parameter.</param>
@@ -88,17 +112,42 @@ namespace Foundations.Functions.Numerics
         }
 
         /// <summary>
-        /// Jacobi elliptic sine, cosine, and tangent.
+        /// Gets a function that computes the Jacobi elliptic dn for parameter m.
+        /// Use this instead of <see cref="dn(Complex, double)"/> if the same value of m is used many times.
+        /// </summary>
+        /// <param name="m">Parameter.</param>
+        public static Func<Complex, Complex> dnComplex(double m)
+        {
+            double kf, f;
+            Func<Complex, Complex> t3, t4;
+
+            {
+                double K, q = Nome(m, out K);
+                kf = π / (2 * K);
+                f = θ4(0, q) / θ3(0, q);
+                t3 = θ3ComplexForNome(q);
+                t4 = θ4ComplexForNome(q);
+            }
+
+            return φ =>
+            {
+                Complex ζ = kf * φ;
+                return f * (t3(ζ) / t4(ζ));
+            };
+        }
+
+        /// <summary>
+        /// Jacobi elliptic sn, cn, dn.
         /// </summary>
         public struct JacobiComplex
         {
-            /// <summary>Jacobi elliptic sine.</summary>
+            /// <summary>Jacobi elliptic sn.</summary>
             public readonly Complex sn;
 
-            /// <summary>Jacobi elliptic cosine.</summary>
+            /// <summary>Jacobi elliptic cn.</summary>
             public readonly Complex cn;
 
-            /// <summary>Jacobi elliptic tangent.</summary>
+            /// <summary>Jacobi elliptic dn.</summary>
             public readonly Complex dn;
 
             /// <summary>Constructor.</summary>
@@ -132,6 +181,48 @@ namespace Foundations.Functions.Numerics
         }
 
         /// <summary>
+        /// Gets a function that computes the Jacobi elliptic cn, sn, and dn.
+        /// This is faster than calling each function individually if you need two or all three of the results.
+        /// Use this instead of <see cref="Multi(Complex, double)"/> if the same value of m is used many times.
+        /// </summary>
+        public static Func<Complex, JacobiComplex> MultiComplex(double m)
+        {
+            double kf, z32, z42, z43;
+            Func<Complex, Complex> t1, t2, t3, t4;
+
+            {
+                double K, q = Nome(m, out K);
+                kf = π / (2 * K);
+                t1 = θ1ComplexForNome(q);
+                t2 = θ2ComplexForNome(q);
+                t3 = θ3ComplexForNome(q);
+                t4 = θ4ComplexForNome(q);
+
+                double
+                    z2 = θ2(0, q),
+                    z3 = θ3(0, q),
+                    z4 = θ4(0, q);
+
+                z32 = z3 / z2;
+                z42 = z4 / z2;
+                z43 = z4 / z3;
+            }
+
+            return φ => 
+            {
+                Complex 
+                    ζ = kf * φ,
+                    d4 = t4(ζ);
+
+                return new JacobiComplex(
+                    z32 * t1(ζ) / d4,
+                    z42 * t2(ζ) / d4,
+                    z43 * t3(ζ) / d4
+                );
+            };
+        }
+
+        /// <summary>
         /// Jacobi elliptic amplitude.
         /// </summary>
         public static Complex am(Complex u, double m)
@@ -140,7 +231,17 @@ namespace Foundations.Functions.Numerics
         }
 
         /// <summary>
-        /// Jacobi elliptic arccosine.
+        /// Gets a function that computes the Jacobi elliptic amplitude function for parameter m.
+        /// Use this instead of <see cref="am(Complex, double)"/> if you use the same value of m many times.
+        /// </summary>
+        public static Func<Complex, Complex> amComplex(double m)
+        {
+            var fsn = snComplex(m);
+            return u => Complex.Asin(fsn(u));
+        }
+
+        /// <summary>
+        /// Jacobi elliptic inverse cn.
         /// </summary>
         public static Complex arccn(Complex z, double m)
         {
@@ -148,7 +249,7 @@ namespace Foundations.Functions.Numerics
         }
 
         /// <summary>
-        /// Gets a function that computes the Jacobi elliptic arccosine for parameter m.
+        /// Gets a function that computes the Jacobi elliptic inverse cn for parameter m.
         /// Use this instead of <see cref="arccn(Complex, double)"/> if you use the same value of m many times.
         /// </summary>
         public static Func<Complex, Complex> arccnComplex(double m)
@@ -166,7 +267,17 @@ namespace Foundations.Functions.Numerics
         }
 
         /// <summary>
-        /// Jacobi elliptic cosine.
+        /// Gets a function that computes the Jacobi elliptic inverse sn for parameter m.
+        /// Use this instead of <see cref="arcsn(Complex, double)"/> if you use the same value of m many times.
+        /// </summary>
+        public static Func<Complex, Complex> arcsnComplex(double m)
+        {
+            var ef = FComplex(m);
+            return z => ef(Complex.Asin(z));
+        }
+
+        /// <summary>
+        /// Jacobi elliptic cn.
         /// </summary>
         /// <param name="φ">Amplitude.</param>
         /// <param name="m">Parameter.</param>
@@ -178,22 +289,21 @@ namespace Foundations.Functions.Numerics
         }
 
         /// <summary>
-        /// Gets a function that computes the Jacobi elliptic cosine for parameter m.
+        /// Gets a function that computes the Jacobi elliptic cn for parameter m.
         /// Use this instead of <see cref="cn(Double, double)"/> if the same value of m is used many times.
         /// </summary>
         /// <param name="m">Parameter.</param>
         public static Func<Double, Double> cnDouble(double m)
         {
+            double kf, f;
             Func<Double, Double> t2, t4;
-            Double f;
-            double kf;
 
             {
                 double K, q = Nome(m, out K);
                 kf = π / (2 * K);
+                f = θ4(0, q) / θ2(0, q);
                 t2 = θ2DoubleForNome(q);
                 t4 = θ4DoubleForNome(q);
-                f = t4(0) / t2(0);
             }
 
             return φ => 
@@ -204,7 +314,7 @@ namespace Foundations.Functions.Numerics
         }
 
         /// <summary>
-        /// Jacobi elliptic sine.
+        /// Jacobi elliptic sn.
         /// </summary>
         /// <param name="φ">Amplitude.</param>
         /// <param name="m">Parameter.</param>
@@ -216,7 +326,32 @@ namespace Foundations.Functions.Numerics
         }
 
         /// <summary>
-        /// Jacobi elliptic tangent.
+        /// Gets a function that computes the Jacobi elliptic sn for parameter m.
+        /// Use this instead of <see cref="sn(Double, double)"/> if the same value of m is used many times.
+        /// </summary>
+        /// <param name="m">Parameter.</param>
+        public static Func<Double, Double> snDouble(double m)
+        {
+            double kf, f;
+            Func<Double, Double> t1, t4;
+
+            {
+                double K, q = Nome(m, out K);
+                kf = π / (2 * K);
+                f = θ3(0, q) / θ2(0, q);
+                t1 = θ1DoubleForNome(q);
+                t4 = θ4DoubleForNome(q);
+            }
+
+            return φ =>
+            {
+                Double ζ = kf * φ;
+                return f * (t1(ζ) / t4(ζ));
+            };
+        }
+
+        /// <summary>
+        /// Jacobi elliptic dn.
         /// </summary>
         /// <param name="φ">Amplitude.</param>
         /// <param name="m">Parameter.</param>
@@ -228,17 +363,42 @@ namespace Foundations.Functions.Numerics
         }
 
         /// <summary>
-        /// Jacobi elliptic sine, cosine, and tangent.
+        /// Gets a function that computes the Jacobi elliptic dn for parameter m.
+        /// Use this instead of <see cref="dn(Double, double)"/> if the same value of m is used many times.
+        /// </summary>
+        /// <param name="m">Parameter.</param>
+        public static Func<Double, Double> dnDouble(double m)
+        {
+            double kf, f;
+            Func<Double, Double> t3, t4;
+
+            {
+                double K, q = Nome(m, out K);
+                kf = π / (2 * K);
+                f = θ4(0, q) / θ3(0, q);
+                t3 = θ3DoubleForNome(q);
+                t4 = θ4DoubleForNome(q);
+            }
+
+            return φ =>
+            {
+                Double ζ = kf * φ;
+                return f * (t3(ζ) / t4(ζ));
+            };
+        }
+
+        /// <summary>
+        /// Jacobi elliptic sn, cn, dn.
         /// </summary>
         public struct JacobiDouble
         {
-            /// <summary>Jacobi elliptic sine.</summary>
+            /// <summary>Jacobi elliptic sn.</summary>
             public readonly Double sn;
 
-            /// <summary>Jacobi elliptic cosine.</summary>
+            /// <summary>Jacobi elliptic cn.</summary>
             public readonly Double cn;
 
-            /// <summary>Jacobi elliptic tangent.</summary>
+            /// <summary>Jacobi elliptic dn.</summary>
             public readonly Double dn;
 
             /// <summary>Constructor.</summary>
@@ -272,6 +432,48 @@ namespace Foundations.Functions.Numerics
         }
 
         /// <summary>
+        /// Gets a function that computes the Jacobi elliptic cn, sn, and dn.
+        /// This is faster than calling each function individually if you need two or all three of the results.
+        /// Use this instead of <see cref="Multi(Double, double)"/> if the same value of m is used many times.
+        /// </summary>
+        public static Func<Double, JacobiDouble> MultiDouble(double m)
+        {
+            double kf, z32, z42, z43;
+            Func<Double, Double> t1, t2, t3, t4;
+
+            {
+                double K, q = Nome(m, out K);
+                kf = π / (2 * K);
+                t1 = θ1DoubleForNome(q);
+                t2 = θ2DoubleForNome(q);
+                t3 = θ3DoubleForNome(q);
+                t4 = θ4DoubleForNome(q);
+
+                double
+                    z2 = θ2(0, q),
+                    z3 = θ3(0, q),
+                    z4 = θ4(0, q);
+
+                z32 = z3 / z2;
+                z42 = z4 / z2;
+                z43 = z4 / z3;
+            }
+
+            return φ => 
+            {
+                Double 
+                    ζ = kf * φ,
+                    d4 = t4(ζ);
+
+                return new JacobiDouble(
+                    z32 * t1(ζ) / d4,
+                    z42 * t2(ζ) / d4,
+                    z43 * t3(ζ) / d4
+                );
+            };
+        }
+
+        /// <summary>
         /// Jacobi elliptic amplitude.
         /// </summary>
         public static Double am(Double u, double m)
@@ -280,7 +482,17 @@ namespace Foundations.Functions.Numerics
         }
 
         /// <summary>
-        /// Jacobi elliptic arccosine.
+        /// Gets a function that computes the Jacobi elliptic amplitude function for parameter m.
+        /// Use this instead of <see cref="am(Double, double)"/> if you use the same value of m many times.
+        /// </summary>
+        public static Func<Double, Double> amDouble(double m)
+        {
+            var fsn = snDouble(m);
+            return u => Math.Asin(fsn(u));
+        }
+
+        /// <summary>
+        /// Jacobi elliptic inverse cn.
         /// </summary>
         public static Double arccn(Double z, double m)
         {
@@ -288,7 +500,7 @@ namespace Foundations.Functions.Numerics
         }
 
         /// <summary>
-        /// Gets a function that computes the Jacobi elliptic arccosine for parameter m.
+        /// Gets a function that computes the Jacobi elliptic inverse cn for parameter m.
         /// Use this instead of <see cref="arccn(Double, double)"/> if you use the same value of m many times.
         /// </summary>
         public static Func<Double, Double> arccnDouble(double m)
@@ -303,6 +515,16 @@ namespace Foundations.Functions.Numerics
         public static Double arcsn(Double z, double m)
         {
             return F(Math.Asin(z), m);
+        }
+
+        /// <summary>
+        /// Gets a function that computes the Jacobi elliptic inverse sn for parameter m.
+        /// Use this instead of <see cref="arcsn(Double, double)"/> if you use the same value of m many times.
+        /// </summary>
+        public static Func<Double, Double> arcsnDouble(double m)
+        {
+            var ef = FDouble(m);
+            return z => ef(Math.Asin(z));
         }
     }
 }
