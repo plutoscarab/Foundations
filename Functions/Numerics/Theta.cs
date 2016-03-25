@@ -487,7 +487,7 @@ namespace Foundations.Functions.Numerics
                 qsp = q,
                 qs = q * q;
 
-            for (int n = 0; n < 20; n++)
+            for (int n = 1; n < 20; n++)
             {
                 qn[n] = qp;
                 qsp *= qs;
@@ -617,7 +617,7 @@ namespace Foundations.Functions.Numerics
                 qsp = q,
                 qs = q * q;
 
-            for (int n = 0; n < 20; n++)
+            for (int n = 1; n < 20; n++)
             {
                 qn[n] = qp;
                 qsp *= qs;

@@ -302,7 +302,7 @@ void MakeTheta3(string T, string math, string Q, string qmath)
                 qsp = q,
                 qs = q * q;
 
-            for (int n = 0; n < <#= maxTerms #>; n++)
+            for (int n = 1; n < <#= maxTerms #>; n++)
             {
                 qn[n] = qp;
                 qsp *= qs;
