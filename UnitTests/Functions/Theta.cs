@@ -246,7 +246,7 @@ namespace Foundations.UnitTests.Functions
                 1, .5,  .8, .2,   -8.5650514071151,  2.4686976173121,
                 .5, 1,  .8, .2,  163.66474018387,   61.293085451771,
                 .5, 0,  .5, .7,    2.3266061005072,  0.57989205450763,
-    };
+            };
 
             for (int i = 0; i < data.Length; i += 6)
             {
@@ -261,6 +261,198 @@ namespace Foundations.UnitTests.Functions
                 err = Complex.Abs(th - ex) / Complex.Abs(th);
                 Assert.IsTrue(Complex.Abs(err) < 1e-14);
             }
+        }
+
+        [TestMethod]
+        public void Theta3ComplexDoubleTest()
+        {
+            var data = new[]
+            {
+                1, .5,  .8,  -0.029804108096716, 0.12673663794188,
+                .5, 1,  .8, -24.754831613744,  105.2655423467,
+                1, -2,  .5, 141.53976744402,   -78.927794100850,
+            };
+
+            for (int i = 0; i < data.Length; i += 5)
+            {
+                var z = new Complex(data[i], data[i + 1]);
+                var q = data[i + 2];
+                var ex = new Complex(data[i + 3], data[i + 4]);
+                var th = Theta.θ3(z, q);
+                var err = Complex.Abs(th - ex) / Complex.Abs(th);
+                Assert.IsTrue(Complex.Abs(err) < 1e-12);
+            }
+        }
+
+        [TestMethod]
+        public void Theta3DoubleTest()
+        {
+            var data = new[]
+            {
+                1,  .8,   0.04246457514070379,
+                .5, .8,   1.223823417425446,
+                .5, .5,   1.484396862425167,
+            };
+
+            for (int i = 0; i < data.Length; i += 3)
+            {
+                var z = data[i];
+                var q = data[i + 1];
+                var ex = data[i + 2];
+                var th = Theta.θ3(z, q);
+                var err = Complex.Abs(th - ex) / Complex.Abs(th);
+                Assert.IsTrue(Complex.Abs(err) < 1e-15);
+                var t3 = Theta.θ3DoubleForNome(q);
+                th = t3(z);
+                err = Complex.Abs(th - ex) / Complex.Abs(th);
+                Assert.IsTrue(Complex.Abs(err) < 1e-15);
+            }
+        }
+
+        [TestMethod]
+        public void Theta4ComplexTest()
+        {
+            var data = new[]
+            {
+                1, .5,  .8, .2,     0.11267273837782, 0.63114326027714,
+                .5, 1,  .8, .2,  -149.86895286679,   53.695192284056,
+                .5, 0,  .5, .7,     0.5835418615326, -0.12747179582096,
+            };
+
+            for (int i = 0; i < data.Length; i += 6)
+            {
+                var z = new Complex(data[i], data[i + 1]);
+                var q = new Complex(data[i + 2], data[i + 3]);
+                var ex = new Complex(data[i + 4], data[i + 5]);
+                var th = Theta.θ4(z, q);
+                var err = Complex.Abs(th - ex) / Complex.Abs(th);
+                Assert.IsTrue(Complex.Abs(err) < 1e-13);
+                var t4 = Theta.θ4ComplexForNome(q);
+                th = t4(z);
+                err = Complex.Abs(th - ex) / Complex.Abs(th);
+                Assert.IsTrue(Complex.Abs(err) < 1e-13);
+            }
+        }
+
+        [TestMethod]
+        public void Theta4ComplexDoubleTest()
+        {
+            var data = new[]
+            {
+                1, .5,  .8,   -2.2292262746206,  1.4720623460696,
+                .5, 1,  .8,   -1.9162438634838, -0.33406441973926,
+                1, -2,  .5, -421.90684150439,   64.81131918179,
+            };
+
+            for (int i = 0; i < data.Length; i += 5)
+            {
+                var z = new Complex(data[i], data[i + 1]);
+                var q = data[i + 2];
+                var ex = new Complex(data[i + 3], data[i + 4]);
+                var th = Theta.θ4(z, q);
+                var err = Complex.Abs(th - ex) / Complex.Abs(th);
+                Assert.IsTrue(Complex.Abs(err) < 1e-13);
+            }
+        }
+
+        [TestMethod]
+        public void Theta4DoubleTest()
+        {
+            var data = new[]
+            {
+                1,  .8,   0.8713168498521653,
+                .5, .8,   0.02201388267155668,
+                .5, .5,   0.411526533253406,
+            };
+
+            for (int i = 0; i < data.Length; i += 3)
+            {
+                var z = data[i];
+                var q = data[i + 1];
+                var ex = data[i + 2];
+                var th = Theta.θ4(z, q);
+                var err = Complex.Abs(th - ex) / Complex.Abs(th);
+                Assert.IsTrue(Complex.Abs(err) < 1e-15);
+                var t3 = Theta.θ4DoubleForNome(q);
+                th = t3(z);
+                err = Complex.Abs(th - ex) / Complex.Abs(th);
+                Assert.IsTrue(Complex.Abs(err) < 1e-15);
+            }
+        }
+
+        [TestMethod]
+        public void ThetasAtZeroTest()
+        {
+            Complex th;
+
+            double ex = 0.0;
+            th = Theta.θ1(Complex.Zero, (Complex)(.5));
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.AreEqual(ex, th.Real);
+            th = Theta.θ1(Complex.Zero, .5);
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.AreEqual(ex, th.Real);
+            th = Theta.θ1(0, .5);
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.AreEqual(ex, th.Real);
+            th = Theta.θ1ComplexForNome(.5)(0);
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.AreEqual(ex, th.Real);
+            th = Theta.θ1DoubleForNome(.5)(0);
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.AreEqual(ex, th.Real);
+
+            ex = 2.12893125051303;
+            th = Theta.θ2(Complex.Zero, (Complex)(.5));
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
+            th = Theta.θ2(Complex.Zero, .5);
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
+            th = Theta.θ2(0, .5);
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
+            th = Theta.θ2ComplexForNome(.5)(0);
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
+            th = Theta.θ2DoubleForNome(.5)(0);
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
+
+            ex = 2.12893682721188;
+            th = Theta.θ3(Complex.Zero, (Complex)(.5));
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
+            th = Theta.θ3(Complex.Zero, .5);
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
+            th = Theta.θ3(0, .5);
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
+            th = Theta.θ3ComplexForNome(.5)(0);
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
+            th = Theta.θ3DoubleForNome(.5)(0);
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
+
+            ex = 0.121124208002581;
+            th = Theta.θ4(Complex.Zero, (Complex)(.5));
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
+            th = Theta.θ4(Complex.Zero, .5);
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
+            th = Theta.θ4(0, .5);
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
+            th = Theta.θ4ComplexForNome(.5)(0);
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
+            th = Theta.θ4DoubleForNome(.5)(0);
+            Assert.AreEqual(0, th.Imaginary);
+            Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
+
         }
     }
 }
