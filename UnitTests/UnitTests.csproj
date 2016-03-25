@@ -40,6 +40,7 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Functions\Jacobi.cs" />
     <Compile Include="Functions\Theta.cs" />
     <Compile Include="Functions\Elliptic.cs" />
     <Compile Include="Functions\CarlsonSymmetric.cs" />

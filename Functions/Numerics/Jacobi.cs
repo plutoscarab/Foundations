@@ -168,7 +168,7 @@ namespace Foundations.Functions.Numerics
             double K, q = Nome(m, out K);
 
             Complex 
-                ζ = π * φ / (2 * K),
+                ζ = φ * (π / (2 * K)),
                 z2 = θ2(0, q),
                 z3 = θ3(0, q),
                 z4 = θ4(0, q),
@@ -215,9 +215,9 @@ namespace Foundations.Functions.Numerics
                     d4 = t4(ζ);
 
                 return new JacobiComplex(
-                    z32 * t1(ζ) / d4,
-                    z42 * t2(ζ) / d4,
-                    z43 * t3(ζ) / d4
+                    z32 * (t1(ζ) / d4),
+                    z42 * (t2(ζ) / d4),
+                    z43 * (t3(ζ) / d4)
                 );
             };
         }
@@ -419,7 +419,7 @@ namespace Foundations.Functions.Numerics
             double K, q = Nome(m, out K);
 
             Double 
-                ζ = π * φ / (2 * K),
+                ζ = φ * (π / (2 * K)),
                 z2 = θ2(0, q),
                 z3 = θ3(0, q),
                 z4 = θ4(0, q),
@@ -466,9 +466,9 @@ namespace Foundations.Functions.Numerics
                     d4 = t4(ζ);
 
                 return new JacobiDouble(
-                    z32 * t1(ζ) / d4,
-                    z42 * t2(ζ) / d4,
-                    z43 * t3(ζ) / d4
+                    z32 * (t1(ζ) / d4),
+                    z42 * (t2(ζ) / d4),
+                    z43 * (t3(ζ) / d4)
                 );
             };
         }

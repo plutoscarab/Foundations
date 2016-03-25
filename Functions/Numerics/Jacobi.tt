@@ -184,7 +184,7 @@ public void MakeJ(string T, string math)
             double K, q = Nome(m, out K);
 
             <#= T #> 
-                ζ = π * φ / (2 * K),
+                ζ = φ * (π / (2 * K)),
                 z2 = θ2(0, q),
                 z3 = θ3(0, q),
                 z4 = θ4(0, q),
@@ -231,9 +231,9 @@ public void MakeJ(string T, string math)
                     d4 = t4(ζ);
 
                 return new Jacobi<#= T #>(
-                    z32 * t1(ζ) / d4,
-                    z42 * t2(ζ) / d4,
-                    z43 * t3(ζ) / d4
+                    z32 * (t1(ζ) / d4),
+                    z42 * (t2(ζ) / d4),
+                    z43 * (t3(ζ) / d4)
                 );
             };
         }

@@ -16,9 +16,6 @@ using static Foundations.Functions.Numerics.CarlsonSymmetric;
 
 namespace Foundations.UnitTests.Functions
 {
-    /// <summary>
-    /// Summary description for CarlsonSymmetric
-    /// </summary>
     [TestClass]
     public class CarlsonSymmetricTests
     {

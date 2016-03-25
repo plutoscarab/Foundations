@@ -16,9 +16,6 @@ using System.Numerics;
 
 namespace Foundations.UnitTests.Functions
 {
-    /// <summary>
-    /// Summary description for CarlsonSymmetric
-    /// </summary>
     [TestClass]
     public class EllipticTests
     {
