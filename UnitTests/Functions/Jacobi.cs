@@ -103,6 +103,9 @@ namespace Foundations.UnitTests.Functions
                 var arccn = Jacobi.arccn(cn, m[i]);
                 var ex = z[i];
                 Assert.IsTrue(Complex.Abs(arccn - ex) < 1e-13);
+                var f = Jacobi.arccnComplex(m[i]);
+                var a2 = f(cn);
+                Assert.AreEqual(arccn, a2);
             }
         }
 
@@ -181,6 +184,9 @@ namespace Foundations.UnitTests.Functions
                 var arcsn = Jacobi.arcsn(sn, m[i]);
                 var ex = z[i];
                 Assert.IsTrue(Complex.Abs(arcsn - ex) < 1e-14);
+                var f = Jacobi.arcsnComplex(m[i]);
+                var a2 = f(sn);
+                Assert.AreEqual(arcsn, a2);
             }
         }
 
@@ -283,6 +289,109 @@ namespace Foundations.UnitTests.Functions
                 Assert.AreEqual(mt.sn, mtf.sn);
                 Assert.AreEqual(mt.cn, mtf.cn);
                 Assert.AreEqual(mt.dn, mtf.dn);
+            }
+        }
+
+        [TestMethod]
+        public void JacobiAmComplexTest()
+        {
+            var data = new[]
+            {
+                 1,  0, .7,  0.90554608446342, 0,
+                .5,  0, .8,  0.48427327785248, 0,
+                .5, .5, .5,  0.51828196329292, 0.47708333882708,
+                 0, .5, .4,  0,                0.50881372387993,
+                .7,-.7, .2,  0.71761686290329,-0.67315349672164,
+    };
+
+            for (int i = 0; i < data.Length; i += 5)
+            {
+                var z = new Complex(data[i], data[i + 1]);
+                var m = data[i + 2];
+                var ex = new Complex(data[i + 3], data[i + 4]);
+                var am = Jacobi.am(z, m);
+                var amf = Jacobi.amComplex(m);
+                var am2 = amf(z);
+                Assert.AreEqual(am, am2);
+                var err = Complex.Abs(am - ex) / Complex.Abs(ex);
+                Assert.IsTrue(err < 1e-14);
+            }
+        }
+
+        [TestMethod]
+        public void JacobiCnDoubleArgTest()
+        {
+            var data = new[]
+            {
+                .3, .4, 0.9558565750119357,
+                .5, .8, 0.8850135194093742,
+                .7, .5, 0.7811526424536343,
+               -.2, .9, 0.9803019779108798,
+            };
+
+            for (int i = 0; i < data.Length; i += 3)
+            {
+                var z = data[i];
+                var m = data[i + 1];
+                var ex = data[i + 2];
+                var cn = Jacobi.cn(z, m);
+                var err = Math.Abs(ex - cn) / Math.Abs(ex);
+                Assert.IsTrue(err < 1e-15);
+                var f = Jacobi.cnDouble(m);
+                var cn2 = f(z);
+                Assert.AreEqual(cn, cn2);
+            }
+        }
+
+        [TestMethod]
+        public void JacobiSnDoubleArgTest()
+        {
+            var data = new[]
+            {
+                .3, .4, 0.293833640018382,
+                .5, .8, 0.465565323518229,
+                .7, .5, 0.624340090966217,
+               -.2, .9,-0.197504511604209,
+            };
+
+            for (int i = 0; i < data.Length; i += 3)
+            {
+                var z = data[i];
+                var m = data[i + 1];
+                var ex = data[i + 2];
+                var sn = Jacobi.sn(z, m);
+                var err = Math.Abs(ex - sn) / Math.Abs(ex);
+                Assert.IsTrue(err < 1e-14);
+                //System.Diagnostics.Trace.WriteLine(sn);
+                var f = Jacobi.snDouble(m);
+                var sn2 = f(z);
+                Assert.AreEqual(sn, sn2);
+            }
+        }
+
+        [TestMethod]
+        public void JacobiDnDoubleArgTest()
+        {
+            var data = new[]
+            {
+                .3, .4, 0.98258064137119,
+                .5, .8, 0.909174979654573,
+                .7, .5, 0.897273495321325,
+               -.2, .9, 0.98228955563336,
+            };
+
+            for (int i = 0; i < data.Length; i += 3)
+            {
+                var z = data[i];
+                var m = data[i + 1];
+                var ex = data[i + 2];
+                var dn = Jacobi.dn(z, m);
+                var err = Math.Abs(ex - dn) / Math.Abs(ex);
+                Assert.IsTrue(err < 1e-14);
+                //System.Diagnostics.Trace.WriteLine(dn);
+                var f = Jacobi.dnDouble(m);
+                var dn2 = f(z);
+                Assert.AreEqual(dn, dn2);
             }
         }
     }

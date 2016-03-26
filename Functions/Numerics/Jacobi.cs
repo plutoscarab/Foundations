@@ -33,7 +33,7 @@ namespace Foundations.Functions.Numerics
         public static Complex cn(Complex φ, double m)
         {
             double K, q = Nome(m, out K);
-            Complex ζ = π * φ / (2 * K);
+            Complex ζ = φ * (π / (2 * K));
             return (θ4(0, q) / θ2(0, q)) * (θ2(ζ, q) / θ4(ζ, q));
         }
 
@@ -70,7 +70,7 @@ namespace Foundations.Functions.Numerics
         public static Complex sn(Complex φ, double m)
         {
             double K, q = Nome(m, out K);
-            Complex ζ = π * φ / (2 * K);
+            Complex ζ = φ * (π / (2 * K));
             return (θ3(0, q) / θ2(0, q)) * (θ1(ζ, q) / θ4(ζ, q));
         }
 
@@ -107,7 +107,7 @@ namespace Foundations.Functions.Numerics
         public static Complex dn(Complex φ, double m)
         {
             double K, q = Nome(m, out K);
-            Complex ζ = π * φ / (2 * K);
+            Complex ζ = φ * (π / (2 * K));
             return (θ4(0, q) / θ3(0, q)) * (θ3(ζ, q) / θ4(ζ, q));
         }
 
@@ -284,7 +284,7 @@ namespace Foundations.Functions.Numerics
         public static Double cn(Double φ, double m)
         {
             double K, q = Nome(m, out K);
-            Double ζ = π * φ / (2 * K);
+            Double ζ = φ * (π / (2 * K));
             return (θ4(0, q) / θ2(0, q)) * (θ2(ζ, q) / θ4(ζ, q));
         }
 
@@ -321,7 +321,7 @@ namespace Foundations.Functions.Numerics
         public static Double sn(Double φ, double m)
         {
             double K, q = Nome(m, out K);
-            Double ζ = π * φ / (2 * K);
+            Double ζ = φ * (π / (2 * K));
             return (θ3(0, q) / θ2(0, q)) * (θ1(ζ, q) / θ4(ζ, q));
         }
 
@@ -358,7 +358,7 @@ namespace Foundations.Functions.Numerics
         public static Double dn(Double φ, double m)
         {
             double K, q = Nome(m, out K);
-            Double ζ = π * φ / (2 * K);
+            Double ζ = φ * (π / (2 * K));
             return (θ4(0, q) / θ3(0, q)) * (θ3(ζ, q) / θ4(ζ, q));
         }
 
