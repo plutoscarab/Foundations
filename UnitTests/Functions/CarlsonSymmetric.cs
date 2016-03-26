@@ -61,6 +61,10 @@ namespace Foundations.UnitTests.Functions
             Assert.IsTrue(double.IsInfinity(d));
             var c = RF(3, Complex.Zero, 0);
             Assert.IsTrue(double.IsInfinity(c.Real));
+            Assert.IsTrue(double.IsInfinity(RF(4, 0, 0)));
+            Assert.IsTrue(double.IsInfinity(RF(0, 0, 3)));
+            Assert.IsTrue(double.IsInfinity(RF(0, Complex.Zero, 2).Real));
+            Assert.IsTrue(double.IsInfinity(RF(Complex.Zero, 1, 0).Real));
         }
     }
 }
