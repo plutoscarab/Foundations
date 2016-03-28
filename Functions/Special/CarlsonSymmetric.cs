@@ -12,7 +12,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 using System;
 using System.Numerics;
 
-namespace Foundations.Functions.Numerics
+namespace Foundations.Functions.Special
 {
     internal static class Machine
     {

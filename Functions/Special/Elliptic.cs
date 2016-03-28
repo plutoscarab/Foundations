@@ -1,10 +1,4 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#" #>
-<#@ assembly name="System.Core" #>
-<#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Text" #>
-<#@ import namespace="System.Collections.Generic" #>
-<#@ output extension=".cs" #>
-
+﻿
 /*
 Elliptic.cs
 
@@ -18,7 +12,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 using System;
 using System.Numerics;
 
-namespace Foundations.Functions.Numerics
+namespace Foundations.Functions.Special
 {
     /// <summary>
     /// Elliptic integrals.
@@ -65,34 +59,23 @@ namespace Foundations.Functions.Numerics
             Kprime = Elliptic.K(1 - m);
             return Math.Exp(-π * Kprime / K);
         }
-<#
-MakeF("Complex", "{0}.Real", "Complex");
-MakeF("Double", "{0}", "Math");
-#>
-    }
-}
-<#+
-public void MakeF(string T, string realFmt, string math)
-{
-    var φreal = string.Format(realFmt, "φ");
-#>
 
         /// <summary>
         /// Incomplete elliptic integral of the first kind F(φ | m).
         /// </summary>
         /// <param name="φ">Argument.</param>
         /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
-        public static <#= T #> F(<#= T #> φ, double m)
+        public static Complex F(Complex φ, double m)
         {
-            if (Math.Abs(<#= φreal #>) > π / 2)
+            if (Math.Abs(φ.Real) > π / 2)
             {
-                int n = (int)Math.Round(<#= φreal #> / π);
+                int n = (int)Math.Round(φ.Real / π);
                 return F(φ - n * π, m) + n * 2 * K(m);
             }
 
-            <#= T #>
-                sinφ = <#= math #>.Sin(φ),
-                cosφ = <#= math #>.Cos(φ);
+            Complex
+                sinφ = Complex.Sin(φ),
+                cosφ = Complex.Cos(φ);
 
             return sinφ * CarlsonSymmetric.RF(cosφ * cosφ, 1 - m * sinφ * sinφ, 1);
         }
@@ -102,28 +85,75 @@ public void MakeF(string T, string realFmt, string math)
         /// for a constant parameter m. Use this instead of F(φ, m) if you use the same value of m many times.
         /// </summary>
         /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
-        public static Func<<#= T #>, <#= T #>> F<#= T #>(double m)
+        public static Func<Complex, Complex> FComplex(double m)
         {
             var k = K(m);
 
             return φ => 
             {
-                <#= T #> offset = 0;
+                Complex offset = 0;
 
-                if (Math.Abs(<#= φreal #>) > π / 2)
+                if (Math.Abs(φ.Real) > π / 2)
                 {
-                    int n = (int)Math.Round(<#= φreal #> / π);
+                    int n = (int)Math.Round(φ.Real / π);
                     φ -= n * π;
                     offset = n * 2 * k;
                 }
 
-                <#= T #>
-                    sinφ = <#= math #>.Sin(φ),
-                    cosφ = <#= math #>.Cos(φ);
+                Complex
+                    sinφ = Complex.Sin(φ),
+                    cosφ = Complex.Cos(φ);
 
                 return sinφ * CarlsonSymmetric.RF(cosφ * cosφ, 1 - m * sinφ * sinφ, 1) + offset;
             };
         }
-<#+
+
+        /// <summary>
+        /// Incomplete elliptic integral of the first kind F(φ | m).
+        /// </summary>
+        /// <param name="φ">Argument.</param>
+        /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
+        public static Double F(Double φ, double m)
+        {
+            if (Math.Abs(φ) > π / 2)
+            {
+                int n = (int)Math.Round(φ / π);
+                return F(φ - n * π, m) + n * 2 * K(m);
+            }
+
+            Double
+                sinφ = Math.Sin(φ),
+                cosφ = Math.Cos(φ);
+
+            return sinφ * CarlsonSymmetric.RF(cosφ * cosφ, 1 - m * sinφ * sinφ, 1);
+        }
+
+        /// <summary>
+        /// Get a function F(φ) that computes the incomplete elliptic integral of the first kind F(φ | m)
+        /// for a constant parameter m. Use this instead of F(φ, m) if you use the same value of m many times.
+        /// </summary>
+        /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
+        public static Func<Double, Double> FDouble(double m)
+        {
+            var k = K(m);
+
+            return φ => 
+            {
+                Double offset = 0;
+
+                if (Math.Abs(φ) > π / 2)
+                {
+                    int n = (int)Math.Round(φ / π);
+                    φ -= n * π;
+                    offset = n * 2 * k;
+                }
+
+                Double
+                    sinφ = Math.Sin(φ),
+                    cosφ = Math.Cos(φ);
+
+                return sinφ * CarlsonSymmetric.RF(cosφ * cosφ, 1 - m * sinφ * sinφ, 1) + offset;
+            };
+        }
+    }
 }
-#>

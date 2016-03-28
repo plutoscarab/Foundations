@@ -12,10 +12,10 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 using System;
 using System.Numerics;
 
-using static Foundations.Functions.Numerics.Elliptic;
-using static Foundations.Functions.Numerics.Theta;
+using static Foundations.Functions.Special.Elliptic;
+using static Foundations.Functions.Special.Theta;
 
-namespace Foundations.Functions.Numerics
+namespace Foundations.Functions.Special
 {
     /// <summary>
     /// Jacobi elliptic functions.

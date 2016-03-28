@@ -12,7 +12,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Numerics;
 
-using static Foundations.Functions.Numerics.CarlsonSymmetric;
+using static Foundations.Functions.Special.CarlsonSymmetric;
 
 namespace Foundations.UnitTests.Functions
 {

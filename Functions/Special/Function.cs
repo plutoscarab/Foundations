@@ -11,7 +11,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 
 using System;
 
-namespace Foundations.Functions.Numerics
+namespace Foundations.Functions.Special
 {
     /// <summary>
     /// Special functions.
@@ -77,7 +77,7 @@ namespace Foundations.Functions.Numerics
 		/// <summary>
 		/// Gaussian cumulative distribution function.
 		/// </summary>
-		public static double NormDist(double x)
+		public static double GaussianCDF(double x)
 		{
 			return (1 + Erf(x / sqrt2)) / 2;
 		}

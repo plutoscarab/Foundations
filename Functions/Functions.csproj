@@ -43,28 +43,28 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Numerics\CarlsonSymmetric.cs">
+    <Compile Include="Special\CarlsonSymmetric.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CarlsonSymmetric.tt</DependentUpon>
     </Compile>
-    <Compile Include="Numerics\Elliptic.cs">
+    <Compile Include="Special\Elliptic.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Elliptic.tt</DependentUpon>
     </Compile>
-    <Compile Include="Numerics\Function.cs" />
-    <Compile Include="Numerics\Jacobi.cs">
+    <Compile Include="Special\Function.cs" />
+    <Compile Include="Special\Jacobi.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Jacobi.tt</DependentUpon>
     </Compile>
-    <Compile Include="Numerics\MathExtensions.cs">
+    <Compile Include="Special\MathExtensions.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>MathExtensions.tt</DependentUpon>
     </Compile>
-    <Compile Include="Numerics\Theta.cs">
+    <Compile Include="Special\Theta.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Theta.tt</DependentUpon>
@@ -72,23 +72,23 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Numerics\CarlsonSymmetric.tt">
+    <Content Include="Special\CarlsonSymmetric.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>CarlsonSymmetric.cs</LastGenOutput>
     </Content>
-    <Content Include="Numerics\Elliptic.tt">
+    <Content Include="Special\Elliptic.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Elliptic.cs</LastGenOutput>
     </Content>
-    <Content Include="Numerics\Jacobi.tt">
+    <Content Include="Special\Jacobi.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Jacobi.cs</LastGenOutput>
     </Content>
-    <Content Include="Numerics\MathExtensions.tt">
+    <Content Include="Special\MathExtensions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>MathExtensions.cs</LastGenOutput>
     </Content>
-    <Content Include="Numerics\Theta.tt">
+    <Content Include="Special\Theta.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Theta.cs</LastGenOutput>
     </Content>
