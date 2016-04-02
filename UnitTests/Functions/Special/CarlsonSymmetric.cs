@@ -2,7 +2,7 @@
 /*
 CarlsonSymmetric.cs
 
-Copyright (c) 2016 Pluto Scarab Software. All Rights Reserved.
+Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
 
 This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License. 
@@ -12,7 +12,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Numerics;
 
-using static Foundations.Functions.Special.CarlsonSymmetric;
+using static Foundations.Functions.CarlsonSymmetric;
 
 namespace Foundations.UnitTests.Functions
 {

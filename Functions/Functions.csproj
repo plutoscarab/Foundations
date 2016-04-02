@@ -43,6 +43,11 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NumberTheoretic\GCD.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GCD.tt</DependentUpon>
+    </Compile>
     <Compile Include="Special\CarlsonSymmetric.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -53,7 +58,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Elliptic.tt</DependentUpon>
     </Compile>
-    <Compile Include="Special\Function.cs" />
+    <Compile Include="Special\Special.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Special.tt</DependentUpon>
+    </Compile>
     <Compile Include="Special\Jacobi.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -70,8 +79,14 @@
       <DependentUpon>Theta.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Statistics\Gaussian.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="License.txt" />
+    <Content Include="NumberTheoretic\GCD.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GCD.cs</LastGenOutput>
+    </Content>
     <Content Include="Special\CarlsonSymmetric.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>CarlsonSymmetric.cs</LastGenOutput>
@@ -79,6 +94,10 @@
     <Content Include="Special\Elliptic.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Elliptic.cs</LastGenOutput>
+    </Content>
+    <Content Include="Special\Special.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Special.cs</LastGenOutput>
     </Content>
     <Content Include="Special\Jacobi.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -95,6 +114,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Constants\Constants.csproj">
+      <Project>{2fbfc674-145f-4ae9-916c-db1144f59dd9}</Project>
+      <Name>Constants</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

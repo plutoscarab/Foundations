@@ -1,87 +1,24 @@
 ﻿
 /*
-Function.cs
+GCD.cs
 
-Copyright (c) 2016 Pluto Scarab Software. All Rights Reserved.
+Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
 
 This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License. 
 To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/.
+
 */
 
 using System;
 
-namespace Foundations.Functions.Special
+namespace Foundations.Functions
 {
     /// <summary>
-    /// Special functions.
+    /// Number-theoretic functions.
     /// </summary>
-	public class Function
-	{
-        const double
-            π = Math.PI,
-            sqrt2 = 1.414213562373095,
-            sqrtπ = 1.772453850905516;
-
-		static double ErfSmallZ(double z)
-		{
-			double sum = z;
-			double term = z;
-			double zz = z * z;
-			bool odd = true;
-			int n = 0;
-
-			while (true)
-			{
-				term *= zz / ++n;
-				double old = sum;
-
-				if (odd)
-					sum -= term / (2 * n + 1);
-				else
-					sum += term / (2 * n + 1);
-
-				odd = !odd;
-
-				if (sum == old)
-					break;
-			}
-
-			return sum * 2 / sqrtπ;
-		}
-
-		static double ErfLargeZ(double x)
-		{
-			double xx = x * x;
-			double t = 0;
-
-			for (int k = 60; k >= 1; k--)
-			{
-				t = (k - 0.5) / (1 + k / (xx + t));
-			}
-
-			return (1 - Math.Exp(Math.Log(x) - xx) / (t + xx) / sqrtπ) * Math.Sign(x);
-		}
-
-		/// <summary>
-		/// Error function.
-		/// </summary>
-		public static double Erf(double x)
-		{
-			if (Math.Abs(x) < 6.5)
-				return ErfSmallZ(x);
-
-			return ErfLargeZ(x);
-		}
-
-		/// <summary>
-		/// Gaussian cumulative distribution function.
-		/// </summary>
-		public static double GaussianCDF(double x)
-		{
-			return (1 + Erf(x / sqrt2)) / 2;
-		}
-
+	public static partial class NumberTheoretic
+    {
         /// <summary>
         /// Greatest common divisor.
         /// </summary>
@@ -90,11 +27,26 @@ namespace Foundations.Functions.Special
             if (p == 0 || q == 0) return 0;
             p = Math.Abs(p);
             q = Math.Abs(q);
-            if (p == 1 || q == 1) return 1;
 
             while (true)
             {
                 int m = p % q;
+                if (m == 0) return q;
+                p = q;
+                q = m;
+            }
+        }
+
+        /// <summary>
+        /// Greatest common divisor.
+        /// </summary>
+        public static uint GCD(uint p, uint q)
+        {
+            if (p == 0 || q == 0) return 0;
+
+            while (true)
+            {
+                uint m = p % q;
                 if (m == 0) return q;
                 p = q;
                 q = m;
@@ -134,5 +86,6 @@ namespace Foundations.Functions.Special
                 q = m;
             }
         }
+
     }
 }

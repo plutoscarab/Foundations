@@ -2,17 +2,20 @@
 /*
 Elliptic.cs
 
-Copyright (c) 2016 Pluto Scarab Software. All Rights Reserved.
+Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
 
 This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License. 
 To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/.
+
 */
 
 using System;
 using System.Numerics;
 
-namespace Foundations.Functions.Special
+using static Foundations.Constants;
+
+namespace Foundations.Functions
 {
     /// <summary>
     /// Elliptic integrals.
@@ -20,10 +23,8 @@ namespace Foundations.Functions.Special
     /// <remarks>
     /// Evaluated using Carlson symmetric form.
     /// </remarks>
-    public partial class Elliptic
+    public static partial class Elliptic
     {
-        const double π = Math.PI;
-
         /// <summary>
         /// Complete elliptic integral of the first kind.
         /// </summary>
