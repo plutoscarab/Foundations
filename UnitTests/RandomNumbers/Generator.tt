@@ -1,0 +1,261 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+/*
+Generator.cs
+
+<#@ include file="../../License.txt" #>
+*/
+
+using System;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Foundations.RandomNumbers;
+
+namespace Foundations.UnitTests.RandomNumbers
+{
+    [TestClass]
+    public sealed class GeneratorTests
+    {
+<#
+Type("Byte");
+Type("SByte");
+Type("UInt16");
+Type("Int16");
+Type("UInt32");
+Type("Int32");
+Type("UInt64");
+Type("Int64");
+Type("Single");
+Type("Double");
+#>
+
+        [TestMethod]
+        [ExpectedException(typeof(System.Reflection.TargetInvocationException))]
+        public void CreateStateUnsupportedArray()
+        {
+            var method = typeof(Generator).GetMethod("CreateState", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static, null, new[] { typeof(IRandomSource), typeof(byte[]), typeof(Array) }, null);
+            var source = new SHA256RandomSource();
+            var seed = new byte[] { 1, 2, 3 };
+            Array state = new string[99];
+            method.Invoke(null, new object[] { source, seed, state });
+        }
+    }
+}
+<#+
+void Type(string T)
+{
+#>
+        [TestMethod]
+        public void Individual<#= T #>Values()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "Individual<#= T #>Values".ToCharArray());
+            var data = new <#= T #>[99];
+
+            for (int i = 0; i < data.Length; i++)
+                data[i] = random.Next<#= T #>();
+
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void Random<#= T #>Arrays()
+        {
+            var random = new Generator("Random<#= T #>s".ToCharArray());
+
+            for (int i = 0; i < 8; i++)
+            {
+                var data = new <#= T #>[99 + i];
+                random.GetNext(data);
+                LooksRandom(data);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Null<#= T #>Array()
+        {
+            var random = new Generator("Random<#= T #>s".ToCharArray());
+            <#= T #>[] data = null;
+            random.GetNext(data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Null<#= T #>ArrayWithOffsetCount()
+        {
+            var random = new Generator("Random<#= T #>s".ToCharArray());
+            <#= T #>[] data = null;
+            random.GetNext(data, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Low<#= T #>ArrayOffset()
+        {
+            var random = new Generator("Random<#= T #>s".ToCharArray());
+            var data = new <#= T #>[99];
+            random.GetNext(data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void High<#= T #>ArrayOffset()
+        {
+            var random = new Generator("Random<#= T #>s".ToCharArray());
+            var data = new <#= T #>[99];
+            random.GetNext(data, data.Length, 0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Low<#= T #>ArrayCount()
+        {
+            var random = new Generator("Random<#= T #>s".ToCharArray());
+            var data = new <#= T #>[99];
+            random.GetNext(data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void High<#= T #>ArrayCount()
+        {
+            var random = new Generator("Random<#= T #>s".ToCharArray());
+            var data = new <#= T #>[99];
+            random.GetNext(data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void Create<#= T #>State()
+        {
+            var method = typeof(Generator).GetMethod("CreateState", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static, null, new[] { typeof(IRandomSource), typeof(byte[]), typeof(<#= T #>[]) }, null);
+            var source = new SHA256RandomSource();
+            var seed = new byte[] { 1, 2, 3 };
+            var state = new <#= T #>[99];
+            method.Invoke(null, new object[] { source, seed, state });
+            LooksRandom(state);
+        }
+
+        [TestMethod]
+        public void Create<#= T #>StateWeaklyTyped()
+        {
+            var method = typeof(Generator).GetMethod("CreateState", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static, null, new[] { typeof(IRandomSource), typeof(byte[]), typeof(Array) }, null);
+            var source = new SHA256RandomSource();
+            var seed = new byte[] { 1, 2, 3 };
+            Array state = new <#= T #>[99];
+            method.Invoke(null, new object[] { source, seed, state });
+            LooksRandom(state as <#= T #>[]);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.Reflection.TargetInvocationException))]
+        public void Create<#= T #>StateNullSource()
+        {
+            var method = typeof(Generator).GetMethod("CreateState", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static, null, new[] { typeof(IRandomSource), typeof(byte[]), typeof(<#= T #>[]) }, null);
+            IRandomSource source = null;
+            var seed = new byte[] { 1, 2, 3 };
+            var state = new <#= T #>[99];
+            method.Invoke(null, new object[] { source, seed, state });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.Reflection.TargetInvocationException))]
+        public void Create<#= T #>StateNullSeed()
+        {
+            var method = typeof(Generator).GetMethod("CreateState", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static, null, new[] { typeof(IRandomSource), typeof(byte[]), typeof(<#= T #>[]) }, null);
+            var source = new SHA256RandomSource();
+            byte[] seed = null;
+            var state = new <#= T #>[99];
+            method.Invoke(null, new object[] { source, seed, state });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.Reflection.TargetInvocationException))]
+        public void Create<#= T #>StateNullState()
+        {
+            var method = typeof(Generator).GetMethod("CreateState", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static, null, new[] { typeof(IRandomSource), typeof(byte[]), typeof(<#= T #>[]) }, null);
+            var source = new SHA256RandomSource();
+            byte[] seed = new byte[] { 1, 2, 3 };
+            <#= T #>[] state = null;
+            method.Invoke(null, new object[] { source, seed, state });
+        }
+
+        [TestMethod]
+        public void SeedWith<#= T #>s()
+        {
+            var random = new Generator("SeedWith<#= T #>s".ToCharArray());
+            var data = new <#= T #>[99];
+            random.GetNext(data);
+            random = new Generator(data);
+            random.GetNext(data);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Random<#= T #>SeededWithNull()
+        {
+            var source = new XorShiftRandomSource();
+            var random = new Generator(source, (byte[])null);
+            var data = new <#= T #>[99];
+            random.GetNext(data);
+        }
+
+        [TestMethod]
+        public void SeedWith<#= T #>sAndSource()
+        {
+            var random = new Generator("SeedWith<#= T #>s".ToCharArray());
+            var data = new <#= T #>[99];
+            random.GetNext(data);
+            var source = Generator.DefaultSourceFactory();
+            random = new Generator(source, data);
+            random.GetNext(data);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void Random<#= T #>FromTimestamp()
+        {
+            var random = new Generator();
+            var data = new <#= T #>[99];
+            random.GetNext(data);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void Random<#= T #>FromTimestampAndSource()
+        {
+            var source = Generator.DefaultSourceFactory();
+            var random = new Generator(source);
+            var data = new <#= T #>[99];
+            random.GetNext(data);
+            LooksRandom(data);
+        }
+
+        private void LooksRandom(<#= T #>[] array)
+        {
+<#+ if (T == "Single" || T == "Double") { #>
+            var minValue = 0.0;
+            var maxValue = 1.0;
+<#+ } else { #>
+            var minValue = (double)<#= T #>.MinValue;
+            var maxValue = (double)<#= T #>.MaxValue;
+<#+ } #>
+            var range = (maxValue - minValue) / 12;
+            var min = array.Min(t => (double)t);
+            Assert.IsTrue(min < minValue + range);
+            var max = array.Max(t => (double)t);
+            Assert.IsTrue(max > maxValue - range);
+            var avg = array.Average(t => (double)t);
+            var mid = (minValue + maxValue) / 2.0;
+            Assert.IsTrue(avg > mid - range);
+            Assert.IsTrue(avg < mid + range);
+        }
+
+<#+
+}
+#>

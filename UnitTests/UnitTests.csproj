@@ -45,14 +45,28 @@
     <Compile Include="Functions\Special\Elliptic.cs" />
     <Compile Include="Functions\Special\CarlsonSymmetric.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomNumbers\Generator.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Generator.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RandomNumbers\SHA256RandomSource.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Functions\Functions.csproj">
-      <Project>{ca80f343-3468-4ff2-b368-9a75e51a1776}</Project>
-      <Name>Functions</Name>
+    <ProjectReference Include="..\Foundations\Foundations.csproj">
+      <Project>{c15ed2ad-444c-46dc-8313-8ed602fa0a11}</Project>
+      <Name>Foundations</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="RandomNumbers\Generator.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Generator.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
       <ItemGroup>

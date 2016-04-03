@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CA80F343-3468-4FF2-B368-9A75E51A1776}</ProjectGuid>
+    <ProjectGuid>{C15ED2AD-444C-46DC-8313-8ED602FA0A11}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Foundations.Functions</RootNamespace>
-    <AssemblyName>Foundations.Functions</AssemblyName>
+    <RootNamespace>Foundations</RootNamespace>
+    <AssemblyName>Foundations</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -21,10 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Debug\Foundations.Functions.XML</DocumentationFile>
-    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,8 +31,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Release\Foundations.Functions.XML</DocumentationFile>
-    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -43,72 +38,95 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NumberTheoretic\GCD.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
+    <Compile Include="Constants.cs" />
+    <Compile Include="Extensions\Array.cs" />
+    <Compile Include="Functions\NumberTheoretic\GCD.cs">
       <DependentUpon>GCD.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Special\CarlsonSymmetric.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Functions\Special\CarlsonSymmetric.cs">
       <DependentUpon>CarlsonSymmetric.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Special\Elliptic.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Functions\Special\Elliptic.cs">
       <DependentUpon>Elliptic.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Special\Special.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Special.tt</DependentUpon>
     </Compile>
-    <Compile Include="Special\Jacobi.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
+    <Compile Include="Functions\Special\Jacobi.cs">
       <DependentUpon>Jacobi.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Special\MathExtensions.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Functions\Special\MathExtensions.cs">
       <DependentUpon>MathExtensions.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Special\Theta.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Theta.tt</DependentUpon>
     </Compile>
+    <Compile Include="Functions\Special\Special.cs">
+      <DependentUpon>Special.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Functions\Special\Theta.cs">
+      <DependentUpon>Theta.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Functions\Statistics\Gaussian.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Statistics\Gaussian.cs" />
+    <Compile Include="RandomNumbers\IRandomSource.cs" />
+    <Compile Include="RandomNumbers\Generator.cs">
+      <DependentUpon>Generator.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="RandomNumbers\SHA256RandomSource.cs" />
+    <Compile Include="RandomNumbers\XorShiftRandomSource.cs" />
+    <Compile Include="Types\ValueUnion.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ValueUnion.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="NumberTheoretic\GCD.tt">
+    <Content Include="Functions\NumberTheoretic\GCD.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>GCD.cs</LastGenOutput>
     </Content>
-    <Content Include="Special\CarlsonSymmetric.tt">
+    <Content Include="Functions\Special\CarlsonSymmetric.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>CarlsonSymmetric.cs</LastGenOutput>
     </Content>
-    <Content Include="Special\Elliptic.tt">
+    <Content Include="Functions\Special\Elliptic.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Elliptic.cs</LastGenOutput>
     </Content>
-    <Content Include="Special\Special.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Special.cs</LastGenOutput>
-    </Content>
-    <Content Include="Special\Jacobi.tt">
+    <Content Include="Functions\Special\Jacobi.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Jacobi.cs</LastGenOutput>
     </Content>
-    <Content Include="Special\MathExtensions.tt">
+    <Content Include="Functions\Special\MathExtensions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>MathExtensions.cs</LastGenOutput>
     </Content>
-    <Content Include="Special\Theta.tt">
+    <Content Include="Functions\Special\Special.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Special.cs</LastGenOutput>
+    </Content>
+    <Content Include="Functions\Special\Theta.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Theta.cs</LastGenOutput>
+    </Content>
+    <Content Include="RandomNumbers\Generator.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Generator.cs</LastGenOutput>
+    </Content>
+    <Content Include="Types\ValueUnion.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ValueUnion.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>

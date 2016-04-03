@@ -1,0 +1,35 @@
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+/*
+Template.cs
+
+<#@ include file="../../License.txt" #>
+*/
+
+using System;
+
+namespace Foundations
+{
+<#
+MakeClass();
+#>
+}
+<#+
+void MakeClass()
+{
+#>
+
+    /// <summary>
+    /// 
+    /// </summary>
+	public static partial class Class1
+    {
+    }
+<#+
+}
+#>

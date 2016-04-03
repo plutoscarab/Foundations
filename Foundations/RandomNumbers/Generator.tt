@@ -1,0 +1,329 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+/*
+Generator.cs
+
+<#@ include file="../../License.txt" #>
+*/
+
+using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using Foundations.Types;
+
+namespace Foundations.RandomNumbers
+{
+    /// <summary>
+    /// Pseudo-random number generator.
+    /// </summary>
+    public sealed partial class Generator
+    {
+        /// <summary>
+        /// A delegate that creates a <see cref="IRandomSource"/> with a <see cref="IRandomSource.AllocateState"/>
+        /// method implementation that returns null. This source is used to generate initial state data
+        /// from raw seed data for any <see cref="IRandomSource"/> the returns a non-null value
+        /// from <see cref="IRandomSource.AllocateState"/>.
+        /// </summary>
+        public static Func<IRandomSource> DefaultStateInitializationFactory = delegate
+        {
+            return new SHA256RandomSource();
+        };
+
+        /// <summary>
+        /// A delegate that creates a <see cref="IRandomSource"/>. This is the source that
+        /// will be used when a <see cref="Generator"/> is created using a constructor that
+        /// does not specify a <see cref="IRandomSource"/>.
+        /// </summary>
+        public static Func<IRandomSource> DefaultSourceFactory = delegate
+        {
+            return new XorShiftRandomSource();
+        };
+        
+        private IRandomSource source;
+     
+        /// <summary>
+        /// Create a pseudo-random number generator initialized using the current value of the high-precision timer.
+        /// </summary>
+        public Generator()
+            : this(new[] { Stopwatch.GetTimestamp() })
+        {
+        }
+     
+        /// <summary>
+        /// Create a pseudo-random number generator initialized using the current value of the high-precision timer.
+        /// </summary>
+        public Generator(IRandomSource source)
+            : this(source, new[] { Stopwatch.GetTimestamp() })
+        {
+        }
+
+        /// <summary>
+        /// Create a pseudo-random number generator initialized with provided values.
+        /// </summary>
+        public Generator(params byte[] seed)
+            : this(DefaultSourceFactory(), seed)
+        {
+        }
+
+        /// <summary>
+        /// Create a pseudo-random number generator initialized with provided values.
+        /// </summary>
+        public Generator(IRandomSource source, params byte[] seed)
+        {
+            if (seed == null)
+                throw new ArgumentNullException(nameof(seed));
+
+            this.source = source;
+            var state = source.AllocateState();
+
+            if (state == null)
+            {
+                state = seed;
+            }
+            else
+            {
+                var stateSource = DefaultStateInitializationFactory();
+                CreateState(stateSource, seed, state);
+                var dispose = stateSource as IDisposable;
+                if (dispose != null) dispose.Dispose();
+            }
+
+            source.Initialize(state);
+        }
+<#
+    Seed("ulong");
+    Seed("long");
+    Seed("uint");
+    Seed("int");
+    Seed("ushort");
+    Seed("short");
+    Seed("sbyte");
+    Seed("char");
+    Seed("float");
+    Seed("double");
+#>
+
+#pragma warning disable 0169
+        private ValueUnion sample;
+#pragma warning restore 0169
+
+        /// <summary>
+        /// Get the next value in the pseudo-random sequence as a <see cref="UInt64"/>.
+        /// </summary>
+        private ulong Mix()
+        {
+            return sample.UInt64_0 = source.Next();
+        }
+<#
+    Next("UInt64", 1);
+    Next("Int64", 1);
+    Next("UInt32", 2);
+    Next("Int32", 2);
+    Next("UInt16", 4);
+    Next("Int16", 4);
+    Next("Byte", 8);
+    Next("SByte", 8);
+    Next("Double", 1);
+    Next("Single", 2);
+#>
+
+        private static void CreateState(IRandomSource source, byte[] seed, Array state)
+        {
+            switch (Type.GetTypeCode(state.GetType().GetElementType()))
+            {
+<#
+    foreach (string T in types)
+    {
+#>
+                case TypeCode.<#= T #>:
+                    CreateState(source, seed, state as <#= T #>[]);
+                    break;
+
+<#
+    }
+#>
+                default:
+                    throw new NotSupportedException("Unsupported array type.");
+            }
+        }
+    }
+}
+<#+
+void Seed(string T)
+{
+#>
+
+        /// <summary>
+        /// Create a pseudo-random number generator initialized with provided values.
+        /// </summary>
+        public Generator(IRandomSource source, params <#= T #>[] seed)
+            : this(source, seed.GetBytes())
+        {
+        }
+
+        /// <summary>
+        /// Create a pseudo-random number generator initialized with provided values.
+        /// </summary>
+        public Generator(params <#= T #>[] seed)
+            : this(DefaultSourceFactory(), seed.GetBytes())
+        {
+        }
+<#+
+}
+
+List<string> types = new List<string>();
+
+void Next(string T, int m)
+{
+    types.Add(T);
+#>
+
+        /// <summary>
+        /// Get the next value in the pseudo-random sequence as a <see cref="<#= T #>"/>.
+        /// </summary>
+        public <#= T #> Next<#= T #>()
+        {
+<#+
+    if (T == "Single" || T == "Double")
+    {
+#>
+            return (<#= T #>)(BitConverter.Int64BitsToDouble((long)(Mix() & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000) - 1.0);
+<#+
+    }
+    else
+    {
+#>
+            return (<#= T #>)Mix();
+<#+
+    }
+#>
+        }
+
+        /// <summary>
+        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// </summary>
+        public void GetNext(<#= T #>[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            GetNext(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// </summary>
+        public void GetNext(<#= T #>[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 1 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+<#+
+    string FP = T;
+
+    if (T == "Single" || T == "Double")
+    {
+        FP = T == "Single" ? "UInt32" : "UInt64";
+    }
+#>
+            while (count >= <#= m #>)
+            {
+                Mix();
+<#+
+    for (int i = m - 1; i >= 0; i--)
+    {
+        FixFP(T, FP, i);
+#>
+                array[offset++] = sample.<#= T #>_<#= i #>;
+<#+
+    }
+#>
+                count -= <#= m #>;
+            }
+<#+
+    if (m == 2)
+    {
+#>
+
+            if (count == 0)
+                return;
+
+            Mix();
+            <#+ FixFP(T, FP, 1); #> 
+            array[offset++] = sample.<#= T #>_1;
+<#+
+    }
+    else if (m > 2)
+    {
+#>
+
+            if (count == 0)
+                return;
+
+            Mix();
+
+            switch (count)
+            {
+<#+
+        for (int i = m - 1; i > 1; i--)
+        {
+#>
+                case <#= i #>: array[offset++] = sample.<#= T #>_<#= i #>; goto case <#= i - 1 #>;
+<#+
+        }
+#>
+                case 1: array[offset++] = sample.<#= T #>_1; break;
+            }
+<#+
+    }   // end if (m > 1)
+#>
+        }
+
+        private static void CreateState(IRandomSource source, byte[] seed, <#= T #>[] state)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            if (seed == null)
+                throw new ArgumentNullException(nameof(seed));
+
+            if (state == null)
+                throw new ArgumentNullException(nameof(state));
+
+            var rand = new Generator(source, seed);
+            rand.GetNext(state);
+            var dispose = source as IDisposable;
+            if (dispose != null) dispose.Dispose();
+        }
+<#+
+}
+
+void FixFP(string T, string FP, int i)
+{
+    if (T == "Double")
+    {
+#>
+                sample.UInt64_0 = (sample.UInt64_0 & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000;
+                sample.Double_0 -= 1d;
+<#+        
+    }
+    else if (T == "Single")
+    {
+#>
+                sample.UInt32_<#= i #> = (sample.UInt32_<#= i #> & 0x007FFFFF) | 0x3F800000;
+                sample.Single_<#= i #> -= 1f;
+<#+        
+    }
+}
+#>

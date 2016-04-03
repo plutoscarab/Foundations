@@ -8,7 +8,7 @@
 /*
 MathExtensions.cs
 
-<#@ include file="../../License.txt" #>
+<#@ include file="../../../License.txt" #>
 */
 
 namespace Foundations.Functions
