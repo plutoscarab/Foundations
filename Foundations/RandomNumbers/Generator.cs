@@ -25,7 +25,7 @@ namespace Foundations.RandomNumbers
         /// <summary>
         /// A delegate that creates a <see cref="IRandomSource"/> with a <see cref="IRandomSource.AllocateState"/>
         /// method implementation that returns null. This source is used to generate initial state data
-        /// from raw seed data for any <see cref="IRandomSource"/> the returns a non-null value
+        /// from raw seed data for any <see cref="IRandomSource"/> that returns a non-null value
         /// from <see cref="IRandomSource.AllocateState"/>.
         /// </summary>
         public static Func<IRandomSource> DefaultStateInitializationFactory = delegate
@@ -46,39 +46,60 @@ namespace Foundations.RandomNumbers
         private IRandomSource source;
      
         /// <summary>
-        /// Create a pseudo-random number generator initialized using the current value of the high-precision timer.
+        /// Create a pseudo-random number generator initialized using system entropy
+        /// and default random source.
         /// </summary>
         public Generator()
-            : this(new[] { Stopwatch.GetTimestamp() })
+            : this(null, (byte[])null)
         {
         }
      
         /// <summary>
-        /// Create a pseudo-random number generator initialized using the current value of the high-precision timer.
+        /// Create a pseudo-random number generator initialized using system entropy
+        /// and specified random source.
         /// </summary>
         public Generator(IRandomSource source)
-            : this(source, new[] { Stopwatch.GetTimestamp() })
+            : this(source, (byte[])null)
         {
         }
 
         /// <summary>
-        /// Create a pseudo-random number generator initialized with provided values.
+        /// Create a pseudo-random number generator initialized with provided seed data
+        /// and default random source.
         /// </summary>
         public Generator(params byte[] seed)
-            : this(DefaultSourceFactory(), seed)
+            : this(null, seed)
         {
         }
 
         /// <summary>
-        /// Create a pseudo-random number generator initialized with provided values.
+        /// Create a pseudo-random number generator initialized with provided seed data
+        /// and specified random source.
         /// </summary>
         public Generator(IRandomSource source, params byte[] seed)
         {
-            if (seed == null)
-                throw new ArgumentNullException(nameof(seed));
+            if (source == null)
+            {
+                source = DefaultSourceFactory();
+            }
 
             this.source = source;
             var state = source.AllocateState();
+
+            if (seed == null)
+            {
+                if (state == null)
+                {
+                    throw new ArgumentException("The specified IRandomSource cannot be used without a seed.", nameof(source));
+                }
+
+                seed = new byte[Buffer.ByteLength(state)];
+
+                using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())
+                {
+                    rng.GetBytes(seed);
+                }
+            }
 
             if (state == null)
             {
@@ -260,7 +281,7 @@ namespace Foundations.RandomNumbers
 #pragma warning restore 0169
 
         /// <summary>
-        /// Get the next value in the pseudo-random sequence as a <see cref="UInt64"/>.
+        /// Generate the next 64 bits.
         /// </summary>
         private ulong Mix()
         {
@@ -268,28 +289,73 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get the next value in the pseudo-random sequence as a <see cref="UInt64"/>.
+        /// Get a random <see cref="System.UInt64"/> value.
         /// </summary>
-        public UInt64 NextUInt64()
+        public UInt64 UInt64()
         {
             return (UInt64)Mix();
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Get a random <see cref="System.UInt64"/> value.
         /// </summary>
-        public void GetNext(UInt64[] array)
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
+        public UInt64 UInt64(UInt64 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            var mask = (UInt64)(range - 1);
+            mask |= (UInt64)(mask >> 1);
+            mask |= (UInt64)(mask >> 2);
+            mask |= (UInt64)(mask >> 4);
+            mask |= (UInt64)(mask >> 8);
+            mask |= (UInt64)(mask >> 16);
+            mask |= (UInt64)(mask >> 32);
+            UInt64 sample;
+
+            do
+            {
+                sample = (UInt64)(UInt64() & (UInt64)mask);
+            }
+            while (sample >= range);
+
+            return sample;
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.UInt64"/> value.
+        /// </summary>
+        /// <param ref="minimum">The minimum value to return.</param>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between minimum (inclusive) and minimum+range (exclusive).</returns>
+        public UInt64 UInt64(UInt64 minimum, UInt64 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.UInt64.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            return (UInt64)(minimum + UInt64(range));
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.UInt64"/> values.
+        /// </summary>
+        public void Fill(UInt64[] array)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            GetNext(array, 0, array.Length);
+            Fill(array, 0, array.Length);
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Fill a specified portion of a provided array with random <see cref="System.UInt64"/> values.
         /// </summary>
-        public void GetNext(UInt64[] array, int offset, int count)
+        public void Fill(UInt64[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -297,7 +363,7 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset >= array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 1 || count > array.Length - offset) 
+            if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
             while (count >= 1)
@@ -320,34 +386,85 @@ namespace Foundations.RandomNumbers
                 throw new ArgumentNullException(nameof(state));
 
             var rand = new Generator(source, seed);
-            rand.GetNext(state);
-            var dispose = source as IDisposable;
-            if (dispose != null) dispose.Dispose();
+            rand.Fill(state);
         }
 
         /// <summary>
-        /// Get the next value in the pseudo-random sequence as a <see cref="Int64"/>.
+        /// Get a random <see cref="System.Int64"/> value.
         /// </summary>
-        public Int64 NextInt64()
+        public Int64 Int64()
         {
             return (Int64)Mix();
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Get a random non-negative <see cref="System.Int64"/> value.
         /// </summary>
-        public void GetNext(Int64[] array)
+        public Int64 Int64NonNegative()
+        {
+            return (Int64)(Int64() & 0x7FFFFFFFFFFFFFFF);
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.Int64"/> value.
+        /// </summary>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
+        public Int64 Int64(Int64 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            var mask = (UInt64)(range - 1);
+            mask |= (UInt64)(mask >> 1);
+            mask |= (UInt64)(mask >> 2);
+            mask |= (UInt64)(mask >> 4);
+            mask |= (UInt64)(mask >> 8);
+            mask |= (UInt64)(mask >> 16);
+            mask |= (UInt64)(mask >> 32);
+            Int64 sample;
+
+            do
+            {
+                sample = (Int64)(Int64() & (Int64)mask);
+            }
+            while (sample >= range);
+
+            return sample;
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.Int64"/> value.
+        /// </summary>
+        /// <param ref="minimum">The minimum value to return.</param>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between minimum (inclusive) and minimum+range (exclusive).</returns>
+        public Int64 Int64(Int64 minimum, Int64 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Int64.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            return (Int64)(minimum + Int64(range));
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.Int64"/> values.
+        /// </summary>
+        public void Fill(Int64[] array)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            GetNext(array, 0, array.Length);
+            Fill(array, 0, array.Length);
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Fill a specified portion of a provided array with random <see cref="System.Int64"/> values.
         /// </summary>
-        public void GetNext(Int64[] array, int offset, int count)
+        public void Fill(Int64[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -355,7 +472,7 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset >= array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 1 || count > array.Length - offset) 
+            if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
             while (count >= 1)
@@ -378,34 +495,76 @@ namespace Foundations.RandomNumbers
                 throw new ArgumentNullException(nameof(state));
 
             var rand = new Generator(source, seed);
-            rand.GetNext(state);
-            var dispose = source as IDisposable;
-            if (dispose != null) dispose.Dispose();
+            rand.Fill(state);
         }
 
         /// <summary>
-        /// Get the next value in the pseudo-random sequence as a <see cref="UInt32"/>.
+        /// Get a random <see cref="System.UInt32"/> value.
         /// </summary>
-        public UInt32 NextUInt32()
+        public UInt32 UInt32()
         {
             return (UInt32)Mix();
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Get a random <see cref="System.UInt32"/> value.
         /// </summary>
-        public void GetNext(UInt32[] array)
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
+        public UInt32 UInt32(UInt32 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            var mask = (UInt32)(range - 1);
+            mask |= (UInt32)(mask >> 1);
+            mask |= (UInt32)(mask >> 2);
+            mask |= (UInt32)(mask >> 4);
+            mask |= (UInt32)(mask >> 8);
+            mask |= (UInt32)(mask >> 16);
+            UInt32 sample;
+
+            do
+            {
+                sample = (UInt32)(UInt32() & (UInt32)mask);
+            }
+            while (sample >= range);
+
+            return sample;
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.UInt32"/> value.
+        /// </summary>
+        /// <param ref="minimum">The minimum value to return.</param>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between minimum (inclusive) and minimum+range (exclusive).</returns>
+        public UInt32 UInt32(UInt32 minimum, UInt32 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.UInt32.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            return (UInt32)(minimum + UInt32(range));
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.UInt32"/> values.
+        /// </summary>
+        public void Fill(UInt32[] array)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            GetNext(array, 0, array.Length);
+            Fill(array, 0, array.Length);
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Fill a specified portion of a provided array with random <see cref="System.UInt32"/> values.
         /// </summary>
-        public void GetNext(UInt32[] array, int offset, int count)
+        public void Fill(UInt32[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -413,7 +572,7 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset >= array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 1 || count > array.Length - offset) 
+            if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
             while (count >= 2)
@@ -444,34 +603,84 @@ namespace Foundations.RandomNumbers
                 throw new ArgumentNullException(nameof(state));
 
             var rand = new Generator(source, seed);
-            rand.GetNext(state);
-            var dispose = source as IDisposable;
-            if (dispose != null) dispose.Dispose();
+            rand.Fill(state);
         }
 
         /// <summary>
-        /// Get the next value in the pseudo-random sequence as a <see cref="Int32"/>.
+        /// Get a random <see cref="System.Int32"/> value.
         /// </summary>
-        public Int32 NextInt32()
+        public Int32 Int32()
         {
             return (Int32)Mix();
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Get a random non-negative <see cref="System.Int32"/> value.
         /// </summary>
-        public void GetNext(Int32[] array)
+        public Int32 Int32NonNegative()
+        {
+            return (Int32)(Int32() & 0x7FFFFFFF);
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.Int32"/> value.
+        /// </summary>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
+        public Int32 Int32(Int32 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            var mask = (UInt32)(range - 1);
+            mask |= (UInt32)(mask >> 1);
+            mask |= (UInt32)(mask >> 2);
+            mask |= (UInt32)(mask >> 4);
+            mask |= (UInt32)(mask >> 8);
+            mask |= (UInt32)(mask >> 16);
+            Int32 sample;
+
+            do
+            {
+                sample = (Int32)(Int32() & (Int32)mask);
+            }
+            while (sample >= range);
+
+            return sample;
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.Int32"/> value.
+        /// </summary>
+        /// <param ref="minimum">The minimum value to return.</param>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between minimum (inclusive) and minimum+range (exclusive).</returns>
+        public Int32 Int32(Int32 minimum, Int32 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Int32.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            return (Int32)(minimum + Int32(range));
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.Int32"/> values.
+        /// </summary>
+        public void Fill(Int32[] array)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            GetNext(array, 0, array.Length);
+            Fill(array, 0, array.Length);
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Fill a specified portion of a provided array with random <see cref="System.Int32"/> values.
         /// </summary>
-        public void GetNext(Int32[] array, int offset, int count)
+        public void Fill(Int32[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -479,7 +688,7 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset >= array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 1 || count > array.Length - offset) 
+            if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
             while (count >= 2)
@@ -510,34 +719,75 @@ namespace Foundations.RandomNumbers
                 throw new ArgumentNullException(nameof(state));
 
             var rand = new Generator(source, seed);
-            rand.GetNext(state);
-            var dispose = source as IDisposable;
-            if (dispose != null) dispose.Dispose();
+            rand.Fill(state);
         }
 
         /// <summary>
-        /// Get the next value in the pseudo-random sequence as a <see cref="UInt16"/>.
+        /// Get a random <see cref="System.UInt16"/> value.
         /// </summary>
-        public UInt16 NextUInt16()
+        public UInt16 UInt16()
         {
             return (UInt16)Mix();
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Get a random <see cref="System.UInt16"/> value.
         /// </summary>
-        public void GetNext(UInt16[] array)
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
+        public UInt16 UInt16(UInt16 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            var mask = (UInt16)(range - 1);
+            mask |= (UInt16)(mask >> 1);
+            mask |= (UInt16)(mask >> 2);
+            mask |= (UInt16)(mask >> 4);
+            mask |= (UInt16)(mask >> 8);
+            UInt16 sample;
+
+            do
+            {
+                sample = (UInt16)(UInt16() & (UInt16)mask);
+            }
+            while (sample >= range);
+
+            return sample;
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.UInt16"/> value.
+        /// </summary>
+        /// <param ref="minimum">The minimum value to return.</param>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between minimum (inclusive) and minimum+range (exclusive).</returns>
+        public UInt16 UInt16(UInt16 minimum, UInt16 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.UInt16.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            return (UInt16)(minimum + UInt16(range));
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.UInt16"/> values.
+        /// </summary>
+        public void Fill(UInt16[] array)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            GetNext(array, 0, array.Length);
+            Fill(array, 0, array.Length);
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Fill a specified portion of a provided array with random <see cref="System.UInt16"/> values.
         /// </summary>
-        public void GetNext(UInt16[] array, int offset, int count)
+        public void Fill(UInt16[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -545,7 +795,7 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset >= array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 1 || count > array.Length - offset) 
+            if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
             while (count >= 4)
@@ -583,34 +833,83 @@ namespace Foundations.RandomNumbers
                 throw new ArgumentNullException(nameof(state));
 
             var rand = new Generator(source, seed);
-            rand.GetNext(state);
-            var dispose = source as IDisposable;
-            if (dispose != null) dispose.Dispose();
+            rand.Fill(state);
         }
 
         /// <summary>
-        /// Get the next value in the pseudo-random sequence as a <see cref="Int16"/>.
+        /// Get a random <see cref="System.Int16"/> value.
         /// </summary>
-        public Int16 NextInt16()
+        public Int16 Int16()
         {
             return (Int16)Mix();
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Get a random non-negative <see cref="System.Int16"/> value.
         /// </summary>
-        public void GetNext(Int16[] array)
+        public Int16 Int16NonNegative()
+        {
+            return (Int16)(Int16() & 0x7FFF);
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.Int16"/> value.
+        /// </summary>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
+        public Int16 Int16(Int16 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            var mask = (UInt16)(range - 1);
+            mask |= (UInt16)(mask >> 1);
+            mask |= (UInt16)(mask >> 2);
+            mask |= (UInt16)(mask >> 4);
+            mask |= (UInt16)(mask >> 8);
+            Int16 sample;
+
+            do
+            {
+                sample = (Int16)(Int16() & (Int16)mask);
+            }
+            while (sample >= range);
+
+            return sample;
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.Int16"/> value.
+        /// </summary>
+        /// <param ref="minimum">The minimum value to return.</param>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between minimum (inclusive) and minimum+range (exclusive).</returns>
+        public Int16 Int16(Int16 minimum, Int16 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Int16.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            return (Int16)(minimum + Int16(range));
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.Int16"/> values.
+        /// </summary>
+        public void Fill(Int16[] array)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            GetNext(array, 0, array.Length);
+            Fill(array, 0, array.Length);
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Fill a specified portion of a provided array with random <see cref="System.Int16"/> values.
         /// </summary>
-        public void GetNext(Int16[] array, int offset, int count)
+        public void Fill(Int16[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -618,7 +917,7 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset >= array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 1 || count > array.Length - offset) 
+            if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
             while (count >= 4)
@@ -656,34 +955,74 @@ namespace Foundations.RandomNumbers
                 throw new ArgumentNullException(nameof(state));
 
             var rand = new Generator(source, seed);
-            rand.GetNext(state);
-            var dispose = source as IDisposable;
-            if (dispose != null) dispose.Dispose();
+            rand.Fill(state);
         }
 
         /// <summary>
-        /// Get the next value in the pseudo-random sequence as a <see cref="Byte"/>.
+        /// Get a random <see cref="System.Byte"/> value.
         /// </summary>
-        public Byte NextByte()
+        public Byte Byte()
         {
             return (Byte)Mix();
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Get a random <see cref="System.Byte"/> value.
         /// </summary>
-        public void GetNext(Byte[] array)
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
+        public Byte Byte(Byte range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            var mask = (Byte)(range - 1);
+            mask |= (Byte)(mask >> 1);
+            mask |= (Byte)(mask >> 2);
+            mask |= (Byte)(mask >> 4);
+            Byte sample;
+
+            do
+            {
+                sample = (Byte)(Byte() & (Byte)mask);
+            }
+            while (sample >= range);
+
+            return sample;
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.Byte"/> value.
+        /// </summary>
+        /// <param ref="minimum">The minimum value to return.</param>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between minimum (inclusive) and minimum+range (exclusive).</returns>
+        public Byte Byte(Byte minimum, Byte range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Byte.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            return (Byte)(minimum + Byte(range));
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.Byte"/> values.
+        /// </summary>
+        public void Fill(Byte[] array)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            GetNext(array, 0, array.Length);
+            Fill(array, 0, array.Length);
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Fill a specified portion of a provided array with random <see cref="System.Byte"/> values.
         /// </summary>
-        public void GetNext(Byte[] array, int offset, int count)
+        public void Fill(Byte[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -691,7 +1030,7 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset >= array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 1 || count > array.Length - offset) 
+            if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
             while (count >= 8)
@@ -737,34 +1076,82 @@ namespace Foundations.RandomNumbers
                 throw new ArgumentNullException(nameof(state));
 
             var rand = new Generator(source, seed);
-            rand.GetNext(state);
-            var dispose = source as IDisposable;
-            if (dispose != null) dispose.Dispose();
+            rand.Fill(state);
         }
 
         /// <summary>
-        /// Get the next value in the pseudo-random sequence as a <see cref="SByte"/>.
+        /// Get a random <see cref="System.SByte"/> value.
         /// </summary>
-        public SByte NextSByte()
+        public SByte SByte()
         {
             return (SByte)Mix();
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Get a random non-negative <see cref="System.SByte"/> value.
         /// </summary>
-        public void GetNext(SByte[] array)
+        public SByte SByteNonNegative()
+        {
+            return (SByte)(SByte() & 0x7F);
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.SByte"/> value.
+        /// </summary>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
+        public SByte SByte(SByte range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            var mask = (Byte)(range - 1);
+            mask |= (Byte)(mask >> 1);
+            mask |= (Byte)(mask >> 2);
+            mask |= (Byte)(mask >> 4);
+            SByte sample;
+
+            do
+            {
+                sample = (SByte)(SByte() & (SByte)mask);
+            }
+            while (sample >= range);
+
+            return sample;
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.SByte"/> value.
+        /// </summary>
+        /// <param ref="minimum">The minimum value to return.</param>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between minimum (inclusive) and minimum+range (exclusive).</returns>
+        public SByte SByte(SByte minimum, SByte range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.SByte.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            return (SByte)(minimum + SByte(range));
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.SByte"/> values.
+        /// </summary>
+        public void Fill(SByte[] array)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            GetNext(array, 0, array.Length);
+            Fill(array, 0, array.Length);
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Fill a specified portion of a provided array with random <see cref="System.SByte"/> values.
         /// </summary>
-        public void GetNext(SByte[] array, int offset, int count)
+        public void Fill(SByte[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -772,7 +1159,7 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset >= array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 1 || count > array.Length - offset) 
+            if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
             while (count >= 8)
@@ -818,34 +1205,62 @@ namespace Foundations.RandomNumbers
                 throw new ArgumentNullException(nameof(state));
 
             var rand = new Generator(source, seed);
-            rand.GetNext(state);
-            var dispose = source as IDisposable;
-            if (dispose != null) dispose.Dispose();
+            rand.Fill(state);
         }
 
         /// <summary>
-        /// Get the next value in the pseudo-random sequence as a <see cref="Double"/>.
+        /// Get a random <see cref="System.Double"/> value.
         /// </summary>
-        public Double NextDouble()
+        public Double Double()
         {
             return (Double)(BitConverter.Int64BitsToDouble((long)(Mix() & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000) - 1.0);
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Get a random <see cref="System.Double"/> value.
         /// </summary>
-        public void GetNext(Double[] array)
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
+        public Double Double(Double range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            return range * Double();
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.Double"/> value.
+        /// </summary>
+        /// <param ref="minimum">The minimum value to return.</param>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between minimum (inclusive) and minimum+range (exclusive).</returns>
+        public Double Double(Double minimum, Double range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Double.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            return (Double)(minimum + Double(range));
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.Double"/> values.
+        /// </summary>
+        public void Fill(Double[] array)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            GetNext(array, 0, array.Length);
+            Fill(array, 0, array.Length);
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Fill a specified portion of a provided array with random <see cref="System.Double"/> values.
         /// </summary>
-        public void GetNext(Double[] array, int offset, int count)
+        public void Fill(Double[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -853,7 +1268,7 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset >= array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 1 || count > array.Length - offset) 
+            if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
             while (count >= 1)
@@ -878,34 +1293,62 @@ namespace Foundations.RandomNumbers
                 throw new ArgumentNullException(nameof(state));
 
             var rand = new Generator(source, seed);
-            rand.GetNext(state);
-            var dispose = source as IDisposable;
-            if (dispose != null) dispose.Dispose();
+            rand.Fill(state);
         }
 
         /// <summary>
-        /// Get the next value in the pseudo-random sequence as a <see cref="Single"/>.
+        /// Get a random <see cref="System.Single"/> value.
         /// </summary>
-        public Single NextSingle()
+        public Single Single()
         {
             return (Single)(BitConverter.Int64BitsToDouble((long)(Mix() & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000) - 1.0);
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Get a random <see cref="System.Single"/> value.
         /// </summary>
-        public void GetNext(Single[] array)
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
+        public Single Single(Single range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            return range * Single();
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.Single"/> value.
+        /// </summary>
+        /// <param ref="minimum">The minimum value to return.</param>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between minimum (inclusive) and minimum+range (exclusive).</returns>
+        public Single Single(Single minimum, Single range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Single.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            return (Single)(minimum + Single(range));
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.Single"/> values.
+        /// </summary>
+        public void Fill(Single[] array)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            GetNext(array, 0, array.Length);
+            Fill(array, 0, array.Length);
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Fill a specified portion of a provided array with random <see cref="System.Single"/> values.
         /// </summary>
-        public void GetNext(Single[] array, int offset, int count)
+        public void Fill(Single[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -913,7 +1356,7 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset >= array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 1 || count > array.Length - offset) 
+            if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
             while (count >= 2)
@@ -950,9 +1393,7 @@ namespace Foundations.RandomNumbers
                 throw new ArgumentNullException(nameof(state));
 
             var rand = new Generator(source, seed);
-            rand.GetNext(state);
-            var dispose = source as IDisposable;
-            if (dispose != null) dispose.Dispose();
+            rand.Fill(state);
         }
 
         private static void CreateState(IRandomSource source, byte[] seed, Array state)

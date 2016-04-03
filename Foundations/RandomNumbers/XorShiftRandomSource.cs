@@ -21,7 +21,7 @@ namespace Foundations.RandomNumbers
     /// </summary>
     public sealed class XorShiftRandomSource : IRandomSource
     {
-        ulong[] state;
+        ulong[] state = new ulong[16];
         int p;
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public Array AllocateState()
         {
-            return new ulong[16];
+            return state;
         }
 
         /// <summary>

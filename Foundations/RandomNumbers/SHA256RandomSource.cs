@@ -24,6 +24,9 @@ namespace Foundations.RandomNumbers
         int index;
         SHA256 sha;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public SHA256RandomSource()
         {
             sha = SHA256.Create();
@@ -61,6 +64,9 @@ namespace Foundations.RandomNumbers
             return BitConverter.ToUInt64(state, index++ * 8);
         }
 
+        /// <summary>
+        /// Dispose.
+        /// </summary>
         public void Dispose()
         {
             if (sha != null)

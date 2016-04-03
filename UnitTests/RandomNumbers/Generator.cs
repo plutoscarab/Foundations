@@ -11,6 +11,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Foundations.RandomNumbers;
@@ -27,9 +28,71 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = new Byte[99];
 
             for (int i = 0; i < data.Length; i++)
-                data[i] = random.NextByte();
+                data[i] = random.Byte();
 
             LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void IndividualByteValuesUpToRange()
+        {
+            var random = new Generator();
+            var data = new Byte[99];
+            var hash = new HashSet<Byte>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.Byte(50);
+                Assert.IsTrue(x >= 0);
+                Assert.IsTrue(x < 50);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualByteInvalidRange()
+        {
+            var random = new Generator();
+            random.Byte(0);
+        }
+
+        [TestMethod]
+        public void IndividualByteValuesInRange()
+        {
+            var random = new Generator();
+            var data = new Byte[99];
+            var hash = new HashSet<Byte>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.Byte(25, 50);
+                Assert.IsTrue(x >= 25);
+                Assert.IsTrue(x < 75);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualByteValuesInRangeTooLow()
+        {
+            var random = new Generator();
+            random.Byte(25, 0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualByteValuesInRangeTooHigh()
+        {
+            var random = new Generator();
+            random.Byte(3 * (Byte.MaxValue / 4), Byte.MaxValue / 2);
         }
 
         [TestMethod]
@@ -40,7 +103,7 @@ namespace Foundations.UnitTests.RandomNumbers
             for (int i = 0; i < 8; i++)
             {
                 var data = new Byte[99 + i];
-                random.GetNext(data);
+                random.Fill(data);
                 LooksRandom(data);
             }
         }
@@ -51,7 +114,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomBytes".ToCharArray());
             Byte[] data = null;
-            random.GetNext(data);
+            random.Fill(data);
         }
 
         [TestMethod]
@@ -60,7 +123,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomBytes".ToCharArray());
             Byte[] data = null;
-            random.GetNext(data, 0, 99);
+            random.Fill(data, 0, 99);
         }
 
         [TestMethod]
@@ -69,7 +132,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomBytes".ToCharArray());
             var data = new Byte[99];
-            random.GetNext(data, -1, data.Length);
+            random.Fill(data, -1, data.Length);
         }
 
         [TestMethod]
@@ -78,7 +141,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomBytes".ToCharArray());
             var data = new Byte[99];
-            random.GetNext(data, data.Length, 0);
+            random.Fill(data, data.Length, 0);
         }
 
         [TestMethod]
@@ -87,7 +150,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomBytes".ToCharArray());
             var data = new Byte[99];
-            random.GetNext(data, 0, -1);
+            random.Fill(data, 0, -1);
         }
 
         [TestMethod]
@@ -96,7 +159,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomBytes".ToCharArray());
             var data = new Byte[99];
-            random.GetNext(data, 0, data.Length + 1);
+            random.Fill(data, 0, data.Length + 1);
         }
 
         [TestMethod]
@@ -159,20 +222,20 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithBytes".ToCharArray());
             var data = new Byte[99];
-            random.GetNext(data);
+            random.Fill(data);
             random = new Generator(data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void RandomByteSeededWithNull()
         {
             var source = new XorShiftRandomSource();
             var random = new Generator(source, (byte[])null);
             var data = new Byte[99];
-            random.GetNext(data);
+            random.Fill(data);
+            LooksRandom(data);
         }
 
         [TestMethod]
@@ -180,29 +243,29 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithBytes".ToCharArray());
             var data = new Byte[99];
-            random.GetNext(data);
+            random.Fill(data);
             var source = Generator.DefaultSourceFactory();
             random = new Generator(source, data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomByteFromTimestamp()
+        public void RandomByteFromEntropy()
         {
             var random = new Generator();
             var data = new Byte[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomByteFromTimestampAndSource()
+        public void RandomByteFromEntropyAndSource()
         {
             var source = Generator.DefaultSourceFactory();
             var random = new Generator(source);
             var data = new Byte[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
@@ -210,7 +273,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var minValue = (double)Byte.MinValue;
             var maxValue = (double)Byte.MaxValue;
-            var range = (maxValue - minValue) / 12;
+            var range = (maxValue - minValue) / 8;
             var min = array.Min(t => (double)t);
             Assert.IsTrue(min < minValue + range);
             var max = array.Max(t => (double)t);
@@ -228,9 +291,83 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = new SByte[99];
 
             for (int i = 0; i < data.Length; i++)
-                data[i] = random.NextSByte();
+                data[i] = random.SByte();
 
             LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void IndividualNonNegativeSByteValues()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "IndividualNonNegativeSByteValues".ToCharArray());
+
+            for (int i = 0; i < 1000; i++)
+            {
+                var value = random.SByteNonNegative();
+                Assert.IsTrue(value >= 0);
+            }
+        }
+
+        [TestMethod]
+        public void IndividualSByteValuesUpToRange()
+        {
+            var random = new Generator();
+            var data = new SByte[99];
+            var hash = new HashSet<SByte>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.SByte(50);
+                Assert.IsTrue(x >= 0);
+                Assert.IsTrue(x < 50);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualSByteInvalidRange()
+        {
+            var random = new Generator();
+            random.SByte(0);
+        }
+
+        [TestMethod]
+        public void IndividualSByteValuesInRange()
+        {
+            var random = new Generator();
+            var data = new SByte[99];
+            var hash = new HashSet<SByte>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.SByte(25, 50);
+                Assert.IsTrue(x >= 25);
+                Assert.IsTrue(x < 75);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualSByteValuesInRangeTooLow()
+        {
+            var random = new Generator();
+            random.SByte(25, 0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualSByteValuesInRangeTooHigh()
+        {
+            var random = new Generator();
+            random.SByte(3 * (SByte.MaxValue / 4), SByte.MaxValue / 2);
         }
 
         [TestMethod]
@@ -241,7 +378,7 @@ namespace Foundations.UnitTests.RandomNumbers
             for (int i = 0; i < 8; i++)
             {
                 var data = new SByte[99 + i];
-                random.GetNext(data);
+                random.Fill(data);
                 LooksRandom(data);
             }
         }
@@ -252,7 +389,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomSBytes".ToCharArray());
             SByte[] data = null;
-            random.GetNext(data);
+            random.Fill(data);
         }
 
         [TestMethod]
@@ -261,7 +398,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomSBytes".ToCharArray());
             SByte[] data = null;
-            random.GetNext(data, 0, 99);
+            random.Fill(data, 0, 99);
         }
 
         [TestMethod]
@@ -270,7 +407,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomSBytes".ToCharArray());
             var data = new SByte[99];
-            random.GetNext(data, -1, data.Length);
+            random.Fill(data, -1, data.Length);
         }
 
         [TestMethod]
@@ -279,7 +416,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomSBytes".ToCharArray());
             var data = new SByte[99];
-            random.GetNext(data, data.Length, 0);
+            random.Fill(data, data.Length, 0);
         }
 
         [TestMethod]
@@ -288,7 +425,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomSBytes".ToCharArray());
             var data = new SByte[99];
-            random.GetNext(data, 0, -1);
+            random.Fill(data, 0, -1);
         }
 
         [TestMethod]
@@ -297,7 +434,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomSBytes".ToCharArray());
             var data = new SByte[99];
-            random.GetNext(data, 0, data.Length + 1);
+            random.Fill(data, 0, data.Length + 1);
         }
 
         [TestMethod]
@@ -360,20 +497,20 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithSBytes".ToCharArray());
             var data = new SByte[99];
-            random.GetNext(data);
+            random.Fill(data);
             random = new Generator(data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void RandomSByteSeededWithNull()
         {
             var source = new XorShiftRandomSource();
             var random = new Generator(source, (byte[])null);
             var data = new SByte[99];
-            random.GetNext(data);
+            random.Fill(data);
+            LooksRandom(data);
         }
 
         [TestMethod]
@@ -381,29 +518,29 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithSBytes".ToCharArray());
             var data = new SByte[99];
-            random.GetNext(data);
+            random.Fill(data);
             var source = Generator.DefaultSourceFactory();
             random = new Generator(source, data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomSByteFromTimestamp()
+        public void RandomSByteFromEntropy()
         {
             var random = new Generator();
             var data = new SByte[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomSByteFromTimestampAndSource()
+        public void RandomSByteFromEntropyAndSource()
         {
             var source = Generator.DefaultSourceFactory();
             var random = new Generator(source);
             var data = new SByte[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
@@ -411,7 +548,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var minValue = (double)SByte.MinValue;
             var maxValue = (double)SByte.MaxValue;
-            var range = (maxValue - minValue) / 12;
+            var range = (maxValue - minValue) / 8;
             var min = array.Min(t => (double)t);
             Assert.IsTrue(min < minValue + range);
             var max = array.Max(t => (double)t);
@@ -429,9 +566,71 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = new UInt16[99];
 
             for (int i = 0; i < data.Length; i++)
-                data[i] = random.NextUInt16();
+                data[i] = random.UInt16();
 
             LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void IndividualUInt16ValuesUpToRange()
+        {
+            var random = new Generator();
+            var data = new UInt16[99];
+            var hash = new HashSet<UInt16>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.UInt16(50);
+                Assert.IsTrue(x >= 0);
+                Assert.IsTrue(x < 50);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualUInt16InvalidRange()
+        {
+            var random = new Generator();
+            random.UInt16(0);
+        }
+
+        [TestMethod]
+        public void IndividualUInt16ValuesInRange()
+        {
+            var random = new Generator();
+            var data = new UInt16[99];
+            var hash = new HashSet<UInt16>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.UInt16(25, 50);
+                Assert.IsTrue(x >= 25);
+                Assert.IsTrue(x < 75);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualUInt16ValuesInRangeTooLow()
+        {
+            var random = new Generator();
+            random.UInt16(25, 0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualUInt16ValuesInRangeTooHigh()
+        {
+            var random = new Generator();
+            random.UInt16(3 * (UInt16.MaxValue / 4), UInt16.MaxValue / 2);
         }
 
         [TestMethod]
@@ -442,7 +641,7 @@ namespace Foundations.UnitTests.RandomNumbers
             for (int i = 0; i < 8; i++)
             {
                 var data = new UInt16[99 + i];
-                random.GetNext(data);
+                random.Fill(data);
                 LooksRandom(data);
             }
         }
@@ -453,7 +652,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt16s".ToCharArray());
             UInt16[] data = null;
-            random.GetNext(data);
+            random.Fill(data);
         }
 
         [TestMethod]
@@ -462,7 +661,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt16s".ToCharArray());
             UInt16[] data = null;
-            random.GetNext(data, 0, 99);
+            random.Fill(data, 0, 99);
         }
 
         [TestMethod]
@@ -471,7 +670,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt16s".ToCharArray());
             var data = new UInt16[99];
-            random.GetNext(data, -1, data.Length);
+            random.Fill(data, -1, data.Length);
         }
 
         [TestMethod]
@@ -480,7 +679,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt16s".ToCharArray());
             var data = new UInt16[99];
-            random.GetNext(data, data.Length, 0);
+            random.Fill(data, data.Length, 0);
         }
 
         [TestMethod]
@@ -489,7 +688,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt16s".ToCharArray());
             var data = new UInt16[99];
-            random.GetNext(data, 0, -1);
+            random.Fill(data, 0, -1);
         }
 
         [TestMethod]
@@ -498,7 +697,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt16s".ToCharArray());
             var data = new UInt16[99];
-            random.GetNext(data, 0, data.Length + 1);
+            random.Fill(data, 0, data.Length + 1);
         }
 
         [TestMethod]
@@ -561,20 +760,20 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithUInt16s".ToCharArray());
             var data = new UInt16[99];
-            random.GetNext(data);
+            random.Fill(data);
             random = new Generator(data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void RandomUInt16SeededWithNull()
         {
             var source = new XorShiftRandomSource();
             var random = new Generator(source, (byte[])null);
             var data = new UInt16[99];
-            random.GetNext(data);
+            random.Fill(data);
+            LooksRandom(data);
         }
 
         [TestMethod]
@@ -582,29 +781,29 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithUInt16s".ToCharArray());
             var data = new UInt16[99];
-            random.GetNext(data);
+            random.Fill(data);
             var source = Generator.DefaultSourceFactory();
             random = new Generator(source, data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomUInt16FromTimestamp()
+        public void RandomUInt16FromEntropy()
         {
             var random = new Generator();
             var data = new UInt16[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomUInt16FromTimestampAndSource()
+        public void RandomUInt16FromEntropyAndSource()
         {
             var source = Generator.DefaultSourceFactory();
             var random = new Generator(source);
             var data = new UInt16[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
@@ -612,7 +811,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var minValue = (double)UInt16.MinValue;
             var maxValue = (double)UInt16.MaxValue;
-            var range = (maxValue - minValue) / 12;
+            var range = (maxValue - minValue) / 8;
             var min = array.Min(t => (double)t);
             Assert.IsTrue(min < minValue + range);
             var max = array.Max(t => (double)t);
@@ -630,9 +829,83 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = new Int16[99];
 
             for (int i = 0; i < data.Length; i++)
-                data[i] = random.NextInt16();
+                data[i] = random.Int16();
 
             LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void IndividualNonNegativeInt16Values()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "IndividualNonNegativeInt16Values".ToCharArray());
+
+            for (int i = 0; i < 1000; i++)
+            {
+                var value = random.Int16NonNegative();
+                Assert.IsTrue(value >= 0);
+            }
+        }
+
+        [TestMethod]
+        public void IndividualInt16ValuesUpToRange()
+        {
+            var random = new Generator();
+            var data = new Int16[99];
+            var hash = new HashSet<Int16>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.Int16(50);
+                Assert.IsTrue(x >= 0);
+                Assert.IsTrue(x < 50);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualInt16InvalidRange()
+        {
+            var random = new Generator();
+            random.Int16(0);
+        }
+
+        [TestMethod]
+        public void IndividualInt16ValuesInRange()
+        {
+            var random = new Generator();
+            var data = new Int16[99];
+            var hash = new HashSet<Int16>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.Int16(25, 50);
+                Assert.IsTrue(x >= 25);
+                Assert.IsTrue(x < 75);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualInt16ValuesInRangeTooLow()
+        {
+            var random = new Generator();
+            random.Int16(25, 0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualInt16ValuesInRangeTooHigh()
+        {
+            var random = new Generator();
+            random.Int16(3 * (Int16.MaxValue / 4), Int16.MaxValue / 2);
         }
 
         [TestMethod]
@@ -643,7 +916,7 @@ namespace Foundations.UnitTests.RandomNumbers
             for (int i = 0; i < 8; i++)
             {
                 var data = new Int16[99 + i];
-                random.GetNext(data);
+                random.Fill(data);
                 LooksRandom(data);
             }
         }
@@ -654,7 +927,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt16s".ToCharArray());
             Int16[] data = null;
-            random.GetNext(data);
+            random.Fill(data);
         }
 
         [TestMethod]
@@ -663,7 +936,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt16s".ToCharArray());
             Int16[] data = null;
-            random.GetNext(data, 0, 99);
+            random.Fill(data, 0, 99);
         }
 
         [TestMethod]
@@ -672,7 +945,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt16s".ToCharArray());
             var data = new Int16[99];
-            random.GetNext(data, -1, data.Length);
+            random.Fill(data, -1, data.Length);
         }
 
         [TestMethod]
@@ -681,7 +954,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt16s".ToCharArray());
             var data = new Int16[99];
-            random.GetNext(data, data.Length, 0);
+            random.Fill(data, data.Length, 0);
         }
 
         [TestMethod]
@@ -690,7 +963,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt16s".ToCharArray());
             var data = new Int16[99];
-            random.GetNext(data, 0, -1);
+            random.Fill(data, 0, -1);
         }
 
         [TestMethod]
@@ -699,7 +972,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt16s".ToCharArray());
             var data = new Int16[99];
-            random.GetNext(data, 0, data.Length + 1);
+            random.Fill(data, 0, data.Length + 1);
         }
 
         [TestMethod]
@@ -762,20 +1035,20 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithInt16s".ToCharArray());
             var data = new Int16[99];
-            random.GetNext(data);
+            random.Fill(data);
             random = new Generator(data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void RandomInt16SeededWithNull()
         {
             var source = new XorShiftRandomSource();
             var random = new Generator(source, (byte[])null);
             var data = new Int16[99];
-            random.GetNext(data);
+            random.Fill(data);
+            LooksRandom(data);
         }
 
         [TestMethod]
@@ -783,29 +1056,29 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithInt16s".ToCharArray());
             var data = new Int16[99];
-            random.GetNext(data);
+            random.Fill(data);
             var source = Generator.DefaultSourceFactory();
             random = new Generator(source, data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomInt16FromTimestamp()
+        public void RandomInt16FromEntropy()
         {
             var random = new Generator();
             var data = new Int16[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomInt16FromTimestampAndSource()
+        public void RandomInt16FromEntropyAndSource()
         {
             var source = Generator.DefaultSourceFactory();
             var random = new Generator(source);
             var data = new Int16[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
@@ -813,7 +1086,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var minValue = (double)Int16.MinValue;
             var maxValue = (double)Int16.MaxValue;
-            var range = (maxValue - minValue) / 12;
+            var range = (maxValue - minValue) / 8;
             var min = array.Min(t => (double)t);
             Assert.IsTrue(min < minValue + range);
             var max = array.Max(t => (double)t);
@@ -831,9 +1104,71 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = new UInt32[99];
 
             for (int i = 0; i < data.Length; i++)
-                data[i] = random.NextUInt32();
+                data[i] = random.UInt32();
 
             LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void IndividualUInt32ValuesUpToRange()
+        {
+            var random = new Generator();
+            var data = new UInt32[99];
+            var hash = new HashSet<UInt32>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.UInt32(50);
+                Assert.IsTrue(x >= 0);
+                Assert.IsTrue(x < 50);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualUInt32InvalidRange()
+        {
+            var random = new Generator();
+            random.UInt32(0);
+        }
+
+        [TestMethod]
+        public void IndividualUInt32ValuesInRange()
+        {
+            var random = new Generator();
+            var data = new UInt32[99];
+            var hash = new HashSet<UInt32>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.UInt32(25, 50);
+                Assert.IsTrue(x >= 25);
+                Assert.IsTrue(x < 75);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualUInt32ValuesInRangeTooLow()
+        {
+            var random = new Generator();
+            random.UInt32(25, 0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualUInt32ValuesInRangeTooHigh()
+        {
+            var random = new Generator();
+            random.UInt32(3 * (UInt32.MaxValue / 4), UInt32.MaxValue / 2);
         }
 
         [TestMethod]
@@ -844,7 +1179,7 @@ namespace Foundations.UnitTests.RandomNumbers
             for (int i = 0; i < 8; i++)
             {
                 var data = new UInt32[99 + i];
-                random.GetNext(data);
+                random.Fill(data);
                 LooksRandom(data);
             }
         }
@@ -855,7 +1190,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt32s".ToCharArray());
             UInt32[] data = null;
-            random.GetNext(data);
+            random.Fill(data);
         }
 
         [TestMethod]
@@ -864,7 +1199,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt32s".ToCharArray());
             UInt32[] data = null;
-            random.GetNext(data, 0, 99);
+            random.Fill(data, 0, 99);
         }
 
         [TestMethod]
@@ -873,7 +1208,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt32s".ToCharArray());
             var data = new UInt32[99];
-            random.GetNext(data, -1, data.Length);
+            random.Fill(data, -1, data.Length);
         }
 
         [TestMethod]
@@ -882,7 +1217,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt32s".ToCharArray());
             var data = new UInt32[99];
-            random.GetNext(data, data.Length, 0);
+            random.Fill(data, data.Length, 0);
         }
 
         [TestMethod]
@@ -891,7 +1226,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt32s".ToCharArray());
             var data = new UInt32[99];
-            random.GetNext(data, 0, -1);
+            random.Fill(data, 0, -1);
         }
 
         [TestMethod]
@@ -900,7 +1235,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt32s".ToCharArray());
             var data = new UInt32[99];
-            random.GetNext(data, 0, data.Length + 1);
+            random.Fill(data, 0, data.Length + 1);
         }
 
         [TestMethod]
@@ -963,20 +1298,20 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithUInt32s".ToCharArray());
             var data = new UInt32[99];
-            random.GetNext(data);
+            random.Fill(data);
             random = new Generator(data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void RandomUInt32SeededWithNull()
         {
             var source = new XorShiftRandomSource();
             var random = new Generator(source, (byte[])null);
             var data = new UInt32[99];
-            random.GetNext(data);
+            random.Fill(data);
+            LooksRandom(data);
         }
 
         [TestMethod]
@@ -984,29 +1319,29 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithUInt32s".ToCharArray());
             var data = new UInt32[99];
-            random.GetNext(data);
+            random.Fill(data);
             var source = Generator.DefaultSourceFactory();
             random = new Generator(source, data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomUInt32FromTimestamp()
+        public void RandomUInt32FromEntropy()
         {
             var random = new Generator();
             var data = new UInt32[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomUInt32FromTimestampAndSource()
+        public void RandomUInt32FromEntropyAndSource()
         {
             var source = Generator.DefaultSourceFactory();
             var random = new Generator(source);
             var data = new UInt32[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
@@ -1014,7 +1349,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var minValue = (double)UInt32.MinValue;
             var maxValue = (double)UInt32.MaxValue;
-            var range = (maxValue - minValue) / 12;
+            var range = (maxValue - minValue) / 8;
             var min = array.Min(t => (double)t);
             Assert.IsTrue(min < minValue + range);
             var max = array.Max(t => (double)t);
@@ -1032,9 +1367,83 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = new Int32[99];
 
             for (int i = 0; i < data.Length; i++)
-                data[i] = random.NextInt32();
+                data[i] = random.Int32();
 
             LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void IndividualNonNegativeInt32Values()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "IndividualNonNegativeInt32Values".ToCharArray());
+
+            for (int i = 0; i < 1000; i++)
+            {
+                var value = random.Int32NonNegative();
+                Assert.IsTrue(value >= 0);
+            }
+        }
+
+        [TestMethod]
+        public void IndividualInt32ValuesUpToRange()
+        {
+            var random = new Generator();
+            var data = new Int32[99];
+            var hash = new HashSet<Int32>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.Int32(50);
+                Assert.IsTrue(x >= 0);
+                Assert.IsTrue(x < 50);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualInt32InvalidRange()
+        {
+            var random = new Generator();
+            random.Int32(0);
+        }
+
+        [TestMethod]
+        public void IndividualInt32ValuesInRange()
+        {
+            var random = new Generator();
+            var data = new Int32[99];
+            var hash = new HashSet<Int32>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.Int32(25, 50);
+                Assert.IsTrue(x >= 25);
+                Assert.IsTrue(x < 75);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualInt32ValuesInRangeTooLow()
+        {
+            var random = new Generator();
+            random.Int32(25, 0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualInt32ValuesInRangeTooHigh()
+        {
+            var random = new Generator();
+            random.Int32(3 * (Int32.MaxValue / 4), Int32.MaxValue / 2);
         }
 
         [TestMethod]
@@ -1045,7 +1454,7 @@ namespace Foundations.UnitTests.RandomNumbers
             for (int i = 0; i < 8; i++)
             {
                 var data = new Int32[99 + i];
-                random.GetNext(data);
+                random.Fill(data);
                 LooksRandom(data);
             }
         }
@@ -1056,7 +1465,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt32s".ToCharArray());
             Int32[] data = null;
-            random.GetNext(data);
+            random.Fill(data);
         }
 
         [TestMethod]
@@ -1065,7 +1474,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt32s".ToCharArray());
             Int32[] data = null;
-            random.GetNext(data, 0, 99);
+            random.Fill(data, 0, 99);
         }
 
         [TestMethod]
@@ -1074,7 +1483,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt32s".ToCharArray());
             var data = new Int32[99];
-            random.GetNext(data, -1, data.Length);
+            random.Fill(data, -1, data.Length);
         }
 
         [TestMethod]
@@ -1083,7 +1492,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt32s".ToCharArray());
             var data = new Int32[99];
-            random.GetNext(data, data.Length, 0);
+            random.Fill(data, data.Length, 0);
         }
 
         [TestMethod]
@@ -1092,7 +1501,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt32s".ToCharArray());
             var data = new Int32[99];
-            random.GetNext(data, 0, -1);
+            random.Fill(data, 0, -1);
         }
 
         [TestMethod]
@@ -1101,7 +1510,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt32s".ToCharArray());
             var data = new Int32[99];
-            random.GetNext(data, 0, data.Length + 1);
+            random.Fill(data, 0, data.Length + 1);
         }
 
         [TestMethod]
@@ -1164,20 +1573,20 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithInt32s".ToCharArray());
             var data = new Int32[99];
-            random.GetNext(data);
+            random.Fill(data);
             random = new Generator(data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void RandomInt32SeededWithNull()
         {
             var source = new XorShiftRandomSource();
             var random = new Generator(source, (byte[])null);
             var data = new Int32[99];
-            random.GetNext(data);
+            random.Fill(data);
+            LooksRandom(data);
         }
 
         [TestMethod]
@@ -1185,29 +1594,29 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithInt32s".ToCharArray());
             var data = new Int32[99];
-            random.GetNext(data);
+            random.Fill(data);
             var source = Generator.DefaultSourceFactory();
             random = new Generator(source, data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomInt32FromTimestamp()
+        public void RandomInt32FromEntropy()
         {
             var random = new Generator();
             var data = new Int32[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomInt32FromTimestampAndSource()
+        public void RandomInt32FromEntropyAndSource()
         {
             var source = Generator.DefaultSourceFactory();
             var random = new Generator(source);
             var data = new Int32[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
@@ -1215,7 +1624,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var minValue = (double)Int32.MinValue;
             var maxValue = (double)Int32.MaxValue;
-            var range = (maxValue - minValue) / 12;
+            var range = (maxValue - minValue) / 8;
             var min = array.Min(t => (double)t);
             Assert.IsTrue(min < minValue + range);
             var max = array.Max(t => (double)t);
@@ -1233,9 +1642,71 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = new UInt64[99];
 
             for (int i = 0; i < data.Length; i++)
-                data[i] = random.NextUInt64();
+                data[i] = random.UInt64();
 
             LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void IndividualUInt64ValuesUpToRange()
+        {
+            var random = new Generator();
+            var data = new UInt64[99];
+            var hash = new HashSet<UInt64>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.UInt64(50);
+                Assert.IsTrue(x >= 0);
+                Assert.IsTrue(x < 50);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualUInt64InvalidRange()
+        {
+            var random = new Generator();
+            random.UInt64(0);
+        }
+
+        [TestMethod]
+        public void IndividualUInt64ValuesInRange()
+        {
+            var random = new Generator();
+            var data = new UInt64[99];
+            var hash = new HashSet<UInt64>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.UInt64(25, 50);
+                Assert.IsTrue(x >= 25);
+                Assert.IsTrue(x < 75);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualUInt64ValuesInRangeTooLow()
+        {
+            var random = new Generator();
+            random.UInt64(25, 0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualUInt64ValuesInRangeTooHigh()
+        {
+            var random = new Generator();
+            random.UInt64(3 * (UInt64.MaxValue / 4), UInt64.MaxValue / 2);
         }
 
         [TestMethod]
@@ -1246,7 +1717,7 @@ namespace Foundations.UnitTests.RandomNumbers
             for (int i = 0; i < 8; i++)
             {
                 var data = new UInt64[99 + i];
-                random.GetNext(data);
+                random.Fill(data);
                 LooksRandom(data);
             }
         }
@@ -1257,7 +1728,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt64s".ToCharArray());
             UInt64[] data = null;
-            random.GetNext(data);
+            random.Fill(data);
         }
 
         [TestMethod]
@@ -1266,7 +1737,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt64s".ToCharArray());
             UInt64[] data = null;
-            random.GetNext(data, 0, 99);
+            random.Fill(data, 0, 99);
         }
 
         [TestMethod]
@@ -1275,7 +1746,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt64s".ToCharArray());
             var data = new UInt64[99];
-            random.GetNext(data, -1, data.Length);
+            random.Fill(data, -1, data.Length);
         }
 
         [TestMethod]
@@ -1284,7 +1755,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt64s".ToCharArray());
             var data = new UInt64[99];
-            random.GetNext(data, data.Length, 0);
+            random.Fill(data, data.Length, 0);
         }
 
         [TestMethod]
@@ -1293,7 +1764,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt64s".ToCharArray());
             var data = new UInt64[99];
-            random.GetNext(data, 0, -1);
+            random.Fill(data, 0, -1);
         }
 
         [TestMethod]
@@ -1302,7 +1773,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt64s".ToCharArray());
             var data = new UInt64[99];
-            random.GetNext(data, 0, data.Length + 1);
+            random.Fill(data, 0, data.Length + 1);
         }
 
         [TestMethod]
@@ -1365,20 +1836,20 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithUInt64s".ToCharArray());
             var data = new UInt64[99];
-            random.GetNext(data);
+            random.Fill(data);
             random = new Generator(data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void RandomUInt64SeededWithNull()
         {
             var source = new XorShiftRandomSource();
             var random = new Generator(source, (byte[])null);
             var data = new UInt64[99];
-            random.GetNext(data);
+            random.Fill(data);
+            LooksRandom(data);
         }
 
         [TestMethod]
@@ -1386,29 +1857,29 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithUInt64s".ToCharArray());
             var data = new UInt64[99];
-            random.GetNext(data);
+            random.Fill(data);
             var source = Generator.DefaultSourceFactory();
             random = new Generator(source, data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomUInt64FromTimestamp()
+        public void RandomUInt64FromEntropy()
         {
             var random = new Generator();
             var data = new UInt64[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomUInt64FromTimestampAndSource()
+        public void RandomUInt64FromEntropyAndSource()
         {
             var source = Generator.DefaultSourceFactory();
             var random = new Generator(source);
             var data = new UInt64[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
@@ -1416,7 +1887,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var minValue = (double)UInt64.MinValue;
             var maxValue = (double)UInt64.MaxValue;
-            var range = (maxValue - minValue) / 12;
+            var range = (maxValue - minValue) / 8;
             var min = array.Min(t => (double)t);
             Assert.IsTrue(min < minValue + range);
             var max = array.Max(t => (double)t);
@@ -1434,9 +1905,83 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = new Int64[99];
 
             for (int i = 0; i < data.Length; i++)
-                data[i] = random.NextInt64();
+                data[i] = random.Int64();
 
             LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void IndividualNonNegativeInt64Values()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "IndividualNonNegativeInt64Values".ToCharArray());
+
+            for (int i = 0; i < 1000; i++)
+            {
+                var value = random.Int64NonNegative();
+                Assert.IsTrue(value >= 0);
+            }
+        }
+
+        [TestMethod]
+        public void IndividualInt64ValuesUpToRange()
+        {
+            var random = new Generator();
+            var data = new Int64[99];
+            var hash = new HashSet<Int64>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.Int64(50);
+                Assert.IsTrue(x >= 0);
+                Assert.IsTrue(x < 50);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualInt64InvalidRange()
+        {
+            var random = new Generator();
+            random.Int64(0);
+        }
+
+        [TestMethod]
+        public void IndividualInt64ValuesInRange()
+        {
+            var random = new Generator();
+            var data = new Int64[99];
+            var hash = new HashSet<Int64>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.Int64(25, 50);
+                Assert.IsTrue(x >= 25);
+                Assert.IsTrue(x < 75);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualInt64ValuesInRangeTooLow()
+        {
+            var random = new Generator();
+            random.Int64(25, 0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualInt64ValuesInRangeTooHigh()
+        {
+            var random = new Generator();
+            random.Int64(3 * (Int64.MaxValue / 4), Int64.MaxValue / 2);
         }
 
         [TestMethod]
@@ -1447,7 +1992,7 @@ namespace Foundations.UnitTests.RandomNumbers
             for (int i = 0; i < 8; i++)
             {
                 var data = new Int64[99 + i];
-                random.GetNext(data);
+                random.Fill(data);
                 LooksRandom(data);
             }
         }
@@ -1458,7 +2003,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt64s".ToCharArray());
             Int64[] data = null;
-            random.GetNext(data);
+            random.Fill(data);
         }
 
         [TestMethod]
@@ -1467,7 +2012,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt64s".ToCharArray());
             Int64[] data = null;
-            random.GetNext(data, 0, 99);
+            random.Fill(data, 0, 99);
         }
 
         [TestMethod]
@@ -1476,7 +2021,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt64s".ToCharArray());
             var data = new Int64[99];
-            random.GetNext(data, -1, data.Length);
+            random.Fill(data, -1, data.Length);
         }
 
         [TestMethod]
@@ -1485,7 +2030,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt64s".ToCharArray());
             var data = new Int64[99];
-            random.GetNext(data, data.Length, 0);
+            random.Fill(data, data.Length, 0);
         }
 
         [TestMethod]
@@ -1494,7 +2039,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt64s".ToCharArray());
             var data = new Int64[99];
-            random.GetNext(data, 0, -1);
+            random.Fill(data, 0, -1);
         }
 
         [TestMethod]
@@ -1503,7 +2048,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt64s".ToCharArray());
             var data = new Int64[99];
-            random.GetNext(data, 0, data.Length + 1);
+            random.Fill(data, 0, data.Length + 1);
         }
 
         [TestMethod]
@@ -1566,20 +2111,20 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithInt64s".ToCharArray());
             var data = new Int64[99];
-            random.GetNext(data);
+            random.Fill(data);
             random = new Generator(data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void RandomInt64SeededWithNull()
         {
             var source = new XorShiftRandomSource();
             var random = new Generator(source, (byte[])null);
             var data = new Int64[99];
-            random.GetNext(data);
+            random.Fill(data);
+            LooksRandom(data);
         }
 
         [TestMethod]
@@ -1587,29 +2132,29 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithInt64s".ToCharArray());
             var data = new Int64[99];
-            random.GetNext(data);
+            random.Fill(data);
             var source = Generator.DefaultSourceFactory();
             random = new Generator(source, data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomInt64FromTimestamp()
+        public void RandomInt64FromEntropy()
         {
             var random = new Generator();
             var data = new Int64[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomInt64FromTimestampAndSource()
+        public void RandomInt64FromEntropyAndSource()
         {
             var source = Generator.DefaultSourceFactory();
             var random = new Generator(source);
             var data = new Int64[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
@@ -1617,7 +2162,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var minValue = (double)Int64.MinValue;
             var maxValue = (double)Int64.MaxValue;
-            var range = (maxValue - minValue) / 12;
+            var range = (maxValue - minValue) / 8;
             var min = array.Min(t => (double)t);
             Assert.IsTrue(min < minValue + range);
             var max = array.Max(t => (double)t);
@@ -1635,9 +2180,71 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = new Single[99];
 
             for (int i = 0; i < data.Length; i++)
-                data[i] = random.NextSingle();
+                data[i] = random.Single();
 
             LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void IndividualSingleValuesUpToRange()
+        {
+            var random = new Generator();
+            var data = new Single[99];
+            var hash = new HashSet<Single>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.Single(50);
+                Assert.IsTrue(x >= 0);
+                Assert.IsTrue(x < 50);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualSingleInvalidRange()
+        {
+            var random = new Generator();
+            random.Single(0);
+        }
+
+        [TestMethod]
+        public void IndividualSingleValuesInRange()
+        {
+            var random = new Generator();
+            var data = new Single[99];
+            var hash = new HashSet<Single>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.Single(25, 50);
+                Assert.IsTrue(x >= 25);
+                Assert.IsTrue(x < 75);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualSingleValuesInRangeTooLow()
+        {
+            var random = new Generator();
+            random.Single(25, 0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualSingleValuesInRangeTooHigh()
+        {
+            var random = new Generator();
+            random.Single(3 * (Single.MaxValue / 4), Single.MaxValue / 2);
         }
 
         [TestMethod]
@@ -1648,7 +2255,7 @@ namespace Foundations.UnitTests.RandomNumbers
             for (int i = 0; i < 8; i++)
             {
                 var data = new Single[99 + i];
-                random.GetNext(data);
+                random.Fill(data);
                 LooksRandom(data);
             }
         }
@@ -1659,7 +2266,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomSingles".ToCharArray());
             Single[] data = null;
-            random.GetNext(data);
+            random.Fill(data);
         }
 
         [TestMethod]
@@ -1668,7 +2275,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomSingles".ToCharArray());
             Single[] data = null;
-            random.GetNext(data, 0, 99);
+            random.Fill(data, 0, 99);
         }
 
         [TestMethod]
@@ -1677,7 +2284,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomSingles".ToCharArray());
             var data = new Single[99];
-            random.GetNext(data, -1, data.Length);
+            random.Fill(data, -1, data.Length);
         }
 
         [TestMethod]
@@ -1686,7 +2293,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomSingles".ToCharArray());
             var data = new Single[99];
-            random.GetNext(data, data.Length, 0);
+            random.Fill(data, data.Length, 0);
         }
 
         [TestMethod]
@@ -1695,7 +2302,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomSingles".ToCharArray());
             var data = new Single[99];
-            random.GetNext(data, 0, -1);
+            random.Fill(data, 0, -1);
         }
 
         [TestMethod]
@@ -1704,7 +2311,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomSingles".ToCharArray());
             var data = new Single[99];
-            random.GetNext(data, 0, data.Length + 1);
+            random.Fill(data, 0, data.Length + 1);
         }
 
         [TestMethod]
@@ -1767,20 +2374,20 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithSingles".ToCharArray());
             var data = new Single[99];
-            random.GetNext(data);
+            random.Fill(data);
             random = new Generator(data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void RandomSingleSeededWithNull()
         {
             var source = new XorShiftRandomSource();
             var random = new Generator(source, (byte[])null);
             var data = new Single[99];
-            random.GetNext(data);
+            random.Fill(data);
+            LooksRandom(data);
         }
 
         [TestMethod]
@@ -1788,29 +2395,29 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithSingles".ToCharArray());
             var data = new Single[99];
-            random.GetNext(data);
+            random.Fill(data);
             var source = Generator.DefaultSourceFactory();
             random = new Generator(source, data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomSingleFromTimestamp()
+        public void RandomSingleFromEntropy()
         {
             var random = new Generator();
             var data = new Single[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomSingleFromTimestampAndSource()
+        public void RandomSingleFromEntropyAndSource()
         {
             var source = Generator.DefaultSourceFactory();
             var random = new Generator(source);
             var data = new Single[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
@@ -1818,7 +2425,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var minValue = 0.0;
             var maxValue = 1.0;
-            var range = (maxValue - minValue) / 12;
+            var range = (maxValue - minValue) / 8;
             var min = array.Min(t => (double)t);
             Assert.IsTrue(min < minValue + range);
             var max = array.Max(t => (double)t);
@@ -1836,9 +2443,71 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = new Double[99];
 
             for (int i = 0; i < data.Length; i++)
-                data[i] = random.NextDouble();
+                data[i] = random.Double();
 
             LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void IndividualDoubleValuesUpToRange()
+        {
+            var random = new Generator();
+            var data = new Double[99];
+            var hash = new HashSet<Double>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.Double(50);
+                Assert.IsTrue(x >= 0);
+                Assert.IsTrue(x < 50);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualDoubleInvalidRange()
+        {
+            var random = new Generator();
+            random.Double(0);
+        }
+
+        [TestMethod]
+        public void IndividualDoubleValuesInRange()
+        {
+            var random = new Generator();
+            var data = new Double[99];
+            var hash = new HashSet<Double>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.Double(25, 50);
+                Assert.IsTrue(x >= 25);
+                Assert.IsTrue(x < 75);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualDoubleValuesInRangeTooLow()
+        {
+            var random = new Generator();
+            random.Double(25, 0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void IndividualDoubleValuesInRangeTooHigh()
+        {
+            var random = new Generator();
+            random.Double(3 * (Double.MaxValue / 4), Double.MaxValue / 2);
         }
 
         [TestMethod]
@@ -1849,7 +2518,7 @@ namespace Foundations.UnitTests.RandomNumbers
             for (int i = 0; i < 8; i++)
             {
                 var data = new Double[99 + i];
-                random.GetNext(data);
+                random.Fill(data);
                 LooksRandom(data);
             }
         }
@@ -1860,7 +2529,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomDoubles".ToCharArray());
             Double[] data = null;
-            random.GetNext(data);
+            random.Fill(data);
         }
 
         [TestMethod]
@@ -1869,7 +2538,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomDoubles".ToCharArray());
             Double[] data = null;
-            random.GetNext(data, 0, 99);
+            random.Fill(data, 0, 99);
         }
 
         [TestMethod]
@@ -1878,7 +2547,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomDoubles".ToCharArray());
             var data = new Double[99];
-            random.GetNext(data, -1, data.Length);
+            random.Fill(data, -1, data.Length);
         }
 
         [TestMethod]
@@ -1887,7 +2556,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomDoubles".ToCharArray());
             var data = new Double[99];
-            random.GetNext(data, data.Length, 0);
+            random.Fill(data, data.Length, 0);
         }
 
         [TestMethod]
@@ -1896,7 +2565,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomDoubles".ToCharArray());
             var data = new Double[99];
-            random.GetNext(data, 0, -1);
+            random.Fill(data, 0, -1);
         }
 
         [TestMethod]
@@ -1905,7 +2574,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomDoubles".ToCharArray());
             var data = new Double[99];
-            random.GetNext(data, 0, data.Length + 1);
+            random.Fill(data, 0, data.Length + 1);
         }
 
         [TestMethod]
@@ -1968,20 +2637,20 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithDoubles".ToCharArray());
             var data = new Double[99];
-            random.GetNext(data);
+            random.Fill(data);
             random = new Generator(data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void RandomDoubleSeededWithNull()
         {
             var source = new XorShiftRandomSource();
             var random = new Generator(source, (byte[])null);
             var data = new Double[99];
-            random.GetNext(data);
+            random.Fill(data);
+            LooksRandom(data);
         }
 
         [TestMethod]
@@ -1989,29 +2658,29 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("SeedWithDoubles".ToCharArray());
             var data = new Double[99];
-            random.GetNext(data);
+            random.Fill(data);
             var source = Generator.DefaultSourceFactory();
             random = new Generator(source, data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomDoubleFromTimestamp()
+        public void RandomDoubleFromEntropy()
         {
             var random = new Generator();
             var data = new Double[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void RandomDoubleFromTimestampAndSource()
+        public void RandomDoubleFromEntropyAndSource()
         {
             var source = Generator.DefaultSourceFactory();
             var random = new Generator(source);
             var data = new Double[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
@@ -2019,7 +2688,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var minValue = 0.0;
             var maxValue = 1.0;
-            var range = (maxValue - minValue) / 12;
+            var range = (maxValue - minValue) / 8;
             var min = array.Min(t => (double)t);
             Assert.IsTrue(min < minValue + range);
             var max = array.Max(t => (double)t);

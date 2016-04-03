@@ -30,5 +30,13 @@ namespace Foundations.UnitTests.Objects
             source.Next();
             source.Next();
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void RequiresSeed()
+        {
+            var source = new SHA256RandomSource();
+            var random = new Generator(source);
+        }
     }
 }

@@ -20,14 +20,14 @@ namespace Foundations.RandomNumbers
     public interface IRandomSource
     {
         /// <summary>
-        /// Allocate an array. This array will be filled in with random values
-        /// derived from seed data and SHA256 hash values, and then passed to Initialize().
+        /// Allocates an array for state information. This array will be filled with random values
+        /// derived from seed data and then passed to Initialize().
         /// If null is returned, the raw seed data will be passed as a byte array instead.
         /// </summary>
         Array AllocateState();
 
         /// <summary>
-        /// Initialize the source using the provided seed data.
+        /// Initializes the source using the provided seed data.
         /// </summary>
         void Initialize(Array state);
 

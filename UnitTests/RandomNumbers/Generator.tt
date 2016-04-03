@@ -12,6 +12,7 @@ Generator.cs
 */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Foundations.RandomNumbers;
@@ -57,9 +58,90 @@ void Type(string T)
             var data = new <#= T #>[99];
 
             for (int i = 0; i < data.Length; i++)
-                data[i] = random.Next<#= T #>();
+                data[i] = random.<#= T #>();
 
             LooksRandom(data);
+        }
+<#+
+    if (T[0] == 'I' || T == "SByte")
+    {
+#>
+
+        [TestMethod]
+        public void IndividualNonNegative<#= T #>Values()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "IndividualNonNegative<#= T #>Values".ToCharArray());
+
+            for (int i = 0; i < 1000; i++)
+            {
+                var value = random.<#= T #>NonNegative();
+                Assert.IsTrue(value >= 0);
+            }
+        }
+<#+
+    }
+#>
+
+        [TestMethod]
+        public void Individual<#= T #>ValuesUpToRange()
+        {
+            var random = new Generator();
+            var data = new <#= T #>[99];
+            var hash = new HashSet<<#= T #>>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.<#= T #>(50);
+                Assert.IsTrue(x >= 0);
+                Assert.IsTrue(x < 50);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Individual<#= T #>InvalidRange()
+        {
+            var random = new Generator();
+            random.<#= T #>(0);
+        }
+
+        [TestMethod]
+        public void Individual<#= T #>ValuesInRange()
+        {
+            var random = new Generator();
+            var data = new <#= T #>[99];
+            var hash = new HashSet<<#= T #>>();
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var x = random.<#= T #>(25, 50);
+                Assert.IsTrue(x >= 25);
+                Assert.IsTrue(x < 75);
+                hash.Add(x);
+                if (hash.Count == 50) break;
+            }
+
+            Assert.AreEqual(50, hash.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Individual<#= T #>ValuesInRangeTooLow()
+        {
+            var random = new Generator();
+            random.<#= T #>(25, 0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Individual<#= T #>ValuesInRangeTooHigh()
+        {
+            var random = new Generator();
+            random.<#= T #>(3 * (<#= T #>.MaxValue / 4), <#= T #>.MaxValue / 2);
         }
 
         [TestMethod]
@@ -70,7 +152,7 @@ void Type(string T)
             for (int i = 0; i < 8; i++)
             {
                 var data = new <#= T #>[99 + i];
-                random.GetNext(data);
+                random.Fill(data);
                 LooksRandom(data);
             }
         }
@@ -81,7 +163,7 @@ void Type(string T)
         {
             var random = new Generator("Random<#= T #>s".ToCharArray());
             <#= T #>[] data = null;
-            random.GetNext(data);
+            random.Fill(data);
         }
 
         [TestMethod]
@@ -90,7 +172,7 @@ void Type(string T)
         {
             var random = new Generator("Random<#= T #>s".ToCharArray());
             <#= T #>[] data = null;
-            random.GetNext(data, 0, 99);
+            random.Fill(data, 0, 99);
         }
 
         [TestMethod]
@@ -99,7 +181,7 @@ void Type(string T)
         {
             var random = new Generator("Random<#= T #>s".ToCharArray());
             var data = new <#= T #>[99];
-            random.GetNext(data, -1, data.Length);
+            random.Fill(data, -1, data.Length);
         }
 
         [TestMethod]
@@ -108,7 +190,7 @@ void Type(string T)
         {
             var random = new Generator("Random<#= T #>s".ToCharArray());
             var data = new <#= T #>[99];
-            random.GetNext(data, data.Length, 0);
+            random.Fill(data, data.Length, 0);
         }
 
         [TestMethod]
@@ -117,7 +199,7 @@ void Type(string T)
         {
             var random = new Generator("Random<#= T #>s".ToCharArray());
             var data = new <#= T #>[99];
-            random.GetNext(data, 0, -1);
+            random.Fill(data, 0, -1);
         }
 
         [TestMethod]
@@ -126,7 +208,7 @@ void Type(string T)
         {
             var random = new Generator("Random<#= T #>s".ToCharArray());
             var data = new <#= T #>[99];
-            random.GetNext(data, 0, data.Length + 1);
+            random.Fill(data, 0, data.Length + 1);
         }
 
         [TestMethod]
@@ -189,20 +271,20 @@ void Type(string T)
         {
             var random = new Generator("SeedWith<#= T #>s".ToCharArray());
             var data = new <#= T #>[99];
-            random.GetNext(data);
+            random.Fill(data);
             random = new Generator(data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Random<#= T #>SeededWithNull()
         {
             var source = new XorShiftRandomSource();
             var random = new Generator(source, (byte[])null);
             var data = new <#= T #>[99];
-            random.GetNext(data);
+            random.Fill(data);
+            LooksRandom(data);
         }
 
         [TestMethod]
@@ -210,29 +292,29 @@ void Type(string T)
         {
             var random = new Generator("SeedWith<#= T #>s".ToCharArray());
             var data = new <#= T #>[99];
-            random.GetNext(data);
+            random.Fill(data);
             var source = Generator.DefaultSourceFactory();
             random = new Generator(source, data);
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void Random<#= T #>FromTimestamp()
+        public void Random<#= T #>FromEntropy()
         {
             var random = new Generator();
             var data = new <#= T #>[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
         [TestMethod]
-        public void Random<#= T #>FromTimestampAndSource()
+        public void Random<#= T #>FromEntropyAndSource()
         {
             var source = Generator.DefaultSourceFactory();
             var random = new Generator(source);
             var data = new <#= T #>[99];
-            random.GetNext(data);
+            random.Fill(data);
             LooksRandom(data);
         }
 
@@ -245,7 +327,7 @@ void Type(string T)
             var minValue = (double)<#= T #>.MinValue;
             var maxValue = (double)<#= T #>.MaxValue;
 <#+ } #>
-            var range = (maxValue - minValue) / 12;
+            var range = (maxValue - minValue) / 8;
             var min = array.Min(t => (double)t);
             Assert.IsTrue(min < minValue + range);
             var max = array.Max(t => (double)t);

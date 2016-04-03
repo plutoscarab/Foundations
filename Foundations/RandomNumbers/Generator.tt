@@ -47,39 +47,60 @@ namespace Foundations.RandomNumbers
         private IRandomSource source;
      
         /// <summary>
-        /// Create a pseudo-random number generator initialized using the current value of the high-precision timer.
+        /// Create a pseudo-random number generator initialized using system entropy
+        /// and default random source.
         /// </summary>
         public Generator()
-            : this(new[] { Stopwatch.GetTimestamp() })
+            : this(null, (byte[])null)
         {
         }
      
         /// <summary>
-        /// Create a pseudo-random number generator initialized using the current value of the high-precision timer.
+        /// Create a pseudo-random number generator initialized using system entropy
+        /// and specified random source.
         /// </summary>
         public Generator(IRandomSource source)
-            : this(source, new[] { Stopwatch.GetTimestamp() })
+            : this(source, (byte[])null)
         {
         }
 
         /// <summary>
-        /// Create a pseudo-random number generator initialized with provided values.
+        /// Create a pseudo-random number generator initialized with provided seed data
+        /// and default random source.
         /// </summary>
         public Generator(params byte[] seed)
-            : this(DefaultSourceFactory(), seed)
+            : this(null, seed)
         {
         }
 
         /// <summary>
-        /// Create a pseudo-random number generator initialized with provided values.
+        /// Create a pseudo-random number generator initialized with provided seed data
+        /// and specified random source.
         /// </summary>
         public Generator(IRandomSource source, params byte[] seed)
         {
-            if (seed == null)
-                throw new ArgumentNullException(nameof(seed));
+            if (source == null)
+            {
+                source = DefaultSourceFactory();
+            }
 
             this.source = source;
             var state = source.AllocateState();
+
+            if (seed == null)
+            {
+                if (state == null)
+                {
+                    throw new ArgumentException("The specified IRandomSource cannot be used without a seed.", nameof(source));
+                }
+
+                seed = new byte[Buffer.ByteLength(state)];
+
+                using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())
+                {
+                    rng.GetBytes(seed);
+                }
+            }
 
             if (state == null)
             {
@@ -113,7 +134,7 @@ namespace Foundations.RandomNumbers
 #pragma warning restore 0169
 
         /// <summary>
-        /// Get the next value in the pseudo-random sequence as a <see cref="UInt64"/>.
+        /// Generate the next 64 bits.
         /// </summary>
         private ulong Mix()
         {
@@ -184,9 +205,9 @@ void Next(string T, int m)
 #>
 
         /// <summary>
-        /// Get the next value in the pseudo-random sequence as a <see cref="<#= T #>"/>.
+        /// Get a random <see cref="System.<#= T #>"/> value.
         /// </summary>
-        public <#= T #> Next<#= T #>()
+        public <#= T #> <#= T #>()
         {
 <#+
     if (T == "Single" || T == "Double")
@@ -203,22 +224,104 @@ void Next(string T, int m)
     }
 #>
         }
+<#+
+    if (T[0] == 'I' || T == "SByte")
+    {
+#>
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Get a random non-negative <see cref="System.<#= T #>"/> value.
         /// </summary>
-        public void GetNext(<#= T #>[] array)
+        public <#= T #> <#= T #>NonNegative()
+        {
+            return (<#= T #>)(<#= T #>() & 0x7<#= new string('F', 16 / m - 1) #>);
+        }
+<#+
+    }
+#>
+
+        /// <summary>
+        /// Get a random <see cref="System.<#= T #>"/> value.
+        /// </summary>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
+        public <#= T #> <#= T #>(<#= T #> range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+<#+
+    if (T == "Single" || T == "Double")
+    {
+#>
+            return range * <#= T #>();
+<#+
+    }
+    else
+    {
+        string U = T.EndsWith("Byte") ? "(Byte)" :
+                   T[0] == 'U' ? "(" + T + ")" : 
+                   "(U" + T + ")";
+#>
+            var mask = <#= U #>(range - 1);
+<#+
+        int bits = 64 / m;
+        int shift = 1;
+
+        while (shift < bits)
+        {
+#>
+            mask |= <#= U #>(mask >> <#= shift #>);
+<#+
+            shift *= 2;
+        }
+#>
+            <#= T #> sample;
+
+            do
+            {
+                sample = (<#= T #>)(<#= T #>() & (<#= T #>)mask);
+            }
+            while (sample >= range);
+
+            return sample;
+<#+
+    }
+#>
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.<#= T #>"/> value.
+        /// </summary>
+        /// <param ref="minimum">The minimum value to return.</param>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between minimum (inclusive) and minimum+range (exclusive).</returns>
+        public <#= T #> <#= T #>(<#= T #> minimum, <#= T #> range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.<#= T #>.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            return (<#= T #>)(minimum + <#= T #>(range));
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.<#= T #>"/> values.
+        /// </summary>
+        public void Fill(<#= T #>[] array)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            GetNext(array, 0, array.Length);
+            Fill(array, 0, array.Length);
         }
 
         /// <summary>
-        /// Fill a provided array of <see cref="UInt64"/> values with the next values in the pseudo-random sequence.
+        /// Fill a specified portion of a provided array with random <see cref="System.<#= T #>"/> values.
         /// </summary>
-        public void GetNext(<#= T #>[] array, int offset, int count)
+        public void Fill(<#= T #>[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -226,7 +329,7 @@ void Next(string T, int m)
             if (offset < 0 || offset >= array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 1 || count > array.Length - offset) 
+            if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
 <#+
@@ -302,7 +405,7 @@ void Next(string T, int m)
                 throw new ArgumentNullException(nameof(state));
 
             var rand = new Generator(source, seed);
-            rand.GetNext(state);
+            rand.Fill(state);
         }
 <#+
 }

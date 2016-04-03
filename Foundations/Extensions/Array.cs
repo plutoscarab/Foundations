@@ -32,5 +32,19 @@ namespace Foundations
             Buffer.BlockCopy(array, 0, bytes, 0, n);
             return bytes;
         }
+
+        /// <summary>
+        /// Gets the contents of this array as an array of <see cref="Byte"/>s.
+        /// </summary>
+        public static byte[] GetBytes<T>(this Array array)
+        {
+            if (array == null)
+                throw new ArgumentNullException(nameof(array));
+
+            int n = Buffer.ByteLength(array);
+            var bytes = new byte[n];
+            Buffer.BlockCopy(array, 0, bytes, 0, n);
+            return bytes;
+        }
     }
 }
