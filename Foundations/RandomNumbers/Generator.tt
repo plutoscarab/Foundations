@@ -26,7 +26,7 @@ namespace Foundations.RandomNumbers
         /// <summary>
         /// A delegate that creates a <see cref="IRandomSource"/> with a <see cref="IRandomSource.AllocateState"/>
         /// method implementation that returns null. This source is used to generate initial state data
-        /// from raw seed data for any <see cref="IRandomSource"/> the returns a non-null value
+        /// from raw seed data for any <see cref="IRandomSource"/> that returns a non-null value
         /// from <see cref="IRandomSource.AllocateState"/>.
         /// </summary>
         public static Func<IRandomSource> DefaultStateInitializationFactory = delegate
@@ -303,8 +303,6 @@ void Next(string T, int m)
 
             var rand = new Generator(source, seed);
             rand.GetNext(state);
-            var dispose = source as IDisposable;
-            if (dispose != null) dispose.Dispose();
         }
 <#+
 }
