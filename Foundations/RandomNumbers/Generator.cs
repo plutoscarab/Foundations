@@ -285,24 +285,12 @@ namespace Foundations.RandomNumbers
         {
         }
 
-#pragma warning disable 0169
-        private ValueUnion sample;
-#pragma warning restore 0169
-
-        /// <summary>
-        /// Generate the next 64 bits.
-        /// </summary>
-        private ulong Mix()
-        {
-            return sample.UInt64_0 = source.Next();
-        }
-
         /// <summary>
         /// Get a random <see cref="System.UInt64"/> value.
         /// </summary>
         public UInt64 UInt64()
         {
-            return (UInt64)Mix();
+            return (UInt64)source.Next();
         }
 
         /// <summary>
@@ -386,7 +374,7 @@ namespace Foundations.RandomNumbers
         /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.UInt64"/> values.
         /// </summary>
-        public void Fill(UInt64[] array, int offset, int count)
+        unsafe public void Fill(UInt64[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -394,14 +382,21 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
+            if (count == 0)
+                return;
+
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
-            while (count >= 1)
+            fixed (UInt64* ptr = &array[offset])
             {
-                Mix();
-                array[offset++] = sample.UInt64_0;
-                count -= 1;
+                var p = (ulong*)ptr;
+
+                while (count >= 1)
+                {
+                    *p++ = source.Next();
+                    count -= 1;
+                }
             }
         }
 
@@ -451,7 +446,7 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public Int64 Int64()
         {
-            return (Int64)Mix();
+            return (Int64)source.Next();
         }
 
         /// <summary>
@@ -543,7 +538,7 @@ namespace Foundations.RandomNumbers
         /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.Int64"/> values.
         /// </summary>
-        public void Fill(Int64[] array, int offset, int count)
+        unsafe public void Fill(Int64[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -551,14 +546,21 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
+            if (count == 0)
+                return;
+
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
-            while (count >= 1)
+            fixed (Int64* ptr = &array[offset])
             {
-                Mix();
-                array[offset++] = sample.Int64_0;
-                count -= 1;
+                var p = (ulong*)ptr;
+
+                while (count >= 1)
+                {
+                    *p++ = source.Next();
+                    count -= 1;
+                }
             }
         }
 
@@ -632,7 +634,7 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public UInt32 UInt32()
         {
-            return (UInt32)Mix();
+            return (UInt32)source.Next();
         }
 
         /// <summary>
@@ -715,7 +717,7 @@ namespace Foundations.RandomNumbers
         /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.UInt32"/> values.
         /// </summary>
-        public void Fill(UInt32[] array, int offset, int count)
+        unsafe public void Fill(UInt32[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -723,23 +725,30 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 0 || count > array.Length - offset) 
-                throw new ArgumentOutOfRangeException(nameof(count));
-
-            while (count >= 2)
-            {
-                Mix();
-                array[offset++] = sample.UInt32_1;
-                array[offset++] = sample.UInt32_0;
-                count -= 2;
-            }
-
             if (count == 0)
                 return;
 
-            Mix();
-             
-            array[offset++] = sample.UInt32_1;
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            fixed (UInt32* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 2)
+                {
+                    *p++ = source.Next();
+                    count -= 2;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = source.Next();
+                var p1 = (UInt32*)p;
+                var p2 = (UInt32*)&sample;
+                *p1 = *p2;
+            }
         }
 
         /// <summary>
@@ -788,7 +797,7 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public Int32 Int32()
         {
-            return (Int32)Mix();
+            return (Int32)source.Next();
         }
 
         /// <summary>
@@ -879,7 +888,7 @@ namespace Foundations.RandomNumbers
         /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.Int32"/> values.
         /// </summary>
-        public void Fill(Int32[] array, int offset, int count)
+        unsafe public void Fill(Int32[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -887,23 +896,30 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 0 || count > array.Length - offset) 
-                throw new ArgumentOutOfRangeException(nameof(count));
-
-            while (count >= 2)
-            {
-                Mix();
-                array[offset++] = sample.Int32_1;
-                array[offset++] = sample.Int32_0;
-                count -= 2;
-            }
-
             if (count == 0)
                 return;
 
-            Mix();
-             
-            array[offset++] = sample.Int32_1;
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            fixed (Int32* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 2)
+                {
+                    *p++ = source.Next();
+                    count -= 2;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = source.Next();
+                var p1 = (Int32*)p;
+                var p2 = (Int32*)&sample;
+                *p1 = *p2;
+            }
         }
 
         /// <summary>
@@ -976,7 +992,7 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public UInt16 UInt16()
         {
-            return (UInt16)Mix();
+            return (UInt16)source.Next();
         }
 
         /// <summary>
@@ -1058,7 +1074,7 @@ namespace Foundations.RandomNumbers
         /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.UInt16"/> values.
         /// </summary>
-        public void Fill(UInt16[] array, int offset, int count)
+        unsafe public void Fill(UInt16[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -1066,29 +1082,35 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 0 || count > array.Length - offset) 
-                throw new ArgumentOutOfRangeException(nameof(count));
-
-            while (count >= 4)
-            {
-                Mix();
-                array[offset++] = sample.UInt16_3;
-                array[offset++] = sample.UInt16_2;
-                array[offset++] = sample.UInt16_1;
-                array[offset++] = sample.UInt16_0;
-                count -= 4;
-            }
-
             if (count == 0)
                 return;
 
-            Mix();
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
 
-            switch (count)
+            fixed (UInt16* ptr = &array[offset])
             {
-                case 3: array[offset++] = sample.UInt16_3; goto case 2;
-                case 2: array[offset++] = sample.UInt16_2; goto case 1;
-                case 1: array[offset++] = sample.UInt16_1; break;
+                var p = (ulong*)ptr;
+
+                while (count >= 4)
+                {
+                    *p++ = source.Next();
+                    count -= 4;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = source.Next();
+                var p1 = (UInt16*)p;
+                var p2 = (UInt16*)&sample;
+
+                switch (count)
+                {
+                    case 3: *p1++ = *p2++; goto case 2;
+                    case 2: *p1++ = *p2++; goto case 1;
+                    case 1: *p1++ = *p2++; break;
+                }
             }
         }
 
@@ -1138,7 +1160,7 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public Int16 Int16()
         {
-            return (Int16)Mix();
+            return (Int16)source.Next();
         }
 
         /// <summary>
@@ -1228,7 +1250,7 @@ namespace Foundations.RandomNumbers
         /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.Int16"/> values.
         /// </summary>
-        public void Fill(Int16[] array, int offset, int count)
+        unsafe public void Fill(Int16[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -1236,29 +1258,35 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 0 || count > array.Length - offset) 
-                throw new ArgumentOutOfRangeException(nameof(count));
-
-            while (count >= 4)
-            {
-                Mix();
-                array[offset++] = sample.Int16_3;
-                array[offset++] = sample.Int16_2;
-                array[offset++] = sample.Int16_1;
-                array[offset++] = sample.Int16_0;
-                count -= 4;
-            }
-
             if (count == 0)
                 return;
 
-            Mix();
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
 
-            switch (count)
+            fixed (Int16* ptr = &array[offset])
             {
-                case 3: array[offset++] = sample.Int16_3; goto case 2;
-                case 2: array[offset++] = sample.Int16_2; goto case 1;
-                case 1: array[offset++] = sample.Int16_1; break;
+                var p = (ulong*)ptr;
+
+                while (count >= 4)
+                {
+                    *p++ = source.Next();
+                    count -= 4;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = source.Next();
+                var p1 = (Int16*)p;
+                var p2 = (Int16*)&sample;
+
+                switch (count)
+                {
+                    case 3: *p1++ = *p2++; goto case 2;
+                    case 2: *p1++ = *p2++; goto case 1;
+                    case 1: *p1++ = *p2++; break;
+                }
             }
         }
 
@@ -1332,7 +1360,7 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public Byte Byte()
         {
-            return (Byte)Mix();
+            return (Byte)source.Next();
         }
 
         /// <summary>
@@ -1413,7 +1441,7 @@ namespace Foundations.RandomNumbers
         /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.Byte"/> values.
         /// </summary>
-        public void Fill(Byte[] array, int offset, int count)
+        unsafe public void Fill(Byte[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -1421,37 +1449,39 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 0 || count > array.Length - offset) 
-                throw new ArgumentOutOfRangeException(nameof(count));
-
-            while (count >= 8)
-            {
-                Mix();
-                array[offset++] = sample.Byte_7;
-                array[offset++] = sample.Byte_6;
-                array[offset++] = sample.Byte_5;
-                array[offset++] = sample.Byte_4;
-                array[offset++] = sample.Byte_3;
-                array[offset++] = sample.Byte_2;
-                array[offset++] = sample.Byte_1;
-                array[offset++] = sample.Byte_0;
-                count -= 8;
-            }
-
             if (count == 0)
                 return;
 
-            Mix();
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
 
-            switch (count)
+            fixed (Byte* ptr = &array[offset])
             {
-                case 7: array[offset++] = sample.Byte_7; goto case 6;
-                case 6: array[offset++] = sample.Byte_6; goto case 5;
-                case 5: array[offset++] = sample.Byte_5; goto case 4;
-                case 4: array[offset++] = sample.Byte_4; goto case 3;
-                case 3: array[offset++] = sample.Byte_3; goto case 2;
-                case 2: array[offset++] = sample.Byte_2; goto case 1;
-                case 1: array[offset++] = sample.Byte_1; break;
+                var p = (ulong*)ptr;
+
+                while (count >= 8)
+                {
+                    *p++ = source.Next();
+                    count -= 8;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = source.Next();
+                var p1 = (Byte*)p;
+                var p2 = (Byte*)&sample;
+
+                switch (count)
+                {
+                    case 7: *p1++ = *p2++; goto case 6;
+                    case 6: *p1++ = *p2++; goto case 5;
+                    case 5: *p1++ = *p2++; goto case 4;
+                    case 4: *p1++ = *p2++; goto case 3;
+                    case 3: *p1++ = *p2++; goto case 2;
+                    case 2: *p1++ = *p2++; goto case 1;
+                    case 1: *p1++ = *p2++; break;
+                }
             }
         }
 
@@ -1501,7 +1531,7 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public SByte SByte()
         {
-            return (SByte)Mix();
+            return (SByte)source.Next();
         }
 
         /// <summary>
@@ -1590,7 +1620,7 @@ namespace Foundations.RandomNumbers
         /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.SByte"/> values.
         /// </summary>
-        public void Fill(SByte[] array, int offset, int count)
+        unsafe public void Fill(SByte[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -1598,37 +1628,39 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 0 || count > array.Length - offset) 
-                throw new ArgumentOutOfRangeException(nameof(count));
-
-            while (count >= 8)
-            {
-                Mix();
-                array[offset++] = sample.SByte_7;
-                array[offset++] = sample.SByte_6;
-                array[offset++] = sample.SByte_5;
-                array[offset++] = sample.SByte_4;
-                array[offset++] = sample.SByte_3;
-                array[offset++] = sample.SByte_2;
-                array[offset++] = sample.SByte_1;
-                array[offset++] = sample.SByte_0;
-                count -= 8;
-            }
-
             if (count == 0)
                 return;
 
-            Mix();
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
 
-            switch (count)
+            fixed (SByte* ptr = &array[offset])
             {
-                case 7: array[offset++] = sample.SByte_7; goto case 6;
-                case 6: array[offset++] = sample.SByte_6; goto case 5;
-                case 5: array[offset++] = sample.SByte_5; goto case 4;
-                case 4: array[offset++] = sample.SByte_4; goto case 3;
-                case 3: array[offset++] = sample.SByte_3; goto case 2;
-                case 2: array[offset++] = sample.SByte_2; goto case 1;
-                case 1: array[offset++] = sample.SByte_1; break;
+                var p = (ulong*)ptr;
+
+                while (count >= 8)
+                {
+                    *p++ = source.Next();
+                    count -= 8;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = source.Next();
+                var p1 = (SByte*)p;
+                var p2 = (SByte*)&sample;
+
+                switch (count)
+                {
+                    case 7: *p1++ = *p2++; goto case 6;
+                    case 6: *p1++ = *p2++; goto case 5;
+                    case 5: *p1++ = *p2++; goto case 4;
+                    case 4: *p1++ = *p2++; goto case 3;
+                    case 3: *p1++ = *p2++; goto case 2;
+                    case 2: *p1++ = *p2++; goto case 1;
+                    case 1: *p1++ = *p2++; break;
+                }
             }
         }
 
@@ -1702,7 +1734,7 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public Double Double()
         {
-            return (Double)(BitConverter.Int64BitsToDouble((long)(Mix() & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000) - 1.0);
+            return (Double)(BitConverter.Int64BitsToDouble((long)(source.Next() & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000) - 1.0);
         }
 
         /// <summary>
@@ -1771,7 +1803,7 @@ namespace Foundations.RandomNumbers
         /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.Double"/> values.
         /// </summary>
-        public void Fill(Double[] array, int offset, int count)
+        unsafe public void Fill(Double[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -1779,16 +1811,23 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
+            if (count == 0)
+                return;
+
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
-            while (count >= 1)
+            fixed (Double* ptr = &array[offset])
             {
-                Mix();
-                sample.UInt64_0 = (sample.UInt64_0 & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000;
-                sample.Double_0 -= 1d;
-                array[offset++] = sample.Double_0;
-                count -= 1;
+                var p = (ulong*)ptr;
+                var f = ptr;
+
+                while (count >= 1)
+                {
+                    *p++ = (source.Next() & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000;
+                    *f++ -= 1d;
+                    count -= 1;
+                }
             }
         }
 
@@ -1838,7 +1877,7 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public Single Single()
         {
-            return (Single)(BitConverter.Int64BitsToDouble((long)(Mix() & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000) - 1.0);
+            return (Single)(BitConverter.Int64BitsToDouble((long)(source.Next() & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000) - 1.0);
         }
 
         /// <summary>
@@ -1907,7 +1946,7 @@ namespace Foundations.RandomNumbers
         /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.Single"/> values.
         /// </summary>
-        public void Fill(Single[] array, int offset, int count)
+        unsafe public void Fill(Single[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
@@ -1915,29 +1954,33 @@ namespace Foundations.RandomNumbers
             if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            if (count < 0 || count > array.Length - offset) 
-                throw new ArgumentOutOfRangeException(nameof(count));
-
-            while (count >= 2)
-            {
-                Mix();
-                sample.UInt32_1 = (sample.UInt32_1 & 0x007FFFFF) | 0x3F800000;
-                sample.Single_1 -= 1f;
-                array[offset++] = sample.Single_1;
-                sample.UInt32_0 = (sample.UInt32_0 & 0x007FFFFF) | 0x3F800000;
-                sample.Single_0 -= 1f;
-                array[offset++] = sample.Single_0;
-                count -= 2;
-            }
-
             if (count == 0)
                 return;
 
-            Mix();
-                            sample.UInt32_1 = (sample.UInt32_1 & 0x007FFFFF) | 0x3F800000;
-                sample.Single_1 -= 1f;
- 
-            array[offset++] = sample.Single_1;
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            fixed (Single* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+                var f = ptr;
+
+                while (count >= 2)
+                {
+                    *p++ = (source.Next() & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
+                    *f++ -= 1f;
+                    *f++ -= 1f;
+                    count -= 2;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = (source.Next() & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
+                var p1 = (Single*)p;
+                var p2 = (Single*)&sample;
+                *p1 = *p2 - 1f;
+            }
         }
 
         /// <summary>
@@ -2055,13 +2098,16 @@ namespace Foundations.RandomNumbers
         /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.Decimal"/> values.
         /// </summary>
-        public void Fill(Decimal[] array, int offset, int count)
+        unsafe public void Fill(Decimal[] array, int offset, int count)
         {
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
             if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
 
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
@@ -2170,8 +2216,8 @@ namespace Foundations.RandomNumbers
         {
             while(true)
             {
-                ulong u = Mix();
-                uint i = (uint)Mix();
+                ulong u = source.Next();
+                uint i = (uint)source.Next();
                 var d = new decimal((int)(i >> 2), (int)u, (int)(u >> 32), false, 28);
                 if (d < 1m) return d;
             }

@@ -1,6 +1,6 @@
 ﻿
 /*
-XorShift1024Star.cs
+XorShiftRandomSource.cs
 
 Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey

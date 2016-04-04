@@ -12,6 +12,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 using System;
 using Foundations.RandomNumbers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Diagnostics;
 
 namespace Foundations.UnitTests.Objects
 {
@@ -31,6 +32,24 @@ namespace Foundations.UnitTests.Objects
                 Assert.IsTrue(data[i] >= 0);
                 Assert.IsTrue(data[i] <= 9);
             }
+        }
+
+        [TestMethod]
+        public void GeneratorIsFaster()
+        {
+            Generator generator = new Generator();
+            var data = new byte[10000000];
+            generator.Fill(data);
+            var sw = Stopwatch.StartNew();
+            generator.Fill(data);
+            var time1 = sw.Elapsed;
+            var rand = new Random();
+            var bytes = new byte[Buffer.ByteLength(data)];
+            rand.NextBytes(bytes);
+            sw = Stopwatch.StartNew();
+            rand.NextBytes(bytes);
+            var time2 = sw.Elapsed;
+            Assert.IsTrue(time2 > time1 + time1 + time1 + time1);
         }
     }
 }
