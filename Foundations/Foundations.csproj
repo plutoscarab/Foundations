@@ -90,6 +90,8 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="RandomNumbers\SHA256RandomSource.cs" />
+    <Compile Include="RandomNumbers\SynchronizedRandomSource.cs" />
+    <Compile Include="RandomNumbers\SystemRandomSource.cs" />
     <Compile Include="RandomNumbers\XorShiftRandomSource.cs" />
     <Compile Include="Types\ValueUnion.cs">
       <AutoGen>True</AutoGen>

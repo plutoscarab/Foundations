@@ -41,6 +41,16 @@ namespace Foundations.RandomNumbers
         {
             return new XorShiftRandomSource();
         };
+
+        /// <summary>
+        /// Implicitly cast a <see cref="System.Random"/> to a <see cref="Generator"/>
+        /// to enable using System.Random values as arguments to Foundations library
+        /// functions that require Generator.
+        /// </summary>
+        public static implicit operator Generator(System.Random random)
+        {
+            return new Generator(new SystemRandomSource(random));
+        }
         
         private IRandomSource source;
      
@@ -381,7 +391,7 @@ namespace Foundations.RandomNumbers
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            if (offset < 0 || offset >= array.Length) 
+            if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
             if (count < 0 || count > array.Length - offset) 
@@ -538,7 +548,7 @@ namespace Foundations.RandomNumbers
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            if (offset < 0 || offset >= array.Length) 
+            if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
             if (count < 0 || count > array.Length - offset) 
@@ -710,7 +720,7 @@ namespace Foundations.RandomNumbers
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            if (offset < 0 || offset >= array.Length) 
+            if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
             if (count < 0 || count > array.Length - offset) 
@@ -874,7 +884,7 @@ namespace Foundations.RandomNumbers
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            if (offset < 0 || offset >= array.Length) 
+            if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
             if (count < 0 || count > array.Length - offset) 
@@ -1053,7 +1063,7 @@ namespace Foundations.RandomNumbers
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            if (offset < 0 || offset >= array.Length) 
+            if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
             if (count < 0 || count > array.Length - offset) 
@@ -1223,7 +1233,7 @@ namespace Foundations.RandomNumbers
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            if (offset < 0 || offset >= array.Length) 
+            if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
             if (count < 0 || count > array.Length - offset) 
@@ -1408,7 +1418,7 @@ namespace Foundations.RandomNumbers
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            if (offset < 0 || offset >= array.Length) 
+            if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
             if (count < 0 || count > array.Length - offset) 
@@ -1585,7 +1595,7 @@ namespace Foundations.RandomNumbers
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            if (offset < 0 || offset >= array.Length) 
+            if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
             if (count < 0 || count > array.Length - offset) 
@@ -1766,7 +1776,7 @@ namespace Foundations.RandomNumbers
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            if (offset < 0 || offset >= array.Length) 
+            if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
             if (count < 0 || count > array.Length - offset) 
@@ -1902,7 +1912,7 @@ namespace Foundations.RandomNumbers
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            if (offset < 0 || offset >= array.Length) 
+            if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
             if (count < 0 || count > array.Length - offset) 
@@ -2050,7 +2060,7 @@ namespace Foundations.RandomNumbers
             if (array == null) 
                 throw new ArgumentNullException(nameof(array));
 
-            if (offset < 0 || offset >= array.Length) 
+            if (offset < 0 || offset > array.Length) 
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
             if (count < 0 || count > array.Length - offset) 

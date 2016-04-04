@@ -246,7 +246,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomBytes".ToCharArray());
             var data = new Byte[99];
-            random.Fill(data, data.Length, 0);
+            random.Fill(data, data.Length + 1, 0);
         }
 
         [TestMethod]
@@ -648,7 +648,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomSBytes".ToCharArray());
             var data = new SByte[99];
-            random.Fill(data, data.Length, 0);
+            random.Fill(data, data.Length + 1, 0);
         }
 
         [TestMethod]
@@ -1017,7 +1017,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt16s".ToCharArray());
             var data = new UInt16[99];
-            random.Fill(data, data.Length, 0);
+            random.Fill(data, data.Length + 1, 0);
         }
 
         [TestMethod]
@@ -1419,7 +1419,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt16s".ToCharArray());
             var data = new Int16[99];
-            random.Fill(data, data.Length, 0);
+            random.Fill(data, data.Length + 1, 0);
         }
 
         [TestMethod]
@@ -1788,7 +1788,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt32s".ToCharArray());
             var data = new UInt32[99];
-            random.Fill(data, data.Length, 0);
+            random.Fill(data, data.Length + 1, 0);
         }
 
         [TestMethod]
@@ -2190,7 +2190,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt32s".ToCharArray());
             var data = new Int32[99];
-            random.Fill(data, data.Length, 0);
+            random.Fill(data, data.Length + 1, 0);
         }
 
         [TestMethod]
@@ -2559,7 +2559,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomUInt64s".ToCharArray());
             var data = new UInt64[99];
-            random.Fill(data, data.Length, 0);
+            random.Fill(data, data.Length + 1, 0);
         }
 
         [TestMethod]
@@ -2961,7 +2961,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomInt64s".ToCharArray());
             var data = new Int64[99];
-            random.Fill(data, data.Length, 0);
+            random.Fill(data, data.Length + 1, 0);
         }
 
         [TestMethod]
@@ -3330,7 +3330,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomSingles".ToCharArray());
             var data = new Single[99];
-            random.Fill(data, data.Length, 0);
+            random.Fill(data, data.Length + 1, 0);
         }
 
         [TestMethod]
@@ -3699,7 +3699,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomDoubles".ToCharArray());
             var data = new Double[99];
-            random.Fill(data, data.Length, 0);
+            random.Fill(data, data.Length + 1, 0);
         }
 
         [TestMethod]
@@ -4068,7 +4068,7 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("RandomDecimals".ToCharArray());
             var data = new Decimal[99];
-            random.Fill(data, data.Length, 0);
+            random.Fill(data, data.Length + 1, 0);
         }
 
         [TestMethod]

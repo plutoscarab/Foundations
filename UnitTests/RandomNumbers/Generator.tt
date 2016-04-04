@@ -318,7 +318,7 @@ void Type(string T)
         {
             var random = new Generator("Random<#= T #>s".ToCharArray());
             var data = new <#= T #>[99];
-            random.Fill(data, data.Length, 0);
+            random.Fill(data, data.Length + 1, 0);
         }
 
         [TestMethod]
