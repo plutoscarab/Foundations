@@ -33,6 +33,7 @@ Type("UInt64");
 Type("Int64");
 Type("Single");
 Type("Double");
+Type("Decimal");
 #>
 
         [TestMethod]
@@ -70,13 +71,34 @@ void Type(string T)
         [TestMethod]
         public void IndividualNonNegative<#= T #>Values()
         {
-            var random = new Generator(Generator.DefaultSourceFactory(), "IndividualNonNegative<#= T #>Values".ToCharArray());
+            var random = new Generator();
 
             for (int i = 0; i < 1000; i++)
             {
                 var value = random.<#= T #>NonNegative();
                 Assert.IsTrue(value >= 0);
             }
+        }
+
+        [TestMethod]
+        public void FillNonNegative<#= T #>()
+        {
+            var random = new Generator();
+            var data = new <#= T #>[10000];
+            random.FillNonNegative(data);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 0);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void FillNullNonNegative<#= T #>()
+        {
+            var random = new Generator();
+            random.FillNonNegative((<#= T #>[])null);
         }
 <#+
     }
@@ -155,6 +177,112 @@ void Type(string T)
                 random.Fill(data);
                 LooksRandom(data);
             }
+        }
+
+        [TestMethod]
+        public void Random<#= T #>ArrayWithRange()
+        {
+            var random = new Generator();
+            var data = new <#= T #>[10000];
+            random.Fill(50, data);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 0);
+                Assert.IsTrue(data[i] < 50);
+            }
+        }
+
+        [TestMethod]
+        public void Random<#= T #>ArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            var data = new <#= T #>[10000];
+            random.Fill(25, 50, data);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 25);
+                Assert.IsTrue(data[i] < 75);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Random<#= T #>ArrayWithLowRange()
+        {
+            var random = new Generator();
+            var data = new <#= T #>[10000];
+            random.Fill(0, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Random<#= T #>ArrayWithHighRange()
+        {
+            var random = new Generator();
+            var data = new <#= T #>[10000];
+            random.Fill(3 * (<#= T #>.MaxValue / 4), <#= T #>.MaxValue / 2, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void RandomNull<#= T #>ArrayWithRange()
+        {
+            var random = new Generator();
+            random.Fill(50, (<#= T #>[])null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void RandomNull<#= T #>ArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            random.Fill(0, 50, (<#= T #>[])null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void RandomNull<#= T #>SubArrayWithRange()
+        {
+            var random = new Generator();
+            random.Fill(0, 50, (<#= T #>[])null, 0, 100);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Random<#= T #>SubArrayWithLowOffset()
+        {
+            var random = new Generator("Random<#= T #>ArrayWithRange".ToCharArray());
+            var data = new <#= T #>[99];
+            random.Fill(0, 50, data, -1, 100);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Random<#= T #>SubArrayWithHighOffset()
+        {
+            var random = new Generator("Random<#= T #>ArrayWithRange".ToCharArray());
+            var data = new <#= T #>[99];
+            random.Fill(0, 50, data, 99, 100);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Random<#= T #>SubArrayWithLowCount()
+        {
+            var random = new Generator("Random<#= T #>ArrayWithRange".ToCharArray());
+            var data = new <#= T #>[99];
+            random.Fill(0, 50, data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Random<#= T #>SubArrayWithHighCount()
+        {
+            var random = new Generator("Random<#= T #>ArrayWithRange".ToCharArray());
+            var data = new <#= T #>[99];
+            random.Fill(0, 50, data, 0, 100);
         }
 
         [TestMethod]
@@ -266,6 +394,7 @@ void Type(string T)
             method.Invoke(null, new object[] { source, seed, state });
         }
 
+<#+ if (T != "Decimal") { #>
         [TestMethod]
         public void SeedWith<#= T #>s()
         {
@@ -278,16 +407,6 @@ void Type(string T)
         }
 
         [TestMethod]
-        public void Random<#= T #>SeededWithNull()
-        {
-            var source = new XorShiftRandomSource();
-            var random = new Generator(source, (byte[])null);
-            var data = new <#= T #>[99];
-            random.Fill(data);
-            LooksRandom(data);
-        }
-
-        [TestMethod]
         public void SeedWith<#= T #>sAndSource()
         {
             var random = new Generator("SeedWith<#= T #>s".ToCharArray());
@@ -295,6 +414,17 @@ void Type(string T)
             random.Fill(data);
             var source = Generator.DefaultSourceFactory();
             random = new Generator(source, data);
+            random.Fill(data);
+            LooksRandom(data);
+        }
+
+<#+ } #>
+        [TestMethod]
+        public void Random<#= T #>SeededWithNull()
+        {
+            var source = new XorShiftRandomSource();
+            var random = new Generator(source, (byte[])null);
+            var data = new <#= T #>[99];
             random.Fill(data);
             LooksRandom(data);
         }
@@ -320,7 +450,7 @@ void Type(string T)
 
         private void LooksRandom(<#= T #>[] array)
         {
-<#+ if (T == "Single" || T == "Double") { #>
+<#+ if (T == "Single" || T == "Double" || T == "Decimal") { #>
             var minValue = 0.0;
             var maxValue = 1.0;
 <#+ } else { #>

@@ -352,6 +352,28 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Fill a provided array with random <see cref="System.UInt64"/> values.
+        /// </summary>
+        public void Fill(UInt64 range, UInt64[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.UInt64"/> values.
+        /// </summary>
+        public void Fill(UInt64 minimum, UInt64 range, UInt64[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.UInt64"/> values.
         /// </summary>
         public void Fill(UInt64[] array, int offset, int count)
@@ -370,6 +392,32 @@ namespace Foundations.RandomNumbers
                 Mix();
                 array[offset++] = sample.UInt64_0;
                 count -= 1;
+            }
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with random <see cref="System.UInt64"/> values.
+        /// </summary>
+        public void Fill(UInt64 minimum, UInt64 range, UInt64[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.UInt64.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] = UInt64(minimum, range);
             }
         }
 
@@ -461,6 +509,28 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Fill a provided array with random <see cref="System.Int64"/> values.
+        /// </summary>
+        public void Fill(Int64 range, Int64[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.Int64"/> values.
+        /// </summary>
+        public void Fill(Int64 minimum, Int64 range, Int64[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.Int64"/> values.
         /// </summary>
         public void Fill(Int64[] array, int offset, int count)
@@ -479,6 +549,56 @@ namespace Foundations.RandomNumbers
                 Mix();
                 array[offset++] = sample.Int64_0;
                 count -= 1;
+            }
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with random <see cref="System.Int64"/> values.
+        /// </summary>
+        public void Fill(Int64 minimum, Int64 range, Int64[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Int64.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] = Int64(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Fill a provided array with non-negative random <see cref="System.Int64"/> values.
+        /// </summary>
+        public void FillNonNegative(Int64[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            FillNonNegative(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with non-negative random <see cref="System.Int64"/> values.
+        /// </summary>
+        public void FillNonNegative(Int64[] array, int offset, int count)
+        {
+            Fill(array, offset, count);
+
+            while (count-- > 0)
+            {
+                array[offset++] &= 0x7FFFFFFFFFFFFFFF;
             }
         }
 
@@ -561,6 +681,28 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Fill a provided array with random <see cref="System.UInt32"/> values.
+        /// </summary>
+        public void Fill(UInt32 range, UInt32[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.UInt32"/> values.
+        /// </summary>
+        public void Fill(UInt32 minimum, UInt32 range, UInt32[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.UInt32"/> values.
         /// </summary>
         public void Fill(UInt32[] array, int offset, int count)
@@ -588,6 +730,32 @@ namespace Foundations.RandomNumbers
             Mix();
              
             array[offset++] = sample.UInt32_1;
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with random <see cref="System.UInt32"/> values.
+        /// </summary>
+        public void Fill(UInt32 minimum, UInt32 range, UInt32[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.UInt32.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] = UInt32(minimum, range);
+            }
         }
 
         private static void CreateState(IRandomSource source, byte[] seed, UInt32[] state)
@@ -677,6 +845,28 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Fill a provided array with random <see cref="System.Int32"/> values.
+        /// </summary>
+        public void Fill(Int32 range, Int32[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.Int32"/> values.
+        /// </summary>
+        public void Fill(Int32 minimum, Int32 range, Int32[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.Int32"/> values.
         /// </summary>
         public void Fill(Int32[] array, int offset, int count)
@@ -704,6 +894,56 @@ namespace Foundations.RandomNumbers
             Mix();
              
             array[offset++] = sample.Int32_1;
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with random <see cref="System.Int32"/> values.
+        /// </summary>
+        public void Fill(Int32 minimum, Int32 range, Int32[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Int32.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] = Int32(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Fill a provided array with non-negative random <see cref="System.Int32"/> values.
+        /// </summary>
+        public void FillNonNegative(Int32[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            FillNonNegative(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with non-negative random <see cref="System.Int32"/> values.
+        /// </summary>
+        public void FillNonNegative(Int32[] array, int offset, int count)
+        {
+            Fill(array, offset, count);
+
+            while (count-- > 0)
+            {
+                array[offset++] &= 0x7FFFFFFF;
+            }
         }
 
         private static void CreateState(IRandomSource source, byte[] seed, Int32[] state)
@@ -784,6 +1024,28 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Fill a provided array with random <see cref="System.UInt16"/> values.
+        /// </summary>
+        public void Fill(UInt16 range, UInt16[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.UInt16"/> values.
+        /// </summary>
+        public void Fill(UInt16 minimum, UInt16 range, UInt16[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.UInt16"/> values.
         /// </summary>
         public void Fill(UInt16[] array, int offset, int count)
@@ -817,6 +1079,32 @@ namespace Foundations.RandomNumbers
                 case 3: array[offset++] = sample.UInt16_3; goto case 2;
                 case 2: array[offset++] = sample.UInt16_2; goto case 1;
                 case 1: array[offset++] = sample.UInt16_1; break;
+            }
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with random <see cref="System.UInt16"/> values.
+        /// </summary>
+        public void Fill(UInt16 minimum, UInt16 range, UInt16[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.UInt16.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] = UInt16(minimum, range);
             }
         }
 
@@ -906,6 +1194,28 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Fill a provided array with random <see cref="System.Int16"/> values.
+        /// </summary>
+        public void Fill(Int16 range, Int16[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.Int16"/> values.
+        /// </summary>
+        public void Fill(Int16 minimum, Int16 range, Int16[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.Int16"/> values.
         /// </summary>
         public void Fill(Int16[] array, int offset, int count)
@@ -939,6 +1249,56 @@ namespace Foundations.RandomNumbers
                 case 3: array[offset++] = sample.Int16_3; goto case 2;
                 case 2: array[offset++] = sample.Int16_2; goto case 1;
                 case 1: array[offset++] = sample.Int16_1; break;
+            }
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with random <see cref="System.Int16"/> values.
+        /// </summary>
+        public void Fill(Int16 minimum, Int16 range, Int16[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Int16.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] = Int16(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Fill a provided array with non-negative random <see cref="System.Int16"/> values.
+        /// </summary>
+        public void FillNonNegative(Int16[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            FillNonNegative(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with non-negative random <see cref="System.Int16"/> values.
+        /// </summary>
+        public void FillNonNegative(Int16[] array, int offset, int count)
+        {
+            Fill(array, offset, count);
+
+            while (count-- > 0)
+            {
+                array[offset++] &= 0x7FFF;
             }
         }
 
@@ -1019,6 +1379,28 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Fill a provided array with random <see cref="System.Byte"/> values.
+        /// </summary>
+        public void Fill(Byte range, Byte[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.Byte"/> values.
+        /// </summary>
+        public void Fill(Byte minimum, Byte range, Byte[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.Byte"/> values.
         /// </summary>
         public void Fill(Byte[] array, int offset, int count)
@@ -1060,6 +1442,32 @@ namespace Foundations.RandomNumbers
                 case 3: array[offset++] = sample.Byte_3; goto case 2;
                 case 2: array[offset++] = sample.Byte_2; goto case 1;
                 case 1: array[offset++] = sample.Byte_1; break;
+            }
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with random <see cref="System.Byte"/> values.
+        /// </summary>
+        public void Fill(Byte minimum, Byte range, Byte[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Byte.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] = Byte(minimum, range);
             }
         }
 
@@ -1148,6 +1556,28 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Fill a provided array with random <see cref="System.SByte"/> values.
+        /// </summary>
+        public void Fill(SByte range, SByte[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.SByte"/> values.
+        /// </summary>
+        public void Fill(SByte minimum, SByte range, SByte[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.SByte"/> values.
         /// </summary>
         public void Fill(SByte[] array, int offset, int count)
@@ -1189,6 +1619,56 @@ namespace Foundations.RandomNumbers
                 case 3: array[offset++] = sample.SByte_3; goto case 2;
                 case 2: array[offset++] = sample.SByte_2; goto case 1;
                 case 1: array[offset++] = sample.SByte_1; break;
+            }
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with random <see cref="System.SByte"/> values.
+        /// </summary>
+        public void Fill(SByte minimum, SByte range, SByte[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.SByte.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] = SByte(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Fill a provided array with non-negative random <see cref="System.SByte"/> values.
+        /// </summary>
+        public void FillNonNegative(SByte[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            FillNonNegative(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with non-negative random <see cref="System.SByte"/> values.
+        /// </summary>
+        public void FillNonNegative(SByte[] array, int offset, int count)
+        {
+            Fill(array, offset, count);
+
+            while (count-- > 0)
+            {
+                array[offset++] &= 0x7F;
             }
         }
 
@@ -1257,6 +1737,28 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Fill a provided array with random <see cref="System.Double"/> values.
+        /// </summary>
+        public void Fill(Double range, Double[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.Double"/> values.
+        /// </summary>
+        public void Fill(Double minimum, Double range, Double[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.Double"/> values.
         /// </summary>
         public void Fill(Double[] array, int offset, int count)
@@ -1277,6 +1779,32 @@ namespace Foundations.RandomNumbers
                 sample.Double_0 -= 1d;
                 array[offset++] = sample.Double_0;
                 count -= 1;
+            }
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with random <see cref="System.Double"/> values.
+        /// </summary>
+        public void Fill(Double minimum, Double range, Double[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Double.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] = Double(minimum, range);
             }
         }
 
@@ -1345,6 +1873,28 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Fill a provided array with random <see cref="System.Single"/> values.
+        /// </summary>
+        public void Fill(Single range, Single[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.Single"/> values.
+        /// </summary>
+        public void Fill(Single minimum, Single range, Single[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.Single"/> values.
         /// </summary>
         public void Fill(Single[] array, int offset, int count)
@@ -1380,7 +1930,165 @@ namespace Foundations.RandomNumbers
             array[offset++] = sample.Single_1;
         }
 
+        /// <summary>
+        /// Fill a specified portion of a provided array with random <see cref="System.Single"/> values.
+        /// </summary>
+        public void Fill(Single minimum, Single range, Single[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Single.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] = Single(minimum, range);
+            }
+        }
+
         private static void CreateState(IRandomSource source, byte[] seed, Single[] state)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            if (seed == null)
+                throw new ArgumentNullException(nameof(seed));
+
+            if (state == null)
+                throw new ArgumentNullException(nameof(state));
+
+            var rand = new Generator(source, seed);
+            rand.Fill(state);
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.Decimal"/> value.
+        /// </summary>
+        public Decimal Decimal()
+        {
+            return MakeDecimal();
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.Decimal"/> value.
+        /// </summary>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
+        public Decimal Decimal(Decimal range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            return range * Decimal();
+        }
+
+        /// <summary>
+        /// Get a random <see cref="System.Decimal"/> value.
+        /// </summary>
+        /// <param ref="minimum">The minimum value to return.</param>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between minimum (inclusive) and minimum+range (exclusive).</returns>
+        public Decimal Decimal(Decimal minimum, Decimal range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Decimal.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            return (Decimal)(minimum + Decimal(range));
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.Decimal"/> values.
+        /// </summary>
+        public void Fill(Decimal[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.Decimal"/> values.
+        /// </summary>
+        public void Fill(Decimal range, Decimal[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.Decimal"/> values.
+        /// </summary>
+        public void Fill(Decimal minimum, Decimal range, Decimal[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with random <see cref="System.Decimal"/> values.
+        /// </summary>
+        public void Fill(Decimal[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] = MakeDecimal();
+            }
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with random <see cref="System.Decimal"/> values.
+        /// </summary>
+        public void Fill(Decimal minimum, Decimal range, Decimal[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Decimal.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] = Decimal(minimum, range);
+            }
+        }
+
+        private static void CreateState(IRandomSource source, byte[] seed, Decimal[] state)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -1439,8 +2147,23 @@ namespace Foundations.RandomNumbers
                     CreateState(source, seed, state as Single[]);
                     break;
 
+                case TypeCode.Decimal:
+                    CreateState(source, seed, state as Decimal[]);
+                    break;
+
                 default:
                     throw new NotSupportedException("Unsupported array type.");
+            }
+        }
+
+        private decimal MakeDecimal()
+        {
+            while(true)
+            {
+                ulong u = Mix();
+                uint i = (uint)Mix();
+                var d = new decimal((int)(i >> 2), (int)u, (int)(u >> 32), false, 28);
+                if (d < 1m) return d;
             }
         }
     }

@@ -151,6 +151,7 @@ namespace Foundations.RandomNumbers
     Next("SByte", 8);
     Next("Double", 1);
     Next("Single", 2);
+    Next("Decimal", 1);
 #>
 
         private static void CreateState(IRandomSource source, byte[] seed, Array state)
@@ -170,6 +171,17 @@ namespace Foundations.RandomNumbers
 #>
                 default:
                     throw new NotSupportedException("Unsupported array type.");
+            }
+        }
+
+        private decimal MakeDecimal()
+        {
+            while(true)
+            {
+                ulong u = Mix();
+                uint i = (uint)Mix();
+                var d = new decimal((int)(i >> 2), (int)u, (int)(u >> 32), false, 28);
+                if (d < 1m) return d;
             }
         }
     }
@@ -216,6 +228,12 @@ void Next(string T, int m)
             return (<#= T #>)(BitConverter.Int64BitsToDouble((long)(Mix() & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000) - 1.0);
 <#+
     }
+    else if (T == "Decimal")
+    {
+#>
+            return MakeDecimal();
+<#+
+    }
     else
     {
 #>
@@ -251,7 +269,7 @@ void Next(string T, int m)
                 throw new ArgumentOutOfRangeException(nameof(range));
 
 <#+
-    if (T == "Single" || T == "Double")
+    if (T == "Single" || T == "Double" || T == "Decimal")
     {
 #>
             return range * <#= T #>();
@@ -319,6 +337,28 @@ void Next(string T, int m)
         }
 
         /// <summary>
+        /// Fill a provided array with random <see cref="System.<#= T #>"/> values.
+        /// </summary>
+        public void Fill(<#= T #> range, <#= T #>[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.<#= T #>"/> values.
+        /// </summary>
+        public void Fill(<#= T #> minimum, <#= T #> range, <#= T #>[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
         /// Fill a specified portion of a provided array with random <see cref="System.<#= T #>"/> values.
         /// </summary>
         public void Fill(<#= T #>[] array, int offset, int count)
@@ -333,30 +373,41 @@ void Next(string T, int m)
                 throw new ArgumentOutOfRangeException(nameof(count));
 
 <#+
-    string FP = T;
-
-    if (T == "Single" || T == "Double")
+    if (T == "Decimal")
     {
-        FP = T == "Single" ? "UInt32" : "UInt64";
+#>
+            while (count-- > 0)
+            {
+                array[offset++] = MakeDecimal();
+            }
+<#+
     }
+    else
+    {
+        string FP = T;
+
+        if (T == "Single" || T == "Double")
+        {
+            FP = T == "Single" ? "UInt32" : "UInt64";
+        }
 #>
             while (count >= <#= m #>)
             {
                 Mix();
 <#+
-    for (int i = m - 1; i >= 0; i--)
-    {
-        FixFP(T, FP, i);
+        for (int i = m - 1; i >= 0; i--)
+        {
+            FixFP(T, FP, i);
 #>
                 array[offset++] = sample.<#= T #>_<#= i #>;
 <#+
-    }
+        }
 #>
                 count -= <#= m #>;
             }
 <#+
-    if (m == 2)
-    {
+        if (m == 2)
+        {
 #>
 
             if (count == 0)
@@ -366,9 +417,9 @@ void Next(string T, int m)
             <#+ FixFP(T, FP, 1); #> 
             array[offset++] = sample.<#= T #>_1;
 <#+
-    }
-    else if (m > 2)
-    {
+        }
+        else if (m > 2)
+        {
 #>
 
             if (count == 0)
@@ -379,19 +430,77 @@ void Next(string T, int m)
             switch (count)
             {
 <#+
-        for (int i = m - 1; i > 1; i--)
-        {
+            for (int i = m - 1; i > 1; i--)
+            {
 #>
                 case <#= i #>: array[offset++] = sample.<#= T #>_<#= i #>; goto case <#= i - 1 #>;
 <#+
-        }
+            }
 #>
                 case 1: array[offset++] = sample.<#= T #>_1; break;
             }
 <#+
-    }   // end if (m > 1)
+        }
+    }
 #>
         }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with random <see cref="System.<#= T #>"/> values.
+        /// </summary>
+        public void Fill(<#= T #> minimum, <#= T #> range, <#= T #>[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.<#= T #>.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] = <#= T #>(minimum, range);
+            }
+        }
+<#+
+    if (T[0] == 'I' || T == "SByte")
+    {
+#>
+
+        /// <summary>
+        /// Fill a provided array with non-negative random <see cref="System.<#= T #>"/> values.
+        /// </summary>
+        public void FillNonNegative(<#= T #>[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            FillNonNegative(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with non-negative random <see cref="System.<#= T #>"/> values.
+        /// </summary>
+        public void FillNonNegative(<#= T #>[] array, int offset, int count)
+        {
+            Fill(array, offset, count);
+
+            while (count-- > 0)
+            {
+                array[offset++] &= 0x7<#= new string('F', 16 / m - 1) #>;
+            }
+        }
+<#+
+    }
+#>
 
         private static void CreateState(IRandomSource source, byte[] seed, <#= T #>[] state)
         {
