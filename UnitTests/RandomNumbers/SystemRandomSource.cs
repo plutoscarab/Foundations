@@ -34,6 +34,8 @@ namespace Foundations.UnitTests.Objects
             }
         }
 
+#if DEBUG
+#else
         [TestMethod]
         public void GeneratorIsFaster()
         {
@@ -51,5 +53,6 @@ namespace Foundations.UnitTests.Objects
             var time2 = sw.Elapsed;
             Assert.IsTrue(time2 > time1 + time1 + time1 + time1);
         }
+#endif
     }
 }

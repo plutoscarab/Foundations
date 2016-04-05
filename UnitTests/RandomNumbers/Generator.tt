@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Foundations.RandomNumbers;
+using Foundations.Types;
 
 namespace Foundations.UnitTests.RandomNumbers
 {
@@ -45,6 +46,187 @@ Type("Decimal");
             var seed = new byte[] { 1, 2, 3 };
             Array state = new string[99];
             method.Invoke(null, new object[] { source, seed, state });
+        }
+
+        [TestMethod]
+        public void IndividualValueUnionValues()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "IndividualValueUnionValues".ToCharArray());
+            var data = new ValueUnion[99];
+
+            for (int i = 0; i < data.Length; i++)
+                data[i] = random.ValueUnion();
+
+            LooksRandom(data.Select(t => t.UInt64_0).ToArray());
+        }
+
+        [TestMethod]
+        public void RandomValueUnionArrays()
+        {
+            var random = new Generator("RandomValueUnions".ToCharArray());
+
+            for (int i = 0; i < 8; i++)
+            {
+                var data = new ValueUnion[99 + i];
+                random.Fill(data);
+                LooksRandom(data.Select(t => t.UInt64_0).ToArray());
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void NullValueUnionArray()
+        {
+            var random = new Generator("RandomValueUnions".ToCharArray());
+            ValueUnion[] data = null;
+            random.Fill(data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void NullValueUnionArrayWithOffsetCount()
+        {
+            var random = new Generator("RandomValueUnions".ToCharArray());
+            ValueUnion[] data = null;
+            random.Fill(data, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void LowValueUnionArrayOffset()
+        {
+            var random = new Generator("RandomValueUnions".ToCharArray());
+            var data = new ValueUnion[99];
+            random.Fill(data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void HighValueUnionArrayOffset()
+        {
+            var random = new Generator("RandomValueUnions".ToCharArray());
+            var data = new ValueUnion[99];
+            random.Fill(data, data.Length + 1, 0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void LowValueUnionArrayCount()
+        {
+            var random = new Generator("RandomValueUnions".ToCharArray());
+            var data = new ValueUnion[99];
+            random.Fill(data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void HighValueUnionArrayCount()
+        {
+            var random = new Generator("RandomValueUnions".ToCharArray());
+            var data = new ValueUnion[99];
+            random.Fill(data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void CreateValueUnionState()
+        {
+            var method = typeof(Generator).GetMethod("CreateState", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static, null, new[] { typeof(IRandomSource), typeof(byte[]), typeof(ValueUnion[]) }, null);
+            var source = new SHA256RandomSource();
+            var seed = new byte[] { 1, 2, 3 };
+            var state = new ValueUnion[99];
+            method.Invoke(null, new object[] { source, seed, state });
+            LooksRandom((state as ValueUnion[]).Select(t => t.UInt64_0).ToArray());
+        }
+
+        [TestMethod]
+        public void CreateValueUnionStateWeaklyTyped()
+        {
+            var method = typeof(Generator).GetMethod("CreateState", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static, null, new[] { typeof(IRandomSource), typeof(byte[]), typeof(Array) }, null);
+            var source = new SHA256RandomSource();
+            var seed = new byte[] { 1, 2, 3 };
+            Array state = new ValueUnion[99];
+            method.Invoke(null, new object[] { source, seed, state });
+            LooksRandom((state as ValueUnion[]).Select(t => t.UInt64_0).ToArray());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.Reflection.TargetInvocationException))]
+        public void CreateValueUnionStateNullSource()
+        {
+            var method = typeof(Generator).GetMethod("CreateState", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static, null, new[] { typeof(IRandomSource), typeof(byte[]), typeof(ValueUnion[]) }, null);
+            IRandomSource source = null;
+            var seed = new byte[] { 1, 2, 3 };
+            var state = new ValueUnion[99];
+            method.Invoke(null, new object[] { source, seed, state });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.Reflection.TargetInvocationException))]
+        public void CreateValueUnionStateNullSeed()
+        {
+            var method = typeof(Generator).GetMethod("CreateState", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static, null, new[] { typeof(IRandomSource), typeof(byte[]), typeof(ValueUnion[]) }, null);
+            var source = new SHA256RandomSource();
+            byte[] seed = null;
+            var state = new ValueUnion[99];
+            method.Invoke(null, new object[] { source, seed, state });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.Reflection.TargetInvocationException))]
+        public void CreateValueUnionStateNullState()
+        {
+            var method = typeof(Generator).GetMethod("CreateState", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static, null, new[] { typeof(IRandomSource), typeof(byte[]), typeof(ValueUnion[]) }, null);
+            var source = new SHA256RandomSource();
+            byte[] seed = new byte[] { 1, 2, 3 };
+            ValueUnion[] state = null;
+            method.Invoke(null, new object[] { source, seed, state });
+        }
+
+        [TestMethod]
+        public void RandomValueUnionSeededWithNull()
+        {
+            var source = new XorShiftRandomSource();
+            var random = new Generator(source, (byte[])null);
+            var data = new ValueUnion[99];
+            random.Fill(data);
+            LooksRandom(data.Select(t => t.UInt64_0).ToArray());
+        }
+
+        [TestMethod]
+        public void RandomValueUnionFromEntropy()
+        {
+            var random = new Generator();
+            var data = new ValueUnion[99];
+            random.Fill(data);
+            LooksRandom(data.Select(t => t.UInt64_0).ToArray());
+        }
+
+        [TestMethod]
+        public void RandomValueUnionFromEntropyAndSource()
+        {
+            var source = Generator.DefaultSourceFactory();
+            var random = new Generator(source);
+            var data = new ValueUnion[99];
+            random.Fill(data);
+            LooksRandom(data.Select(t => t.UInt64_0).ToArray());
+        }
+
+        [TestMethod]
+        public void FillZeroLengthValueUnionArray()
+        {
+            var random = new Generator("FillZeroLengthValueUnionArray");
+            var data = new ValueUnion[99];
+            random.Fill(data, 0, 0);
+            Assert.AreEqual(0, data[0].Int32_0);
+            Assert.AreEqual(0, data[98].Int32_0);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfValueUnion()
+        {
+            var random = new Generator("EnumeratorOfValueUnion");
+            var data = random.ValueUnions().Take(99).ToArray();
+            LooksRandom(data.Select(t => t.UInt64_0).ToArray());
         }
     }
 }

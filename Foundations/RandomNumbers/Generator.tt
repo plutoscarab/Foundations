@@ -169,6 +169,82 @@ namespace Foundations.RandomNumbers
     Next("Decimal", 1);
 #>
 
+        /// <summary>
+        /// Gets a random <see cref="ValueUnion"/> value.
+        /// </summary>
+        public ValueUnion ValueUnion()
+        {
+            var result = new ValueUnion();
+            result.UInt64_0 = source.Next();
+            return result;
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="ValueUnion"/> values.
+        /// </summary>
+        public void Fill(ValueUnion[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with random <see cref="ValueUnion"/> values.
+        /// </summary>
+        unsafe public void Fill(ValueUnion[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            fixed (ValueUnion* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 1)
+                {
+                    *p++ = source.Next();
+                    count -= 1;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of ValueUnion values.
+        /// </summary>
+        public IEnumerable<ValueUnion> ValueUnions()
+        {
+            while(true)
+            {
+                yield return ValueUnion();
+            }
+        }
+
+        private static void CreateState(IRandomSource source, byte[] seed, ValueUnion[] state)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            if (seed == null)
+                throw new ArgumentNullException(nameof(seed));
+
+            if (state == null)
+                throw new ArgumentNullException(nameof(state));
+
+            var rand = new Generator(source, seed);
+            rand.Fill(state);
+        }
+
         private static void CreateState(IRandomSource source, byte[] seed, Array state)
         {
             switch (Type.GetTypeCode(state.GetType().GetElementType()))
@@ -179,14 +255,21 @@ namespace Foundations.RandomNumbers
 #>
                 case TypeCode.<#= T #>:
                     CreateState(source, seed, state as <#= T #>[]);
-                    break;
+                    return;
 
 <#
     }
 #>
-                default:
-                    throw new NotSupportedException("Unsupported array type.");
+                case TypeCode.Object:
+                    if (state is ValueUnion[])
+                    {
+                        CreateState(source, seed, state as ValueUnion[]);
+                        return;
+                    }
+                    break;
             }
+
+            throw new NotSupportedException("Unsupported array type.");
         }
     }
 }
@@ -221,7 +304,7 @@ void Next(string T, int m)
 #>
 
         /// <summary>
-        /// Get a random <see cref="System.<#= T #>"/> value.
+        /// Gets a random <see cref="System.<#= T #>"/> value.
         /// </summary>
         public <#= T #> <#= T #>()
         {
@@ -258,7 +341,7 @@ void Next(string T, int m)
 #>
 
         /// <summary>
-        /// Get a random non-negative <see cref="System.<#= T #>"/> value.
+        /// Gets a random non-negative <see cref="System.<#= T #>"/> value.
         /// </summary>
         public <#= T #> <#= T #>NonNegative()
         {
@@ -269,7 +352,7 @@ void Next(string T, int m)
 #>
 
         /// <summary>
-        /// Get a random <see cref="System.<#= T #>"/> value.
+        /// Gets a random <see cref="System.<#= T #>"/> value.
         /// </summary>
         /// <param ref="range">The range of values to return.</param>
         /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
@@ -319,7 +402,7 @@ void Next(string T, int m)
         }
 
         /// <summary>
-        /// Get a random <see cref="System.<#= T #>"/> value.
+        /// Gets a random <see cref="System.<#= T #>"/> value.
         /// </summary>
         /// <param ref="minimum">The minimum value to return.</param>
         /// <param ref="range">The range of values to return.</param>

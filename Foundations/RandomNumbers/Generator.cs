@@ -303,7 +303,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.UInt64"/> value.
+        /// Gets a random <see cref="System.UInt64"/> value.
         /// </summary>
         public UInt64 UInt64()
         {
@@ -311,7 +311,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.UInt64"/> value.
+        /// Gets a random <see cref="System.UInt64"/> value.
         /// </summary>
         /// <param ref="range">The range of values to return.</param>
         /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
@@ -339,7 +339,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.UInt64"/> value.
+        /// Gets a random <see cref="System.UInt64"/> value.
         /// </summary>
         /// <param ref="minimum">The minimum value to return.</param>
         /// <param ref="range">The range of values to return.</param>
@@ -501,7 +501,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Int64"/> value.
+        /// Gets a random <see cref="System.Int64"/> value.
         /// </summary>
         public Int64 Int64()
         {
@@ -509,7 +509,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random non-negative <see cref="System.Int64"/> value.
+        /// Gets a random non-negative <see cref="System.Int64"/> value.
         /// </summary>
         public Int64 Int64NonNegative()
         {
@@ -517,7 +517,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Int64"/> value.
+        /// Gets a random <see cref="System.Int64"/> value.
         /// </summary>
         /// <param ref="range">The range of values to return.</param>
         /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
@@ -545,7 +545,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Int64"/> value.
+        /// Gets a random <see cref="System.Int64"/> value.
         /// </summary>
         /// <param ref="minimum">The minimum value to return.</param>
         /// <param ref="range">The range of values to return.</param>
@@ -742,7 +742,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.UInt32"/> value.
+        /// Gets a random <see cref="System.UInt32"/> value.
         /// </summary>
         public UInt32 UInt32()
         {
@@ -750,7 +750,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.UInt32"/> value.
+        /// Gets a random <see cref="System.UInt32"/> value.
         /// </summary>
         /// <param ref="range">The range of values to return.</param>
         /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
@@ -777,7 +777,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.UInt32"/> value.
+        /// Gets a random <see cref="System.UInt32"/> value.
         /// </summary>
         /// <param ref="minimum">The minimum value to return.</param>
         /// <param ref="range">The range of values to return.</param>
@@ -947,7 +947,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Int32"/> value.
+        /// Gets a random <see cref="System.Int32"/> value.
         /// </summary>
         public Int32 Int32()
         {
@@ -955,7 +955,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random non-negative <see cref="System.Int32"/> value.
+        /// Gets a random non-negative <see cref="System.Int32"/> value.
         /// </summary>
         public Int32 Int32NonNegative()
         {
@@ -963,7 +963,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Int32"/> value.
+        /// Gets a random <see cref="System.Int32"/> value.
         /// </summary>
         /// <param ref="range">The range of values to return.</param>
         /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
@@ -990,7 +990,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Int32"/> value.
+        /// Gets a random <see cref="System.Int32"/> value.
         /// </summary>
         /// <param ref="minimum">The minimum value to return.</param>
         /// <param ref="range">The range of values to return.</param>
@@ -1195,7 +1195,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.UInt16"/> value.
+        /// Gets a random <see cref="System.UInt16"/> value.
         /// </summary>
         public UInt16 UInt16()
         {
@@ -1203,7 +1203,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.UInt16"/> value.
+        /// Gets a random <see cref="System.UInt16"/> value.
         /// </summary>
         /// <param ref="range">The range of values to return.</param>
         /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
@@ -1229,7 +1229,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.UInt16"/> value.
+        /// Gets a random <see cref="System.UInt16"/> value.
         /// </summary>
         /// <param ref="minimum">The minimum value to return.</param>
         /// <param ref="range">The range of values to return.</param>
@@ -1403,7 +1403,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Int16"/> value.
+        /// Gets a random <see cref="System.Int16"/> value.
         /// </summary>
         public Int16 Int16()
         {
@@ -1411,7 +1411,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random non-negative <see cref="System.Int16"/> value.
+        /// Gets a random non-negative <see cref="System.Int16"/> value.
         /// </summary>
         public Int16 Int16NonNegative()
         {
@@ -1419,7 +1419,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Int16"/> value.
+        /// Gets a random <see cref="System.Int16"/> value.
         /// </summary>
         /// <param ref="range">The range of values to return.</param>
         /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
@@ -1445,7 +1445,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Int16"/> value.
+        /// Gets a random <see cref="System.Int16"/> value.
         /// </summary>
         /// <param ref="minimum">The minimum value to return.</param>
         /// <param ref="range">The range of values to return.</param>
@@ -1654,7 +1654,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Byte"/> value.
+        /// Gets a random <see cref="System.Byte"/> value.
         /// </summary>
         public Byte Byte()
         {
@@ -1662,7 +1662,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Byte"/> value.
+        /// Gets a random <see cref="System.Byte"/> value.
         /// </summary>
         /// <param ref="range">The range of values to return.</param>
         /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
@@ -1687,7 +1687,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Byte"/> value.
+        /// Gets a random <see cref="System.Byte"/> value.
         /// </summary>
         /// <param ref="minimum">The minimum value to return.</param>
         /// <param ref="range">The range of values to return.</param>
@@ -1861,7 +1861,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.SByte"/> value.
+        /// Gets a random <see cref="System.SByte"/> value.
         /// </summary>
         public SByte SByte()
         {
@@ -1869,7 +1869,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random non-negative <see cref="System.SByte"/> value.
+        /// Gets a random non-negative <see cref="System.SByte"/> value.
         /// </summary>
         public SByte SByteNonNegative()
         {
@@ -1877,7 +1877,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.SByte"/> value.
+        /// Gets a random <see cref="System.SByte"/> value.
         /// </summary>
         /// <param ref="range">The range of values to return.</param>
         /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
@@ -1902,7 +1902,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.SByte"/> value.
+        /// Gets a random <see cref="System.SByte"/> value.
         /// </summary>
         /// <param ref="minimum">The minimum value to return.</param>
         /// <param ref="range">The range of values to return.</param>
@@ -2111,7 +2111,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Double"/> value.
+        /// Gets a random <see cref="System.Double"/> value.
         /// </summary>
         public Double Double()
         {
@@ -2119,7 +2119,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Double"/> value.
+        /// Gets a random <see cref="System.Double"/> value.
         /// </summary>
         /// <param ref="range">The range of values to return.</param>
         /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
@@ -2132,7 +2132,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Double"/> value.
+        /// Gets a random <see cref="System.Double"/> value.
         /// </summary>
         /// <param ref="minimum">The minimum value to return.</param>
         /// <param ref="range">The range of values to return.</param>
@@ -2296,7 +2296,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Single"/> value.
+        /// Gets a random <see cref="System.Single"/> value.
         /// </summary>
         public Single Single()
         {
@@ -2304,7 +2304,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Single"/> value.
+        /// Gets a random <see cref="System.Single"/> value.
         /// </summary>
         /// <param ref="range">The range of values to return.</param>
         /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
@@ -2317,7 +2317,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Single"/> value.
+        /// Gets a random <see cref="System.Single"/> value.
         /// </summary>
         /// <param ref="minimum">The minimum value to return.</param>
         /// <param ref="range">The range of values to return.</param>
@@ -2490,7 +2490,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Decimal"/> value.
+        /// Gets a random <see cref="System.Decimal"/> value.
         /// </summary>
         public Decimal Decimal()
         {
@@ -2504,7 +2504,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Decimal"/> value.
+        /// Gets a random <see cref="System.Decimal"/> value.
         /// </summary>
         /// <param ref="range">The range of values to return.</param>
         /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
@@ -2517,7 +2517,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Get a random <see cref="System.Decimal"/> value.
+        /// Gets a random <see cref="System.Decimal"/> value.
         /// </summary>
         /// <param ref="minimum">The minimum value to return.</param>
         /// <param ref="range">The range of values to return.</param>
@@ -2672,57 +2672,140 @@ namespace Foundations.RandomNumbers
             rand.Fill(state);
         }
 
+        /// <summary>
+        /// Gets a random <see cref="ValueUnion"/> value.
+        /// </summary>
+        public ValueUnion ValueUnion()
+        {
+            var result = new ValueUnion();
+            result.UInt64_0 = source.Next();
+            return result;
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="ValueUnion"/> values.
+        /// </summary>
+        public void Fill(ValueUnion[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with random <see cref="ValueUnion"/> values.
+        /// </summary>
+        unsafe public void Fill(ValueUnion[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            fixed (ValueUnion* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 1)
+                {
+                    *p++ = source.Next();
+                    count -= 1;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of ValueUnion values.
+        /// </summary>
+        public IEnumerable<ValueUnion> ValueUnions()
+        {
+            while(true)
+            {
+                yield return ValueUnion();
+            }
+        }
+
+        private static void CreateState(IRandomSource source, byte[] seed, ValueUnion[] state)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            if (seed == null)
+                throw new ArgumentNullException(nameof(seed));
+
+            if (state == null)
+                throw new ArgumentNullException(nameof(state));
+
+            var rand = new Generator(source, seed);
+            rand.Fill(state);
+        }
+
         private static void CreateState(IRandomSource source, byte[] seed, Array state)
         {
             switch (Type.GetTypeCode(state.GetType().GetElementType()))
             {
                 case TypeCode.UInt64:
                     CreateState(source, seed, state as UInt64[]);
-                    break;
+                    return;
 
                 case TypeCode.Int64:
                     CreateState(source, seed, state as Int64[]);
-                    break;
+                    return;
 
                 case TypeCode.UInt32:
                     CreateState(source, seed, state as UInt32[]);
-                    break;
+                    return;
 
                 case TypeCode.Int32:
                     CreateState(source, seed, state as Int32[]);
-                    break;
+                    return;
 
                 case TypeCode.UInt16:
                     CreateState(source, seed, state as UInt16[]);
-                    break;
+                    return;
 
                 case TypeCode.Int16:
                     CreateState(source, seed, state as Int16[]);
-                    break;
+                    return;
 
                 case TypeCode.Byte:
                     CreateState(source, seed, state as Byte[]);
-                    break;
+                    return;
 
                 case TypeCode.SByte:
                     CreateState(source, seed, state as SByte[]);
-                    break;
+                    return;
 
                 case TypeCode.Double:
                     CreateState(source, seed, state as Double[]);
-                    break;
+                    return;
 
                 case TypeCode.Single:
                     CreateState(source, seed, state as Single[]);
-                    break;
+                    return;
 
                 case TypeCode.Decimal:
                     CreateState(source, seed, state as Decimal[]);
-                    break;
+                    return;
 
-                default:
-                    throw new NotSupportedException("Unsupported array type.");
+                case TypeCode.Object:
+                    if (state is ValueUnion[])
+                    {
+                        CreateState(source, seed, state as ValueUnion[]);
+                        return;
+                    }
+                    break;
             }
+
+            throw new NotSupportedException("Unsupported array type.");
         }
     }
 }
