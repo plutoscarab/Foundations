@@ -12,6 +12,7 @@ Generator.cs
 */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Foundations.Types;
@@ -137,7 +138,24 @@ namespace Foundations.RandomNumbers
     Seed("char");
     Seed("float");
     Seed("double");
+#>
 
+        /// <summary>
+        /// Create a pseudo-random number generator seeded with string contents.
+        /// </summary>
+        public Generator(IRandomSource source, string seed)
+            : this(source, seed.ToCharArray().GetBytes())
+        {
+        }
+
+        /// <summary>
+        /// Create a pseudo-random number generator seeded with string contents.
+        /// </summary>
+        public Generator(string seed)
+            : this(null, seed.ToCharArray().GetBytes())
+        {
+        }
+<#
     Next("UInt64", 1);
     Next("Int64", 1);
     Next("UInt32", 2);
@@ -170,17 +188,6 @@ namespace Foundations.RandomNumbers
                     throw new NotSupportedException("Unsupported array type.");
             }
         }
-
-        private decimal MakeDecimal()
-        {
-            while(true)
-            {
-                ulong u = source.Next();
-                uint i = (uint)source.Next();
-                var d = new decimal((int)(i >> 2), (int)u, (int)(u >> 32), false, 28);
-                if (d < 1m) return d;
-            }
-        }
     }
 }
 <#+
@@ -200,7 +207,7 @@ void Seed(string T)
         /// Create a pseudo-random number generator initialized with provided values.
         /// </summary>
         public Generator(params <#= T #>[] seed)
-            : this(DefaultSourceFactory(), seed.GetBytes())
+            : this(null, seed.GetBytes())
         {
         }
 <#+
@@ -228,7 +235,13 @@ void Next(string T, int m)
     else if (T == "Decimal")
     {
 #>
-            return MakeDecimal();
+            while(true)
+            {
+                ulong u = source.Next();
+                uint i = (uint)source.Next();
+                var d = new decimal((int)(i >> 2), (int)u, (int)(u >> 32), false, 28);
+                if (d < 1m) return d;
+            }
 <#+
     }
     else
@@ -378,7 +391,7 @@ void Next(string T, int m)
 #>
             while (count-- > 0)
             {
-                array[offset++] = MakeDecimal();
+                array[offset++] = Decimal();
             }
 <#+
     }
@@ -488,10 +501,63 @@ void Next(string T, int m)
                 array[offset++] = <#= T #>(minimum, range);
             }
         }
+
+        /// <summary>
+        /// Gets a sequence of <#= T #> values.
+        /// </summary>
+        public IEnumerable<<#= T #>> <#= T #>s()
+        {
+            while(true)
+            {
+                yield return <#= T #>();
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of <#= T #> values in [0, range).
+        /// </summary>
+        public IEnumerable<<#= T #>> <#= T #>s(<#= T #> range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return <#= T #>(range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of <#= T #> values in [minimum, minimum + range).
+        /// </summary>
+        public IEnumerable<<#= T #>> <#= T #>s(<#= T #> minimum, <#= T #> range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.<#= T #>.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return <#= T #>(minimum, range);
+            }
+        }
 <#+
     if (T[0] == 'I' || T == "SByte")
     {
 #>
+
+        /// <summary>
+        /// Gets a sequence of non-negative <#= T #> values.
+        /// </summary>
+        public IEnumerable<<#= T #>> <#= T #>sNonNegative()
+        {
+            while(true)
+            {
+                yield return <#= T #>NonNegative();
+            }
+        }
 
         /// <summary>
         /// Fill a provided array with non-negative random <see cref="System.<#= T #>"/> values.

@@ -10,6 +10,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Foundations.Types;
@@ -137,7 +138,7 @@ namespace Foundations.RandomNumbers
         /// Create a pseudo-random number generator initialized with provided values.
         /// </summary>
         public Generator(params ulong[] seed)
-            : this(DefaultSourceFactory(), seed.GetBytes())
+            : this(null, seed.GetBytes())
         {
         }
 
@@ -153,7 +154,7 @@ namespace Foundations.RandomNumbers
         /// Create a pseudo-random number generator initialized with provided values.
         /// </summary>
         public Generator(params long[] seed)
-            : this(DefaultSourceFactory(), seed.GetBytes())
+            : this(null, seed.GetBytes())
         {
         }
 
@@ -169,7 +170,7 @@ namespace Foundations.RandomNumbers
         /// Create a pseudo-random number generator initialized with provided values.
         /// </summary>
         public Generator(params uint[] seed)
-            : this(DefaultSourceFactory(), seed.GetBytes())
+            : this(null, seed.GetBytes())
         {
         }
 
@@ -185,7 +186,7 @@ namespace Foundations.RandomNumbers
         /// Create a pseudo-random number generator initialized with provided values.
         /// </summary>
         public Generator(params int[] seed)
-            : this(DefaultSourceFactory(), seed.GetBytes())
+            : this(null, seed.GetBytes())
         {
         }
 
@@ -201,7 +202,7 @@ namespace Foundations.RandomNumbers
         /// Create a pseudo-random number generator initialized with provided values.
         /// </summary>
         public Generator(params ushort[] seed)
-            : this(DefaultSourceFactory(), seed.GetBytes())
+            : this(null, seed.GetBytes())
         {
         }
 
@@ -217,7 +218,7 @@ namespace Foundations.RandomNumbers
         /// Create a pseudo-random number generator initialized with provided values.
         /// </summary>
         public Generator(params short[] seed)
-            : this(DefaultSourceFactory(), seed.GetBytes())
+            : this(null, seed.GetBytes())
         {
         }
 
@@ -233,7 +234,7 @@ namespace Foundations.RandomNumbers
         /// Create a pseudo-random number generator initialized with provided values.
         /// </summary>
         public Generator(params sbyte[] seed)
-            : this(DefaultSourceFactory(), seed.GetBytes())
+            : this(null, seed.GetBytes())
         {
         }
 
@@ -249,7 +250,7 @@ namespace Foundations.RandomNumbers
         /// Create a pseudo-random number generator initialized with provided values.
         /// </summary>
         public Generator(params char[] seed)
-            : this(DefaultSourceFactory(), seed.GetBytes())
+            : this(null, seed.GetBytes())
         {
         }
 
@@ -265,7 +266,7 @@ namespace Foundations.RandomNumbers
         /// Create a pseudo-random number generator initialized with provided values.
         /// </summary>
         public Generator(params float[] seed)
-            : this(DefaultSourceFactory(), seed.GetBytes())
+            : this(null, seed.GetBytes())
         {
         }
 
@@ -281,7 +282,23 @@ namespace Foundations.RandomNumbers
         /// Create a pseudo-random number generator initialized with provided values.
         /// </summary>
         public Generator(params double[] seed)
-            : this(DefaultSourceFactory(), seed.GetBytes())
+            : this(null, seed.GetBytes())
+        {
+        }
+
+        /// <summary>
+        /// Create a pseudo-random number generator seeded with string contents.
+        /// </summary>
+        public Generator(IRandomSource source, string seed)
+            : this(source, seed.ToCharArray().GetBytes())
+        {
+        }
+
+        /// <summary>
+        /// Create a pseudo-random number generator seeded with string contents.
+        /// </summary>
+        public Generator(string seed)
+            : this(null, seed.ToCharArray().GetBytes())
         {
         }
 
@@ -423,6 +440,48 @@ namespace Foundations.RandomNumbers
             while (count-- > 0)
             {
                 array[offset++] = UInt64(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of UInt64 values.
+        /// </summary>
+        public IEnumerable<UInt64> UInt64s()
+        {
+            while(true)
+            {
+                yield return UInt64();
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of UInt64 values in [0, range).
+        /// </summary>
+        public IEnumerable<UInt64> UInt64s(UInt64 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return UInt64(range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of UInt64 values in [minimum, minimum + range).
+        /// </summary>
+        public IEnumerable<UInt64> UInt64s(UInt64 minimum, UInt64 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.UInt64.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return UInt64(minimum, range);
             }
         }
 
@@ -587,6 +646,59 @@ namespace Foundations.RandomNumbers
             while (count-- > 0)
             {
                 array[offset++] = Int64(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Int64 values.
+        /// </summary>
+        public IEnumerable<Int64> Int64s()
+        {
+            while(true)
+            {
+                yield return Int64();
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Int64 values in [0, range).
+        /// </summary>
+        public IEnumerable<Int64> Int64s(Int64 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return Int64(range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Int64 values in [minimum, minimum + range).
+        /// </summary>
+        public IEnumerable<Int64> Int64s(Int64 minimum, Int64 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Int64.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return Int64(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of non-negative Int64 values.
+        /// </summary>
+        public IEnumerable<Int64> Int64sNonNegative()
+        {
+            while(true)
+            {
+                yield return Int64NonNegative();
             }
         }
 
@@ -777,6 +889,48 @@ namespace Foundations.RandomNumbers
             }
         }
 
+        /// <summary>
+        /// Gets a sequence of UInt32 values.
+        /// </summary>
+        public IEnumerable<UInt32> UInt32s()
+        {
+            while(true)
+            {
+                yield return UInt32();
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of UInt32 values in [0, range).
+        /// </summary>
+        public IEnumerable<UInt32> UInt32s(UInt32 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return UInt32(range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of UInt32 values in [minimum, minimum + range).
+        /// </summary>
+        public IEnumerable<UInt32> UInt32s(UInt32 minimum, UInt32 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.UInt32.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return UInt32(minimum, range);
+            }
+        }
+
         private static void CreateState(IRandomSource source, byte[] seed, UInt32[] state)
         {
             if (source == null)
@@ -945,6 +1099,59 @@ namespace Foundations.RandomNumbers
             while (count-- > 0)
             {
                 array[offset++] = Int32(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Int32 values.
+        /// </summary>
+        public IEnumerable<Int32> Int32s()
+        {
+            while(true)
+            {
+                yield return Int32();
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Int32 values in [0, range).
+        /// </summary>
+        public IEnumerable<Int32> Int32s(Int32 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return Int32(range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Int32 values in [minimum, minimum + range).
+        /// </summary>
+        public IEnumerable<Int32> Int32s(Int32 minimum, Int32 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Int32.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return Int32(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of non-negative Int32 values.
+        /// </summary>
+        public IEnumerable<Int32> Int32sNonNegative()
+        {
+            while(true)
+            {
+                yield return Int32NonNegative();
             }
         }
 
@@ -1140,6 +1347,48 @@ namespace Foundations.RandomNumbers
             }
         }
 
+        /// <summary>
+        /// Gets a sequence of UInt16 values.
+        /// </summary>
+        public IEnumerable<UInt16> UInt16s()
+        {
+            while(true)
+            {
+                yield return UInt16();
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of UInt16 values in [0, range).
+        /// </summary>
+        public IEnumerable<UInt16> UInt16s(UInt16 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return UInt16(range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of UInt16 values in [minimum, minimum + range).
+        /// </summary>
+        public IEnumerable<UInt16> UInt16s(UInt16 minimum, UInt16 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.UInt16.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return UInt16(minimum, range);
+            }
+        }
+
         private static void CreateState(IRandomSource source, byte[] seed, UInt16[] state)
         {
             if (source == null)
@@ -1313,6 +1562,59 @@ namespace Foundations.RandomNumbers
             while (count-- > 0)
             {
                 array[offset++] = Int16(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Int16 values.
+        /// </summary>
+        public IEnumerable<Int16> Int16s()
+        {
+            while(true)
+            {
+                yield return Int16();
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Int16 values in [0, range).
+        /// </summary>
+        public IEnumerable<Int16> Int16s(Int16 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return Int16(range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Int16 values in [minimum, minimum + range).
+        /// </summary>
+        public IEnumerable<Int16> Int16s(Int16 minimum, Int16 range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Int16.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return Int16(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of non-negative Int16 values.
+        /// </summary>
+        public IEnumerable<Int16> Int16sNonNegative()
+        {
+            while(true)
+            {
+                yield return Int16NonNegative();
             }
         }
 
@@ -1511,6 +1813,48 @@ namespace Foundations.RandomNumbers
             }
         }
 
+        /// <summary>
+        /// Gets a sequence of Byte values.
+        /// </summary>
+        public IEnumerable<Byte> Bytes()
+        {
+            while(true)
+            {
+                yield return Byte();
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Byte values in [0, range).
+        /// </summary>
+        public IEnumerable<Byte> Bytes(Byte range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return Byte(range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Byte values in [minimum, minimum + range).
+        /// </summary>
+        public IEnumerable<Byte> Bytes(Byte minimum, Byte range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Byte.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return Byte(minimum, range);
+            }
+        }
+
         private static void CreateState(IRandomSource source, byte[] seed, Byte[] state)
         {
             if (source == null)
@@ -1691,6 +2035,59 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Gets a sequence of SByte values.
+        /// </summary>
+        public IEnumerable<SByte> SBytes()
+        {
+            while(true)
+            {
+                yield return SByte();
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of SByte values in [0, range).
+        /// </summary>
+        public IEnumerable<SByte> SBytes(SByte range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return SByte(range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of SByte values in [minimum, minimum + range).
+        /// </summary>
+        public IEnumerable<SByte> SBytes(SByte minimum, SByte range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.SByte.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return SByte(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of non-negative SByte values.
+        /// </summary>
+        public IEnumerable<SByte> SBytesNonNegative()
+        {
+            while(true)
+            {
+                yield return SByteNonNegative();
+            }
+        }
+
+        /// <summary>
         /// Fill a provided array with non-negative random <see cref="System.SByte"/> values.
         /// </summary>
         public void FillNonNegative(SByte[] array)
@@ -1857,6 +2254,48 @@ namespace Foundations.RandomNumbers
             }
         }
 
+        /// <summary>
+        /// Gets a sequence of Double values.
+        /// </summary>
+        public IEnumerable<Double> Doubles()
+        {
+            while(true)
+            {
+                yield return Double();
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Double values in [0, range).
+        /// </summary>
+        public IEnumerable<Double> Doubles(Double range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return Double(range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Double values in [minimum, minimum + range).
+        /// </summary>
+        public IEnumerable<Double> Doubles(Double minimum, Double range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Double.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return Double(minimum, range);
+            }
+        }
+
         private static void CreateState(IRandomSource source, byte[] seed, Double[] state)
         {
             if (source == null)
@@ -2009,6 +2448,48 @@ namespace Foundations.RandomNumbers
             }
         }
 
+        /// <summary>
+        /// Gets a sequence of Single values.
+        /// </summary>
+        public IEnumerable<Single> Singles()
+        {
+            while(true)
+            {
+                yield return Single();
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Single values in [0, range).
+        /// </summary>
+        public IEnumerable<Single> Singles(Single range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return Single(range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Single values in [minimum, minimum + range).
+        /// </summary>
+        public IEnumerable<Single> Singles(Single minimum, Single range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Single.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return Single(minimum, range);
+            }
+        }
+
         private static void CreateState(IRandomSource source, byte[] seed, Single[] state)
         {
             if (source == null)
@@ -2029,7 +2510,13 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public Decimal Decimal()
         {
-            return MakeDecimal();
+            while(true)
+            {
+                ulong u = source.Next();
+                uint i = (uint)source.Next();
+                var d = new decimal((int)(i >> 2), (int)u, (int)(u >> 32), false, 28);
+                if (d < 1m) return d;
+            }
         }
 
         /// <summary>
@@ -2114,7 +2601,7 @@ namespace Foundations.RandomNumbers
 
             while (count-- > 0)
             {
-                array[offset++] = MakeDecimal();
+                array[offset++] = Decimal();
             }
         }
 
@@ -2141,6 +2628,48 @@ namespace Foundations.RandomNumbers
             while (count-- > 0)
             {
                 array[offset++] = Decimal(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Decimal values.
+        /// </summary>
+        public IEnumerable<Decimal> Decimals()
+        {
+            while(true)
+            {
+                yield return Decimal();
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Decimal values in [0, range).
+        /// </summary>
+        public IEnumerable<Decimal> Decimals(Decimal range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return Decimal(range);
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Decimal values in [minimum, minimum + range).
+        /// </summary>
+        public IEnumerable<Decimal> Decimals(Decimal minimum, Decimal range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Decimal.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while(true)
+            {
+                yield return Decimal(minimum, range);
             }
         }
 
@@ -2209,17 +2738,6 @@ namespace Foundations.RandomNumbers
 
                 default:
                     throw new NotSupportedException("Unsupported array type.");
-            }
-        }
-
-        private decimal MakeDecimal()
-        {
-            while(true)
-            {
-                ulong u = source.Next();
-                uint i = (uint)source.Next();
-                var d = new decimal((int)(i >> 2), (int)u, (int)(u >> 32), false, 28);
-                if (d < 1m) return d;
             }
         }
     }
