@@ -22,6 +22,48 @@ namespace Foundations.UnitTests.RandomNumbers
     public sealed class GeneratorTests
     {
         [TestMethod]
+        public void CloneTest()
+        {
+            var random = new Generator(new XorShiftRandomSource());
+            var clone = random.Clone();
+
+            for (int i = 0; i < 100; i++)
+            {
+                var expected = random.Byte();
+                var actual = clone.Byte();
+                Assert.AreEqual(expected, actual);
+            }
+        }
+
+        [TestMethod]
+        public void CloneConstructor()
+        {
+            var random = new Generator(new XorShiftRandomSource());
+            var clone = new Generator(random);
+
+            for (int i = 0; i < 100; i++)
+            {
+                var expected = random.Byte();
+                var actual = clone.Byte();
+                Assert.AreEqual(expected, actual);
+            }
+        }
+
+        [TestMethod]
+        public void UnclonableTest()
+        {
+            var random = new Generator(new SystemRandomSource(new Random()));
+            Assert.IsNull(random.Clone());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void UnclonableException()
+        {
+            var random = new Generator(new SystemRandomSource(new Random()));
+            new Generator(random);
+        }
+        [TestMethod]
         public void IndividualByteValues()
         {
             var random = new Generator(Generator.DefaultSourceFactory(), "IndividualByteValues".ToCharArray());
@@ -4986,6 +5028,17 @@ namespace Foundations.UnitTests.RandomNumbers
             var source = new SHA256RandomSource();
             var seed = new byte[] { 1, 2, 3 };
             Array state = new string[99];
+            method.Invoke(null, new object[] { source, seed, state });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.Reflection.TargetInvocationException))]
+        public void CreateStateUnsupportedObject()
+        {
+            var method = typeof(Generator).GetMethod("CreateState", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static, null, new[] { typeof(IRandomSource), typeof(byte[]), typeof(Array) }, null);
+            var source = new SHA256RandomSource();
+            var seed = new byte[] { 1, 2, 3 };
+            Array state = new object[99];
             method.Invoke(null, new object[] { source, seed, state });
         }
 

@@ -55,5 +55,13 @@ namespace Foundations.RandomNumbers
                 return source.Next();
             }
         }
+
+        /// <summary>
+        /// Gets a copy of this <see cref="SynchronizedRandomSource"/> with the same state.
+        /// </summary>
+        public IRandomSource Clone()
+        {
+            return source.Clone();
+        }
     }
 }

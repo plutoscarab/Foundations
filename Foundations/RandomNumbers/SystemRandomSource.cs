@@ -52,5 +52,13 @@ namespace Foundations.RandomNumbers
             rand.NextBytes(ulongBytes);
             return BitConverter.ToUInt64(ulongBytes, 0);
         }
+
+        /// <summary>
+        /// Gets null.
+        /// </summary>
+        public IRandomSource Clone()
+        {
+            return null;    // can't clone an arbitrary System.Random instance
+        }
     }
 }

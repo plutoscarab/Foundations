@@ -54,5 +54,13 @@ namespace Foundations.UnitTests.Objects
             Assert.IsTrue(time2 > time1 + time1 + time1 + time1);
         }
 #endif
+
+        [TestMethod]
+        public void CloneTest()
+        {
+            var source = new SystemRandomSource(new Random());
+            var clone = source.Clone();
+            Assert.IsNull(clone);
+        }
     }
 }

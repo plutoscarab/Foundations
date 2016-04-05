@@ -34,5 +34,16 @@ namespace Foundations.RandomNumbers
         /// Gets the next 64 random bits.
         /// </summary>
         ulong Next();
+
+        /// <summary>
+        /// Gets a copy of this <see cref="IRandomSource"/>.
+        /// </summary>
+        /// <returns>
+        /// Returns a copy of this <see cref="IRandomSource"/> with the
+        /// same state. Returns null if the future state is not completely
+        /// determined from the current state or if the source is
+        /// otherwise unclonable.
+        /// </returns>
+        IRandomSource Clone();
     }
 }

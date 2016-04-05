@@ -64,6 +64,17 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Gets a copy of this <see cref="SHA256RandomSource"/> with the same state.
+        /// </summary>
+        public IRandomSource Clone()
+        {
+            var result = new SHA256RandomSource();
+            result.state = (byte[])state.Clone();
+            result.index = index;
+            return result;
+        }
+
+        /// <summary>
         /// Dispose.
         /// </summary>
         public void Dispose()

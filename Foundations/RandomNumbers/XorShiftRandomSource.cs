@@ -53,5 +53,16 @@ namespace Foundations.RandomNumbers
             state[p] = s1 ^ s0 ^ (s1 >> 11) ^ (s0 >> 30);
             return state[p] * 1181783497276652981;
         }
+
+        /// <summary>
+        /// Gets a copy of this <see cref="XorShiftRandomSource"/> with the same state.
+        /// </summary>
+        public IRandomSource Clone()
+        {
+            var result = new XorShiftRandomSource();
+            result.state = (ulong[])state.Clone();
+            result.p = p;
+            return result;
+        }
     }
 }

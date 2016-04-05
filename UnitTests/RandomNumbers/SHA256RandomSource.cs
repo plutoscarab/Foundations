@@ -38,5 +38,26 @@ namespace Foundations.UnitTests.Objects
             var source = new SHA256RandomSource();
             var random = new Generator(source);
         }
+
+        public static void CloneTest(IRandomSource source)
+        {
+            new Generator(source, "CloneTest").UInt64();
+            var clone = source.Clone();
+            Assert.IsNotNull(source);
+
+            for (int i = 0; i < 100; i++)
+            {
+                var sourceNext = source.Next();
+                var cloneNext = clone.Next();
+                Assert.AreEqual(sourceNext, cloneNext);
+            }
+        }
+
+        [TestMethod]
+        public void CloneTest()
+        {
+            var source = new SHA256RandomSource();
+            CloneTest(source);
+        }
     }
 }

@@ -127,6 +127,32 @@ namespace Foundations.RandomNumbers
 
             source.Initialize(state);
         }
+
+        private Generator(IRandomSource source, bool throwIfNonClonable)
+        {
+            this.source = source.Clone();
+
+            if (this.source ==  null && throwIfNonClonable)
+                throw new ArgumentException("Source generator is using a source that cannot be cloned.");
+        }
+
+        /// <summary>
+        /// Create a pseudo-random number generator with the same state as an existing one.
+        /// </summary>
+        public Generator(Generator generator)
+            : this(generator.source, true)
+        {
+        }
+
+        /// <summary>
+        /// Gets a copy of this <see cref="Generator"/> with the same state.
+        /// </summary>
+        public Generator Clone()
+        {
+            var source = this.source.Clone();
+            if (source == null) return null;
+            return new Generator(source, false);
+        }
 <#
     Seed("ulong");
     Seed("long");

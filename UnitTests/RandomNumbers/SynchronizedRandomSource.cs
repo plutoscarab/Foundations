@@ -58,5 +58,12 @@ namespace Foundations.UnitTests.Objects
             values.ExceptWith(values1);
             Assert.AreEqual(0, values.Count);
         }
+
+        [TestMethod]
+        public void CloneTest()
+        {
+            var source = new SynchronizedRandomSource(new XorShiftRandomSource());
+            SHA256RandomSourceTests.CloneTest(source);
+        }
     }
 }
