@@ -100,6 +100,16 @@ void Type(string T)
             var random = new Generator();
             random.FillNonNegative((<#= T #>[])null);
         }
+
+        [TestMethod]
+        public void EnumeratorOfNonNegative<#= T #>()
+        {
+            var random = new Generator("EnumeratorOfNonNegative<#= T #>");
+            var data = random.<#= T #>sNonNegative().Take(1000).ToArray();
+            
+            for (int i = 0; i < data.Length; i++)
+                Assert.IsTrue(data[i] >= 0);
+        }
 <#+
     }
 #>
@@ -446,6 +456,74 @@ void Type(string T)
             var data = new <#= T #>[99];
             random.Fill(data);
             LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void FillZeroLength<#= T #>Array()
+        {
+            var random = new Generator("FillZeroLength<#= T #>Array");
+            var data = new <#= T #>[99];
+            random.Fill(data, 0, 0);
+            Assert.AreEqual((<#= T #>)0, data[0]);
+            Assert.AreEqual((<#= T #>)0, data[98]);
+        }
+
+        [TestMethod]
+        public void EnumeratorOf<#= T #>()
+        {
+            var random = new Generator("EnumeratorOf<#= T #>");
+            var data = random.<#= T #>s().Take(99).ToArray();
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void EnumeratorOf<#= T #>WithRange()
+        {
+            var random = new Generator("EnumeratorOf<#= T #>WithRange");
+            var data = random.<#= T #>s(50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 0);
+                Assert.IsTrue(data[i] < 50);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOf<#= T #>WithRangeLow()
+        {
+            var random = new Generator();
+            var data = random.<#= T #>s(0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        public void EnumeratorOf<#= T #>WithOffsetAndRange()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOf<#= T #>WithOffsetAndRange");
+            var data = random.<#= T #>s(25, 50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 25);
+                Assert.IsTrue(data[i] < 75);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOf<#= T #>WithOffsetAndRangeLow()
+        {
+            var random = new Generator();
+            var data = random.<#= T #>s(25, 0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOf<#= T #>WithOffsetAndRangeHigh()
+        {
+            var random = new Generator();
+            var data = random.<#= T #>s(3 * (System.<#= T #>.MaxValue / 4), System.<#= T #>.MaxValue / 2).Take(1000).ToArray();
         }
 
         private void LooksRandom(<#= T #>[] array)

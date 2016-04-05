@@ -374,6 +374,74 @@ namespace Foundations.UnitTests.RandomNumbers
             LooksRandom(data);
         }
 
+        [TestMethod]
+        public void FillZeroLengthByteArray()
+        {
+            var random = new Generator("FillZeroLengthByteArray");
+            var data = new Byte[99];
+            random.Fill(data, 0, 0);
+            Assert.AreEqual((Byte)0, data[0]);
+            Assert.AreEqual((Byte)0, data[98]);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfByte()
+        {
+            var random = new Generator("EnumeratorOfByte");
+            var data = random.Bytes().Take(99).ToArray();
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfByteWithRange()
+        {
+            var random = new Generator("EnumeratorOfByteWithRange");
+            var data = random.Bytes(50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 0);
+                Assert.IsTrue(data[i] < 50);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfByteWithRangeLow()
+        {
+            var random = new Generator();
+            var data = random.Bytes(0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        public void EnumeratorOfByteWithOffsetAndRange()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfByteWithOffsetAndRange");
+            var data = random.Bytes(25, 50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 25);
+                Assert.IsTrue(data[i] < 75);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfByteWithOffsetAndRangeLow()
+        {
+            var random = new Generator();
+            var data = random.Bytes(25, 0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfByteWithOffsetAndRangeHigh()
+        {
+            var random = new Generator();
+            var data = random.Bytes(3 * (System.Byte.MaxValue / 4), System.Byte.MaxValue / 2).Take(1000).ToArray();
+        }
+
         private void LooksRandom(Byte[] array)
         {
             var minValue = (double)Byte.MinValue;
@@ -432,6 +500,16 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator();
             random.FillNonNegative((SByte[])null);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfNonNegativeSByte()
+        {
+            var random = new Generator("EnumeratorOfNonNegativeSByte");
+            var data = random.SBytesNonNegative().Take(1000).ToArray();
+            
+            for (int i = 0; i < data.Length; i++)
+                Assert.IsTrue(data[i] >= 0);
         }
 
         [TestMethod]
@@ -774,6 +852,74 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = new SByte[99];
             random.Fill(data);
             LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void FillZeroLengthSByteArray()
+        {
+            var random = new Generator("FillZeroLengthSByteArray");
+            var data = new SByte[99];
+            random.Fill(data, 0, 0);
+            Assert.AreEqual((SByte)0, data[0]);
+            Assert.AreEqual((SByte)0, data[98]);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfSByte()
+        {
+            var random = new Generator("EnumeratorOfSByte");
+            var data = random.SBytes().Take(99).ToArray();
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfSByteWithRange()
+        {
+            var random = new Generator("EnumeratorOfSByteWithRange");
+            var data = random.SBytes(50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 0);
+                Assert.IsTrue(data[i] < 50);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfSByteWithRangeLow()
+        {
+            var random = new Generator();
+            var data = random.SBytes(0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        public void EnumeratorOfSByteWithOffsetAndRange()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfSByteWithOffsetAndRange");
+            var data = random.SBytes(25, 50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 25);
+                Assert.IsTrue(data[i] < 75);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfSByteWithOffsetAndRangeLow()
+        {
+            var random = new Generator();
+            var data = random.SBytes(25, 0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfSByteWithOffsetAndRangeHigh()
+        {
+            var random = new Generator();
+            var data = random.SBytes(3 * (System.SByte.MaxValue / 4), System.SByte.MaxValue / 2).Take(1000).ToArray();
         }
 
         private void LooksRandom(SByte[] array)
@@ -1145,6 +1291,74 @@ namespace Foundations.UnitTests.RandomNumbers
             LooksRandom(data);
         }
 
+        [TestMethod]
+        public void FillZeroLengthUInt16Array()
+        {
+            var random = new Generator("FillZeroLengthUInt16Array");
+            var data = new UInt16[99];
+            random.Fill(data, 0, 0);
+            Assert.AreEqual((UInt16)0, data[0]);
+            Assert.AreEqual((UInt16)0, data[98]);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfUInt16()
+        {
+            var random = new Generator("EnumeratorOfUInt16");
+            var data = random.UInt16s().Take(99).ToArray();
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfUInt16WithRange()
+        {
+            var random = new Generator("EnumeratorOfUInt16WithRange");
+            var data = random.UInt16s(50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 0);
+                Assert.IsTrue(data[i] < 50);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfUInt16WithRangeLow()
+        {
+            var random = new Generator();
+            var data = random.UInt16s(0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        public void EnumeratorOfUInt16WithOffsetAndRange()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfUInt16WithOffsetAndRange");
+            var data = random.UInt16s(25, 50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 25);
+                Assert.IsTrue(data[i] < 75);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfUInt16WithOffsetAndRangeLow()
+        {
+            var random = new Generator();
+            var data = random.UInt16s(25, 0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfUInt16WithOffsetAndRangeHigh()
+        {
+            var random = new Generator();
+            var data = random.UInt16s(3 * (System.UInt16.MaxValue / 4), System.UInt16.MaxValue / 2).Take(1000).ToArray();
+        }
+
         private void LooksRandom(UInt16[] array)
         {
             var minValue = (double)UInt16.MinValue;
@@ -1203,6 +1417,16 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator();
             random.FillNonNegative((Int16[])null);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfNonNegativeInt16()
+        {
+            var random = new Generator("EnumeratorOfNonNegativeInt16");
+            var data = random.Int16sNonNegative().Take(1000).ToArray();
+            
+            for (int i = 0; i < data.Length; i++)
+                Assert.IsTrue(data[i] >= 0);
         }
 
         [TestMethod]
@@ -1545,6 +1769,74 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = new Int16[99];
             random.Fill(data);
             LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void FillZeroLengthInt16Array()
+        {
+            var random = new Generator("FillZeroLengthInt16Array");
+            var data = new Int16[99];
+            random.Fill(data, 0, 0);
+            Assert.AreEqual((Int16)0, data[0]);
+            Assert.AreEqual((Int16)0, data[98]);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfInt16()
+        {
+            var random = new Generator("EnumeratorOfInt16");
+            var data = random.Int16s().Take(99).ToArray();
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfInt16WithRange()
+        {
+            var random = new Generator("EnumeratorOfInt16WithRange");
+            var data = random.Int16s(50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 0);
+                Assert.IsTrue(data[i] < 50);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfInt16WithRangeLow()
+        {
+            var random = new Generator();
+            var data = random.Int16s(0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        public void EnumeratorOfInt16WithOffsetAndRange()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfInt16WithOffsetAndRange");
+            var data = random.Int16s(25, 50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 25);
+                Assert.IsTrue(data[i] < 75);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfInt16WithOffsetAndRangeLow()
+        {
+            var random = new Generator();
+            var data = random.Int16s(25, 0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfInt16WithOffsetAndRangeHigh()
+        {
+            var random = new Generator();
+            var data = random.Int16s(3 * (System.Int16.MaxValue / 4), System.Int16.MaxValue / 2).Take(1000).ToArray();
         }
 
         private void LooksRandom(Int16[] array)
@@ -1916,6 +2208,74 @@ namespace Foundations.UnitTests.RandomNumbers
             LooksRandom(data);
         }
 
+        [TestMethod]
+        public void FillZeroLengthUInt32Array()
+        {
+            var random = new Generator("FillZeroLengthUInt32Array");
+            var data = new UInt32[99];
+            random.Fill(data, 0, 0);
+            Assert.AreEqual((UInt32)0, data[0]);
+            Assert.AreEqual((UInt32)0, data[98]);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfUInt32()
+        {
+            var random = new Generator("EnumeratorOfUInt32");
+            var data = random.UInt32s().Take(99).ToArray();
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfUInt32WithRange()
+        {
+            var random = new Generator("EnumeratorOfUInt32WithRange");
+            var data = random.UInt32s(50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 0);
+                Assert.IsTrue(data[i] < 50);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfUInt32WithRangeLow()
+        {
+            var random = new Generator();
+            var data = random.UInt32s(0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        public void EnumeratorOfUInt32WithOffsetAndRange()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfUInt32WithOffsetAndRange");
+            var data = random.UInt32s(25, 50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 25);
+                Assert.IsTrue(data[i] < 75);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfUInt32WithOffsetAndRangeLow()
+        {
+            var random = new Generator();
+            var data = random.UInt32s(25, 0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfUInt32WithOffsetAndRangeHigh()
+        {
+            var random = new Generator();
+            var data = random.UInt32s(3 * (System.UInt32.MaxValue / 4), System.UInt32.MaxValue / 2).Take(1000).ToArray();
+        }
+
         private void LooksRandom(UInt32[] array)
         {
             var minValue = (double)UInt32.MinValue;
@@ -1974,6 +2334,16 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator();
             random.FillNonNegative((Int32[])null);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfNonNegativeInt32()
+        {
+            var random = new Generator("EnumeratorOfNonNegativeInt32");
+            var data = random.Int32sNonNegative().Take(1000).ToArray();
+            
+            for (int i = 0; i < data.Length; i++)
+                Assert.IsTrue(data[i] >= 0);
         }
 
         [TestMethod]
@@ -2316,6 +2686,74 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = new Int32[99];
             random.Fill(data);
             LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void FillZeroLengthInt32Array()
+        {
+            var random = new Generator("FillZeroLengthInt32Array");
+            var data = new Int32[99];
+            random.Fill(data, 0, 0);
+            Assert.AreEqual((Int32)0, data[0]);
+            Assert.AreEqual((Int32)0, data[98]);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfInt32()
+        {
+            var random = new Generator("EnumeratorOfInt32");
+            var data = random.Int32s().Take(99).ToArray();
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfInt32WithRange()
+        {
+            var random = new Generator("EnumeratorOfInt32WithRange");
+            var data = random.Int32s(50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 0);
+                Assert.IsTrue(data[i] < 50);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfInt32WithRangeLow()
+        {
+            var random = new Generator();
+            var data = random.Int32s(0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        public void EnumeratorOfInt32WithOffsetAndRange()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfInt32WithOffsetAndRange");
+            var data = random.Int32s(25, 50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 25);
+                Assert.IsTrue(data[i] < 75);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfInt32WithOffsetAndRangeLow()
+        {
+            var random = new Generator();
+            var data = random.Int32s(25, 0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfInt32WithOffsetAndRangeHigh()
+        {
+            var random = new Generator();
+            var data = random.Int32s(3 * (System.Int32.MaxValue / 4), System.Int32.MaxValue / 2).Take(1000).ToArray();
         }
 
         private void LooksRandom(Int32[] array)
@@ -2687,6 +3125,74 @@ namespace Foundations.UnitTests.RandomNumbers
             LooksRandom(data);
         }
 
+        [TestMethod]
+        public void FillZeroLengthUInt64Array()
+        {
+            var random = new Generator("FillZeroLengthUInt64Array");
+            var data = new UInt64[99];
+            random.Fill(data, 0, 0);
+            Assert.AreEqual((UInt64)0, data[0]);
+            Assert.AreEqual((UInt64)0, data[98]);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfUInt64()
+        {
+            var random = new Generator("EnumeratorOfUInt64");
+            var data = random.UInt64s().Take(99).ToArray();
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfUInt64WithRange()
+        {
+            var random = new Generator("EnumeratorOfUInt64WithRange");
+            var data = random.UInt64s(50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 0);
+                Assert.IsTrue(data[i] < 50);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfUInt64WithRangeLow()
+        {
+            var random = new Generator();
+            var data = random.UInt64s(0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        public void EnumeratorOfUInt64WithOffsetAndRange()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfUInt64WithOffsetAndRange");
+            var data = random.UInt64s(25, 50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 25);
+                Assert.IsTrue(data[i] < 75);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfUInt64WithOffsetAndRangeLow()
+        {
+            var random = new Generator();
+            var data = random.UInt64s(25, 0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfUInt64WithOffsetAndRangeHigh()
+        {
+            var random = new Generator();
+            var data = random.UInt64s(3 * (System.UInt64.MaxValue / 4), System.UInt64.MaxValue / 2).Take(1000).ToArray();
+        }
+
         private void LooksRandom(UInt64[] array)
         {
             var minValue = (double)UInt64.MinValue;
@@ -2745,6 +3251,16 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator();
             random.FillNonNegative((Int64[])null);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfNonNegativeInt64()
+        {
+            var random = new Generator("EnumeratorOfNonNegativeInt64");
+            var data = random.Int64sNonNegative().Take(1000).ToArray();
+            
+            for (int i = 0; i < data.Length; i++)
+                Assert.IsTrue(data[i] >= 0);
         }
 
         [TestMethod]
@@ -3087,6 +3603,74 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = new Int64[99];
             random.Fill(data);
             LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void FillZeroLengthInt64Array()
+        {
+            var random = new Generator("FillZeroLengthInt64Array");
+            var data = new Int64[99];
+            random.Fill(data, 0, 0);
+            Assert.AreEqual((Int64)0, data[0]);
+            Assert.AreEqual((Int64)0, data[98]);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfInt64()
+        {
+            var random = new Generator("EnumeratorOfInt64");
+            var data = random.Int64s().Take(99).ToArray();
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfInt64WithRange()
+        {
+            var random = new Generator("EnumeratorOfInt64WithRange");
+            var data = random.Int64s(50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 0);
+                Assert.IsTrue(data[i] < 50);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfInt64WithRangeLow()
+        {
+            var random = new Generator();
+            var data = random.Int64s(0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        public void EnumeratorOfInt64WithOffsetAndRange()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfInt64WithOffsetAndRange");
+            var data = random.Int64s(25, 50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 25);
+                Assert.IsTrue(data[i] < 75);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfInt64WithOffsetAndRangeLow()
+        {
+            var random = new Generator();
+            var data = random.Int64s(25, 0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfInt64WithOffsetAndRangeHigh()
+        {
+            var random = new Generator();
+            var data = random.Int64s(3 * (System.Int64.MaxValue / 4), System.Int64.MaxValue / 2).Take(1000).ToArray();
         }
 
         private void LooksRandom(Int64[] array)
@@ -3458,6 +4042,74 @@ namespace Foundations.UnitTests.RandomNumbers
             LooksRandom(data);
         }
 
+        [TestMethod]
+        public void FillZeroLengthSingleArray()
+        {
+            var random = new Generator("FillZeroLengthSingleArray");
+            var data = new Single[99];
+            random.Fill(data, 0, 0);
+            Assert.AreEqual((Single)0, data[0]);
+            Assert.AreEqual((Single)0, data[98]);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfSingle()
+        {
+            var random = new Generator("EnumeratorOfSingle");
+            var data = random.Singles().Take(99).ToArray();
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfSingleWithRange()
+        {
+            var random = new Generator("EnumeratorOfSingleWithRange");
+            var data = random.Singles(50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 0);
+                Assert.IsTrue(data[i] < 50);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfSingleWithRangeLow()
+        {
+            var random = new Generator();
+            var data = random.Singles(0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        public void EnumeratorOfSingleWithOffsetAndRange()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfSingleWithOffsetAndRange");
+            var data = random.Singles(25, 50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 25);
+                Assert.IsTrue(data[i] < 75);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfSingleWithOffsetAndRangeLow()
+        {
+            var random = new Generator();
+            var data = random.Singles(25, 0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfSingleWithOffsetAndRangeHigh()
+        {
+            var random = new Generator();
+            var data = random.Singles(3 * (System.Single.MaxValue / 4), System.Single.MaxValue / 2).Take(1000).ToArray();
+        }
+
         private void LooksRandom(Single[] array)
         {
             var minValue = 0.0;
@@ -3827,6 +4479,74 @@ namespace Foundations.UnitTests.RandomNumbers
             LooksRandom(data);
         }
 
+        [TestMethod]
+        public void FillZeroLengthDoubleArray()
+        {
+            var random = new Generator("FillZeroLengthDoubleArray");
+            var data = new Double[99];
+            random.Fill(data, 0, 0);
+            Assert.AreEqual((Double)0, data[0]);
+            Assert.AreEqual((Double)0, data[98]);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfDouble()
+        {
+            var random = new Generator("EnumeratorOfDouble");
+            var data = random.Doubles().Take(99).ToArray();
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfDoubleWithRange()
+        {
+            var random = new Generator("EnumeratorOfDoubleWithRange");
+            var data = random.Doubles(50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 0);
+                Assert.IsTrue(data[i] < 50);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfDoubleWithRangeLow()
+        {
+            var random = new Generator();
+            var data = random.Doubles(0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        public void EnumeratorOfDoubleWithOffsetAndRange()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfDoubleWithOffsetAndRange");
+            var data = random.Doubles(25, 50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 25);
+                Assert.IsTrue(data[i] < 75);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfDoubleWithOffsetAndRangeLow()
+        {
+            var random = new Generator();
+            var data = random.Doubles(25, 0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfDoubleWithOffsetAndRangeHigh()
+        {
+            var random = new Generator();
+            var data = random.Doubles(3 * (System.Double.MaxValue / 4), System.Double.MaxValue / 2).Take(1000).ToArray();
+        }
+
         private void LooksRandom(Double[] array)
         {
             var minValue = 0.0;
@@ -4171,6 +4891,74 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = new Decimal[99];
             random.Fill(data);
             LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void FillZeroLengthDecimalArray()
+        {
+            var random = new Generator("FillZeroLengthDecimalArray");
+            var data = new Decimal[99];
+            random.Fill(data, 0, 0);
+            Assert.AreEqual((Decimal)0, data[0]);
+            Assert.AreEqual((Decimal)0, data[98]);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfDecimal()
+        {
+            var random = new Generator("EnumeratorOfDecimal");
+            var data = random.Decimals().Take(99).ToArray();
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void EnumeratorOfDecimalWithRange()
+        {
+            var random = new Generator("EnumeratorOfDecimalWithRange");
+            var data = random.Decimals(50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 0);
+                Assert.IsTrue(data[i] < 50);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfDecimalWithRangeLow()
+        {
+            var random = new Generator();
+            var data = random.Decimals(0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        public void EnumeratorOfDecimalWithOffsetAndRange()
+        {
+            var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfDecimalWithOffsetAndRange");
+            var data = random.Decimals(25, 50).Take(1000).ToArray();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.IsTrue(data[i] >= 25);
+                Assert.IsTrue(data[i] < 75);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfDecimalWithOffsetAndRangeLow()
+        {
+            var random = new Generator();
+            var data = random.Decimals(25, 0).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void EnumeratorOfDecimalWithOffsetAndRangeHigh()
+        {
+            var random = new Generator();
+            var data = random.Decimals(3 * (System.Decimal.MaxValue / 4), System.Decimal.MaxValue / 2).Take(1000).ToArray();
         }
 
         private void LooksRandom(Decimal[] array)

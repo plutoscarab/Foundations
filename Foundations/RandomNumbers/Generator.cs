@@ -1312,11 +1312,9 @@ namespace Foundations.RandomNumbers
                 var p1 = (UInt16*)p;
                 var p2 = (UInt16*)&sample;
 
-                switch (count)
+                while (count-- > 0)
                 {
-                    case 3: *p1++ = *p2++; goto case 2;
-                    case 2: *p1++ = *p2++; goto case 1;
-                    case 1: *p1++ = *p2++; break;
+                    *p1++ = *p2++;
                 }
             }
         }
@@ -1530,11 +1528,9 @@ namespace Foundations.RandomNumbers
                 var p1 = (Int16*)p;
                 var p2 = (Int16*)&sample;
 
-                switch (count)
+                while (count-- > 0)
                 {
-                    case 3: *p1++ = *p2++; goto case 2;
-                    case 2: *p1++ = *p2++; goto case 1;
-                    case 1: *p1++ = *p2++; break;
+                    *p1++ = *p2++;
                 }
             }
         }
@@ -1774,15 +1770,9 @@ namespace Foundations.RandomNumbers
                 var p1 = (Byte*)p;
                 var p2 = (Byte*)&sample;
 
-                switch (count)
+                while (count-- > 0)
                 {
-                    case 7: *p1++ = *p2++; goto case 6;
-                    case 6: *p1++ = *p2++; goto case 5;
-                    case 5: *p1++ = *p2++; goto case 4;
-                    case 4: *p1++ = *p2++; goto case 3;
-                    case 3: *p1++ = *p2++; goto case 2;
-                    case 2: *p1++ = *p2++; goto case 1;
-                    case 1: *p1++ = *p2++; break;
+                    *p1++ = *p2++;
                 }
             }
         }
@@ -1995,15 +1985,9 @@ namespace Foundations.RandomNumbers
                 var p1 = (SByte*)p;
                 var p2 = (SByte*)&sample;
 
-                switch (count)
+                while (count-- > 0)
                 {
-                    case 7: *p1++ = *p2++; goto case 6;
-                    case 6: *p1++ = *p2++; goto case 5;
-                    case 5: *p1++ = *p2++; goto case 4;
-                    case 4: *p1++ = *p2++; goto case 3;
-                    case 3: *p1++ = *p2++; goto case 2;
-                    case 2: *p1++ = *p2++; goto case 1;
-                    case 1: *p1++ = *p2++; break;
+                    *p1++ = *p2++;
                 }
             }
         }
