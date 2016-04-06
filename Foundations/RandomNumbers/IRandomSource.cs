@@ -10,6 +10,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 */
 
 using System;
+using Foundations.Types;
 
 namespace Foundations.RandomNumbers
 {
@@ -33,7 +34,7 @@ namespace Foundations.RandomNumbers
         /// <summary>
         /// Gets the next 64 random bits.
         /// </summary>
-        ulong Next();
+        void Next(ref ValueUnion value);
 
         /// <summary>
         /// Gets a copy of this <see cref="IRandomSource"/>.

@@ -56,6 +56,7 @@ namespace Foundations.RandomNumbers
         }
         
         private IRandomSource source;
+        private ValueUnion value;
      
         /// <summary>
         /// Create a pseudo-random number generator initialized using system entropy
@@ -195,14 +196,18 @@ namespace Foundations.RandomNumbers
     Next("Decimal", 1);
 #>
 
+        private void Next()
+        {
+            source.Next(ref value);
+        }
+
         /// <summary>
         /// Gets a random <see cref="ValueUnion"/> value.
         /// </summary>
         public ValueUnion ValueUnion()
         {
-            var result = new ValueUnion();
-            result.UInt64_0 = source.Next();
-            return result;
+            Next();
+            return value;
         }
 
         /// <summary>
@@ -235,11 +240,11 @@ namespace Foundations.RandomNumbers
 
             fixed (ValueUnion* ptr = &array[offset])
             {
-                var p = (ulong*)ptr;
+                var p = (ValueUnion*)ptr;
 
                 while (count >= 1)
                 {
-                    *p++ = source.Next();
+                    source.Next(ref *p++);
                     count -= 1;
                 }
             }
@@ -338,7 +343,8 @@ void Next(string T, int m)
     if (T == "Single" || T == "Double")
     {
 #>
-            return (<#= T #>)(BitConverter.Int64BitsToDouble((long)(source.Next() & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000) - 1.0);
+            Next();
+            return (<#= T #>)(BitConverter.Int64BitsToDouble((value.Int64_0 & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000) - 1.0);
 <#+
     }
     else if (T == "Decimal")
@@ -346,8 +352,8 @@ void Next(string T, int m)
 #>
             while(true)
             {
-                ulong u = source.Next();
-                uint i = (uint)source.Next();
+                ulong u = UInt64();
+                uint i = UInt32();
                 var d = new decimal((int)(i >> 2), (int)u, (int)(u >> 32), false, 28);
                 if (d < 1m) return d;
             }
@@ -356,7 +362,8 @@ void Next(string T, int m)
     else
     {
 #>
-            return (<#= T #>)source.Next();
+            Next();
+            return value.<#= T #>_0;
 <#+
     }
 #>
@@ -372,6 +379,37 @@ void Next(string T, int m)
         public <#= T #> <#= T #>NonNegative()
         {
             return (<#= T #>)(<#= T #>() & 0x7<#= new string('F', 16 / m - 1) #>);
+        }
+<#+
+    }
+
+    string UT = null, U = null;
+
+    if (T != "Single" && T != "Double" && T != "Decimal")
+    {
+        UT = T.EndsWith("Byte") ? "Byte" :
+             T[0] == 'U' ? T :
+             "U" + T;
+
+        U = "(" + UT + ")";
+#>
+
+        private <#= UT #> GetRangeMask(<#= T #> range)
+        {
+            var mask = <#= U #>(range - 1);
+<#+
+        int bits = 64 / m;
+        int shift = 1;
+
+        while (shift < bits)
+        {
+#>
+            mask |= <#= U #>(mask >> <#= shift #>);
+<#+
+            shift *= 2;
+        }
+#>
+            return mask;
         }
 <#+
     }
@@ -396,23 +434,8 @@ void Next(string T, int m)
     }
     else
     {
-        string U = T.EndsWith("Byte") ? "(Byte)" :
-                   T[0] == 'U' ? "(" + T + ")" : 
-                   "(U" + T + ")";
 #>
-            var mask = <#= U #>(range - 1);
-<#+
-        int bits = 64 / m;
-        int shift = 1;
-
-        while (shift < bits)
-        {
-#>
-            mask |= <#= U #>(mask >> <#= shift #>);
-<#+
-            shift *= 2;
-        }
-#>
+            <#= UT #> mask = GetRangeMask(range);
             <#= T #> sample;
 
             do
@@ -521,6 +544,7 @@ void Next(string T, int m)
 
                 while (count >= <#= m #>)
                 {
+                    Next();
                     *p++ = <#= FixFP(T) #>;
 <#+
         if (T == "Single")
@@ -596,11 +620,77 @@ void Next(string T, int m)
 
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
+<#+
+    if (UT != null)
+    {
+#>
+
+            ulong mask = GetRangeMask(range);
+<#+
+        for (int i = m / 2; i > 0; i /= 2)
+        {
+#>
+            mask |= mask << <#= 32 / i #>;
+<#+
+        }
+    }
+
+    if (T == "Single")
+    {
+#>
+
+            while (count >= 2)
+            {
+                Next();
+                value.UInt64_0 = <#= FixFP(T) #>;
+                array[offset++] = minimum + (value.Single_0 - 1f) * range;
+                array[offset++] = minimum + (value.Single_1 - 1f) * range;
+                count -= 2;
+            }
+
+            if (count >= 1)
+            {
+                Next();
+                value.UInt64_0 = <#= FixFP(T) #>;
+                array[offset++] = minimum + (value.Single_0 - 1f) * range;
+            }
+<#+
+    }
+    else if (m > 1)
+    {
+#>
+
+            while (count > 0)
+            {
+                Next();
+                value.UInt64_0 &= mask;
+<#+
+        for (int i = 0; i < m; i++)
+        {
+#>
+
+                if (value.<#= T #>_<#= i #> < range) 
+                { 
+                    array[offset++] = (<#= T #>)(minimum + value.<#= T #>_<#= i #>); 
+                    if (--count == 0) break; 
+                }
+<#+
+        }
+#>
+            }
+<#+
+    }
+    else
+    {
+#>
 
             while (count-- > 0)
             {
                 array[offset++] = <#= T #>(minimum, range);
             }
+<#+
+    }
+#>
         }
 
         /// <summary>
@@ -608,9 +698,37 @@ void Next(string T, int m)
         /// </summary>
         public IEnumerable<<#= T #>> <#= T #>s()
         {
-            while(true)
+            while (true)
             {
+<#+ 
+    if (m == 1)
+    {
+#>
                 yield return <#= T #>();
+<#+
+    }
+    else if (T == "Single")
+    {
+#>
+                Next();
+                value.UInt64_0 = <#= FixFP(T) #>;
+                yield return value.Single_0 - 1f;
+                yield return value.Single_1 - 1f;
+<#+
+    }
+    else
+    {
+#>
+                Next();
+<#+
+        for (int i = 0; i < m; i++) 
+        { 
+#>
+                yield return value.<#= T #>_<#= i #>;
+<#+
+        }
+    }
+#>
             }
         }
 
@@ -619,13 +737,7 @@ void Next(string T, int m)
         /// </summary>
         public IEnumerable<<#= T #>> <#= T #>s(<#= T #> range)
         {
-            if (range <= 0)
-                throw new ArgumentOutOfRangeException(nameof(range));
-
-            while(true)
-            {
-                yield return <#= T #>(range);
-            }
+            return <#= T #>s(0, range);
         }
 
         /// <summary>
@@ -638,10 +750,54 @@ void Next(string T, int m)
 
             if (System.<#= T #>.MaxValue - range < minimum)
                 throw new ArgumentOutOfRangeException(nameof(range));
+<#+
+    if (U != null)
+    {
+#>
+
+            ulong mask = GetRangeMask(range);
+<#+
+        for (int i = m; i > 1; i /= 2)
+        {
+#>
+            mask |= mask << <#= 64 / i #>;
+<#+
+        }
+    }
+#>
 
             while(true)
             {
+<#+
+    if (T == "Single")
+    {
+#>
+                Next();
+                value.UInt64_0 = <#= FixFP(T) #>;
+                yield return minimum + (value.Single_0 - 1f) * range;
+                yield return minimum + (value.Single_1 - 1f) * range;
+<#+
+    }
+    else if (T == "Double" || T == "Decimal")
+    {
+#>
                 yield return <#= T #>(minimum, range);
+<#+
+    }
+    else
+    {
+#>
+                Next();
+                value.UInt64_0 &= mask;
+<#+
+        for (int i = 0; i < m; i++)
+        {
+#>
+                if (value.<#= T #>_<#= i #> < range) yield return (<#= T #>)(minimum + value.<#= T #>_<#= i #>);
+<#+
+        }
+    }
+#>
             }
         }
 <#+
@@ -708,14 +864,14 @@ string FixFP(string T)
 {
     if (T == "Double")
     {
-        return "(source.Next() & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000";
+        return "(value.UInt64_0 & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000";
     }
     
     if (T == "Single")
     {
-        return "(source.Next() & 0x007FFFFF007FFFFF) | 0x3F8000003F800000";
+        return "(value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000";
     }
 
-    return "source.Next()";
+    return "value.UInt64_0";
 }
 #>

@@ -12,6 +12,7 @@ Based on public domain source at http://xorshift.di.unimi.it/xorshift1024star.c
 by Sebastiano Vigna (vigna@acm.org).
 */
 
+using Foundations.Types;
 using System;
 
 namespace Foundations.RandomNumbers
@@ -43,7 +44,7 @@ namespace Foundations.RandomNumbers
         /// <summary>
         /// Gets the next 64 random bits.
         /// </summary>
-        public ulong Next()
+        public void Next(ref ValueUnion value)
         {
             ulong
                 s0 = state[p],
@@ -51,7 +52,7 @@ namespace Foundations.RandomNumbers
 
             s1 ^= s1 << 31;
             state[p] = s1 ^ s0 ^ (s1 >> 11) ^ (s0 >> 30);
-            return state[p] * 1181783497276652981;
+            value.UInt64_0 = state[p] * 1181783497276652981;
         }
 
         /// <summary>

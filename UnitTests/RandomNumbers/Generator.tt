@@ -436,19 +436,26 @@ void Type(string T)
                 Assert.IsTrue(data[i] >= 0);
                 Assert.IsTrue(data[i] < 50);
             }
+
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
         }
 
         [TestMethod]
         public void Random<#= T #>ArrayWithMinAndRange()
         {
             var random = new Generator();
-            var data = new <#= T #>[10000];
-            random.Fill(25, 50, data);
+            var data = new <#= T #>[9999];
 
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
+            for (int p = 0; p < 10 * (8 / sizeof(<#= T #>)); p++)
+            {            
+                random.Fill(25, 50, data);
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    Assert.IsTrue(data[i] >= 25);
+                    Assert.IsTrue(data[i] < 75);
+                }
             }
         }
 
@@ -736,13 +743,9 @@ void Type(string T)
         public void EnumeratorOf<#= T #>WithOffsetAndRange()
         {
             var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOf<#= T #>WithOffsetAndRange");
-            var data = random.<#= T #>s(25, 50).Take(1000).ToArray();
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
-            }
+            var data = random.<#= T #>s(25, 50).Take(10000).ToArray();
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
         }
 
         [TestMethod]

@@ -52,6 +52,7 @@ namespace Foundations.UnitTests.Objects
             rand.NextBytes(bytes);
             var time2 = sw.Elapsed;
             Assert.IsTrue(time2 > time1 + time1 + time1 + time1);
+            System.IO.File.WriteAllText("test.txt", time1 + "\t" + time2);
         }
 #endif
 

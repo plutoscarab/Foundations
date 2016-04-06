@@ -162,19 +162,26 @@ namespace Foundations.UnitTests.RandomNumbers
                 Assert.IsTrue(data[i] >= 0);
                 Assert.IsTrue(data[i] < 50);
             }
+
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
         }
 
         [TestMethod]
         public void RandomByteArrayWithMinAndRange()
         {
             var random = new Generator();
-            var data = new Byte[10000];
-            random.Fill(25, 50, data);
+            var data = new Byte[9999];
 
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
+            for (int p = 0; p < 10 * (8 / sizeof(Byte)); p++)
+            {            
+                random.Fill(25, 50, data);
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    Assert.IsTrue(data[i] >= 25);
+                    Assert.IsTrue(data[i] < 75);
+                }
             }
         }
 
@@ -460,13 +467,9 @@ namespace Foundations.UnitTests.RandomNumbers
         public void EnumeratorOfByteWithOffsetAndRange()
         {
             var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfByteWithOffsetAndRange");
-            var data = random.Bytes(25, 50).Take(1000).ToArray();
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
-            }
+            var data = random.Bytes(25, 50).Take(10000).ToArray();
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
         }
 
         [TestMethod]
@@ -642,19 +645,26 @@ namespace Foundations.UnitTests.RandomNumbers
                 Assert.IsTrue(data[i] >= 0);
                 Assert.IsTrue(data[i] < 50);
             }
+
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
         }
 
         [TestMethod]
         public void RandomSByteArrayWithMinAndRange()
         {
             var random = new Generator();
-            var data = new SByte[10000];
-            random.Fill(25, 50, data);
+            var data = new SByte[9999];
 
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
+            for (int p = 0; p < 10 * (8 / sizeof(SByte)); p++)
+            {            
+                random.Fill(25, 50, data);
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    Assert.IsTrue(data[i] >= 25);
+                    Assert.IsTrue(data[i] < 75);
+                }
             }
         }
 
@@ -940,13 +950,9 @@ namespace Foundations.UnitTests.RandomNumbers
         public void EnumeratorOfSByteWithOffsetAndRange()
         {
             var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfSByteWithOffsetAndRange");
-            var data = random.SBytes(25, 50).Take(1000).ToArray();
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
-            }
+            var data = random.SBytes(25, 50).Take(10000).ToArray();
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
         }
 
         [TestMethod]
@@ -1079,19 +1085,26 @@ namespace Foundations.UnitTests.RandomNumbers
                 Assert.IsTrue(data[i] >= 0);
                 Assert.IsTrue(data[i] < 50);
             }
+
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
         }
 
         [TestMethod]
         public void RandomUInt16ArrayWithMinAndRange()
         {
             var random = new Generator();
-            var data = new UInt16[10000];
-            random.Fill(25, 50, data);
+            var data = new UInt16[9999];
 
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
+            for (int p = 0; p < 10 * (8 / sizeof(UInt16)); p++)
+            {            
+                random.Fill(25, 50, data);
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    Assert.IsTrue(data[i] >= 25);
+                    Assert.IsTrue(data[i] < 75);
+                }
             }
         }
 
@@ -1377,13 +1390,9 @@ namespace Foundations.UnitTests.RandomNumbers
         public void EnumeratorOfUInt16WithOffsetAndRange()
         {
             var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfUInt16WithOffsetAndRange");
-            var data = random.UInt16s(25, 50).Take(1000).ToArray();
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
-            }
+            var data = random.UInt16s(25, 50).Take(10000).ToArray();
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
         }
 
         [TestMethod]
@@ -1559,19 +1568,26 @@ namespace Foundations.UnitTests.RandomNumbers
                 Assert.IsTrue(data[i] >= 0);
                 Assert.IsTrue(data[i] < 50);
             }
+
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
         }
 
         [TestMethod]
         public void RandomInt16ArrayWithMinAndRange()
         {
             var random = new Generator();
-            var data = new Int16[10000];
-            random.Fill(25, 50, data);
+            var data = new Int16[9999];
 
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
+            for (int p = 0; p < 10 * (8 / sizeof(Int16)); p++)
+            {            
+                random.Fill(25, 50, data);
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    Assert.IsTrue(data[i] >= 25);
+                    Assert.IsTrue(data[i] < 75);
+                }
             }
         }
 
@@ -1857,13 +1873,9 @@ namespace Foundations.UnitTests.RandomNumbers
         public void EnumeratorOfInt16WithOffsetAndRange()
         {
             var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfInt16WithOffsetAndRange");
-            var data = random.Int16s(25, 50).Take(1000).ToArray();
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
-            }
+            var data = random.Int16s(25, 50).Take(10000).ToArray();
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
         }
 
         [TestMethod]
@@ -1996,19 +2008,26 @@ namespace Foundations.UnitTests.RandomNumbers
                 Assert.IsTrue(data[i] >= 0);
                 Assert.IsTrue(data[i] < 50);
             }
+
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
         }
 
         [TestMethod]
         public void RandomUInt32ArrayWithMinAndRange()
         {
             var random = new Generator();
-            var data = new UInt32[10000];
-            random.Fill(25, 50, data);
+            var data = new UInt32[9999];
 
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
+            for (int p = 0; p < 10 * (8 / sizeof(UInt32)); p++)
+            {            
+                random.Fill(25, 50, data);
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    Assert.IsTrue(data[i] >= 25);
+                    Assert.IsTrue(data[i] < 75);
+                }
             }
         }
 
@@ -2294,13 +2313,9 @@ namespace Foundations.UnitTests.RandomNumbers
         public void EnumeratorOfUInt32WithOffsetAndRange()
         {
             var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfUInt32WithOffsetAndRange");
-            var data = random.UInt32s(25, 50).Take(1000).ToArray();
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
-            }
+            var data = random.UInt32s(25, 50).Take(10000).ToArray();
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
         }
 
         [TestMethod]
@@ -2476,19 +2491,26 @@ namespace Foundations.UnitTests.RandomNumbers
                 Assert.IsTrue(data[i] >= 0);
                 Assert.IsTrue(data[i] < 50);
             }
+
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
         }
 
         [TestMethod]
         public void RandomInt32ArrayWithMinAndRange()
         {
             var random = new Generator();
-            var data = new Int32[10000];
-            random.Fill(25, 50, data);
+            var data = new Int32[9999];
 
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
+            for (int p = 0; p < 10 * (8 / sizeof(Int32)); p++)
+            {            
+                random.Fill(25, 50, data);
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    Assert.IsTrue(data[i] >= 25);
+                    Assert.IsTrue(data[i] < 75);
+                }
             }
         }
 
@@ -2774,13 +2796,9 @@ namespace Foundations.UnitTests.RandomNumbers
         public void EnumeratorOfInt32WithOffsetAndRange()
         {
             var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfInt32WithOffsetAndRange");
-            var data = random.Int32s(25, 50).Take(1000).ToArray();
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
-            }
+            var data = random.Int32s(25, 50).Take(10000).ToArray();
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
         }
 
         [TestMethod]
@@ -2913,19 +2931,26 @@ namespace Foundations.UnitTests.RandomNumbers
                 Assert.IsTrue(data[i] >= 0);
                 Assert.IsTrue(data[i] < 50);
             }
+
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
         }
 
         [TestMethod]
         public void RandomUInt64ArrayWithMinAndRange()
         {
             var random = new Generator();
-            var data = new UInt64[10000];
-            random.Fill(25, 50, data);
+            var data = new UInt64[9999];
 
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
+            for (int p = 0; p < 10 * (8 / sizeof(UInt64)); p++)
+            {            
+                random.Fill(25, 50, data);
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    Assert.IsTrue(data[i] >= 25);
+                    Assert.IsTrue(data[i] < 75);
+                }
             }
         }
 
@@ -3211,13 +3236,9 @@ namespace Foundations.UnitTests.RandomNumbers
         public void EnumeratorOfUInt64WithOffsetAndRange()
         {
             var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfUInt64WithOffsetAndRange");
-            var data = random.UInt64s(25, 50).Take(1000).ToArray();
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
-            }
+            var data = random.UInt64s(25, 50).Take(10000).ToArray();
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
         }
 
         [TestMethod]
@@ -3393,19 +3414,26 @@ namespace Foundations.UnitTests.RandomNumbers
                 Assert.IsTrue(data[i] >= 0);
                 Assert.IsTrue(data[i] < 50);
             }
+
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
         }
 
         [TestMethod]
         public void RandomInt64ArrayWithMinAndRange()
         {
             var random = new Generator();
-            var data = new Int64[10000];
-            random.Fill(25, 50, data);
+            var data = new Int64[9999];
 
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
+            for (int p = 0; p < 10 * (8 / sizeof(Int64)); p++)
+            {            
+                random.Fill(25, 50, data);
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    Assert.IsTrue(data[i] >= 25);
+                    Assert.IsTrue(data[i] < 75);
+                }
             }
         }
 
@@ -3691,13 +3719,9 @@ namespace Foundations.UnitTests.RandomNumbers
         public void EnumeratorOfInt64WithOffsetAndRange()
         {
             var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfInt64WithOffsetAndRange");
-            var data = random.Int64s(25, 50).Take(1000).ToArray();
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
-            }
+            var data = random.Int64s(25, 50).Take(10000).ToArray();
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
         }
 
         [TestMethod]
@@ -3830,19 +3854,26 @@ namespace Foundations.UnitTests.RandomNumbers
                 Assert.IsTrue(data[i] >= 0);
                 Assert.IsTrue(data[i] < 50);
             }
+
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
         }
 
         [TestMethod]
         public void RandomSingleArrayWithMinAndRange()
         {
             var random = new Generator();
-            var data = new Single[10000];
-            random.Fill(25, 50, data);
+            var data = new Single[9999];
 
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
+            for (int p = 0; p < 10 * (8 / sizeof(Single)); p++)
+            {            
+                random.Fill(25, 50, data);
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    Assert.IsTrue(data[i] >= 25);
+                    Assert.IsTrue(data[i] < 75);
+                }
             }
         }
 
@@ -4128,13 +4159,9 @@ namespace Foundations.UnitTests.RandomNumbers
         public void EnumeratorOfSingleWithOffsetAndRange()
         {
             var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfSingleWithOffsetAndRange");
-            var data = random.Singles(25, 50).Take(1000).ToArray();
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
-            }
+            var data = random.Singles(25, 50).Take(10000).ToArray();
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
         }
 
         [TestMethod]
@@ -4267,19 +4294,26 @@ namespace Foundations.UnitTests.RandomNumbers
                 Assert.IsTrue(data[i] >= 0);
                 Assert.IsTrue(data[i] < 50);
             }
+
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
         }
 
         [TestMethod]
         public void RandomDoubleArrayWithMinAndRange()
         {
             var random = new Generator();
-            var data = new Double[10000];
-            random.Fill(25, 50, data);
+            var data = new Double[9999];
 
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
+            for (int p = 0; p < 10 * (8 / sizeof(Double)); p++)
+            {            
+                random.Fill(25, 50, data);
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    Assert.IsTrue(data[i] >= 25);
+                    Assert.IsTrue(data[i] < 75);
+                }
             }
         }
 
@@ -4565,13 +4599,9 @@ namespace Foundations.UnitTests.RandomNumbers
         public void EnumeratorOfDoubleWithOffsetAndRange()
         {
             var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfDoubleWithOffsetAndRange");
-            var data = random.Doubles(25, 50).Take(1000).ToArray();
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
-            }
+            var data = random.Doubles(25, 50).Take(10000).ToArray();
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
         }
 
         [TestMethod]
@@ -4704,19 +4734,26 @@ namespace Foundations.UnitTests.RandomNumbers
                 Assert.IsTrue(data[i] >= 0);
                 Assert.IsTrue(data[i] < 50);
             }
+
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
         }
 
         [TestMethod]
         public void RandomDecimalArrayWithMinAndRange()
         {
             var random = new Generator();
-            var data = new Decimal[10000];
-            random.Fill(25, 50, data);
+            var data = new Decimal[9999];
 
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
+            for (int p = 0; p < 10 * (8 / sizeof(Decimal)); p++)
+            {            
+                random.Fill(25, 50, data);
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    Assert.IsTrue(data[i] >= 25);
+                    Assert.IsTrue(data[i] < 75);
+                }
             }
         }
 
@@ -4979,13 +5016,9 @@ namespace Foundations.UnitTests.RandomNumbers
         public void EnumeratorOfDecimalWithOffsetAndRange()
         {
             var random = new Generator(Generator.DefaultSourceFactory(), "EnumeratorOfDecimalWithOffsetAndRange");
-            var data = random.Decimals(25, 50).Take(1000).ToArray();
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                Assert.IsTrue(data[i] >= 25);
-                Assert.IsTrue(data[i] < 75);
-            }
+            var data = random.Decimals(25, 50).Take(10000).ToArray();
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
         }
 
         [TestMethod]

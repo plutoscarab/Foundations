@@ -9,6 +9,7 @@ This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 Inte
 To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/.
 */
 
+using Foundations.Types;
 using System;
 using System.Security.Cryptography;
 
@@ -51,7 +52,7 @@ namespace Foundations.RandomNumbers
         /// <summary>
         /// Gets the next 64 random bits.
         /// </summary>
-        public ulong Next()
+        public void Next(ref ValueUnion value)
         {
             if (index == 4)
             {
@@ -60,7 +61,7 @@ namespace Foundations.RandomNumbers
                 state = sha.ComputeHash(state);
             }
 
-            return BitConverter.ToUInt64(state, index++ * 8);
+            value.UInt64_0 = BitConverter.ToUInt64(state, index++ * 8);
         }
 
         /// <summary>

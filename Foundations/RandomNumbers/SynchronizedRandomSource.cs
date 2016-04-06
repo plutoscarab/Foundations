@@ -9,6 +9,7 @@ This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 Inte
 To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/.
 */
 
+using Foundations.Types;
 using System;
 
 namespace Foundations.RandomNumbers
@@ -48,11 +49,11 @@ namespace Foundations.RandomNumbers
         /// <summary>
         /// Gets the next 64 random bits.
         /// </summary>
-        public ulong Next()
+        public void Next(ref ValueUnion value)
         {
             lock(syncRoot)
             {
-                return source.Next();
+                source.Next(ref value);
             }
         }
 
