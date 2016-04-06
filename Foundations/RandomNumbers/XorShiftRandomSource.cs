@@ -51,8 +51,7 @@ namespace Foundations.RandomNumbers
                 s1 = state[p = (p + 1) & 15];
 
             s1 ^= s1 << 31;
-            state[p] = s1 ^ s0 ^ (s1 >> 11) ^ (s0 >> 30);
-            value.UInt64_0 = state[p] * 1181783497276652981;
+            value.UInt64_0 = (state[p] = s1 ^ s0 ^ (s1 >> 11) ^ (s0 >> 30)) * 1181783497276652981;
         }
 
         /// <summary>

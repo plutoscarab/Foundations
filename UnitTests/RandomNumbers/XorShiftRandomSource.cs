@@ -13,6 +13,7 @@ using System;
 using Foundations.RandomNumbers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
+using Foundations.Types;
 
 namespace Foundations.UnitTests.Objects
 {
@@ -24,6 +25,31 @@ namespace Foundations.UnitTests.Objects
         {
             var source = new XorShiftRandomSource();
             SHA256RandomSourceTests.CloneTest(source);
+        }
+
+        [TestMethod]
+        public void Speed()
+        {
+            var source = new XorShiftRandomSource();
+            var random = new Generator(source);
+            random.UInt64();
+            var value = new ValueUnion();
+            const int N = 10000000;
+            var sw = Stopwatch.StartNew();
+            for (int i = 0; i < N; i++) source.Next(ref value);
+            Trace.WriteLine(sw.Elapsed.TotalSeconds * 1e9 / N + " nS per 64b");
+        }
+
+        [TestMethod]
+        public void GeneratorOverhead()
+        {
+            var source = new XorShiftRandomSource();
+            var random = new Generator(source);
+            random.UInt64();
+            const int N = 10000000;
+            var sw = Stopwatch.StartNew();
+            for (int i = 0; i < N; i++) random.UInt64();
+            Trace.WriteLine(sw.Elapsed.TotalSeconds * 1e9 / N + " nS per 64b");
         }
     }
 }
