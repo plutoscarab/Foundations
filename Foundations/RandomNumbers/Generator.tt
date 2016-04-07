@@ -800,6 +800,45 @@ void Next(string T, int m)
 #>
             }
         }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.<#= T #>"/>s and fill it with random values.
+        /// </summary>
+        public <#= T #>[] Create<#= T #>s(int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new <#= T #>[count];
+            Fill(data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.<#= T #>"/>s and fill it with random values in [0, range).
+        /// </summary>
+        public <#= T #>[] Create<#= T #>s(int count, <#= T #> range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new <#= T #>[count];
+            Fill(range, data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.<#= T #>"/>s and fill it with random values in [minimum, minimum + range).
+        /// </summary>
+        public <#= T #>[] Create<#= T #>s(int count, <#= T #> minimum, <#= T #> range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new <#= T #>[count];
+            Fill(minimum, range, data);
+            return data;
+        }
 <#+
     if (T[0] == 'I' || T == "SByte")
     {

@@ -764,6 +764,71 @@ void Type(string T)
             var data = random.<#= T #>s(3 * (System.<#= T #>.MaxValue / 4), System.<#= T #>.MaxValue / 2).Take(1000).ToArray();
         }
 
+        [TestMethod]
+        public void Create<#= T #>s()
+        {
+            var random = new Generator("Create<#= T #>s");
+            var data = random.Create<#= T #>s(99);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(99, data.Length);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Create<#= T #>sLowCount()
+        {
+            var random = new Generator("Create<#= T #>s");
+            var data = random.Create<#= T #>s(-1);
+        }
+
+        [TestMethod]
+        public void Create<#= T #>sZeroCount()
+        {
+            var random = new Generator("Create<#= T #>s");
+            var data = random.Create<#= T #>s(0);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(0, data.Length);
+        }
+
+        [TestMethod]
+        public void Create<#= T #>sWithRange()
+        {
+            var random = new Generator("Create<#= T #>s");
+            var data = random.Create<#= T #>s(9999, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Create<#= T #>sLowCountWithRange()
+        {
+            var random = new Generator("Create<#= T #>s");
+            var data = random.Create<#= T #>s(-1, 50);
+        }
+
+        [TestMethod]
+        public void Create<#= T #>sWithMinAndRange()
+        {
+            var random = new Generator("Create<#= T #>s");
+            var data = random.Create<#= T #>s(9999, 25, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void Create<#= T #>sLowCountWithMinAndRange()
+        {
+            var random = new Generator("Create<#= T #>s");
+            var data = random.Create<#= T #>s(-1, 25, 50);
+        }
+
         private void LooksRandom(<#= T #>[] array)
         {
 <#+ if (T == "Single" || T == "Double" || T == "Decimal") { #>

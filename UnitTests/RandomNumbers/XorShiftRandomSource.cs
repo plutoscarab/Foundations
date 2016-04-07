@@ -37,7 +37,7 @@ namespace Foundations.UnitTests.Objects
             const int N = 10000000;
             var sw = Stopwatch.StartNew();
             for (int i = 0; i < N; i++) source.Next(ref value);
-            Trace.WriteLine(sw.Elapsed.TotalSeconds * 1e9 / N + " nS per 64b");
+            Trace.WriteLine(sw.Elapsed.TotalSeconds * 1e9 / N + "ns/64b, " + N * sizeof(ulong) / sw.Elapsed.TotalSeconds / 1e9 + "GB/s");
         }
 
         [TestMethod]
@@ -49,7 +49,7 @@ namespace Foundations.UnitTests.Objects
             const int N = 10000000;
             var sw = Stopwatch.StartNew();
             for (int i = 0; i < N; i++) random.UInt64();
-            Trace.WriteLine(sw.Elapsed.TotalSeconds * 1e9 / N + " nS per 64b");
+            Trace.WriteLine(sw.Elapsed.TotalSeconds * 1e9 / N + "ns/64b, " + N * sizeof(ulong) / sw.Elapsed.TotalSeconds / 1e9 + "GB/s");
         }
     }
 }

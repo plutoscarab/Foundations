@@ -50,6 +50,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Generator.tt</DependentUpon>
     </Compile>
+    <Compile Include="RandomNumbers\StreamSource.cs" />
     <Compile Include="RandomNumbers\XorShiftRandomSource.cs" />
     <Compile Include="RandomNumbers\SystemRandomSource.cs" />
     <Compile Include="RandomNumbers\SynchronizedRandomSource.cs" />

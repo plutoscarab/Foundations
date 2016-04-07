@@ -520,6 +520,45 @@ namespace Foundations.RandomNumbers
             }
         }
 
+        /// <summary>
+        /// Allocate an array of <see cref="System.UInt64"/>s and fill it with random values.
+        /// </summary>
+        public UInt64[] CreateUInt64s(int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new UInt64[count];
+            Fill(data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.UInt64"/>s and fill it with random values in [0, range).
+        /// </summary>
+        public UInt64[] CreateUInt64s(int count, UInt64 range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new UInt64[count];
+            Fill(range, data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.UInt64"/>s and fill it with random values in [minimum, minimum + range).
+        /// </summary>
+        public UInt64[] CreateUInt64s(int count, UInt64 minimum, UInt64 range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new UInt64[count];
+            Fill(minimum, range, data);
+            return data;
+        }
+
         private static void CreateState(IRandomSource source, byte[] seed, UInt64[] state)
         {
             if (source == null)
@@ -732,6 +771,45 @@ namespace Foundations.RandomNumbers
                 value.UInt64_0 &= mask;
                 if (value.Int64_0 < range) yield return (Int64)(minimum + value.Int64_0);
             }
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Int64"/>s and fill it with random values.
+        /// </summary>
+        public Int64[] CreateInt64s(int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Int64[count];
+            Fill(data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Int64"/>s and fill it with random values in [0, range).
+        /// </summary>
+        public Int64[] CreateInt64s(int count, Int64 range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Int64[count];
+            Fill(range, data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Int64"/>s and fill it with random values in [minimum, minimum + range).
+        /// </summary>
+        public Int64[] CreateInt64s(int count, Int64 minimum, Int64 range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Int64[count];
+            Fill(minimum, range, data);
+            return data;
         }
 
         /// <summary>
@@ -1000,6 +1078,45 @@ namespace Foundations.RandomNumbers
             }
         }
 
+        /// <summary>
+        /// Allocate an array of <see cref="System.UInt32"/>s and fill it with random values.
+        /// </summary>
+        public UInt32[] CreateUInt32s(int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new UInt32[count];
+            Fill(data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.UInt32"/>s and fill it with random values in [0, range).
+        /// </summary>
+        public UInt32[] CreateUInt32s(int count, UInt32 range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new UInt32[count];
+            Fill(range, data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.UInt32"/>s and fill it with random values in [minimum, minimum + range).
+        /// </summary>
+        public UInt32[] CreateUInt32s(int count, UInt32 minimum, UInt32 range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new UInt32[count];
+            Fill(minimum, range, data);
+            return data;
+        }
+
         private static void CreateState(IRandomSource source, byte[] seed, UInt32[] state)
         {
             if (source == null)
@@ -1237,6 +1354,45 @@ namespace Foundations.RandomNumbers
                 if (value.Int32_0 < range) yield return (Int32)(minimum + value.Int32_0);
                 if (value.Int32_1 < range) yield return (Int32)(minimum + value.Int32_1);
             }
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Int32"/>s and fill it with random values.
+        /// </summary>
+        public Int32[] CreateInt32s(int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Int32[count];
+            Fill(data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Int32"/>s and fill it with random values in [0, range).
+        /// </summary>
+        public Int32[] CreateInt32s(int count, Int32 range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Int32[count];
+            Fill(range, data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Int32"/>s and fill it with random values in [minimum, minimum + range).
+        /// </summary>
+        public Int32[] CreateInt32s(int count, Int32 minimum, Int32 range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Int32[count];
+            Fill(minimum, range, data);
+            return data;
         }
 
         /// <summary>
@@ -1526,6 +1682,45 @@ namespace Foundations.RandomNumbers
             }
         }
 
+        /// <summary>
+        /// Allocate an array of <see cref="System.UInt16"/>s and fill it with random values.
+        /// </summary>
+        public UInt16[] CreateUInt16s(int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new UInt16[count];
+            Fill(data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.UInt16"/>s and fill it with random values in [0, range).
+        /// </summary>
+        public UInt16[] CreateUInt16s(int count, UInt16 range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new UInt16[count];
+            Fill(range, data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.UInt16"/>s and fill it with random values in [minimum, minimum + range).
+        /// </summary>
+        public UInt16[] CreateUInt16s(int count, UInt16 minimum, UInt16 range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new UInt16[count];
+            Fill(minimum, range, data);
+            return data;
+        }
+
         private static void CreateState(IRandomSource source, byte[] seed, UInt16[] state)
         {
             if (source == null)
@@ -1784,6 +1979,45 @@ namespace Foundations.RandomNumbers
                 if (value.Int16_2 < range) yield return (Int16)(minimum + value.Int16_2);
                 if (value.Int16_3 < range) yield return (Int16)(minimum + value.Int16_3);
             }
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Int16"/>s and fill it with random values.
+        /// </summary>
+        public Int16[] CreateInt16s(int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Int16[count];
+            Fill(data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Int16"/>s and fill it with random values in [0, range).
+        /// </summary>
+        public Int16[] CreateInt16s(int count, Int16 range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Int16[count];
+            Fill(range, data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Int16"/>s and fill it with random values in [minimum, minimum + range).
+        /// </summary>
+        public Int16[] CreateInt16s(int count, Int16 minimum, Int16 range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Int16[count];
+            Fill(minimum, range, data);
+            return data;
         }
 
         /// <summary>
@@ -2106,6 +2340,45 @@ namespace Foundations.RandomNumbers
             }
         }
 
+        /// <summary>
+        /// Allocate an array of <see cref="System.Byte"/>s and fill it with random values.
+        /// </summary>
+        public Byte[] CreateBytes(int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Byte[count];
+            Fill(data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Byte"/>s and fill it with random values in [0, range).
+        /// </summary>
+        public Byte[] CreateBytes(int count, Byte range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Byte[count];
+            Fill(range, data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Byte"/>s and fill it with random values in [minimum, minimum + range).
+        /// </summary>
+        public Byte[] CreateBytes(int count, Byte minimum, Byte range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Byte[count];
+            Fill(minimum, range, data);
+            return data;
+        }
+
         private static void CreateState(IRandomSource source, byte[] seed, Byte[] state)
         {
             if (source == null)
@@ -2400,6 +2673,45 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Allocate an array of <see cref="System.SByte"/>s and fill it with random values.
+        /// </summary>
+        public SByte[] CreateSBytes(int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new SByte[count];
+            Fill(data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.SByte"/>s and fill it with random values in [0, range).
+        /// </summary>
+        public SByte[] CreateSBytes(int count, SByte range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new SByte[count];
+            Fill(range, data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.SByte"/>s and fill it with random values in [minimum, minimum + range).
+        /// </summary>
+        public SByte[] CreateSBytes(int count, SByte minimum, SByte range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new SByte[count];
+            Fill(minimum, range, data);
+            return data;
+        }
+
+        /// <summary>
         /// Gets a sequence of non-negative SByte values.
         /// </summary>
         public IEnumerable<SByte> SBytesNonNegative()
@@ -2615,6 +2927,45 @@ namespace Foundations.RandomNumbers
             }
         }
 
+        /// <summary>
+        /// Allocate an array of <see cref="System.Double"/>s and fill it with random values.
+        /// </summary>
+        public Double[] CreateDoubles(int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Double[count];
+            Fill(data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Double"/>s and fill it with random values in [0, range).
+        /// </summary>
+        public Double[] CreateDoubles(int count, Double range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Double[count];
+            Fill(range, data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Double"/>s and fill it with random values in [minimum, minimum + range).
+        /// </summary>
+        public Double[] CreateDoubles(int count, Double minimum, Double range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Double[count];
+            Fill(minimum, range, data);
+            return data;
+        }
+
         private static void CreateState(IRandomSource source, byte[] seed, Double[] state)
         {
             if (source == null)
@@ -2822,6 +3173,45 @@ namespace Foundations.RandomNumbers
             }
         }
 
+        /// <summary>
+        /// Allocate an array of <see cref="System.Single"/>s and fill it with random values.
+        /// </summary>
+        public Single[] CreateSingles(int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Single[count];
+            Fill(data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Single"/>s and fill it with random values in [0, range).
+        /// </summary>
+        public Single[] CreateSingles(int count, Single range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Single[count];
+            Fill(range, data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Single"/>s and fill it with random values in [minimum, minimum + range).
+        /// </summary>
+        public Single[] CreateSingles(int count, Single minimum, Single range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Single[count];
+            Fill(minimum, range, data);
+            return data;
+        }
+
         private static void CreateState(IRandomSource source, byte[] seed, Single[] state)
         {
             if (source == null)
@@ -2997,6 +3387,45 @@ namespace Foundations.RandomNumbers
             {
                 yield return Decimal(minimum, range);
             }
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Decimal"/>s and fill it with random values.
+        /// </summary>
+        public Decimal[] CreateDecimals(int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Decimal[count];
+            Fill(data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Decimal"/>s and fill it with random values in [0, range).
+        /// </summary>
+        public Decimal[] CreateDecimals(int count, Decimal range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Decimal[count];
+            Fill(range, data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Decimal"/>s and fill it with random values in [minimum, minimum + range).
+        /// </summary>
+        public Decimal[] CreateDecimals(int count, Decimal minimum, Decimal range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Decimal[count];
+            Fill(minimum, range, data);
+            return data;
         }
 
         private static void CreateState(IRandomSource source, byte[] seed, Decimal[] state)

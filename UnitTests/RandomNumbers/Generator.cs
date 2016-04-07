@@ -488,6 +488,71 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = random.Bytes(3 * (System.Byte.MaxValue / 4), System.Byte.MaxValue / 2).Take(1000).ToArray();
         }
 
+        [TestMethod]
+        public void CreateBytes()
+        {
+            var random = new Generator("CreateBytes");
+            var data = random.CreateBytes(99);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(99, data.Length);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateBytesLowCount()
+        {
+            var random = new Generator("CreateBytes");
+            var data = random.CreateBytes(-1);
+        }
+
+        [TestMethod]
+        public void CreateBytesZeroCount()
+        {
+            var random = new Generator("CreateBytes");
+            var data = random.CreateBytes(0);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(0, data.Length);
+        }
+
+        [TestMethod]
+        public void CreateBytesWithRange()
+        {
+            var random = new Generator("CreateBytes");
+            var data = random.CreateBytes(9999, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateBytesLowCountWithRange()
+        {
+            var random = new Generator("CreateBytes");
+            var data = random.CreateBytes(-1, 50);
+        }
+
+        [TestMethod]
+        public void CreateBytesWithMinAndRange()
+        {
+            var random = new Generator("CreateBytes");
+            var data = random.CreateBytes(9999, 25, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateBytesLowCountWithMinAndRange()
+        {
+            var random = new Generator("CreateBytes");
+            var data = random.CreateBytes(-1, 25, 50);
+        }
+
         private void LooksRandom(Byte[] array)
         {
             var minValue = (double)Byte.MinValue;
@@ -971,6 +1036,71 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = random.SBytes(3 * (System.SByte.MaxValue / 4), System.SByte.MaxValue / 2).Take(1000).ToArray();
         }
 
+        [TestMethod]
+        public void CreateSBytes()
+        {
+            var random = new Generator("CreateSBytes");
+            var data = random.CreateSBytes(99);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(99, data.Length);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateSBytesLowCount()
+        {
+            var random = new Generator("CreateSBytes");
+            var data = random.CreateSBytes(-1);
+        }
+
+        [TestMethod]
+        public void CreateSBytesZeroCount()
+        {
+            var random = new Generator("CreateSBytes");
+            var data = random.CreateSBytes(0);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(0, data.Length);
+        }
+
+        [TestMethod]
+        public void CreateSBytesWithRange()
+        {
+            var random = new Generator("CreateSBytes");
+            var data = random.CreateSBytes(9999, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateSBytesLowCountWithRange()
+        {
+            var random = new Generator("CreateSBytes");
+            var data = random.CreateSBytes(-1, 50);
+        }
+
+        [TestMethod]
+        public void CreateSBytesWithMinAndRange()
+        {
+            var random = new Generator("CreateSBytes");
+            var data = random.CreateSBytes(9999, 25, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateSBytesLowCountWithMinAndRange()
+        {
+            var random = new Generator("CreateSBytes");
+            var data = random.CreateSBytes(-1, 25, 50);
+        }
+
         private void LooksRandom(SByte[] array)
         {
             var minValue = (double)SByte.MinValue;
@@ -1409,6 +1539,71 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator();
             var data = random.UInt16s(3 * (System.UInt16.MaxValue / 4), System.UInt16.MaxValue / 2).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        public void CreateUInt16s()
+        {
+            var random = new Generator("CreateUInt16s");
+            var data = random.CreateUInt16s(99);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(99, data.Length);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateUInt16sLowCount()
+        {
+            var random = new Generator("CreateUInt16s");
+            var data = random.CreateUInt16s(-1);
+        }
+
+        [TestMethod]
+        public void CreateUInt16sZeroCount()
+        {
+            var random = new Generator("CreateUInt16s");
+            var data = random.CreateUInt16s(0);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(0, data.Length);
+        }
+
+        [TestMethod]
+        public void CreateUInt16sWithRange()
+        {
+            var random = new Generator("CreateUInt16s");
+            var data = random.CreateUInt16s(9999, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateUInt16sLowCountWithRange()
+        {
+            var random = new Generator("CreateUInt16s");
+            var data = random.CreateUInt16s(-1, 50);
+        }
+
+        [TestMethod]
+        public void CreateUInt16sWithMinAndRange()
+        {
+            var random = new Generator("CreateUInt16s");
+            var data = random.CreateUInt16s(9999, 25, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateUInt16sLowCountWithMinAndRange()
+        {
+            var random = new Generator("CreateUInt16s");
+            var data = random.CreateUInt16s(-1, 25, 50);
         }
 
         private void LooksRandom(UInt16[] array)
@@ -1894,6 +2089,71 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = random.Int16s(3 * (System.Int16.MaxValue / 4), System.Int16.MaxValue / 2).Take(1000).ToArray();
         }
 
+        [TestMethod]
+        public void CreateInt16s()
+        {
+            var random = new Generator("CreateInt16s");
+            var data = random.CreateInt16s(99);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(99, data.Length);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateInt16sLowCount()
+        {
+            var random = new Generator("CreateInt16s");
+            var data = random.CreateInt16s(-1);
+        }
+
+        [TestMethod]
+        public void CreateInt16sZeroCount()
+        {
+            var random = new Generator("CreateInt16s");
+            var data = random.CreateInt16s(0);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(0, data.Length);
+        }
+
+        [TestMethod]
+        public void CreateInt16sWithRange()
+        {
+            var random = new Generator("CreateInt16s");
+            var data = random.CreateInt16s(9999, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateInt16sLowCountWithRange()
+        {
+            var random = new Generator("CreateInt16s");
+            var data = random.CreateInt16s(-1, 50);
+        }
+
+        [TestMethod]
+        public void CreateInt16sWithMinAndRange()
+        {
+            var random = new Generator("CreateInt16s");
+            var data = random.CreateInt16s(9999, 25, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateInt16sLowCountWithMinAndRange()
+        {
+            var random = new Generator("CreateInt16s");
+            var data = random.CreateInt16s(-1, 25, 50);
+        }
+
         private void LooksRandom(Int16[] array)
         {
             var minValue = (double)Int16.MinValue;
@@ -2332,6 +2592,71 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator();
             var data = random.UInt32s(3 * (System.UInt32.MaxValue / 4), System.UInt32.MaxValue / 2).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        public void CreateUInt32s()
+        {
+            var random = new Generator("CreateUInt32s");
+            var data = random.CreateUInt32s(99);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(99, data.Length);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateUInt32sLowCount()
+        {
+            var random = new Generator("CreateUInt32s");
+            var data = random.CreateUInt32s(-1);
+        }
+
+        [TestMethod]
+        public void CreateUInt32sZeroCount()
+        {
+            var random = new Generator("CreateUInt32s");
+            var data = random.CreateUInt32s(0);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(0, data.Length);
+        }
+
+        [TestMethod]
+        public void CreateUInt32sWithRange()
+        {
+            var random = new Generator("CreateUInt32s");
+            var data = random.CreateUInt32s(9999, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateUInt32sLowCountWithRange()
+        {
+            var random = new Generator("CreateUInt32s");
+            var data = random.CreateUInt32s(-1, 50);
+        }
+
+        [TestMethod]
+        public void CreateUInt32sWithMinAndRange()
+        {
+            var random = new Generator("CreateUInt32s");
+            var data = random.CreateUInt32s(9999, 25, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateUInt32sLowCountWithMinAndRange()
+        {
+            var random = new Generator("CreateUInt32s");
+            var data = random.CreateUInt32s(-1, 25, 50);
         }
 
         private void LooksRandom(UInt32[] array)
@@ -2817,6 +3142,71 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = random.Int32s(3 * (System.Int32.MaxValue / 4), System.Int32.MaxValue / 2).Take(1000).ToArray();
         }
 
+        [TestMethod]
+        public void CreateInt32s()
+        {
+            var random = new Generator("CreateInt32s");
+            var data = random.CreateInt32s(99);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(99, data.Length);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateInt32sLowCount()
+        {
+            var random = new Generator("CreateInt32s");
+            var data = random.CreateInt32s(-1);
+        }
+
+        [TestMethod]
+        public void CreateInt32sZeroCount()
+        {
+            var random = new Generator("CreateInt32s");
+            var data = random.CreateInt32s(0);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(0, data.Length);
+        }
+
+        [TestMethod]
+        public void CreateInt32sWithRange()
+        {
+            var random = new Generator("CreateInt32s");
+            var data = random.CreateInt32s(9999, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateInt32sLowCountWithRange()
+        {
+            var random = new Generator("CreateInt32s");
+            var data = random.CreateInt32s(-1, 50);
+        }
+
+        [TestMethod]
+        public void CreateInt32sWithMinAndRange()
+        {
+            var random = new Generator("CreateInt32s");
+            var data = random.CreateInt32s(9999, 25, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateInt32sLowCountWithMinAndRange()
+        {
+            var random = new Generator("CreateInt32s");
+            var data = random.CreateInt32s(-1, 25, 50);
+        }
+
         private void LooksRandom(Int32[] array)
         {
             var minValue = (double)Int32.MinValue;
@@ -3255,6 +3645,71 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator();
             var data = random.UInt64s(3 * (System.UInt64.MaxValue / 4), System.UInt64.MaxValue / 2).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        public void CreateUInt64s()
+        {
+            var random = new Generator("CreateUInt64s");
+            var data = random.CreateUInt64s(99);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(99, data.Length);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateUInt64sLowCount()
+        {
+            var random = new Generator("CreateUInt64s");
+            var data = random.CreateUInt64s(-1);
+        }
+
+        [TestMethod]
+        public void CreateUInt64sZeroCount()
+        {
+            var random = new Generator("CreateUInt64s");
+            var data = random.CreateUInt64s(0);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(0, data.Length);
+        }
+
+        [TestMethod]
+        public void CreateUInt64sWithRange()
+        {
+            var random = new Generator("CreateUInt64s");
+            var data = random.CreateUInt64s(9999, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateUInt64sLowCountWithRange()
+        {
+            var random = new Generator("CreateUInt64s");
+            var data = random.CreateUInt64s(-1, 50);
+        }
+
+        [TestMethod]
+        public void CreateUInt64sWithMinAndRange()
+        {
+            var random = new Generator("CreateUInt64s");
+            var data = random.CreateUInt64s(9999, 25, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateUInt64sLowCountWithMinAndRange()
+        {
+            var random = new Generator("CreateUInt64s");
+            var data = random.CreateUInt64s(-1, 25, 50);
         }
 
         private void LooksRandom(UInt64[] array)
@@ -3740,6 +4195,71 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = random.Int64s(3 * (System.Int64.MaxValue / 4), System.Int64.MaxValue / 2).Take(1000).ToArray();
         }
 
+        [TestMethod]
+        public void CreateInt64s()
+        {
+            var random = new Generator("CreateInt64s");
+            var data = random.CreateInt64s(99);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(99, data.Length);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateInt64sLowCount()
+        {
+            var random = new Generator("CreateInt64s");
+            var data = random.CreateInt64s(-1);
+        }
+
+        [TestMethod]
+        public void CreateInt64sZeroCount()
+        {
+            var random = new Generator("CreateInt64s");
+            var data = random.CreateInt64s(0);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(0, data.Length);
+        }
+
+        [TestMethod]
+        public void CreateInt64sWithRange()
+        {
+            var random = new Generator("CreateInt64s");
+            var data = random.CreateInt64s(9999, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateInt64sLowCountWithRange()
+        {
+            var random = new Generator("CreateInt64s");
+            var data = random.CreateInt64s(-1, 50);
+        }
+
+        [TestMethod]
+        public void CreateInt64sWithMinAndRange()
+        {
+            var random = new Generator("CreateInt64s");
+            var data = random.CreateInt64s(9999, 25, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateInt64sLowCountWithMinAndRange()
+        {
+            var random = new Generator("CreateInt64s");
+            var data = random.CreateInt64s(-1, 25, 50);
+        }
+
         private void LooksRandom(Int64[] array)
         {
             var minValue = (double)Int64.MinValue;
@@ -4178,6 +4698,71 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator();
             var data = random.Singles(3 * (System.Single.MaxValue / 4), System.Single.MaxValue / 2).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        public void CreateSingles()
+        {
+            var random = new Generator("CreateSingles");
+            var data = random.CreateSingles(99);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(99, data.Length);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateSinglesLowCount()
+        {
+            var random = new Generator("CreateSingles");
+            var data = random.CreateSingles(-1);
+        }
+
+        [TestMethod]
+        public void CreateSinglesZeroCount()
+        {
+            var random = new Generator("CreateSingles");
+            var data = random.CreateSingles(0);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(0, data.Length);
+        }
+
+        [TestMethod]
+        public void CreateSinglesWithRange()
+        {
+            var random = new Generator("CreateSingles");
+            var data = random.CreateSingles(9999, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateSinglesLowCountWithRange()
+        {
+            var random = new Generator("CreateSingles");
+            var data = random.CreateSingles(-1, 50);
+        }
+
+        [TestMethod]
+        public void CreateSinglesWithMinAndRange()
+        {
+            var random = new Generator("CreateSingles");
+            var data = random.CreateSingles(9999, 25, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateSinglesLowCountWithMinAndRange()
+        {
+            var random = new Generator("CreateSingles");
+            var data = random.CreateSingles(-1, 25, 50);
         }
 
         private void LooksRandom(Single[] array)
@@ -4620,6 +5205,71 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = random.Doubles(3 * (System.Double.MaxValue / 4), System.Double.MaxValue / 2).Take(1000).ToArray();
         }
 
+        [TestMethod]
+        public void CreateDoubles()
+        {
+            var random = new Generator("CreateDoubles");
+            var data = random.CreateDoubles(99);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(99, data.Length);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateDoublesLowCount()
+        {
+            var random = new Generator("CreateDoubles");
+            var data = random.CreateDoubles(-1);
+        }
+
+        [TestMethod]
+        public void CreateDoublesZeroCount()
+        {
+            var random = new Generator("CreateDoubles");
+            var data = random.CreateDoubles(0);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(0, data.Length);
+        }
+
+        [TestMethod]
+        public void CreateDoublesWithRange()
+        {
+            var random = new Generator("CreateDoubles");
+            var data = random.CreateDoubles(9999, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateDoublesLowCountWithRange()
+        {
+            var random = new Generator("CreateDoubles");
+            var data = random.CreateDoubles(-1, 50);
+        }
+
+        [TestMethod]
+        public void CreateDoublesWithMinAndRange()
+        {
+            var random = new Generator("CreateDoubles");
+            var data = random.CreateDoubles(9999, 25, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateDoublesLowCountWithMinAndRange()
+        {
+            var random = new Generator("CreateDoubles");
+            var data = random.CreateDoubles(-1, 25, 50);
+        }
+
         private void LooksRandom(Double[] array)
         {
             var minValue = 0.0;
@@ -5035,6 +5685,71 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator();
             var data = random.Decimals(3 * (System.Decimal.MaxValue / 4), System.Decimal.MaxValue / 2).Take(1000).ToArray();
+        }
+
+        [TestMethod]
+        public void CreateDecimals()
+        {
+            var random = new Generator("CreateDecimals");
+            var data = random.CreateDecimals(99);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(99, data.Length);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateDecimalsLowCount()
+        {
+            var random = new Generator("CreateDecimals");
+            var data = random.CreateDecimals(-1);
+        }
+
+        [TestMethod]
+        public void CreateDecimalsZeroCount()
+        {
+            var random = new Generator("CreateDecimals");
+            var data = random.CreateDecimals(0);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(0, data.Length);
+        }
+
+        [TestMethod]
+        public void CreateDecimalsWithRange()
+        {
+            var random = new Generator("CreateDecimals");
+            var data = random.CreateDecimals(9999, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 45);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateDecimalsLowCountWithRange()
+        {
+            var random = new Generator("CreateDecimals");
+            var data = random.CreateDecimals(-1, 50);
+        }
+
+        [TestMethod]
+        public void CreateDecimalsWithMinAndRange()
+        {
+            var random = new Generator("CreateDecimals");
+            var data = random.CreateDecimals(9999, 25, 50);
+            Assert.IsNotNull(data);
+            Assert.AreEqual(9999, data.Length);
+            Assert.IsTrue(data.Min() < 30);
+            Assert.IsTrue(data.Max() >= 70);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateDecimalsLowCountWithMinAndRange()
+        {
+            var random = new Generator("CreateDecimals");
+            var data = random.CreateDecimals(-1, 25, 50);
         }
 
         private void LooksRandom(Decimal[] array)

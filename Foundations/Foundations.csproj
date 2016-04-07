@@ -91,6 +91,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="RandomNumbers\StreamSource.cs" />
     <Compile Include="RandomNumbers\SHA256RandomSource.cs" />
     <Compile Include="RandomNumbers\SynchronizedRandomSource.cs" />
     <Compile Include="RandomNumbers\SystemRandomSource.cs" />
