@@ -11,11 +11,9 @@ Generator.cs
 <#@ include file="../../License.txt" #>
 */
 
+using Foundations.Types;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using Foundations.Types;
 
 namespace Foundations.RandomNumbers
 {

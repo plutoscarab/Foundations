@@ -11,12 +11,12 @@ Generator.cs
 <#@ include file="../../License.txt" #>
 */
 
+using Foundations.RandomNumbers;
+using Foundations.Types;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Foundations.RandomNumbers;
-using Foundations.Types;
 
 namespace Foundations.UnitTests.RandomNumbers
 {

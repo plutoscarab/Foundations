@@ -9,9 +9,9 @@ This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 Inte
 To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/.
 */
 
-using System;
 using Foundations.RandomNumbers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Diagnostics;
 
 namespace Foundations.UnitTests.Objects

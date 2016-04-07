@@ -12,7 +12,6 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 using Foundations.Types;
 using System;
 using System.IO;
-using System.Security.Cryptography;
 
 namespace Foundations.RandomNumbers
 {
