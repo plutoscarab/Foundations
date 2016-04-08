@@ -53,6 +53,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Functions\Poly.cs" />
     <Compile Include="Functions\Special\CarlsonSymmetric.cs">
       <DependentUpon>CarlsonSymmetric.tt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -83,7 +84,8 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Functions\Statistics\Gaussian.cs" />
+    <Compile Include="Statistics\Gaussian.cs" />
+    <Compile Include="Statistics\IContinuousProbabilityDistribution.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomNumbers\IRandomSource.cs" />
     <Compile Include="RandomNumbers\Generator.cs">
@@ -96,6 +98,8 @@
     <Compile Include="RandomNumbers\SynchronizedRandomSource.cs" />
     <Compile Include="RandomNumbers\SystemRandomSource.cs" />
     <Compile Include="RandomNumbers\XorShiftRandomSource.cs" />
+    <Compile Include="Types\ContinuedFraction.cs" />
+    <Compile Include="Types\Rational.cs" />
     <Compile Include="Types\ValueUnion.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
