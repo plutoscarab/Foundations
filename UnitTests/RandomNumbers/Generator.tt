@@ -281,6 +281,24 @@ Type("Decimal");
             var data = random.ValueUnions().Take(99).ToArray();
             LooksRandom(data.Select(t => t.UInt64_0).ToArray());
         }
+
+        [TestMethod]
+        public void CreateValueUnionsArray()
+        {
+            var random = new Generator("CreateValueUnionsArray");
+            var data = random.CreateValueUnions(99);
+            Assert.AreEqual(99, data.Length);
+            var ulongs = data.Select(t => t.UInt64_0).ToArray();
+            LooksRandom(ulongs);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CreateValueUnionsLowCount()
+        {
+            var random = new Generator("CreateValueUnionsLowCount");
+            var data = random.CreateValueUnions(-1);
+        }
     }
 }
 <#+

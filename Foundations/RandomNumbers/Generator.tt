@@ -259,6 +259,19 @@ namespace Foundations.RandomNumbers
             }
         }
 
+        /// <summary>
+        /// Allocate an array of <see cref="ValueUnion"/>s and fill it with random values.
+        /// </summary>
+        public ValueUnion[] CreateValueUnions(int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new ValueUnion[count];
+            Fill(data);
+            return data;
+        }
+
         private static void CreateState(IRandomSource source, byte[] seed, ValueUnion[] state)
         {
             if (source == null)
