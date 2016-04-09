@@ -483,7 +483,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.UInt64"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.UInt64"/> values into an array using exclusive-OR operation.
         /// </summary>
         public void XorFill(UInt64[] array)
         {
@@ -494,7 +494,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.UInt64"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.UInt64"/> values into an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -510,7 +510,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.UInt64"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.UInt64"/> values into an array using exclusive-OR operation.
         /// </summary>
         unsafe public void XorFill(UInt64[] array, int offset, int count)
         {
@@ -540,7 +540,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.UInt64"/> values into part of an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.UInt64"/> values into part of an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -575,6 +575,85 @@ namespace Foundations.RandomNumbers
                     *p++ ^= value.UInt64_0 & mask;
                     count -= 1;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.UInt64"/> values to values in an array.
+        /// </summary>
+        public void AddFill(UInt64[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.UInt64"/> values in [0, range) to values in an array.
+        /// </summary>
+        public void AddFill(UInt64 range, UInt64[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.UInt64"/> values in [minimum, minimum + range) to values in an array.
+        /// </summary>
+        public void AddFill(UInt64 minimum, UInt64 range, UInt64[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.UInt64"/> values to part of an array.
+        /// </summary>
+        public void AddFill(UInt64[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] += UInt64();
+            }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.UInt64"/> values in [minimum, minimum + range) to part of an array.
+        /// </summary>
+        public void AddFill(UInt64 minimum, UInt64 range, UInt64[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.UInt64.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] += UInt64(minimum, range);
             }
         }
 
@@ -832,7 +911,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.Int64"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.Int64"/> values into an array using exclusive-OR operation.
         /// </summary>
         public void XorFill(Int64[] array)
         {
@@ -843,7 +922,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.Int64"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.Int64"/> values into an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -859,7 +938,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.Int64"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.Int64"/> values into an array using exclusive-OR operation.
         /// </summary>
         unsafe public void XorFill(Int64[] array, int offset, int count)
         {
@@ -889,7 +968,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.Int64"/> values into part of an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.Int64"/> values into part of an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -924,6 +1003,85 @@ namespace Foundations.RandomNumbers
                     *p++ ^= value.UInt64_0 & mask;
                     count -= 1;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int64"/> values to values in an array.
+        /// </summary>
+        public void AddFill(Int64[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int64"/> values in [0, range) to values in an array.
+        /// </summary>
+        public void AddFill(Int64 range, Int64[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int64"/> values in [minimum, minimum + range) to values in an array.
+        /// </summary>
+        public void AddFill(Int64 minimum, Int64 range, Int64[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int64"/> values to part of an array.
+        /// </summary>
+        public void AddFill(Int64[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] += Int64();
+            }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int64"/> values in [minimum, minimum + range) to part of an array.
+        /// </summary>
+        public void AddFill(Int64 minimum, Int64 range, Int64[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Int64.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] += Int64(minimum, range);
             }
         }
 
@@ -1230,7 +1388,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.UInt32"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.UInt32"/> values into an array using exclusive-OR operation.
         /// </summary>
         public void XorFill(UInt32[] array)
         {
@@ -1241,7 +1399,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.UInt32"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.UInt32"/> values into an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -1257,7 +1415,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.UInt32"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.UInt32"/> values into an array using exclusive-OR operation.
         /// </summary>
         unsafe public void XorFill(UInt32[] array, int offset, int count)
         {
@@ -1295,7 +1453,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.UInt32"/> values into part of an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.UInt32"/> values into part of an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -1339,6 +1497,112 @@ namespace Foundations.RandomNumbers
                 var p1 = (UInt32*)p;
                 var p2 = (UInt32*)&sample;
                 *p1 ^= *p2;
+            }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.UInt32"/> values to values in an array.
+        /// </summary>
+        public void AddFill(UInt32[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.UInt32"/> values in [0, range) to values in an array.
+        /// </summary>
+        public void AddFill(UInt32 range, UInt32[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.UInt32"/> values in [minimum, minimum + range) to values in an array.
+        /// </summary>
+        public void AddFill(UInt32 minimum, UInt32 range, UInt32[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.UInt32"/> values to part of an array.
+        /// </summary>
+        public void AddFill(UInt32[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count >= 2)
+            {
+                Next();
+                array[offset++] += value.UInt32_0;
+                array[offset++] += value.UInt32_1;
+                count -= 2;
+            }
+
+            if (count == 0)
+                return;
+
+            Next();
+
+            array[offset++] += value.UInt32_0; 
+            if (--count == 0) return;
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.UInt32"/> values in [minimum, minimum + range) to part of an array.
+        /// </summary>
+        public void AddFill(UInt32 minimum, UInt32 range, UInt32[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.UInt32.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            ulong mask = GetRangeMask(range);
+            mask |= mask << 32;
+
+            while (count > 0)
+            {
+                Next();
+                value.UInt64_0 &= mask;
+
+                if (value.UInt32_0 < range) 
+                { 
+                    array[offset++] += (UInt32)(minimum + value.UInt32_0); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.UInt32_1 < range) 
+                { 
+                    array[offset++] += (UInt32)(minimum + value.UInt32_1); 
+                    if (--count == 0) break; 
+                }
             }
         }
 
@@ -1622,7 +1886,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.Int32"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.Int32"/> values into an array using exclusive-OR operation.
         /// </summary>
         public void XorFill(Int32[] array)
         {
@@ -1633,7 +1897,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.Int32"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.Int32"/> values into an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -1649,7 +1913,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.Int32"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.Int32"/> values into an array using exclusive-OR operation.
         /// </summary>
         unsafe public void XorFill(Int32[] array, int offset, int count)
         {
@@ -1687,7 +1951,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.Int32"/> values into part of an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.Int32"/> values into part of an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -1731,6 +1995,112 @@ namespace Foundations.RandomNumbers
                 var p1 = (Int32*)p;
                 var p2 = (Int32*)&sample;
                 *p1 ^= *p2;
+            }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int32"/> values to values in an array.
+        /// </summary>
+        public void AddFill(Int32[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int32"/> values in [0, range) to values in an array.
+        /// </summary>
+        public void AddFill(Int32 range, Int32[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int32"/> values in [minimum, minimum + range) to values in an array.
+        /// </summary>
+        public void AddFill(Int32 minimum, Int32 range, Int32[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int32"/> values to part of an array.
+        /// </summary>
+        public void AddFill(Int32[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count >= 2)
+            {
+                Next();
+                array[offset++] += value.Int32_0;
+                array[offset++] += value.Int32_1;
+                count -= 2;
+            }
+
+            if (count == 0)
+                return;
+
+            Next();
+
+            array[offset++] += value.Int32_0; 
+            if (--count == 0) return;
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int32"/> values in [minimum, minimum + range) to part of an array.
+        /// </summary>
+        public void AddFill(Int32 minimum, Int32 range, Int32[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Int32.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            ulong mask = GetRangeMask(range);
+            mask |= mask << 32;
+
+            while (count > 0)
+            {
+                Next();
+                value.UInt64_0 &= mask;
+
+                if (value.Int32_0 < range) 
+                { 
+                    array[offset++] += (Int32)(minimum + value.Int32_0); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.Int32_1 < range) 
+                { 
+                    array[offset++] += (Int32)(minimum + value.Int32_1); 
+                    if (--count == 0) break; 
+                }
             }
         }
 
@@ -2057,7 +2427,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.UInt16"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.UInt16"/> values into an array using exclusive-OR operation.
         /// </summary>
         public void XorFill(UInt16[] array)
         {
@@ -2068,7 +2438,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.UInt16"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.UInt16"/> values into an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -2084,7 +2454,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.UInt16"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.UInt16"/> values into an array using exclusive-OR operation.
         /// </summary>
         unsafe public void XorFill(UInt16[] array, int offset, int count)
         {
@@ -2126,7 +2496,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.UInt16"/> values into part of an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.UInt16"/> values into part of an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -2174,6 +2544,133 @@ namespace Foundations.RandomNumbers
                 while (count-- > 0)
                 {
                     *p1++ ^= *p2++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.UInt16"/> values to values in an array.
+        /// </summary>
+        public void AddFill(UInt16[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.UInt16"/> values in [0, range) to values in an array.
+        /// </summary>
+        public void AddFill(UInt16 range, UInt16[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.UInt16"/> values in [minimum, minimum + range) to values in an array.
+        /// </summary>
+        public void AddFill(UInt16 minimum, UInt16 range, UInt16[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.UInt16"/> values to part of an array.
+        /// </summary>
+        public void AddFill(UInt16[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count >= 4)
+            {
+                Next();
+                array[offset++] += value.UInt16_0;
+                array[offset++] += value.UInt16_1;
+                array[offset++] += value.UInt16_2;
+                array[offset++] += value.UInt16_3;
+                count -= 2;
+            }
+
+            if (count == 0)
+                return;
+
+            Next();
+
+            array[offset++] += value.UInt16_0; 
+            if (--count == 0) return;
+
+            array[offset++] += value.UInt16_1; 
+            if (--count == 0) return;
+
+            array[offset++] += value.UInt16_2; 
+            if (--count == 0) return;
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.UInt16"/> values in [minimum, minimum + range) to part of an array.
+        /// </summary>
+        public void AddFill(UInt16 minimum, UInt16 range, UInt16[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.UInt16.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            ulong mask = GetRangeMask(range);
+            mask |= mask << 16;
+            mask |= mask << 32;
+
+            while (count > 0)
+            {
+                Next();
+                value.UInt64_0 &= mask;
+
+                if (value.UInt16_0 < range) 
+                { 
+                    array[offset++] += (UInt16)(minimum + value.UInt16_0); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.UInt16_1 < range) 
+                { 
+                    array[offset++] += (UInt16)(minimum + value.UInt16_1); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.UInt16_2 < range) 
+                { 
+                    array[offset++] += (UInt16)(minimum + value.UInt16_2); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.UInt16_3 < range) 
+                { 
+                    array[offset++] += (UInt16)(minimum + value.UInt16_3); 
+                    if (--count == 0) break; 
                 }
             }
         }
@@ -2479,7 +2976,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.Int16"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.Int16"/> values into an array using exclusive-OR operation.
         /// </summary>
         public void XorFill(Int16[] array)
         {
@@ -2490,7 +2987,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.Int16"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.Int16"/> values into an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -2506,7 +3003,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.Int16"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.Int16"/> values into an array using exclusive-OR operation.
         /// </summary>
         unsafe public void XorFill(Int16[] array, int offset, int count)
         {
@@ -2548,7 +3045,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.Int16"/> values into part of an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.Int16"/> values into part of an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -2596,6 +3093,133 @@ namespace Foundations.RandomNumbers
                 while (count-- > 0)
                 {
                     *p1++ ^= *p2++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int16"/> values to values in an array.
+        /// </summary>
+        public void AddFill(Int16[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int16"/> values in [0, range) to values in an array.
+        /// </summary>
+        public void AddFill(Int16 range, Int16[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int16"/> values in [minimum, minimum + range) to values in an array.
+        /// </summary>
+        public void AddFill(Int16 minimum, Int16 range, Int16[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int16"/> values to part of an array.
+        /// </summary>
+        public void AddFill(Int16[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count >= 4)
+            {
+                Next();
+                array[offset++] += value.Int16_0;
+                array[offset++] += value.Int16_1;
+                array[offset++] += value.Int16_2;
+                array[offset++] += value.Int16_3;
+                count -= 2;
+            }
+
+            if (count == 0)
+                return;
+
+            Next();
+
+            array[offset++] += value.Int16_0; 
+            if (--count == 0) return;
+
+            array[offset++] += value.Int16_1; 
+            if (--count == 0) return;
+
+            array[offset++] += value.Int16_2; 
+            if (--count == 0) return;
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int16"/> values in [minimum, minimum + range) to part of an array.
+        /// </summary>
+        public void AddFill(Int16 minimum, Int16 range, Int16[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Int16.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            ulong mask = GetRangeMask(range);
+            mask |= mask << 16;
+            mask |= mask << 32;
+
+            while (count > 0)
+            {
+                Next();
+                value.UInt64_0 &= mask;
+
+                if (value.Int16_0 < range) 
+                { 
+                    array[offset++] += (Int16)(minimum + value.Int16_0); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.Int16_1 < range) 
+                { 
+                    array[offset++] += (Int16)(minimum + value.Int16_1); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.Int16_2 < range) 
+                { 
+                    array[offset++] += (Int16)(minimum + value.Int16_2); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.Int16_3 < range) 
+                { 
+                    array[offset++] += (Int16)(minimum + value.Int16_3); 
+                    if (--count == 0) break; 
                 }
             }
         }
@@ -2952,7 +3576,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.Byte"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.Byte"/> values into an array using exclusive-OR operation.
         /// </summary>
         public void XorFill(Byte[] array)
         {
@@ -2963,7 +3587,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.Byte"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.Byte"/> values into an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -2979,7 +3603,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.Byte"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.Byte"/> values into an array using exclusive-OR operation.
         /// </summary>
         unsafe public void XorFill(Byte[] array, int offset, int count)
         {
@@ -3021,7 +3645,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.Byte"/> values into part of an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.Byte"/> values into part of an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -3070,6 +3694,174 @@ namespace Foundations.RandomNumbers
                 while (count-- > 0)
                 {
                     *p1++ ^= *p2++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Byte"/> values to values in an array.
+        /// </summary>
+        public void AddFill(Byte[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Byte"/> values in [0, range) to values in an array.
+        /// </summary>
+        public void AddFill(Byte range, Byte[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Byte"/> values in [minimum, minimum + range) to values in an array.
+        /// </summary>
+        public void AddFill(Byte minimum, Byte range, Byte[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Byte"/> values to part of an array.
+        /// </summary>
+        public void AddFill(Byte[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count >= 8)
+            {
+                Next();
+                array[offset++] += value.Byte_0;
+                array[offset++] += value.Byte_1;
+                array[offset++] += value.Byte_2;
+                array[offset++] += value.Byte_3;
+                array[offset++] += value.Byte_4;
+                array[offset++] += value.Byte_5;
+                array[offset++] += value.Byte_6;
+                array[offset++] += value.Byte_7;
+                count -= 2;
+            }
+
+            if (count == 0)
+                return;
+
+            Next();
+
+            array[offset++] += value.Byte_0; 
+            if (--count == 0) return;
+
+            array[offset++] += value.Byte_1; 
+            if (--count == 0) return;
+
+            array[offset++] += value.Byte_2; 
+            if (--count == 0) return;
+
+            array[offset++] += value.Byte_3; 
+            if (--count == 0) return;
+
+            array[offset++] += value.Byte_4; 
+            if (--count == 0) return;
+
+            array[offset++] += value.Byte_5; 
+            if (--count == 0) return;
+
+            array[offset++] += value.Byte_6; 
+            if (--count == 0) return;
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Byte"/> values in [minimum, minimum + range) to part of an array.
+        /// </summary>
+        public void AddFill(Byte minimum, Byte range, Byte[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Byte.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            ulong mask = GetRangeMask(range);
+            mask |= mask << 8;
+            mask |= mask << 16;
+            mask |= mask << 32;
+
+            while (count > 0)
+            {
+                Next();
+                value.UInt64_0 &= mask;
+
+                if (value.Byte_0 < range) 
+                { 
+                    array[offset++] += (Byte)(minimum + value.Byte_0); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.Byte_1 < range) 
+                { 
+                    array[offset++] += (Byte)(minimum + value.Byte_1); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.Byte_2 < range) 
+                { 
+                    array[offset++] += (Byte)(minimum + value.Byte_2); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.Byte_3 < range) 
+                { 
+                    array[offset++] += (Byte)(minimum + value.Byte_3); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.Byte_4 < range) 
+                { 
+                    array[offset++] += (Byte)(minimum + value.Byte_4); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.Byte_5 < range) 
+                { 
+                    array[offset++] += (Byte)(minimum + value.Byte_5); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.Byte_6 < range) 
+                { 
+                    array[offset++] += (Byte)(minimum + value.Byte_6); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.Byte_7 < range) 
+                { 
+                    array[offset++] += (Byte)(minimum + value.Byte_7); 
+                    if (--count == 0) break; 
                 }
             }
         }
@@ -3408,7 +4200,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.SByte"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.SByte"/> values into an array using exclusive-OR operation.
         /// </summary>
         public void XorFill(SByte[] array)
         {
@@ -3419,7 +4211,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.SByte"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.SByte"/> values into an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -3435,7 +4227,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.SByte"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.SByte"/> values into an array using exclusive-OR operation.
         /// </summary>
         unsafe public void XorFill(SByte[] array, int offset, int count)
         {
@@ -3477,7 +4269,7 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
-        /// Mix random <see cref="System.SByte"/> values into part of an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.SByte"/> values into part of an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -3526,6 +4318,174 @@ namespace Foundations.RandomNumbers
                 while (count-- > 0)
                 {
                     *p1++ ^= *p2++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.SByte"/> values to values in an array.
+        /// </summary>
+        public void AddFill(SByte[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.SByte"/> values in [0, range) to values in an array.
+        /// </summary>
+        public void AddFill(SByte range, SByte[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.SByte"/> values in [minimum, minimum + range) to values in an array.
+        /// </summary>
+        public void AddFill(SByte minimum, SByte range, SByte[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.SByte"/> values to part of an array.
+        /// </summary>
+        public void AddFill(SByte[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count >= 8)
+            {
+                Next();
+                array[offset++] += value.SByte_0;
+                array[offset++] += value.SByte_1;
+                array[offset++] += value.SByte_2;
+                array[offset++] += value.SByte_3;
+                array[offset++] += value.SByte_4;
+                array[offset++] += value.SByte_5;
+                array[offset++] += value.SByte_6;
+                array[offset++] += value.SByte_7;
+                count -= 2;
+            }
+
+            if (count == 0)
+                return;
+
+            Next();
+
+            array[offset++] += value.SByte_0; 
+            if (--count == 0) return;
+
+            array[offset++] += value.SByte_1; 
+            if (--count == 0) return;
+
+            array[offset++] += value.SByte_2; 
+            if (--count == 0) return;
+
+            array[offset++] += value.SByte_3; 
+            if (--count == 0) return;
+
+            array[offset++] += value.SByte_4; 
+            if (--count == 0) return;
+
+            array[offset++] += value.SByte_5; 
+            if (--count == 0) return;
+
+            array[offset++] += value.SByte_6; 
+            if (--count == 0) return;
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.SByte"/> values in [minimum, minimum + range) to part of an array.
+        /// </summary>
+        public void AddFill(SByte minimum, SByte range, SByte[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.SByte.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            ulong mask = GetRangeMask(range);
+            mask |= mask << 8;
+            mask |= mask << 16;
+            mask |= mask << 32;
+
+            while (count > 0)
+            {
+                Next();
+                value.UInt64_0 &= mask;
+
+                if (value.SByte_0 < range) 
+                { 
+                    array[offset++] += (SByte)(minimum + value.SByte_0); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.SByte_1 < range) 
+                { 
+                    array[offset++] += (SByte)(minimum + value.SByte_1); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.SByte_2 < range) 
+                { 
+                    array[offset++] += (SByte)(minimum + value.SByte_2); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.SByte_3 < range) 
+                { 
+                    array[offset++] += (SByte)(minimum + value.SByte_3); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.SByte_4 < range) 
+                { 
+                    array[offset++] += (SByte)(minimum + value.SByte_4); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.SByte_5 < range) 
+                { 
+                    array[offset++] += (SByte)(minimum + value.SByte_5); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.SByte_6 < range) 
+                { 
+                    array[offset++] += (SByte)(minimum + value.SByte_6); 
+                    if (--count == 0) break; 
+                }
+
+                if (value.SByte_7 < range) 
+                { 
+                    array[offset++] += (SByte)(minimum + value.SByte_7); 
+                    if (--count == 0) break; 
                 }
             }
         }
@@ -3808,6 +4768,85 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Adds random <see cref="System.Double"/> values to values in an array.
+        /// </summary>
+        public void AddFill(Double[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Double"/> values in [0, range) to values in an array.
+        /// </summary>
+        public void AddFill(Double range, Double[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Double"/> values in [minimum, minimum + range) to values in an array.
+        /// </summary>
+        public void AddFill(Double minimum, Double range, Double[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Double"/> values to part of an array.
+        /// </summary>
+        public void AddFill(Double[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] += Double();
+            }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Double"/> values in [minimum, minimum + range) to part of an array.
+        /// </summary>
+        public void AddFill(Double minimum, Double range, Double[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Double.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] += Double(minimum, range);
+            }
+        }
+
+        /// <summary>
         /// Gets a sequence of Double values.
         /// </summary>
         public IEnumerable<Double> Doubles()
@@ -4049,6 +5088,107 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Adds random <see cref="System.Single"/> values to values in an array.
+        /// </summary>
+        public void AddFill(Single[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Single"/> values in [0, range) to values in an array.
+        /// </summary>
+        public void AddFill(Single range, Single[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Single"/> values in [minimum, minimum + range) to values in an array.
+        /// </summary>
+        public void AddFill(Single minimum, Single range, Single[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Single"/> values to part of an array.
+        /// </summary>
+        public void AddFill(Single[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count >= 2)
+            {
+                Next();
+                value.UInt64_0 = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
+                array[offset++] += value.Single_0 - 1f;
+                array[offset++] += value.Single_1 - 1f;
+                count -= 2;
+            }
+
+            if (count >= 1)
+            {
+                Next();
+                value.UInt64_0 = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
+                array[offset++] += value.Single_0 - 1f;
+            }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Single"/> values in [minimum, minimum + range) to part of an array.
+        /// </summary>
+        public void AddFill(Single minimum, Single range, Single[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Single.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count >= 2)
+            {
+                Next();
+                value.UInt64_0 = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
+                array[offset++] += minimum + (value.Single_0 - 1f) * range;
+                array[offset++] += minimum + (value.Single_1 - 1f) * range;
+                count -= 2;
+            }
+
+            if (count >= 1)
+            {
+                Next();
+                value.UInt64_0 = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
+                array[offset++] += minimum + (value.Single_0 - 1f) * range;
+            }
+        }
+
+        /// <summary>
         /// Gets a sequence of Single values.
         /// </summary>
         public IEnumerable<Single> Singles()
@@ -4267,6 +5407,85 @@ namespace Foundations.RandomNumbers
             while (count-- > 0)
             {
                 array[offset++] = Decimal(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Decimal"/> values to values in an array.
+        /// </summary>
+        public void AddFill(Decimal[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Decimal"/> values in [0, range) to values in an array.
+        /// </summary>
+        public void AddFill(Decimal range, Decimal[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Decimal"/> values in [minimum, minimum + range) to values in an array.
+        /// </summary>
+        public void AddFill(Decimal minimum, Decimal range, Decimal[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Decimal"/> values to part of an array.
+        /// </summary>
+        public void AddFill(Decimal[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] += Decimal();
+            }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Decimal"/> values in [minimum, minimum + range) to part of an array.
+        /// </summary>
+        public void AddFill(Decimal minimum, Decimal range, Decimal[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.Decimal.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] += Decimal(minimum, range);
             }
         }
 

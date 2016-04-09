@@ -711,7 +711,7 @@ void Next(string T, int m)
 #>
 
         /// <summary>
-        /// Mix random <see cref="System.<#= T #>"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.<#= T #>"/> values into an array using exclusive-OR operation.
         /// </summary>
         public void XorFill(<#= T #>[] array)
         {
@@ -722,7 +722,7 @@ void Next(string T, int m)
         }
 
         /// <summary>
-        /// Mix random <see cref="System.<#= T #>"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.<#= T #>"/> values into an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -738,7 +738,7 @@ void Next(string T, int m)
         }
 
         /// <summary>
-        /// Mix random <see cref="System.<#= T #>"/> values into an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.<#= T #>"/> values into an array using exclusive-OR operation.
         /// </summary>
         unsafe public void XorFill(<#= T #>[] array, int offset, int count)
         {
@@ -800,7 +800,7 @@ void Next(string T, int m)
         }
 
         /// <summary>
-        /// Mix random <see cref="System.<#= T #>"/> values into part of an array using exclusive-OR operation.
+        /// Mixes random <see cref="System.<#= T #>"/> values into part of an array using exclusive-OR operation.
         /// </summary>
         /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
         /// <param name="array">The array into which the random values will be mixed.</param>
@@ -880,6 +880,211 @@ void Next(string T, int m)
 <#+
     }
 #>
+
+        /// <summary>
+        /// Adds random <see cref="System.<#= T #>"/> values to values in an array.
+        /// </summary>
+        public void AddFill(<#= T #>[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.<#= T #>"/> values in [0, range) to values in an array.
+        /// </summary>
+        public void AddFill(<#= T #> range, <#= T #>[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.<#= T #>"/> values in [minimum, minimum + range) to values in an array.
+        /// </summary>
+        public void AddFill(<#= T #> minimum, <#= T #> range, <#= T #>[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.<#= T #>"/> values to part of an array.
+        /// </summary>
+        public void AddFill(<#= T #>[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+<#+
+    if (T == "Single")
+    {
+#>
+
+            while (count >= 2)
+            {
+                Next();
+                value.UInt64_0 = <#= FixFP(T) #>;
+                array[offset++] += value.Single_0 - 1f;
+                array[offset++] += value.Single_1 - 1f;
+                count -= 2;
+            }
+
+            if (count >= 1)
+            {
+                Next();
+                value.UInt64_0 = <#= FixFP(T) #>;
+                array[offset++] += value.Single_0 - 1f;
+            }
+<#+
+    }
+    else if (m > 1)
+    {
+#>
+
+            while (count >= <#= m #>)
+            {
+                Next();
+<#+
+        for (int i = 0; i < m; i++)
+        {
+#>
+                array[offset++] += value.<#= T #>_<#= i #>;
+<#+
+        }
+#>
+                count -= 2;
+            }
+
+            if (count == 0)
+                return;
+
+            Next();
+<#+
+        for (int i = 0; i < m - 1; i++)
+        {
+#>
+
+            array[offset++] += value.<#= T #>_<#= i #>; 
+            if (--count == 0) return;
+<#+
+        }
+    }
+    else
+    {
+#>
+
+            while (count-- > 0)
+            {
+                array[offset++] += <#= T #>();
+            }
+<#+
+    }
+#>
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.<#= T #>"/> values in [minimum, minimum + range) to part of an array.
+        /// </summary>
+        public void AddFill(<#= T #> minimum, <#= T #> range, <#= T #>[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (System.<#= T #>.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+<#+
+    if (UT != null && m > 1)
+    {
+#>
+
+            ulong mask = GetRangeMask(range);
+<#+
+        for (int i = m / 2; i > 0; i /= 2)
+        {
+#>
+            mask |= mask << <#= 32 / i #>;
+<#+
+        }
+    }
+
+    if (T == "Single")
+    {
+#>
+
+            while (count >= 2)
+            {
+                Next();
+                value.UInt64_0 = <#= FixFP(T) #>;
+                array[offset++] += minimum + (value.Single_0 - 1f) * range;
+                array[offset++] += minimum + (value.Single_1 - 1f) * range;
+                count -= 2;
+            }
+
+            if (count >= 1)
+            {
+                Next();
+                value.UInt64_0 = <#= FixFP(T) #>;
+                array[offset++] += minimum + (value.Single_0 - 1f) * range;
+            }
+<#+
+    }
+    else if (m > 1)
+    {
+#>
+
+            while (count > 0)
+            {
+                Next();
+                value.UInt64_0 &= mask;
+<#+
+        for (int i = 0; i < m; i++)
+        {
+#>
+
+                if (value.<#= T #>_<#= i #> < range) 
+                { 
+                    array[offset++] += (<#= T #>)(minimum + value.<#= T #>_<#= i #>); 
+                    if (--count == 0) break; 
+                }
+<#+
+        }
+#>
+            }
+<#+
+    }
+    else
+    {
+#>
+
+            while (count-- > 0)
+            {
+                array[offset++] += <#= T #>(minimum, range);
+            }
+<#+
+    }
+#>
+        }
 
         /// <summary>
         /// Gets a sequence of <#= T #> values.

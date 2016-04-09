@@ -45,10 +45,10 @@
     <Compile Include="Functions\Special\Elliptic.cs" />
     <Compile Include="Functions\Special\CarlsonSymmetric.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RandomNumbers\Generator.cs">
+    <Compile Include="RandomNumbers\GeneratorTests.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Generator.tt</DependentUpon>
+      <DependentUpon>GeneratorTests.tt</DependentUpon>
     </Compile>
     <Compile Include="RandomNumbers\StreamSource.cs" />
     <Compile Include="RandomNumbers\XorShiftRandomSource.cs" />
@@ -63,9 +63,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="RandomNumbers\Generator.tt">
+    <Content Include="RandomNumbers\GeneratorTests.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Generator.cs</LastGenOutput>
+      <LastGenOutput>GeneratorTests.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>
