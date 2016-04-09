@@ -846,6 +846,204 @@ void Type(string T)
             var random = new Generator("Create<#= T #>s");
             var data = random.Create<#= T #>s(-1, 25, 50);
         }
+<#+ if (T != "Single" && T != "Double" && T != "Decimal") { #>
+
+        [TestMethod]
+        public void XorFill<#= T #>Array()
+        {
+            var random = new Generator("XorFill<#= T #>Array");
+            var data1 = random.Create<#= T #>s(99);
+            var data2 = (<#= T #>[])data1.Clone();
+            random = new Generator(1);
+            var data3 = random.Create<#= T #>s(99);
+            random = new Generator(1);
+            random.XorFill(data1);
+            LooksRandom(data1);
+
+            for (int i = 0; i < data1.Length; i++)
+            {
+                Assert.AreEqual(data2[i] ^ data3[i], data1[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void XorFillNull<#= T #>Array()
+        {
+            var random = new Generator("XorFillNull<#= T #>Array");
+            random.XorFill((<#= T #>[])null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void XorFillWithNonPow2Range<#= T #>()
+        {
+            var random = new Generator("XorFillWithNonPow2Range<#= T #>");
+            var data = new <#= T #>[99];
+            random.XorFill(57, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void XorFillWithRangeAndNull<#= T #>Array()
+        {
+            var random = new Generator("XorFillWithRangeAndNull<#= T #>Array");
+            random.XorFill(64, (<#= T #>[])null);
+        }
+
+        [TestMethod]
+        public void XorFillWithRangeAnd<#= T #>Array()
+        {
+            var random = new Generator("XorFillWithRangeAndNull<#= T #>Array");
+            var data = new <#= T #>[9999];
+            random.XorFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void XorFillWithOffsetAndNull<#= T #>Array()
+        {
+            var random = new Generator("XorFillWithOffsetAndNull<#= T #>Array");
+            random.XorFill((<#= T #>[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void XorFillWithLowOffset<#= T #>()
+        {
+            var random = new Generator("XorFillWithLowOffset<#= T #>");
+            var data = new <#= T #>[99];
+            random.XorFill(data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void XorFillWithHighOffset<#= T #>()
+        {
+            var random = new Generator("XorFillWithLowOffset<#= T #>");
+            var data = new <#= T #>[99];
+            random.XorFill(data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void XorFillWithZeroCount<#= T #>()
+        {
+            var random = new Generator("XorFillWithZeroCount<#= T #>");
+            var data = Enumerable.Range(0, 99).Select(t => (<#= T #>)t).ToArray();
+            random.XorFill(data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((<#= T #>)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void XorFillWithLowCount<#= T #>()
+        {
+            var random = new Generator("XorFillWithLowCount<#= T #>");
+            var data = new <#= T #>[99];
+            random.XorFill(data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void XorFillWithHighCount<#= T #>()
+        {
+            var random = new Generator("XorFillWithHighCount<#= T #>");
+            var data = new <#= T #>[99];
+            random.XorFill(data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void XorFillExactMultiple<#= T #>()
+        {
+            var random = new Generator("XorFillExactMultiple<#= T #>");
+            var data = new <#= T #>[99 * 8];
+            random.XorFill(data);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void XorFillNonPow2WithOffset<#= T #>Array()
+        {
+            var random = new Generator("XorFillNonPow2WithOffset<#= T #>Array");
+            random.XorFill(57, (<#= T #>[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void XorFillRangedWithOffsetAndNull<#= T #>Array()
+        {
+            var random = new Generator("XorFillRangedWithOffsetAndNull<#= T #>Array");
+            random.XorFill(64, (<#= T #>[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void XorFillRangedWithLowOffset<#= T #>()
+        {
+            var random = new Generator("XorFillRangedWithLowOffset<#= T #>");
+            var data = new <#= T #>[99];
+            random.XorFill(64, data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void XorFillRangedWithHighOffset<#= T #>()
+        {
+            var random = new Generator("XorFillRangedWithHighOffset<#= T #>");
+            var data = new <#= T #>[99];
+            random.XorFill(64, data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void XorFillRangedWithZeroCount<#= T #>()
+        {
+            var random = new Generator("XorFillRangedWithZeroCount<#= T #>");
+            var data = Enumerable.Range(0, 99).Select(t => (<#= T #>)t).ToArray();
+            random.XorFill(64, data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((<#= T #>)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void XorFillRangedWithLowCount<#= T #>()
+        {
+            var random = new Generator("XorFillRangedWithLowCount<#= T #>");
+            var data = new <#= T #>[99];
+            random.XorFill(64, data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void XorFillRangedWithHighCount<#= T #>()
+        {
+            var random = new Generator("XorFillRangedWithHighCount<#= T #>");
+            var data = new <#= T #>[99];
+            random.XorFill(64, data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void XorFillRangedExactMultiple<#= T #>()
+        {
+            var random = new Generator("XorFillRangedExactMultiple<#= T #>");
+            var data = new <#= T #>[99 * 8];
+            random.XorFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+<#+ } #>
 
         private void LooksRandom(<#= T #>[] array)
         {

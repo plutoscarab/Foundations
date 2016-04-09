@@ -483,6 +483,102 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Mix random <see cref="System.UInt64"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        public void XorFill(UInt64[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.UInt64"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
+        /// <param name="array">The array into which the random values will be mixed.</param>
+        public void XorFill(UInt64 range, UInt64[] array)
+        {
+            if ((range & (range - 1)) != 0)
+                throw new ArgumentException("Parameter must be a power of 2.", nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.UInt64"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        unsafe public void XorFill(UInt64[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            fixed (UInt64* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 1)
+                {
+                    Next();
+                    *p++ ^= value.UInt64_0;
+                    count -= 1;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.UInt64"/> values into part of an array using exclusive-OR operation.
+        /// </summary>
+        /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
+        /// <param name="array">The array into which the random values will be mixed.</param>
+        /// <param name="offset">The index of the first element in the array to be affected.</param>
+        /// <param name="count">The number of elements in the array to be affected.</param>
+        unsafe public void XorFill(UInt64 range, UInt64[] array, int offset, int count)
+        {
+            if ((range & (range - 1)) != 0)
+                throw new ArgumentException("Parameter must be a power of 2.", nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            ulong mask = GetRangeMask(range);
+
+            fixed (UInt64* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 1)
+                {
+                    Next();
+                    *p++ ^= value.UInt64_0 & mask;
+                    count -= 1;
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets a sequence of UInt64 values.
         /// </summary>
         public IEnumerable<UInt64> UInt64s()
@@ -732,6 +828,102 @@ namespace Foundations.RandomNumbers
             while (count-- > 0)
             {
                 array[offset++] = Int64(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.Int64"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        public void XorFill(Int64[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.Int64"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
+        /// <param name="array">The array into which the random values will be mixed.</param>
+        public void XorFill(Int64 range, Int64[] array)
+        {
+            if ((range & (range - 1)) != 0)
+                throw new ArgumentException("Parameter must be a power of 2.", nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.Int64"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        unsafe public void XorFill(Int64[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            fixed (Int64* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 1)
+                {
+                    Next();
+                    *p++ ^= value.UInt64_0;
+                    count -= 1;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.Int64"/> values into part of an array using exclusive-OR operation.
+        /// </summary>
+        /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
+        /// <param name="array">The array into which the random values will be mixed.</param>
+        /// <param name="offset">The index of the first element in the array to be affected.</param>
+        /// <param name="count">The number of elements in the array to be affected.</param>
+        unsafe public void XorFill(Int64 range, Int64[] array, int offset, int count)
+        {
+            if ((range & (range - 1)) != 0)
+                throw new ArgumentException("Parameter must be a power of 2.", nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            ulong mask = GetRangeMask(range);
+
+            fixed (Int64* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 1)
+                {
+                    Next();
+                    *p++ ^= value.UInt64_0 & mask;
+                    count -= 1;
+                }
             }
         }
 
@@ -987,6 +1179,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
+                Next();
                 ulong sample = value.UInt64_0;
                 var p1 = (UInt32*)p;
                 var p2 = (UInt32*)&sample;
@@ -1033,6 +1226,119 @@ namespace Foundations.RandomNumbers
                     array[offset++] = (UInt32)(minimum + value.UInt32_1); 
                     if (--count == 0) break; 
                 }
+            }
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.UInt32"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        public void XorFill(UInt32[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.UInt32"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
+        /// <param name="array">The array into which the random values will be mixed.</param>
+        public void XorFill(UInt32 range, UInt32[] array)
+        {
+            if ((range & (range - 1)) != 0)
+                throw new ArgumentException("Parameter must be a power of 2.", nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.UInt32"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        unsafe public void XorFill(UInt32[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            fixed (UInt32* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 2)
+                {
+                    Next();
+                    *p++ ^= value.UInt64_0;
+                    count -= 2;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = UInt64();
+                var p1 = (UInt32*)p;
+                var p2 = (UInt32*)&sample;
+                *p1 ^= *p2;
+            }
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.UInt32"/> values into part of an array using exclusive-OR operation.
+        /// </summary>
+        /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
+        /// <param name="array">The array into which the random values will be mixed.</param>
+        /// <param name="offset">The index of the first element in the array to be affected.</param>
+        /// <param name="count">The number of elements in the array to be affected.</param>
+        unsafe public void XorFill(UInt32 range, UInt32[] array, int offset, int count)
+        {
+            if ((range & (range - 1)) != 0)
+                throw new ArgumentException("Parameter must be a power of 2.", nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            ulong mask = GetRangeMask(range);
+            mask |= mask << 32;
+
+            fixed (UInt32* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 2)
+                {
+                    Next();
+                    *p++ ^= value.UInt64_0 & mask;
+                    count -= 2;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = UInt64() & mask;
+                var p1 = (UInt32*)p;
+                var p2 = (UInt32*)&sample;
+                *p1 ^= *p2;
             }
         }
 
@@ -1265,6 +1571,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
+                Next();
                 ulong sample = value.UInt64_0;
                 var p1 = (Int32*)p;
                 var p2 = (Int32*)&sample;
@@ -1311,6 +1618,119 @@ namespace Foundations.RandomNumbers
                     array[offset++] = (Int32)(minimum + value.Int32_1); 
                     if (--count == 0) break; 
                 }
+            }
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.Int32"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        public void XorFill(Int32[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.Int32"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
+        /// <param name="array">The array into which the random values will be mixed.</param>
+        public void XorFill(Int32 range, Int32[] array)
+        {
+            if ((range & (range - 1)) != 0)
+                throw new ArgumentException("Parameter must be a power of 2.", nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.Int32"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        unsafe public void XorFill(Int32[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            fixed (Int32* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 2)
+                {
+                    Next();
+                    *p++ ^= value.UInt64_0;
+                    count -= 2;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = UInt64();
+                var p1 = (Int32*)p;
+                var p2 = (Int32*)&sample;
+                *p1 ^= *p2;
+            }
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.Int32"/> values into part of an array using exclusive-OR operation.
+        /// </summary>
+        /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
+        /// <param name="array">The array into which the random values will be mixed.</param>
+        /// <param name="offset">The index of the first element in the array to be affected.</param>
+        /// <param name="count">The number of elements in the array to be affected.</param>
+        unsafe public void XorFill(Int32 range, Int32[] array, int offset, int count)
+        {
+            if ((range & (range - 1)) != 0)
+                throw new ArgumentException("Parameter must be a power of 2.", nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            ulong mask = GetRangeMask(range);
+            mask |= mask << 32;
+
+            fixed (Int32* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 2)
+                {
+                    Next();
+                    *p++ ^= value.UInt64_0 & mask;
+                    count -= 2;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = UInt64() & mask;
+                var p1 = (Int32*)p;
+                var p2 = (Int32*)&sample;
+                *p1 ^= *p2;
             }
         }
 
@@ -1569,6 +1989,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
+                Next();
                 ulong sample = value.UInt64_0;
                 var p1 = (UInt16*)p;
                 var p2 = (UInt16*)&sample;
@@ -1631,6 +2052,128 @@ namespace Foundations.RandomNumbers
                 { 
                     array[offset++] = (UInt16)(minimum + value.UInt16_3); 
                     if (--count == 0) break; 
+                }
+            }
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.UInt16"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        public void XorFill(UInt16[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.UInt16"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
+        /// <param name="array">The array into which the random values will be mixed.</param>
+        public void XorFill(UInt16 range, UInt16[] array)
+        {
+            if ((range & (range - 1)) != 0)
+                throw new ArgumentException("Parameter must be a power of 2.", nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.UInt16"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        unsafe public void XorFill(UInt16[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            fixed (UInt16* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 4)
+                {
+                    Next();
+                    *p++ ^= value.UInt64_0;
+                    count -= 4;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = UInt64();
+                var p1 = (UInt16*)p;
+                var p2 = (UInt16*)&sample;
+
+                while (count-- > 0)
+                {
+                    *p1++ ^= *p2++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.UInt16"/> values into part of an array using exclusive-OR operation.
+        /// </summary>
+        /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
+        /// <param name="array">The array into which the random values will be mixed.</param>
+        /// <param name="offset">The index of the first element in the array to be affected.</param>
+        /// <param name="count">The number of elements in the array to be affected.</param>
+        unsafe public void XorFill(UInt16 range, UInt16[] array, int offset, int count)
+        {
+            if ((range & (range - 1)) != 0)
+                throw new ArgumentException("Parameter must be a power of 2.", nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            ulong mask = GetRangeMask(range);
+            mask |= mask << 16;
+            mask |= mask << 32;
+
+            fixed (UInt16* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 4)
+                {
+                    Next();
+                    *p++ ^= value.UInt64_0 & mask;
+                    count -= 4;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = UInt64() & mask;
+                var p1 = (UInt16*)p;
+                var p2 = (UInt16*)&sample;
+
+                while (count-- > 0)
+                {
+                    *p1++ ^= *p2++;
                 }
             }
         }
@@ -1868,6 +2411,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
+                Next();
                 ulong sample = value.UInt64_0;
                 var p1 = (Int16*)p;
                 var p2 = (Int16*)&sample;
@@ -1930,6 +2474,128 @@ namespace Foundations.RandomNumbers
                 { 
                     array[offset++] = (Int16)(minimum + value.Int16_3); 
                     if (--count == 0) break; 
+                }
+            }
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.Int16"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        public void XorFill(Int16[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.Int16"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
+        /// <param name="array">The array into which the random values will be mixed.</param>
+        public void XorFill(Int16 range, Int16[] array)
+        {
+            if ((range & (range - 1)) != 0)
+                throw new ArgumentException("Parameter must be a power of 2.", nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.Int16"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        unsafe public void XorFill(Int16[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            fixed (Int16* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 4)
+                {
+                    Next();
+                    *p++ ^= value.UInt64_0;
+                    count -= 4;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = UInt64();
+                var p1 = (Int16*)p;
+                var p2 = (Int16*)&sample;
+
+                while (count-- > 0)
+                {
+                    *p1++ ^= *p2++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.Int16"/> values into part of an array using exclusive-OR operation.
+        /// </summary>
+        /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
+        /// <param name="array">The array into which the random values will be mixed.</param>
+        /// <param name="offset">The index of the first element in the array to be affected.</param>
+        /// <param name="count">The number of elements in the array to be affected.</param>
+        unsafe public void XorFill(Int16 range, Int16[] array, int offset, int count)
+        {
+            if ((range & (range - 1)) != 0)
+                throw new ArgumentException("Parameter must be a power of 2.", nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            ulong mask = GetRangeMask(range);
+            mask |= mask << 16;
+            mask |= mask << 32;
+
+            fixed (Int16* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 4)
+                {
+                    Next();
+                    *p++ ^= value.UInt64_0 & mask;
+                    count -= 4;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = UInt64() & mask;
+                var p1 = (Int16*)p;
+                var p2 = (Int16*)&sample;
+
+                while (count-- > 0)
+                {
+                    *p1++ ^= *p2++;
                 }
             }
         }
@@ -2193,6 +2859,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
+                Next();
                 ulong sample = value.UInt64_0;
                 var p1 = (Byte*)p;
                 var p2 = (Byte*)&sample;
@@ -2280,6 +2947,129 @@ namespace Foundations.RandomNumbers
                 { 
                     array[offset++] = (Byte)(minimum + value.Byte_7); 
                     if (--count == 0) break; 
+                }
+            }
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.Byte"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        public void XorFill(Byte[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.Byte"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
+        /// <param name="array">The array into which the random values will be mixed.</param>
+        public void XorFill(Byte range, Byte[] array)
+        {
+            if ((range & (range - 1)) != 0)
+                throw new ArgumentException("Parameter must be a power of 2.", nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.Byte"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        unsafe public void XorFill(Byte[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            fixed (Byte* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 8)
+                {
+                    Next();
+                    *p++ ^= value.UInt64_0;
+                    count -= 8;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = UInt64();
+                var p1 = (Byte*)p;
+                var p2 = (Byte*)&sample;
+
+                while (count-- > 0)
+                {
+                    *p1++ ^= *p2++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.Byte"/> values into part of an array using exclusive-OR operation.
+        /// </summary>
+        /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
+        /// <param name="array">The array into which the random values will be mixed.</param>
+        /// <param name="offset">The index of the first element in the array to be affected.</param>
+        /// <param name="count">The number of elements in the array to be affected.</param>
+        unsafe public void XorFill(Byte range, Byte[] array, int offset, int count)
+        {
+            if ((range & (range - 1)) != 0)
+                throw new ArgumentException("Parameter must be a power of 2.", nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            ulong mask = GetRangeMask(range);
+            mask |= mask << 8;
+            mask |= mask << 16;
+            mask |= mask << 32;
+
+            fixed (Byte* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 8)
+                {
+                    Next();
+                    *p++ ^= value.UInt64_0 & mask;
+                    count -= 8;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = UInt64() & mask;
+                var p1 = (Byte*)p;
+                var p2 = (Byte*)&sample;
+
+                while (count-- > 0)
+                {
+                    *p1++ ^= *p2++;
                 }
             }
         }
@@ -2525,6 +3315,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
+                Next();
                 ulong sample = value.UInt64_0;
                 var p1 = (SByte*)p;
                 var p2 = (SByte*)&sample;
@@ -2612,6 +3403,129 @@ namespace Foundations.RandomNumbers
                 { 
                     array[offset++] = (SByte)(minimum + value.SByte_7); 
                     if (--count == 0) break; 
+                }
+            }
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.SByte"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        public void XorFill(SByte[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.SByte"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
+        /// <param name="array">The array into which the random values will be mixed.</param>
+        public void XorFill(SByte range, SByte[] array)
+        {
+            if ((range & (range - 1)) != 0)
+                throw new ArgumentException("Parameter must be a power of 2.", nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.SByte"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        unsafe public void XorFill(SByte[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            fixed (SByte* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 8)
+                {
+                    Next();
+                    *p++ ^= value.UInt64_0;
+                    count -= 8;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = UInt64();
+                var p1 = (SByte*)p;
+                var p2 = (SByte*)&sample;
+
+                while (count-- > 0)
+                {
+                    *p1++ ^= *p2++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Mix random <see cref="System.SByte"/> values into part of an array using exclusive-OR operation.
+        /// </summary>
+        /// <param name="range">Maximum value, exclusive. Must be a power of 2.</param>
+        /// <param name="array">The array into which the random values will be mixed.</param>
+        /// <param name="offset">The index of the first element in the array to be affected.</param>
+        /// <param name="count">The number of elements in the array to be affected.</param>
+        unsafe public void XorFill(SByte range, SByte[] array, int offset, int count)
+        {
+            if ((range & (range - 1)) != 0)
+                throw new ArgumentException("Parameter must be a power of 2.", nameof(range));
+
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            ulong mask = GetRangeMask(range);
+            mask |= mask << 8;
+            mask |= mask << 16;
+            mask |= mask << 32;
+
+            fixed (SByte* ptr = &array[offset])
+            {
+                var p = (ulong*)ptr;
+
+                while (count >= 8)
+                {
+                    Next();
+                    *p++ ^= value.UInt64_0 & mask;
+                    count -= 8;
+                }
+
+                if (count == 0)
+                    return;
+
+                ulong sample = UInt64() & mask;
+                var p1 = (SByte*)p;
+                var p2 = (SByte*)&sample;
+
+                while (count-- > 0)
+                {
+                    *p1++ ^= *p2++;
                 }
             }
         }
@@ -3089,6 +4003,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
+                Next();
                 ulong sample = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
                 var p1 = (Single*)p;
                 var p2 = (Single*)&sample;
