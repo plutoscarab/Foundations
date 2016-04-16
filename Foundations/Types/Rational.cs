@@ -12,6 +12,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace Foundations.Types
@@ -24,37 +25,40 @@ namespace Foundations.Types
         /// <summary>
         /// The constant 0.
         /// </summary>
-        public static Rational Zero = CreateRaw(0, 1);
+        public static readonly Rational Zero = CreateRaw(0, 1);
 
         /// <summary>
         /// The constant 1.
         /// </summary>
-        public static Rational One = CreateRaw(1, 1);
+        public static readonly Rational One = CreateRaw(1, 1);
 
         /// <summary>
         /// The constant 1/2.
         /// </summary>
-        public static Rational OneHalf = CreateRaw(1, 2);
+        public static readonly Rational OneHalf = CreateRaw(1, 2);
 
         /// <summary>
         /// Not a rational number.
         /// </summary>
-        public static Rational NaN = new Rational();
+        public static readonly Rational NaN = new Rational();
 
         /// <summary>
         /// Positive infinity.
         /// </summary>
-        public static Rational PositiveInfinity = CreateRaw(1, 0);
+        public static readonly Rational PositiveInfinity = CreateRaw(1, 0);
 
         /// <summary>
         /// Negative infinity.
         /// </summary>
-        public static Rational NegativeInfinity = CreateRaw(-1, 0);
+        public static readonly Rational NegativeInfinity = CreateRaw(-1, 0);
 
         /// <summary>
         /// Negative zero.
         /// </summary>
-        public static Rational NegativeZero = CreateRaw(0, -1);
+        public static readonly Rational NegativeZero = CreateRaw(0, -1);
+
+        private static readonly Rational decimalMax = (BigInteger)decimal.MaxValue;
+        private static readonly Rational decimalMin = (BigInteger)decimal.MinValue;
 
         BigInteger p;
         BigInteger q;
@@ -161,6 +165,14 @@ namespace Foundations.Types
         public bool Equals(Rational r)
         {
             return this == r;
+        }
+
+        /// <summary>
+        /// Implicitly casts a <see cref="Int64"/> to a <see cref="Rational"/>.
+        /// </summary>
+        public static implicit operator Rational(long n)
+        {
+            return CreateRaw(n, BigInteger.One);
         }
 
         /// <summary>
@@ -313,9 +325,8 @@ namespace Foundations.Types
 
         /// <summary>
         /// Implicitly casts a <see cref="System.Double"/> to a <see cref="Rational"/>.
-        /// The result is the Rational with the smallest denominator that is identical
-        /// to the original Double when the Rational is converted to a Double, but is
-        /// not necessarily exactly equal to the Double as-is.
+        /// The result is a Rational identical to the original Double when the Rational 
+        /// is converted to a Double, but is not necessarily exactly equal to the Double as-is.
         /// </summary>
         public static implicit operator Rational(double d)
         {
@@ -325,6 +336,22 @@ namespace Foundations.Types
             {
                 r = c;
                 if (d == (double)c) break;
+            }
+
+            return r;
+        }
+
+        /// <summary>
+        /// Implicitly cast a <see cref="System.Decimal"/> to a <see cref="Rational"/>.
+        /// </summary>
+        public static implicit operator Rational(decimal d)
+        {
+            Rational r = Zero;
+
+            foreach (var c in ContinuedFraction.Convergents(d))
+            {
+                r = c;
+                if (d == (decimal)c) break;
             }
 
             return r;
@@ -420,8 +447,9 @@ namespace Foundations.Types
         /// </summary>
         public IEnumerable<int> BaseExpansion(int b)
         {
-            if (this < 0) throw new InvalidOperationException();
-            if (this >= 1) throw new InvalidOperationException();
+            if (this < Zero || this >= One)
+                throw new InvalidOperationException("BaseExpansion can only be used for values in range [0, 1).");
+
             Rational r = this;
 
             while (true)
@@ -440,6 +468,41 @@ namespace Foundations.Types
         public static explicit operator double(Rational r)
         {
             return (double)r.p / (double)r.q;
+        }
+
+        /// <summary>
+        /// Explicitly casts a <see cref="Rational"/> to a <see cref="System.Decimal"/>.
+        /// </summary>
+        /// <param name="r"></param>
+        public static explicit operator decimal (Rational r)
+        {
+            if (r > decimalMax || r < decimalMin)
+                throw new ArgumentOutOfRangeException();
+
+            var t = Truncate(r);
+            r = Abs(r - t);
+
+            decimal d = (decimal)t;
+            decimal f = t >= 0 ? 1m : -1m;
+
+            foreach (var digit in r.BaseExpansion(10))
+            {
+                var g = f / 10m;
+
+                if (g == 0m)
+                {
+                    if (digit < 5)
+                        break;
+
+                    d += f;
+                    break;
+                }
+
+                f = g;
+                d += f * digit;
+            }
+
+            return d;
         }
 
         /// <summary>

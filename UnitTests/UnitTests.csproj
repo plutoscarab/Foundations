@@ -55,6 +55,7 @@
     <Compile Include="RandomNumbers\SystemRandomSource.cs" />
     <Compile Include="RandomNumbers\SynchronizedRandomSource.cs" />
     <Compile Include="RandomNumbers\SHA256RandomSource.cs" />
+    <Compile Include="Types\Rational.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Foundations\Foundations.csproj">
