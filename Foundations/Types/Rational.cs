@@ -12,6 +12,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 
@@ -520,5 +521,90 @@ namespace Foundations.Types
         {
             return new Rational(r.p - r.q, r.q);
         }
+
+        /// <summary>
+        /// Create a rational approximation of a decimal number.
+        /// </summary>
+        /// <result>
+        /// The result
+        /// is the <see cref="Rational"/> with the smallest possible denominator
+        /// that equals the specified number when rounded to the same number of
+        /// singificant digits. For example Approximate(0.1m) returns 1/7, and
+        /// Approximate(0.10m) returns 1/10.
+        /// </result>
+        public static Rational Approximate(decimal dec)
+        {
+            return Approximate(dec.ToString());
+        }
+        /// <summary>
+        /// Create a rational approximation of a decimal number.
+        /// </summary>
+        /// <result>
+        /// The result
+        /// is the <see cref="Rational"/> with the smallest possible denominator
+        /// that equals the specified number when rounded to the same number of
+        /// singificant digits. For example Approximate("0.1") returns 1/7, and
+        /// Approximate("0.10") returns 1/10.
+        /// </result>
+        public static Rational Approximate(string dec)
+        {
+            if (string.IsNullOrEmpty(dec))
+                throw new ArgumentException("String is null or empty.", nameof(dec));
+
+            BigInteger p;
+
+            if (BigInteger.TryParse(dec, out p))
+            {
+                return p;
+            }
+
+            int i = dec.IndexOf(CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+
+            if (i == -1)
+                throw new ArgumentException("String does not contain a decimal point (System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator), but is not a decimal integer.", nameof(dec));
+
+            dec = dec.Substring(0, i) + dec.Substring(i + 1);
+            i = dec.Length - i + 1;
+
+            if (!BigInteger.TryParse(dec, out p))
+                throw new ArgumentException("String is not a decimal integer or a decimal number containing a decimal point.", nameof(dec));
+
+            var q = BigInteger.Pow(10, i);
+            bool negative = p < BigInteger.Zero;
+            if (negative) p = -p;
+            p *= 10;
+
+            Rational
+                val = new Rational(p, q),
+                min = new Rational(p - 5, q),
+                max = new Rational(p + 5, q),
+                lo = Zero,
+                hi = PositiveInfinity;
+
+            while (true)
+            {
+                Rational med = new Rational(lo.p + hi.p, lo.q + hi.q);
+
+                if (med >= min && med < max) return negative ? -med : med;
+
+                if (med < val)
+                {
+                    var n = Abs((min * lo.q - lo.p) / (min * hi.q - hi.p));
+                    BigInteger k = n.p / n.q;
+                    if (k == 0) k = 1;
+                    lo = new Rational(lo.p + k * hi.p, lo.q + k * hi.q);
+                    if (lo >= min && lo < max) return negative ? -lo : lo;
+                }
+                else
+                {
+                    var n = Abs((max * hi.q - hi.p) / (max * lo.q - lo.p));
+                    BigInteger k = n.p / n.q;
+                    if (k == 0) k = 1;
+                    hi = new Rational(hi.p + k * lo.p, hi.q + k * lo.q);
+                    if (hi >= min && hi < max) return negative ? -hi : hi;
+                }
+            }
+        }
+
     }
 }
