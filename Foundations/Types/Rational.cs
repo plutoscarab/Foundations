@@ -73,6 +73,13 @@ namespace Foundations.Types
         {
             var g = BigInteger.GreatestCommonDivisor(p, q);
 
+            if (g.IsZero)
+            {
+                this.p = 0;
+                this.q = 0;
+                return;
+            }
+
             if (!g.IsOne)
             {
                 p /= g;
@@ -137,7 +144,19 @@ namespace Foundations.Types
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format("{0}/{1}", P, Q);
+            if (q.IsZero)
+            {
+                switch (p.Sign)
+                {
+                    case 0: return "NaN";
+                    case 1: return "inf";
+                    case -1: return "-inf";
+                }
+            }
+
+            if (q.IsOne) return p.ToString();
+            if (IsNegativeZero) return "-0";
+            return string.Format("{0}/{1}", p, q);
         }
 
         /// <summary>
@@ -295,9 +314,19 @@ namespace Foundations.Types
         public static int Compare(Rational a, Rational b)
         {
             Rational diff = a - b;
-            if (diff.p.IsZero || diff.q.IsZero) return 0;
-            if (diff.p.Sign == diff.q.Sign) return 1;
-            return -1;
+            if (diff.IsNaN) throw new InvalidOperationException("Values are not comparable.");
+            return Rational.Sign(diff);
+        }
+
+        /// <summary>
+        /// Gets the sign of a <see cref="Rational"/>.
+        /// </summary>
+        public static int Sign(Rational r)
+        {
+            if (r.IsNaN) throw new ArgumentException("NaN has no sign.", nameof(r));
+            if (r.IsPositiveInfinity) return 1;
+            if (r.IsNegativeInfinity) return -1;
+            return r.p.Sign;
         }
 
         /// <summary>
@@ -536,6 +565,7 @@ namespace Foundations.Types
         {
             return Approximate(dec.ToString());
         }
+
         /// <summary>
         /// Create a rational approximation of a decimal number.
         /// </summary>
@@ -548,8 +578,8 @@ namespace Foundations.Types
         /// </result>
         public static Rational Approximate(string dec)
         {
-            if (string.IsNullOrEmpty(dec))
-                throw new ArgumentException("String is null or empty.", nameof(dec));
+            if (string.IsNullOrWhiteSpace(dec))
+                throw new ArgumentException("String is null, empty, or whitespace.", nameof(dec));
 
             BigInteger p;
 
@@ -561,7 +591,7 @@ namespace Foundations.Types
             int i = dec.IndexOf(CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
 
             if (i == -1)
-                throw new ArgumentException("String does not contain a decimal point (System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator), but is not a decimal integer.", nameof(dec));
+                throw new ArgumentException("String does not contain a decimal point (System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator) but is not a decimal integer.", nameof(dec));
 
             dec = dec.Substring(0, i) + dec.Substring(i + 1);
             i = dec.Length - i + 1;
@@ -585,23 +615,20 @@ namespace Foundations.Types
             {
                 Rational med = new Rational(lo.p + hi.p, lo.q + hi.q);
 
-                if (med >= min && med < max) return negative ? -med : med;
+                if (med >= min && med < max)
+                    return negative ? -med : med;
 
                 if (med < val)
                 {
                     var n = Abs((min * lo.q - lo.p) / (min * hi.q - hi.p));
                     BigInteger k = n.p / n.q;
-                    if (k == 0) k = 1;
                     lo = new Rational(lo.p + k * hi.p, lo.q + k * hi.q);
-                    if (lo >= min && lo < max) return negative ? -lo : lo;
                 }
                 else
                 {
                     var n = Abs((max * hi.q - hi.p) / (max * lo.q - lo.p));
                     BigInteger k = n.p / n.q;
-                    if (k == 0) k = 1;
                     hi = new Rational(hi.p + k * lo.p, hi.q + k * lo.q);
-                    if (hi >= min && hi < max) return negative ? -hi : hi;
                 }
             }
         }
