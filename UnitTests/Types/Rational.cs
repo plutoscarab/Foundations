@@ -46,10 +46,18 @@ namespace Foundations.UnitTests.Types
         {
             Assert.AreEqual(new Rational(1, 7), Rational.Approximate(.1m));
             Assert.AreEqual(new Rational(1, 10), Rational.Approximate(.10m));
-            Assert.AreEqual(new Rational(2, 17), Rational.Approximate(.12m));
-            Assert.AreEqual(new Rational(10, 89), Rational.Approximate(.112m));
-            Assert.AreEqual(new Rational(859, 7730), Rational.Approximate(.111125m));
+            Assert.AreEqual(new Rational(1, 9), Rational.Approximate(.11m));
             Assert.AreEqual(new Rational(8890, 80009), Rational.Approximate(.111112m));
+            Assert.AreEqual(new Rational(859, 7730), Rational.Approximate(.111125m));
+            Assert.AreEqual(new Rational(10, 89), Rational.Approximate(.112m));
+            Assert.AreEqual(new Rational(2, 17), Rational.Approximate(.12m));
+            Assert.AreEqual(new Rational(1, 8), Rational.Approximate(.13m));
+            Assert.AreEqual(new Rational(1, 7), Rational.Approximate(.14m));
+            Assert.AreEqual(new Rational(2, 13), Rational.Approximate(.15m));
+            Assert.AreEqual(new Rational(3, 19), Rational.Approximate(.16m));
+            Assert.AreEqual(new Rational(1, 6), Rational.Approximate(.17m));
+            Assert.AreEqual(new Rational(2, 11), Rational.Approximate(.18m));
+            Assert.AreEqual(new Rational(3, 16), Rational.Approximate(.19m));
             Assert.AreEqual(new Rational(91, 272), Rational.Approximate(.33456m));
             Assert.AreEqual(new Rational(22, 7), Rational.Approximate(3.14m));
         }

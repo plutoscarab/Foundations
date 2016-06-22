@@ -558,7 +558,7 @@ namespace Foundations.Types
         /// The result
         /// is the <see cref="Rational"/> with the smallest possible denominator
         /// that equals the specified number when rounded to the same number of
-        /// singificant digits. For example Approximate(0.1m) returns 1/7, and
+        /// significant digits. For example Approximate(0.1m) returns 1/7, and
         /// Approximate(0.10m) returns 1/10.
         /// </result>
         public static Rational Approximate(decimal dec)
@@ -573,7 +573,7 @@ namespace Foundations.Types
         /// The result
         /// is the <see cref="Rational"/> with the smallest possible denominator
         /// that equals the specified number when rounded to the same number of
-        /// singificant digits. For example Approximate("0.1") returns 1/7, and
+        /// significant digits. For example Approximate("0.1") returns 1/7, and
         /// Approximate("0.10") returns 1/10.
         /// </result>
         public static Rational Approximate(string dec)
