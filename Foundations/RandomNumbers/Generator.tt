@@ -964,7 +964,7 @@ void Next(string T, int m)
 <#+
         }
 #>
-                count -= 2;
+                count -= <#= m #>;
             }
 
             if (count == 0)
@@ -1084,6 +1084,14 @@ void Next(string T, int m)
 <#+
     }
 #>
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.<#= T #>"/> values in [0, range) to part of an array.
+        /// </summary>
+        public void AddFill(<#= T #> range, <#= T #>[] array, int offset, int count)
+        {
+            AddFill(0, range, array, offset, count);
         }
 
         /// <summary>

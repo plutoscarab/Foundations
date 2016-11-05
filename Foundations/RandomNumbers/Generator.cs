@@ -658,6 +658,14 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Adds random <see cref="System.UInt64"/> values in [0, range) to part of an array.
+        /// </summary>
+        public void AddFill(UInt64 range, UInt64[] array, int offset, int count)
+        {
+            AddFill(0, range, array, offset, count);
+        }
+
+        /// <summary>
         /// Gets a sequence of UInt64 values.
         /// </summary>
         public IEnumerable<UInt64> UInt64s()
@@ -1083,6 +1091,14 @@ namespace Foundations.RandomNumbers
             {
                 array[offset++] += Int64(minimum, range);
             }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int64"/> values in [0, range) to part of an array.
+        /// </summary>
+        public void AddFill(Int64 range, Int64[] array, int offset, int count)
+        {
+            AddFill(0, range, array, offset, count);
         }
 
         /// <summary>
@@ -1607,6 +1623,14 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Adds random <see cref="System.UInt32"/> values in [0, range) to part of an array.
+        /// </summary>
+        public void AddFill(UInt32 range, UInt32[] array, int offset, int count)
+        {
+            AddFill(0, range, array, offset, count);
+        }
+
+        /// <summary>
         /// Gets a sequence of UInt32 values.
         /// </summary>
         public IEnumerable<UInt32> UInt32s()
@@ -2102,6 +2126,14 @@ namespace Foundations.RandomNumbers
                     if (--count == 0) break; 
                 }
             }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int32"/> values in [0, range) to part of an array.
+        /// </summary>
+        public void AddFill(Int32 range, Int32[] array, int offset, int count)
+        {
+            AddFill(0, range, array, offset, count);
         }
 
         /// <summary>
@@ -2602,7 +2634,7 @@ namespace Foundations.RandomNumbers
                 array[offset++] += value.UInt16_1;
                 array[offset++] += value.UInt16_2;
                 array[offset++] += value.UInt16_3;
-                count -= 2;
+                count -= 4;
             }
 
             if (count == 0)
@@ -2673,6 +2705,14 @@ namespace Foundations.RandomNumbers
                     if (--count == 0) break; 
                 }
             }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.UInt16"/> values in [0, range) to part of an array.
+        /// </summary>
+        public void AddFill(UInt16 range, UInt16[] array, int offset, int count)
+        {
+            AddFill(0, range, array, offset, count);
         }
 
         /// <summary>
@@ -3151,7 +3191,7 @@ namespace Foundations.RandomNumbers
                 array[offset++] += value.Int16_1;
                 array[offset++] += value.Int16_2;
                 array[offset++] += value.Int16_3;
-                count -= 2;
+                count -= 4;
             }
 
             if (count == 0)
@@ -3222,6 +3262,14 @@ namespace Foundations.RandomNumbers
                     if (--count == 0) break; 
                 }
             }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Int16"/> values in [0, range) to part of an array.
+        /// </summary>
+        public void AddFill(Int16 range, Int16[] array, int offset, int count)
+        {
+            AddFill(0, range, array, offset, count);
         }
 
         /// <summary>
@@ -3756,7 +3804,7 @@ namespace Foundations.RandomNumbers
                 array[offset++] += value.Byte_5;
                 array[offset++] += value.Byte_6;
                 array[offset++] += value.Byte_7;
-                count -= 2;
+                count -= 8;
             }
 
             if (count == 0)
@@ -3864,6 +3912,14 @@ namespace Foundations.RandomNumbers
                     if (--count == 0) break; 
                 }
             }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Byte"/> values in [0, range) to part of an array.
+        /// </summary>
+        public void AddFill(Byte range, Byte[] array, int offset, int count)
+        {
+            AddFill(0, range, array, offset, count);
         }
 
         /// <summary>
@@ -4380,7 +4436,7 @@ namespace Foundations.RandomNumbers
                 array[offset++] += value.SByte_5;
                 array[offset++] += value.SByte_6;
                 array[offset++] += value.SByte_7;
-                count -= 2;
+                count -= 8;
             }
 
             if (count == 0)
@@ -4488,6 +4544,14 @@ namespace Foundations.RandomNumbers
                     if (--count == 0) break; 
                 }
             }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.SByte"/> values in [0, range) to part of an array.
+        /// </summary>
+        public void AddFill(SByte range, SByte[] array, int offset, int count)
+        {
+            AddFill(0, range, array, offset, count);
         }
 
         /// <summary>
@@ -4847,6 +4911,14 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Adds random <see cref="System.Double"/> values in [0, range) to part of an array.
+        /// </summary>
+        public void AddFill(Double range, Double[] array, int offset, int count)
+        {
+            AddFill(0, range, array, offset, count);
+        }
+
+        /// <summary>
         /// Gets a sequence of Double values.
         /// </summary>
         public IEnumerable<Double> Doubles()
@@ -5189,6 +5261,14 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Adds random <see cref="System.Single"/> values in [0, range) to part of an array.
+        /// </summary>
+        public void AddFill(Single range, Single[] array, int offset, int count)
+        {
+            AddFill(0, range, array, offset, count);
+        }
+
+        /// <summary>
         /// Gets a sequence of Single values.
         /// </summary>
         public IEnumerable<Single> Singles()
@@ -5487,6 +5567,14 @@ namespace Foundations.RandomNumbers
             {
                 array[offset++] += Decimal(minimum, range);
             }
+        }
+
+        /// <summary>
+        /// Adds random <see cref="System.Decimal"/> values in [0, range) to part of an array.
+        /// </summary>
+        public void AddFill(Decimal range, Decimal[] array, int offset, int count)
+        {
+            AddFill(0, range, array, offset, count);
         }
 
         /// <summary>

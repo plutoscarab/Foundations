@@ -190,6 +190,55 @@ namespace Foundations.UnitTests.RandomNumbers
         }
 
         [TestMethod]
+        public void AddFillByteArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            var data1 = new Byte[9999];
+            var data2 = new Byte[9999];
+            var data3 = new Byte[9999];
+
+            for (int p = 0; p < 10 * (8 / sizeof(Byte)); p++)
+            {
+                random.Fill(25, 50, data1);
+                Array.Copy(data1, data3, data1.Length);
+                var g = random.Clone();
+                random.AddFill(25, 50, data1);
+                g.Fill(25, 50, data2);
+
+                for (int i = 0; i < data1.Length; i++)
+                {
+                    Assert.AreEqual(data1[i], (Byte)(data3[i] + data2[i]));
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillByteArrayWithMinAndLowRange()
+        {
+            var random = new Generator();
+            var data = new Byte[9999];
+            random.AddFill(25, 0, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillByteArrayWithMinAndHighRange()
+        {
+            var random = new Generator();
+            var data = new Byte[9999];
+            random.AddFill(3 * (Byte.MaxValue / 4), Byte.MaxValue / 2, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullByteArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            random.AddFill(25, 50, (Byte[])null);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void RandomByteArrayWithLowRange()
         {
@@ -555,6 +604,221 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("CreateBytes");
             var data = random.CreateBytes(-1, 25, 50);
+        }
+
+        [TestMethod]
+        public void AddFillByteArray()
+        {
+            var random = new Generator("AddFillByteArray");
+            var data1 = random.CreateBytes(99);
+            var data2 = (Byte[])data1.Clone();
+            random = new Generator(1);
+            var data3 = random.CreateBytes(99);
+            random = new Generator(1);
+            random.AddFill(data1);
+
+            for (int i = 0; i < data1.Length; i++)
+            {
+                Assert.AreEqual((Byte)(data2[i] + data3[i]), data1[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullByteArray()
+        {
+            var random = new Generator("AddFillNullByteArray");
+            random.AddFill((Byte[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithNonPow2RangeByte()
+        {
+            var random = new Generator("AddFillWithNonPow2RangeByte");
+            var data = new Byte[99];
+            random.AddFill(57, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithRangeAndNullByteArray()
+        {
+            var random = new Generator("AddFillWithRangeAndNullByteArray");
+            random.AddFill(64, (Byte[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithRangeAndByteArray()
+        {
+            var random = new Generator("AddFillWithRangeAndNullByteArray");
+            var data = new Byte[9999];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
+        [TestMethod]
+        public void AddFillWithOffsetAndCountByteArray()
+        {
+            var random = new Generator("AddFillWithOffsetAndCountByteArray");
+            var data = new Byte[9999];
+
+            for (int i = 0; i < 8; i++)
+            {
+                random.AddFill(data, 0, data.Length - i);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithOffsetAndNullByteArray()
+        {
+            var random = new Generator("AddFillWithOffsetAndNullByteArray");
+            random.AddFill((Byte[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowOffsetByte()
+        {
+            var random = new Generator("AddFillWithLowOffsetByte");
+            var data = new Byte[99];
+            random.AddFill(data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighOffsetByte()
+        {
+            var random = new Generator("AddFillWithLowOffsetByte");
+            var data = new Byte[99];
+            random.AddFill(data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillWithZeroCountByte()
+        {
+            var random = new Generator("AddFillWithZeroCountByte");
+            var data = Enumerable.Range(0, 99).Select(t => (Byte)t).ToArray();
+            random.AddFill(data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((Byte)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowCountByte()
+        {
+            var random = new Generator("AddFillWithLowCountByte");
+            var data = new Byte[99];
+            random.AddFill(data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighCountByte()
+        {
+            var random = new Generator("AddFillWithHighCountByte");
+            var data = new Byte[99];
+            random.AddFill(data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillExactMultipleByte()
+        {
+            var random = new Generator("AddFillExactMultipleByte");
+            var data = new Byte[99 * 8];
+            random.AddFill(data);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void AddFillNonPow2WithOffsetByteArray()
+        {
+            var random = new Generator("AddFillNonPow2WithOffsetByteArray");
+            var data = new Byte[99 * 8];
+            random.AddFill(57, data, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillRangedWithOffsetAndNullByteArray()
+        {
+            var random = new Generator("AddFillRangedWithOffsetAndNullByteArray");
+            random.AddFill(64, (Byte[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowOffsetByte()
+        {
+            var random = new Generator("AddFillRangedWithLowOffsetByte");
+            var data = new Byte[99];
+            random.AddFill(64, data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighOffsetByte()
+        {
+            var random = new Generator("AddFillRangedWithHighOffsetByte");
+            var data = new Byte[99];
+            random.AddFill(64, data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillRangedWithZeroCountByte()
+        {
+            var random = new Generator("AddFillRangedWithZeroCountByte");
+            var data = Enumerable.Range(0, 99).Select(t => (Byte)t).ToArray();
+            random.AddFill(64, data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((Byte)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowCountByte()
+        {
+            var random = new Generator("AddFillRangedWithLowCountByte");
+            var data = new Byte[99];
+            random.AddFill(64, data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowRangeByte()
+        {
+            var random = new Generator("AddFillRangedWithLowCountByte");
+            var data = new Byte[99];
+            random.AddFill(64, 0, data, 0, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighCountByte()
+        {
+            var random = new Generator("AddFillRangedWithHighCountByte");
+            var data = new Byte[99];
+            random.AddFill(64, data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillRangedExactMultipleByte()
+        {
+            var random = new Generator("AddFillRangedExactMultipleByte");
+            var data = new Byte[99 * 8];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
         }
 
         [TestMethod]
@@ -934,6 +1198,55 @@ namespace Foundations.UnitTests.RandomNumbers
         }
 
         [TestMethod]
+        public void AddFillSByteArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            var data1 = new SByte[9999];
+            var data2 = new SByte[9999];
+            var data3 = new SByte[9999];
+
+            for (int p = 0; p < 10 * (8 / sizeof(SByte)); p++)
+            {
+                random.Fill(25, 50, data1);
+                Array.Copy(data1, data3, data1.Length);
+                var g = random.Clone();
+                random.AddFill(25, 50, data1);
+                g.Fill(25, 50, data2);
+
+                for (int i = 0; i < data1.Length; i++)
+                {
+                    Assert.AreEqual(data1[i], (SByte)(data3[i] + data2[i]));
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillSByteArrayWithMinAndLowRange()
+        {
+            var random = new Generator();
+            var data = new SByte[9999];
+            random.AddFill(25, 0, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillSByteArrayWithMinAndHighRange()
+        {
+            var random = new Generator();
+            var data = new SByte[9999];
+            random.AddFill(3 * (SByte.MaxValue / 4), SByte.MaxValue / 2, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullSByteArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            random.AddFill(25, 50, (SByte[])null);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void RandomSByteArrayWithLowRange()
         {
@@ -1302,6 +1615,221 @@ namespace Foundations.UnitTests.RandomNumbers
         }
 
         [TestMethod]
+        public void AddFillSByteArray()
+        {
+            var random = new Generator("AddFillSByteArray");
+            var data1 = random.CreateSBytes(99);
+            var data2 = (SByte[])data1.Clone();
+            random = new Generator(1);
+            var data3 = random.CreateSBytes(99);
+            random = new Generator(1);
+            random.AddFill(data1);
+
+            for (int i = 0; i < data1.Length; i++)
+            {
+                Assert.AreEqual((SByte)(data2[i] + data3[i]), data1[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullSByteArray()
+        {
+            var random = new Generator("AddFillNullSByteArray");
+            random.AddFill((SByte[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithNonPow2RangeSByte()
+        {
+            var random = new Generator("AddFillWithNonPow2RangeSByte");
+            var data = new SByte[99];
+            random.AddFill(57, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithRangeAndNullSByteArray()
+        {
+            var random = new Generator("AddFillWithRangeAndNullSByteArray");
+            random.AddFill(64, (SByte[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithRangeAndSByteArray()
+        {
+            var random = new Generator("AddFillWithRangeAndNullSByteArray");
+            var data = new SByte[9999];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
+        [TestMethod]
+        public void AddFillWithOffsetAndCountSByteArray()
+        {
+            var random = new Generator("AddFillWithOffsetAndCountSByteArray");
+            var data = new SByte[9999];
+
+            for (int i = 0; i < 8; i++)
+            {
+                random.AddFill(data, 0, data.Length - i);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithOffsetAndNullSByteArray()
+        {
+            var random = new Generator("AddFillWithOffsetAndNullSByteArray");
+            random.AddFill((SByte[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowOffsetSByte()
+        {
+            var random = new Generator("AddFillWithLowOffsetSByte");
+            var data = new SByte[99];
+            random.AddFill(data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighOffsetSByte()
+        {
+            var random = new Generator("AddFillWithLowOffsetSByte");
+            var data = new SByte[99];
+            random.AddFill(data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillWithZeroCountSByte()
+        {
+            var random = new Generator("AddFillWithZeroCountSByte");
+            var data = Enumerable.Range(0, 99).Select(t => (SByte)t).ToArray();
+            random.AddFill(data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((SByte)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowCountSByte()
+        {
+            var random = new Generator("AddFillWithLowCountSByte");
+            var data = new SByte[99];
+            random.AddFill(data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighCountSByte()
+        {
+            var random = new Generator("AddFillWithHighCountSByte");
+            var data = new SByte[99];
+            random.AddFill(data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillExactMultipleSByte()
+        {
+            var random = new Generator("AddFillExactMultipleSByte");
+            var data = new SByte[99 * 8];
+            random.AddFill(data);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void AddFillNonPow2WithOffsetSByteArray()
+        {
+            var random = new Generator("AddFillNonPow2WithOffsetSByteArray");
+            var data = new SByte[99 * 8];
+            random.AddFill(57, data, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillRangedWithOffsetAndNullSByteArray()
+        {
+            var random = new Generator("AddFillRangedWithOffsetAndNullSByteArray");
+            random.AddFill(64, (SByte[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowOffsetSByte()
+        {
+            var random = new Generator("AddFillRangedWithLowOffsetSByte");
+            var data = new SByte[99];
+            random.AddFill(64, data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighOffsetSByte()
+        {
+            var random = new Generator("AddFillRangedWithHighOffsetSByte");
+            var data = new SByte[99];
+            random.AddFill(64, data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillRangedWithZeroCountSByte()
+        {
+            var random = new Generator("AddFillRangedWithZeroCountSByte");
+            var data = Enumerable.Range(0, 99).Select(t => (SByte)t).ToArray();
+            random.AddFill(64, data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((SByte)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowCountSByte()
+        {
+            var random = new Generator("AddFillRangedWithLowCountSByte");
+            var data = new SByte[99];
+            random.AddFill(64, data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowRangeSByte()
+        {
+            var random = new Generator("AddFillRangedWithLowCountSByte");
+            var data = new SByte[99];
+            random.AddFill(64, 0, data, 0, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighCountSByte()
+        {
+            var random = new Generator("AddFillRangedWithHighCountSByte");
+            var data = new SByte[99];
+            random.AddFill(64, data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillRangedExactMultipleSByte()
+        {
+            var random = new Generator("AddFillRangedExactMultipleSByte");
+            var data = new SByte[99 * 8];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
+        [TestMethod]
         public void XorFillSByteArray()
         {
             var random = new Generator("XorFillSByteArray");
@@ -1632,6 +2160,55 @@ namespace Foundations.UnitTests.RandomNumbers
                     Assert.IsTrue(data[i] < 75);
                 }
             }
+        }
+
+        [TestMethod]
+        public void AddFillUInt16ArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            var data1 = new UInt16[9999];
+            var data2 = new UInt16[9999];
+            var data3 = new UInt16[9999];
+
+            for (int p = 0; p < 10 * (8 / sizeof(UInt16)); p++)
+            {
+                random.Fill(25, 50, data1);
+                Array.Copy(data1, data3, data1.Length);
+                var g = random.Clone();
+                random.AddFill(25, 50, data1);
+                g.Fill(25, 50, data2);
+
+                for (int i = 0; i < data1.Length; i++)
+                {
+                    Assert.AreEqual(data1[i], (UInt16)(data3[i] + data2[i]));
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillUInt16ArrayWithMinAndLowRange()
+        {
+            var random = new Generator();
+            var data = new UInt16[9999];
+            random.AddFill(25, 0, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillUInt16ArrayWithMinAndHighRange()
+        {
+            var random = new Generator();
+            var data = new UInt16[9999];
+            random.AddFill(3 * (UInt16.MaxValue / 4), UInt16.MaxValue / 2, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullUInt16ArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            random.AddFill(25, 50, (UInt16[])null);
         }
 
         [TestMethod]
@@ -2000,6 +2577,221 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("CreateUInt16s");
             var data = random.CreateUInt16s(-1, 25, 50);
+        }
+
+        [TestMethod]
+        public void AddFillUInt16Array()
+        {
+            var random = new Generator("AddFillUInt16Array");
+            var data1 = random.CreateUInt16s(99);
+            var data2 = (UInt16[])data1.Clone();
+            random = new Generator(1);
+            var data3 = random.CreateUInt16s(99);
+            random = new Generator(1);
+            random.AddFill(data1);
+
+            for (int i = 0; i < data1.Length; i++)
+            {
+                Assert.AreEqual((UInt16)(data2[i] + data3[i]), data1[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullUInt16Array()
+        {
+            var random = new Generator("AddFillNullUInt16Array");
+            random.AddFill((UInt16[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithNonPow2RangeUInt16()
+        {
+            var random = new Generator("AddFillWithNonPow2RangeUInt16");
+            var data = new UInt16[99];
+            random.AddFill(57, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithRangeAndNullUInt16Array()
+        {
+            var random = new Generator("AddFillWithRangeAndNullUInt16Array");
+            random.AddFill(64, (UInt16[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithRangeAndUInt16Array()
+        {
+            var random = new Generator("AddFillWithRangeAndNullUInt16Array");
+            var data = new UInt16[9999];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
+        [TestMethod]
+        public void AddFillWithOffsetAndCountUInt16Array()
+        {
+            var random = new Generator("AddFillWithOffsetAndCountUInt16Array");
+            var data = new UInt16[9999];
+
+            for (int i = 0; i < 8; i++)
+            {
+                random.AddFill(data, 0, data.Length - i);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithOffsetAndNullUInt16Array()
+        {
+            var random = new Generator("AddFillWithOffsetAndNullUInt16Array");
+            random.AddFill((UInt16[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowOffsetUInt16()
+        {
+            var random = new Generator("AddFillWithLowOffsetUInt16");
+            var data = new UInt16[99];
+            random.AddFill(data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighOffsetUInt16()
+        {
+            var random = new Generator("AddFillWithLowOffsetUInt16");
+            var data = new UInt16[99];
+            random.AddFill(data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillWithZeroCountUInt16()
+        {
+            var random = new Generator("AddFillWithZeroCountUInt16");
+            var data = Enumerable.Range(0, 99).Select(t => (UInt16)t).ToArray();
+            random.AddFill(data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((UInt16)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowCountUInt16()
+        {
+            var random = new Generator("AddFillWithLowCountUInt16");
+            var data = new UInt16[99];
+            random.AddFill(data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighCountUInt16()
+        {
+            var random = new Generator("AddFillWithHighCountUInt16");
+            var data = new UInt16[99];
+            random.AddFill(data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillExactMultipleUInt16()
+        {
+            var random = new Generator("AddFillExactMultipleUInt16");
+            var data = new UInt16[99 * 8];
+            random.AddFill(data);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void AddFillNonPow2WithOffsetUInt16Array()
+        {
+            var random = new Generator("AddFillNonPow2WithOffsetUInt16Array");
+            var data = new UInt16[99 * 8];
+            random.AddFill(57, data, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillRangedWithOffsetAndNullUInt16Array()
+        {
+            var random = new Generator("AddFillRangedWithOffsetAndNullUInt16Array");
+            random.AddFill(64, (UInt16[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowOffsetUInt16()
+        {
+            var random = new Generator("AddFillRangedWithLowOffsetUInt16");
+            var data = new UInt16[99];
+            random.AddFill(64, data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighOffsetUInt16()
+        {
+            var random = new Generator("AddFillRangedWithHighOffsetUInt16");
+            var data = new UInt16[99];
+            random.AddFill(64, data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillRangedWithZeroCountUInt16()
+        {
+            var random = new Generator("AddFillRangedWithZeroCountUInt16");
+            var data = Enumerable.Range(0, 99).Select(t => (UInt16)t).ToArray();
+            random.AddFill(64, data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((UInt16)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowCountUInt16()
+        {
+            var random = new Generator("AddFillRangedWithLowCountUInt16");
+            var data = new UInt16[99];
+            random.AddFill(64, data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowRangeUInt16()
+        {
+            var random = new Generator("AddFillRangedWithLowCountUInt16");
+            var data = new UInt16[99];
+            random.AddFill(64, 0, data, 0, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighCountUInt16()
+        {
+            var random = new Generator("AddFillRangedWithHighCountUInt16");
+            var data = new UInt16[99];
+            random.AddFill(64, data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillRangedExactMultipleUInt16()
+        {
+            var random = new Generator("AddFillRangedExactMultipleUInt16");
+            var data = new UInt16[99 * 8];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
         }
 
         [TestMethod]
@@ -2379,6 +3171,55 @@ namespace Foundations.UnitTests.RandomNumbers
         }
 
         [TestMethod]
+        public void AddFillInt16ArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            var data1 = new Int16[9999];
+            var data2 = new Int16[9999];
+            var data3 = new Int16[9999];
+
+            for (int p = 0; p < 10 * (8 / sizeof(Int16)); p++)
+            {
+                random.Fill(25, 50, data1);
+                Array.Copy(data1, data3, data1.Length);
+                var g = random.Clone();
+                random.AddFill(25, 50, data1);
+                g.Fill(25, 50, data2);
+
+                for (int i = 0; i < data1.Length; i++)
+                {
+                    Assert.AreEqual(data1[i], (Int16)(data3[i] + data2[i]));
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillInt16ArrayWithMinAndLowRange()
+        {
+            var random = new Generator();
+            var data = new Int16[9999];
+            random.AddFill(25, 0, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillInt16ArrayWithMinAndHighRange()
+        {
+            var random = new Generator();
+            var data = new Int16[9999];
+            random.AddFill(3 * (Int16.MaxValue / 4), Int16.MaxValue / 2, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullInt16ArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            random.AddFill(25, 50, (Int16[])null);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void RandomInt16ArrayWithLowRange()
         {
@@ -2747,6 +3588,221 @@ namespace Foundations.UnitTests.RandomNumbers
         }
 
         [TestMethod]
+        public void AddFillInt16Array()
+        {
+            var random = new Generator("AddFillInt16Array");
+            var data1 = random.CreateInt16s(99);
+            var data2 = (Int16[])data1.Clone();
+            random = new Generator(1);
+            var data3 = random.CreateInt16s(99);
+            random = new Generator(1);
+            random.AddFill(data1);
+
+            for (int i = 0; i < data1.Length; i++)
+            {
+                Assert.AreEqual((Int16)(data2[i] + data3[i]), data1[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullInt16Array()
+        {
+            var random = new Generator("AddFillNullInt16Array");
+            random.AddFill((Int16[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithNonPow2RangeInt16()
+        {
+            var random = new Generator("AddFillWithNonPow2RangeInt16");
+            var data = new Int16[99];
+            random.AddFill(57, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithRangeAndNullInt16Array()
+        {
+            var random = new Generator("AddFillWithRangeAndNullInt16Array");
+            random.AddFill(64, (Int16[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithRangeAndInt16Array()
+        {
+            var random = new Generator("AddFillWithRangeAndNullInt16Array");
+            var data = new Int16[9999];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
+        [TestMethod]
+        public void AddFillWithOffsetAndCountInt16Array()
+        {
+            var random = new Generator("AddFillWithOffsetAndCountInt16Array");
+            var data = new Int16[9999];
+
+            for (int i = 0; i < 8; i++)
+            {
+                random.AddFill(data, 0, data.Length - i);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithOffsetAndNullInt16Array()
+        {
+            var random = new Generator("AddFillWithOffsetAndNullInt16Array");
+            random.AddFill((Int16[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowOffsetInt16()
+        {
+            var random = new Generator("AddFillWithLowOffsetInt16");
+            var data = new Int16[99];
+            random.AddFill(data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighOffsetInt16()
+        {
+            var random = new Generator("AddFillWithLowOffsetInt16");
+            var data = new Int16[99];
+            random.AddFill(data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillWithZeroCountInt16()
+        {
+            var random = new Generator("AddFillWithZeroCountInt16");
+            var data = Enumerable.Range(0, 99).Select(t => (Int16)t).ToArray();
+            random.AddFill(data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((Int16)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowCountInt16()
+        {
+            var random = new Generator("AddFillWithLowCountInt16");
+            var data = new Int16[99];
+            random.AddFill(data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighCountInt16()
+        {
+            var random = new Generator("AddFillWithHighCountInt16");
+            var data = new Int16[99];
+            random.AddFill(data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillExactMultipleInt16()
+        {
+            var random = new Generator("AddFillExactMultipleInt16");
+            var data = new Int16[99 * 8];
+            random.AddFill(data);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void AddFillNonPow2WithOffsetInt16Array()
+        {
+            var random = new Generator("AddFillNonPow2WithOffsetInt16Array");
+            var data = new Int16[99 * 8];
+            random.AddFill(57, data, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillRangedWithOffsetAndNullInt16Array()
+        {
+            var random = new Generator("AddFillRangedWithOffsetAndNullInt16Array");
+            random.AddFill(64, (Int16[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowOffsetInt16()
+        {
+            var random = new Generator("AddFillRangedWithLowOffsetInt16");
+            var data = new Int16[99];
+            random.AddFill(64, data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighOffsetInt16()
+        {
+            var random = new Generator("AddFillRangedWithHighOffsetInt16");
+            var data = new Int16[99];
+            random.AddFill(64, data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillRangedWithZeroCountInt16()
+        {
+            var random = new Generator("AddFillRangedWithZeroCountInt16");
+            var data = Enumerable.Range(0, 99).Select(t => (Int16)t).ToArray();
+            random.AddFill(64, data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((Int16)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowCountInt16()
+        {
+            var random = new Generator("AddFillRangedWithLowCountInt16");
+            var data = new Int16[99];
+            random.AddFill(64, data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowRangeInt16()
+        {
+            var random = new Generator("AddFillRangedWithLowCountInt16");
+            var data = new Int16[99];
+            random.AddFill(64, 0, data, 0, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighCountInt16()
+        {
+            var random = new Generator("AddFillRangedWithHighCountInt16");
+            var data = new Int16[99];
+            random.AddFill(64, data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillRangedExactMultipleInt16()
+        {
+            var random = new Generator("AddFillRangedExactMultipleInt16");
+            var data = new Int16[99 * 8];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
+        [TestMethod]
         public void XorFillInt16Array()
         {
             var random = new Generator("XorFillInt16Array");
@@ -3077,6 +4133,55 @@ namespace Foundations.UnitTests.RandomNumbers
                     Assert.IsTrue(data[i] < 75);
                 }
             }
+        }
+
+        [TestMethod]
+        public void AddFillUInt32ArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            var data1 = new UInt32[9999];
+            var data2 = new UInt32[9999];
+            var data3 = new UInt32[9999];
+
+            for (int p = 0; p < 10 * (8 / sizeof(UInt32)); p++)
+            {
+                random.Fill(25, 50, data1);
+                Array.Copy(data1, data3, data1.Length);
+                var g = random.Clone();
+                random.AddFill(25, 50, data1);
+                g.Fill(25, 50, data2);
+
+                for (int i = 0; i < data1.Length; i++)
+                {
+                    Assert.AreEqual(data1[i], (UInt32)(data3[i] + data2[i]));
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillUInt32ArrayWithMinAndLowRange()
+        {
+            var random = new Generator();
+            var data = new UInt32[9999];
+            random.AddFill(25, 0, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillUInt32ArrayWithMinAndHighRange()
+        {
+            var random = new Generator();
+            var data = new UInt32[9999];
+            random.AddFill(3 * (UInt32.MaxValue / 4), UInt32.MaxValue / 2, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullUInt32ArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            random.AddFill(25, 50, (UInt32[])null);
         }
 
         [TestMethod]
@@ -3445,6 +4550,221 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("CreateUInt32s");
             var data = random.CreateUInt32s(-1, 25, 50);
+        }
+
+        [TestMethod]
+        public void AddFillUInt32Array()
+        {
+            var random = new Generator("AddFillUInt32Array");
+            var data1 = random.CreateUInt32s(99);
+            var data2 = (UInt32[])data1.Clone();
+            random = new Generator(1);
+            var data3 = random.CreateUInt32s(99);
+            random = new Generator(1);
+            random.AddFill(data1);
+
+            for (int i = 0; i < data1.Length; i++)
+            {
+                Assert.AreEqual((UInt32)(data2[i] + data3[i]), data1[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullUInt32Array()
+        {
+            var random = new Generator("AddFillNullUInt32Array");
+            random.AddFill((UInt32[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithNonPow2RangeUInt32()
+        {
+            var random = new Generator("AddFillWithNonPow2RangeUInt32");
+            var data = new UInt32[99];
+            random.AddFill(57, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithRangeAndNullUInt32Array()
+        {
+            var random = new Generator("AddFillWithRangeAndNullUInt32Array");
+            random.AddFill(64, (UInt32[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithRangeAndUInt32Array()
+        {
+            var random = new Generator("AddFillWithRangeAndNullUInt32Array");
+            var data = new UInt32[9999];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
+        [TestMethod]
+        public void AddFillWithOffsetAndCountUInt32Array()
+        {
+            var random = new Generator("AddFillWithOffsetAndCountUInt32Array");
+            var data = new UInt32[9999];
+
+            for (int i = 0; i < 8; i++)
+            {
+                random.AddFill(data, 0, data.Length - i);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithOffsetAndNullUInt32Array()
+        {
+            var random = new Generator("AddFillWithOffsetAndNullUInt32Array");
+            random.AddFill((UInt32[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowOffsetUInt32()
+        {
+            var random = new Generator("AddFillWithLowOffsetUInt32");
+            var data = new UInt32[99];
+            random.AddFill(data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighOffsetUInt32()
+        {
+            var random = new Generator("AddFillWithLowOffsetUInt32");
+            var data = new UInt32[99];
+            random.AddFill(data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillWithZeroCountUInt32()
+        {
+            var random = new Generator("AddFillWithZeroCountUInt32");
+            var data = Enumerable.Range(0, 99).Select(t => (UInt32)t).ToArray();
+            random.AddFill(data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((UInt32)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowCountUInt32()
+        {
+            var random = new Generator("AddFillWithLowCountUInt32");
+            var data = new UInt32[99];
+            random.AddFill(data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighCountUInt32()
+        {
+            var random = new Generator("AddFillWithHighCountUInt32");
+            var data = new UInt32[99];
+            random.AddFill(data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillExactMultipleUInt32()
+        {
+            var random = new Generator("AddFillExactMultipleUInt32");
+            var data = new UInt32[99 * 8];
+            random.AddFill(data);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void AddFillNonPow2WithOffsetUInt32Array()
+        {
+            var random = new Generator("AddFillNonPow2WithOffsetUInt32Array");
+            var data = new UInt32[99 * 8];
+            random.AddFill(57, data, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillRangedWithOffsetAndNullUInt32Array()
+        {
+            var random = new Generator("AddFillRangedWithOffsetAndNullUInt32Array");
+            random.AddFill(64, (UInt32[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowOffsetUInt32()
+        {
+            var random = new Generator("AddFillRangedWithLowOffsetUInt32");
+            var data = new UInt32[99];
+            random.AddFill(64, data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighOffsetUInt32()
+        {
+            var random = new Generator("AddFillRangedWithHighOffsetUInt32");
+            var data = new UInt32[99];
+            random.AddFill(64, data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillRangedWithZeroCountUInt32()
+        {
+            var random = new Generator("AddFillRangedWithZeroCountUInt32");
+            var data = Enumerable.Range(0, 99).Select(t => (UInt32)t).ToArray();
+            random.AddFill(64, data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((UInt32)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowCountUInt32()
+        {
+            var random = new Generator("AddFillRangedWithLowCountUInt32");
+            var data = new UInt32[99];
+            random.AddFill(64, data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowRangeUInt32()
+        {
+            var random = new Generator("AddFillRangedWithLowCountUInt32");
+            var data = new UInt32[99];
+            random.AddFill(64, 0, data, 0, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighCountUInt32()
+        {
+            var random = new Generator("AddFillRangedWithHighCountUInt32");
+            var data = new UInt32[99];
+            random.AddFill(64, data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillRangedExactMultipleUInt32()
+        {
+            var random = new Generator("AddFillRangedExactMultipleUInt32");
+            var data = new UInt32[99 * 8];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
         }
 
         [TestMethod]
@@ -3824,6 +5144,55 @@ namespace Foundations.UnitTests.RandomNumbers
         }
 
         [TestMethod]
+        public void AddFillInt32ArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            var data1 = new Int32[9999];
+            var data2 = new Int32[9999];
+            var data3 = new Int32[9999];
+
+            for (int p = 0; p < 10 * (8 / sizeof(Int32)); p++)
+            {
+                random.Fill(25, 50, data1);
+                Array.Copy(data1, data3, data1.Length);
+                var g = random.Clone();
+                random.AddFill(25, 50, data1);
+                g.Fill(25, 50, data2);
+
+                for (int i = 0; i < data1.Length; i++)
+                {
+                    Assert.AreEqual(data1[i], (Int32)(data3[i] + data2[i]));
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillInt32ArrayWithMinAndLowRange()
+        {
+            var random = new Generator();
+            var data = new Int32[9999];
+            random.AddFill(25, 0, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillInt32ArrayWithMinAndHighRange()
+        {
+            var random = new Generator();
+            var data = new Int32[9999];
+            random.AddFill(3 * (Int32.MaxValue / 4), Int32.MaxValue / 2, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullInt32ArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            random.AddFill(25, 50, (Int32[])null);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void RandomInt32ArrayWithLowRange()
         {
@@ -4192,6 +5561,221 @@ namespace Foundations.UnitTests.RandomNumbers
         }
 
         [TestMethod]
+        public void AddFillInt32Array()
+        {
+            var random = new Generator("AddFillInt32Array");
+            var data1 = random.CreateInt32s(99);
+            var data2 = (Int32[])data1.Clone();
+            random = new Generator(1);
+            var data3 = random.CreateInt32s(99);
+            random = new Generator(1);
+            random.AddFill(data1);
+
+            for (int i = 0; i < data1.Length; i++)
+            {
+                Assert.AreEqual((Int32)(data2[i] + data3[i]), data1[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullInt32Array()
+        {
+            var random = new Generator("AddFillNullInt32Array");
+            random.AddFill((Int32[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithNonPow2RangeInt32()
+        {
+            var random = new Generator("AddFillWithNonPow2RangeInt32");
+            var data = new Int32[99];
+            random.AddFill(57, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithRangeAndNullInt32Array()
+        {
+            var random = new Generator("AddFillWithRangeAndNullInt32Array");
+            random.AddFill(64, (Int32[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithRangeAndInt32Array()
+        {
+            var random = new Generator("AddFillWithRangeAndNullInt32Array");
+            var data = new Int32[9999];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
+        [TestMethod]
+        public void AddFillWithOffsetAndCountInt32Array()
+        {
+            var random = new Generator("AddFillWithOffsetAndCountInt32Array");
+            var data = new Int32[9999];
+
+            for (int i = 0; i < 8; i++)
+            {
+                random.AddFill(data, 0, data.Length - i);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithOffsetAndNullInt32Array()
+        {
+            var random = new Generator("AddFillWithOffsetAndNullInt32Array");
+            random.AddFill((Int32[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowOffsetInt32()
+        {
+            var random = new Generator("AddFillWithLowOffsetInt32");
+            var data = new Int32[99];
+            random.AddFill(data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighOffsetInt32()
+        {
+            var random = new Generator("AddFillWithLowOffsetInt32");
+            var data = new Int32[99];
+            random.AddFill(data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillWithZeroCountInt32()
+        {
+            var random = new Generator("AddFillWithZeroCountInt32");
+            var data = Enumerable.Range(0, 99).Select(t => (Int32)t).ToArray();
+            random.AddFill(data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((Int32)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowCountInt32()
+        {
+            var random = new Generator("AddFillWithLowCountInt32");
+            var data = new Int32[99];
+            random.AddFill(data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighCountInt32()
+        {
+            var random = new Generator("AddFillWithHighCountInt32");
+            var data = new Int32[99];
+            random.AddFill(data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillExactMultipleInt32()
+        {
+            var random = new Generator("AddFillExactMultipleInt32");
+            var data = new Int32[99 * 8];
+            random.AddFill(data);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void AddFillNonPow2WithOffsetInt32Array()
+        {
+            var random = new Generator("AddFillNonPow2WithOffsetInt32Array");
+            var data = new Int32[99 * 8];
+            random.AddFill(57, data, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillRangedWithOffsetAndNullInt32Array()
+        {
+            var random = new Generator("AddFillRangedWithOffsetAndNullInt32Array");
+            random.AddFill(64, (Int32[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowOffsetInt32()
+        {
+            var random = new Generator("AddFillRangedWithLowOffsetInt32");
+            var data = new Int32[99];
+            random.AddFill(64, data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighOffsetInt32()
+        {
+            var random = new Generator("AddFillRangedWithHighOffsetInt32");
+            var data = new Int32[99];
+            random.AddFill(64, data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillRangedWithZeroCountInt32()
+        {
+            var random = new Generator("AddFillRangedWithZeroCountInt32");
+            var data = Enumerable.Range(0, 99).Select(t => (Int32)t).ToArray();
+            random.AddFill(64, data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((Int32)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowCountInt32()
+        {
+            var random = new Generator("AddFillRangedWithLowCountInt32");
+            var data = new Int32[99];
+            random.AddFill(64, data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowRangeInt32()
+        {
+            var random = new Generator("AddFillRangedWithLowCountInt32");
+            var data = new Int32[99];
+            random.AddFill(64, 0, data, 0, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighCountInt32()
+        {
+            var random = new Generator("AddFillRangedWithHighCountInt32");
+            var data = new Int32[99];
+            random.AddFill(64, data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillRangedExactMultipleInt32()
+        {
+            var random = new Generator("AddFillRangedExactMultipleInt32");
+            var data = new Int32[99 * 8];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
+        [TestMethod]
         public void XorFillInt32Array()
         {
             var random = new Generator("XorFillInt32Array");
@@ -4522,6 +6106,55 @@ namespace Foundations.UnitTests.RandomNumbers
                     Assert.IsTrue(data[i] < 75);
                 }
             }
+        }
+
+        [TestMethod]
+        public void AddFillUInt64ArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            var data1 = new UInt64[9999];
+            var data2 = new UInt64[9999];
+            var data3 = new UInt64[9999];
+
+            for (int p = 0; p < 10 * (8 / sizeof(UInt64)); p++)
+            {
+                random.Fill(25, 50, data1);
+                Array.Copy(data1, data3, data1.Length);
+                var g = random.Clone();
+                random.AddFill(25, 50, data1);
+                g.Fill(25, 50, data2);
+
+                for (int i = 0; i < data1.Length; i++)
+                {
+                    Assert.AreEqual(data1[i], (UInt64)(data3[i] + data2[i]));
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillUInt64ArrayWithMinAndLowRange()
+        {
+            var random = new Generator();
+            var data = new UInt64[9999];
+            random.AddFill(25, 0, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillUInt64ArrayWithMinAndHighRange()
+        {
+            var random = new Generator();
+            var data = new UInt64[9999];
+            random.AddFill(3 * (UInt64.MaxValue / 4), UInt64.MaxValue / 2, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullUInt64ArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            random.AddFill(25, 50, (UInt64[])null);
         }
 
         [TestMethod]
@@ -4890,6 +6523,221 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("CreateUInt64s");
             var data = random.CreateUInt64s(-1, 25, 50);
+        }
+
+        [TestMethod]
+        public void AddFillUInt64Array()
+        {
+            var random = new Generator("AddFillUInt64Array");
+            var data1 = random.CreateUInt64s(99);
+            var data2 = (UInt64[])data1.Clone();
+            random = new Generator(1);
+            var data3 = random.CreateUInt64s(99);
+            random = new Generator(1);
+            random.AddFill(data1);
+
+            for (int i = 0; i < data1.Length; i++)
+            {
+                Assert.AreEqual((UInt64)(data2[i] + data3[i]), data1[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullUInt64Array()
+        {
+            var random = new Generator("AddFillNullUInt64Array");
+            random.AddFill((UInt64[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithNonPow2RangeUInt64()
+        {
+            var random = new Generator("AddFillWithNonPow2RangeUInt64");
+            var data = new UInt64[99];
+            random.AddFill(57, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithRangeAndNullUInt64Array()
+        {
+            var random = new Generator("AddFillWithRangeAndNullUInt64Array");
+            random.AddFill(64, (UInt64[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithRangeAndUInt64Array()
+        {
+            var random = new Generator("AddFillWithRangeAndNullUInt64Array");
+            var data = new UInt64[9999];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
+        [TestMethod]
+        public void AddFillWithOffsetAndCountUInt64Array()
+        {
+            var random = new Generator("AddFillWithOffsetAndCountUInt64Array");
+            var data = new UInt64[9999];
+
+            for (int i = 0; i < 8; i++)
+            {
+                random.AddFill(data, 0, data.Length - i);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithOffsetAndNullUInt64Array()
+        {
+            var random = new Generator("AddFillWithOffsetAndNullUInt64Array");
+            random.AddFill((UInt64[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowOffsetUInt64()
+        {
+            var random = new Generator("AddFillWithLowOffsetUInt64");
+            var data = new UInt64[99];
+            random.AddFill(data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighOffsetUInt64()
+        {
+            var random = new Generator("AddFillWithLowOffsetUInt64");
+            var data = new UInt64[99];
+            random.AddFill(data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillWithZeroCountUInt64()
+        {
+            var random = new Generator("AddFillWithZeroCountUInt64");
+            var data = Enumerable.Range(0, 99).Select(t => (UInt64)t).ToArray();
+            random.AddFill(data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((UInt64)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowCountUInt64()
+        {
+            var random = new Generator("AddFillWithLowCountUInt64");
+            var data = new UInt64[99];
+            random.AddFill(data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighCountUInt64()
+        {
+            var random = new Generator("AddFillWithHighCountUInt64");
+            var data = new UInt64[99];
+            random.AddFill(data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillExactMultipleUInt64()
+        {
+            var random = new Generator("AddFillExactMultipleUInt64");
+            var data = new UInt64[99 * 8];
+            random.AddFill(data);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void AddFillNonPow2WithOffsetUInt64Array()
+        {
+            var random = new Generator("AddFillNonPow2WithOffsetUInt64Array");
+            var data = new UInt64[99 * 8];
+            random.AddFill(57, data, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillRangedWithOffsetAndNullUInt64Array()
+        {
+            var random = new Generator("AddFillRangedWithOffsetAndNullUInt64Array");
+            random.AddFill(64, (UInt64[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowOffsetUInt64()
+        {
+            var random = new Generator("AddFillRangedWithLowOffsetUInt64");
+            var data = new UInt64[99];
+            random.AddFill(64, data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighOffsetUInt64()
+        {
+            var random = new Generator("AddFillRangedWithHighOffsetUInt64");
+            var data = new UInt64[99];
+            random.AddFill(64, data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillRangedWithZeroCountUInt64()
+        {
+            var random = new Generator("AddFillRangedWithZeroCountUInt64");
+            var data = Enumerable.Range(0, 99).Select(t => (UInt64)t).ToArray();
+            random.AddFill(64, data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((UInt64)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowCountUInt64()
+        {
+            var random = new Generator("AddFillRangedWithLowCountUInt64");
+            var data = new UInt64[99];
+            random.AddFill(64, data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowRangeUInt64()
+        {
+            var random = new Generator("AddFillRangedWithLowCountUInt64");
+            var data = new UInt64[99];
+            random.AddFill(64, 0, data, 0, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighCountUInt64()
+        {
+            var random = new Generator("AddFillRangedWithHighCountUInt64");
+            var data = new UInt64[99];
+            random.AddFill(64, data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillRangedExactMultipleUInt64()
+        {
+            var random = new Generator("AddFillRangedExactMultipleUInt64");
+            var data = new UInt64[99 * 8];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
         }
 
         [TestMethod]
@@ -5269,6 +7117,55 @@ namespace Foundations.UnitTests.RandomNumbers
         }
 
         [TestMethod]
+        public void AddFillInt64ArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            var data1 = new Int64[9999];
+            var data2 = new Int64[9999];
+            var data3 = new Int64[9999];
+
+            for (int p = 0; p < 10 * (8 / sizeof(Int64)); p++)
+            {
+                random.Fill(25, 50, data1);
+                Array.Copy(data1, data3, data1.Length);
+                var g = random.Clone();
+                random.AddFill(25, 50, data1);
+                g.Fill(25, 50, data2);
+
+                for (int i = 0; i < data1.Length; i++)
+                {
+                    Assert.AreEqual(data1[i], (Int64)(data3[i] + data2[i]));
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillInt64ArrayWithMinAndLowRange()
+        {
+            var random = new Generator();
+            var data = new Int64[9999];
+            random.AddFill(25, 0, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillInt64ArrayWithMinAndHighRange()
+        {
+            var random = new Generator();
+            var data = new Int64[9999];
+            random.AddFill(3 * (Int64.MaxValue / 4), Int64.MaxValue / 2, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullInt64ArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            random.AddFill(25, 50, (Int64[])null);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void RandomInt64ArrayWithLowRange()
         {
@@ -5637,6 +7534,221 @@ namespace Foundations.UnitTests.RandomNumbers
         }
 
         [TestMethod]
+        public void AddFillInt64Array()
+        {
+            var random = new Generator("AddFillInt64Array");
+            var data1 = random.CreateInt64s(99);
+            var data2 = (Int64[])data1.Clone();
+            random = new Generator(1);
+            var data3 = random.CreateInt64s(99);
+            random = new Generator(1);
+            random.AddFill(data1);
+
+            for (int i = 0; i < data1.Length; i++)
+            {
+                Assert.AreEqual((Int64)(data2[i] + data3[i]), data1[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullInt64Array()
+        {
+            var random = new Generator("AddFillNullInt64Array");
+            random.AddFill((Int64[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithNonPow2RangeInt64()
+        {
+            var random = new Generator("AddFillWithNonPow2RangeInt64");
+            var data = new Int64[99];
+            random.AddFill(57, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithRangeAndNullInt64Array()
+        {
+            var random = new Generator("AddFillWithRangeAndNullInt64Array");
+            random.AddFill(64, (Int64[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithRangeAndInt64Array()
+        {
+            var random = new Generator("AddFillWithRangeAndNullInt64Array");
+            var data = new Int64[9999];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
+        [TestMethod]
+        public void AddFillWithOffsetAndCountInt64Array()
+        {
+            var random = new Generator("AddFillWithOffsetAndCountInt64Array");
+            var data = new Int64[9999];
+
+            for (int i = 0; i < 8; i++)
+            {
+                random.AddFill(data, 0, data.Length - i);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithOffsetAndNullInt64Array()
+        {
+            var random = new Generator("AddFillWithOffsetAndNullInt64Array");
+            random.AddFill((Int64[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowOffsetInt64()
+        {
+            var random = new Generator("AddFillWithLowOffsetInt64");
+            var data = new Int64[99];
+            random.AddFill(data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighOffsetInt64()
+        {
+            var random = new Generator("AddFillWithLowOffsetInt64");
+            var data = new Int64[99];
+            random.AddFill(data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillWithZeroCountInt64()
+        {
+            var random = new Generator("AddFillWithZeroCountInt64");
+            var data = Enumerable.Range(0, 99).Select(t => (Int64)t).ToArray();
+            random.AddFill(data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((Int64)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowCountInt64()
+        {
+            var random = new Generator("AddFillWithLowCountInt64");
+            var data = new Int64[99];
+            random.AddFill(data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighCountInt64()
+        {
+            var random = new Generator("AddFillWithHighCountInt64");
+            var data = new Int64[99];
+            random.AddFill(data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillExactMultipleInt64()
+        {
+            var random = new Generator("AddFillExactMultipleInt64");
+            var data = new Int64[99 * 8];
+            random.AddFill(data);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void AddFillNonPow2WithOffsetInt64Array()
+        {
+            var random = new Generator("AddFillNonPow2WithOffsetInt64Array");
+            var data = new Int64[99 * 8];
+            random.AddFill(57, data, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillRangedWithOffsetAndNullInt64Array()
+        {
+            var random = new Generator("AddFillRangedWithOffsetAndNullInt64Array");
+            random.AddFill(64, (Int64[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowOffsetInt64()
+        {
+            var random = new Generator("AddFillRangedWithLowOffsetInt64");
+            var data = new Int64[99];
+            random.AddFill(64, data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighOffsetInt64()
+        {
+            var random = new Generator("AddFillRangedWithHighOffsetInt64");
+            var data = new Int64[99];
+            random.AddFill(64, data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillRangedWithZeroCountInt64()
+        {
+            var random = new Generator("AddFillRangedWithZeroCountInt64");
+            var data = Enumerable.Range(0, 99).Select(t => (Int64)t).ToArray();
+            random.AddFill(64, data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((Int64)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowCountInt64()
+        {
+            var random = new Generator("AddFillRangedWithLowCountInt64");
+            var data = new Int64[99];
+            random.AddFill(64, data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowRangeInt64()
+        {
+            var random = new Generator("AddFillRangedWithLowCountInt64");
+            var data = new Int64[99];
+            random.AddFill(64, 0, data, 0, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighCountInt64()
+        {
+            var random = new Generator("AddFillRangedWithHighCountInt64");
+            var data = new Int64[99];
+            random.AddFill(64, data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillRangedExactMultipleInt64()
+        {
+            var random = new Generator("AddFillRangedExactMultipleInt64");
+            var data = new Int64[99 * 8];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
+        [TestMethod]
         public void XorFillInt64Array()
         {
             var random = new Generator("XorFillInt64Array");
@@ -5967,6 +8079,55 @@ namespace Foundations.UnitTests.RandomNumbers
                     Assert.IsTrue(data[i] < 75);
                 }
             }
+        }
+
+        [TestMethod]
+        public void AddFillSingleArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            var data1 = new Single[9999];
+            var data2 = new Single[9999];
+            var data3 = new Single[9999];
+
+            for (int p = 0; p < 10 * (8 / sizeof(Single)); p++)
+            {
+                random.Fill(25, 50, data1);
+                Array.Copy(data1, data3, data1.Length);
+                var g = random.Clone();
+                random.AddFill(25, 50, data1);
+                g.Fill(25, 50, data2);
+
+                for (int i = 0; i < data1.Length; i++)
+                {
+                    Assert.AreEqual(data1[i], (Single)(data3[i] + data2[i]));
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillSingleArrayWithMinAndLowRange()
+        {
+            var random = new Generator();
+            var data = new Single[9999];
+            random.AddFill(25, 0, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillSingleArrayWithMinAndHighRange()
+        {
+            var random = new Generator();
+            var data = new Single[9999];
+            random.AddFill(3 * (Single.MaxValue / 4), Single.MaxValue / 2, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullSingleArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            random.AddFill(25, 50, (Single[])null);
         }
 
         [TestMethod]
@@ -6337,6 +8498,221 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = random.CreateSingles(-1, 25, 50);
         }
 
+        [TestMethod]
+        public void AddFillSingleArray()
+        {
+            var random = new Generator("AddFillSingleArray");
+            var data1 = random.CreateSingles(99);
+            var data2 = (Single[])data1.Clone();
+            random = new Generator(1);
+            var data3 = random.CreateSingles(99);
+            random = new Generator(1);
+            random.AddFill(data1);
+
+            for (int i = 0; i < data1.Length; i++)
+            {
+                Assert.AreEqual((Single)(data2[i] + data3[i]), data1[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullSingleArray()
+        {
+            var random = new Generator("AddFillNullSingleArray");
+            random.AddFill((Single[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithNonPow2RangeSingle()
+        {
+            var random = new Generator("AddFillWithNonPow2RangeSingle");
+            var data = new Single[99];
+            random.AddFill(57, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithRangeAndNullSingleArray()
+        {
+            var random = new Generator("AddFillWithRangeAndNullSingleArray");
+            random.AddFill(64, (Single[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithRangeAndSingleArray()
+        {
+            var random = new Generator("AddFillWithRangeAndNullSingleArray");
+            var data = new Single[9999];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
+        [TestMethod]
+        public void AddFillWithOffsetAndCountSingleArray()
+        {
+            var random = new Generator("AddFillWithOffsetAndCountSingleArray");
+            var data = new Single[9999];
+
+            for (int i = 0; i < 8; i++)
+            {
+                random.AddFill(data, 0, data.Length - i);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithOffsetAndNullSingleArray()
+        {
+            var random = new Generator("AddFillWithOffsetAndNullSingleArray");
+            random.AddFill((Single[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowOffsetSingle()
+        {
+            var random = new Generator("AddFillWithLowOffsetSingle");
+            var data = new Single[99];
+            random.AddFill(data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighOffsetSingle()
+        {
+            var random = new Generator("AddFillWithLowOffsetSingle");
+            var data = new Single[99];
+            random.AddFill(data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillWithZeroCountSingle()
+        {
+            var random = new Generator("AddFillWithZeroCountSingle");
+            var data = Enumerable.Range(0, 99).Select(t => (Single)t).ToArray();
+            random.AddFill(data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((Single)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowCountSingle()
+        {
+            var random = new Generator("AddFillWithLowCountSingle");
+            var data = new Single[99];
+            random.AddFill(data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighCountSingle()
+        {
+            var random = new Generator("AddFillWithHighCountSingle");
+            var data = new Single[99];
+            random.AddFill(data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillExactMultipleSingle()
+        {
+            var random = new Generator("AddFillExactMultipleSingle");
+            var data = new Single[99 * 8];
+            random.AddFill(data);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void AddFillNonPow2WithOffsetSingleArray()
+        {
+            var random = new Generator("AddFillNonPow2WithOffsetSingleArray");
+            var data = new Single[99 * 8];
+            random.AddFill(57, data, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillRangedWithOffsetAndNullSingleArray()
+        {
+            var random = new Generator("AddFillRangedWithOffsetAndNullSingleArray");
+            random.AddFill(64, (Single[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowOffsetSingle()
+        {
+            var random = new Generator("AddFillRangedWithLowOffsetSingle");
+            var data = new Single[99];
+            random.AddFill(64, data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighOffsetSingle()
+        {
+            var random = new Generator("AddFillRangedWithHighOffsetSingle");
+            var data = new Single[99];
+            random.AddFill(64, data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillRangedWithZeroCountSingle()
+        {
+            var random = new Generator("AddFillRangedWithZeroCountSingle");
+            var data = Enumerable.Range(0, 99).Select(t => (Single)t).ToArray();
+            random.AddFill(64, data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((Single)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowCountSingle()
+        {
+            var random = new Generator("AddFillRangedWithLowCountSingle");
+            var data = new Single[99];
+            random.AddFill(64, data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowRangeSingle()
+        {
+            var random = new Generator("AddFillRangedWithLowCountSingle");
+            var data = new Single[99];
+            random.AddFill(64, 0, data, 0, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighCountSingle()
+        {
+            var random = new Generator("AddFillRangedWithHighCountSingle");
+            var data = new Single[99];
+            random.AddFill(64, data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillRangedExactMultipleSingle()
+        {
+            var random = new Generator("AddFillRangedExactMultipleSingle");
+            var data = new Single[99 * 8];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
         private void LooksRandom(Single[] array)
         {
             var minValue = 0.0;
@@ -6472,6 +8848,55 @@ namespace Foundations.UnitTests.RandomNumbers
                     Assert.IsTrue(data[i] < 75);
                 }
             }
+        }
+
+        [TestMethod]
+        public void AddFillDoubleArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            var data1 = new Double[9999];
+            var data2 = new Double[9999];
+            var data3 = new Double[9999];
+
+            for (int p = 0; p < 10 * (8 / sizeof(Double)); p++)
+            {
+                random.Fill(25, 50, data1);
+                Array.Copy(data1, data3, data1.Length);
+                var g = random.Clone();
+                random.AddFill(25, 50, data1);
+                g.Fill(25, 50, data2);
+
+                for (int i = 0; i < data1.Length; i++)
+                {
+                    Assert.AreEqual(data1[i], (Double)(data3[i] + data2[i]));
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillDoubleArrayWithMinAndLowRange()
+        {
+            var random = new Generator();
+            var data = new Double[9999];
+            random.AddFill(25, 0, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillDoubleArrayWithMinAndHighRange()
+        {
+            var random = new Generator();
+            var data = new Double[9999];
+            random.AddFill(3 * (Double.MaxValue / 4), Double.MaxValue / 2, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullDoubleArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            random.AddFill(25, 50, (Double[])null);
         }
 
         [TestMethod]
@@ -6842,6 +9267,221 @@ namespace Foundations.UnitTests.RandomNumbers
             var data = random.CreateDoubles(-1, 25, 50);
         }
 
+        [TestMethod]
+        public void AddFillDoubleArray()
+        {
+            var random = new Generator("AddFillDoubleArray");
+            var data1 = random.CreateDoubles(99);
+            var data2 = (Double[])data1.Clone();
+            random = new Generator(1);
+            var data3 = random.CreateDoubles(99);
+            random = new Generator(1);
+            random.AddFill(data1);
+
+            for (int i = 0; i < data1.Length; i++)
+            {
+                Assert.AreEqual((Double)(data2[i] + data3[i]), data1[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullDoubleArray()
+        {
+            var random = new Generator("AddFillNullDoubleArray");
+            random.AddFill((Double[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithNonPow2RangeDouble()
+        {
+            var random = new Generator("AddFillWithNonPow2RangeDouble");
+            var data = new Double[99];
+            random.AddFill(57, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithRangeAndNullDoubleArray()
+        {
+            var random = new Generator("AddFillWithRangeAndNullDoubleArray");
+            random.AddFill(64, (Double[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithRangeAndDoubleArray()
+        {
+            var random = new Generator("AddFillWithRangeAndNullDoubleArray");
+            var data = new Double[9999];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
+        [TestMethod]
+        public void AddFillWithOffsetAndCountDoubleArray()
+        {
+            var random = new Generator("AddFillWithOffsetAndCountDoubleArray");
+            var data = new Double[9999];
+
+            for (int i = 0; i < 8; i++)
+            {
+                random.AddFill(data, 0, data.Length - i);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithOffsetAndNullDoubleArray()
+        {
+            var random = new Generator("AddFillWithOffsetAndNullDoubleArray");
+            random.AddFill((Double[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowOffsetDouble()
+        {
+            var random = new Generator("AddFillWithLowOffsetDouble");
+            var data = new Double[99];
+            random.AddFill(data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighOffsetDouble()
+        {
+            var random = new Generator("AddFillWithLowOffsetDouble");
+            var data = new Double[99];
+            random.AddFill(data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillWithZeroCountDouble()
+        {
+            var random = new Generator("AddFillWithZeroCountDouble");
+            var data = Enumerable.Range(0, 99).Select(t => (Double)t).ToArray();
+            random.AddFill(data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((Double)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowCountDouble()
+        {
+            var random = new Generator("AddFillWithLowCountDouble");
+            var data = new Double[99];
+            random.AddFill(data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighCountDouble()
+        {
+            var random = new Generator("AddFillWithHighCountDouble");
+            var data = new Double[99];
+            random.AddFill(data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillExactMultipleDouble()
+        {
+            var random = new Generator("AddFillExactMultipleDouble");
+            var data = new Double[99 * 8];
+            random.AddFill(data);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void AddFillNonPow2WithOffsetDoubleArray()
+        {
+            var random = new Generator("AddFillNonPow2WithOffsetDoubleArray");
+            var data = new Double[99 * 8];
+            random.AddFill(57, data, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillRangedWithOffsetAndNullDoubleArray()
+        {
+            var random = new Generator("AddFillRangedWithOffsetAndNullDoubleArray");
+            random.AddFill(64, (Double[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowOffsetDouble()
+        {
+            var random = new Generator("AddFillRangedWithLowOffsetDouble");
+            var data = new Double[99];
+            random.AddFill(64, data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighOffsetDouble()
+        {
+            var random = new Generator("AddFillRangedWithHighOffsetDouble");
+            var data = new Double[99];
+            random.AddFill(64, data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillRangedWithZeroCountDouble()
+        {
+            var random = new Generator("AddFillRangedWithZeroCountDouble");
+            var data = Enumerable.Range(0, 99).Select(t => (Double)t).ToArray();
+            random.AddFill(64, data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((Double)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowCountDouble()
+        {
+            var random = new Generator("AddFillRangedWithLowCountDouble");
+            var data = new Double[99];
+            random.AddFill(64, data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowRangeDouble()
+        {
+            var random = new Generator("AddFillRangedWithLowCountDouble");
+            var data = new Double[99];
+            random.AddFill(64, 0, data, 0, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighCountDouble()
+        {
+            var random = new Generator("AddFillRangedWithHighCountDouble");
+            var data = new Double[99];
+            random.AddFill(64, data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillRangedExactMultipleDouble()
+        {
+            var random = new Generator("AddFillRangedExactMultipleDouble");
+            var data = new Double[99 * 8];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
         private void LooksRandom(Double[] array)
         {
             var minValue = 0.0;
@@ -6977,6 +9617,55 @@ namespace Foundations.UnitTests.RandomNumbers
                     Assert.IsTrue(data[i] < 75);
                 }
             }
+        }
+
+        [TestMethod]
+        public void AddFillDecimalArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            var data1 = new Decimal[9999];
+            var data2 = new Decimal[9999];
+            var data3 = new Decimal[9999];
+
+            for (int p = 0; p < 10 * (8 / sizeof(Decimal)); p++)
+            {
+                random.Fill(25, 50, data1);
+                Array.Copy(data1, data3, data1.Length);
+                var g = random.Clone();
+                random.AddFill(25, 50, data1);
+                g.Fill(25, 50, data2);
+
+                for (int i = 0; i < data1.Length; i++)
+                {
+                    Assert.AreEqual(data1[i], (Decimal)(data3[i] + data2[i]));
+                }
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillDecimalArrayWithMinAndLowRange()
+        {
+            var random = new Generator();
+            var data = new Decimal[9999];
+            random.AddFill(25, 0, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillDecimalArrayWithMinAndHighRange()
+        {
+            var random = new Generator();
+            var data = new Decimal[9999];
+            random.AddFill(3 * (Decimal.MaxValue / 4), Decimal.MaxValue / 2, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullDecimalArrayWithMinAndRange()
+        {
+            var random = new Generator();
+            random.AddFill(25, 50, (Decimal[])null);
         }
 
         [TestMethod]
@@ -7322,6 +10011,221 @@ namespace Foundations.UnitTests.RandomNumbers
         {
             var random = new Generator("CreateDecimals");
             var data = random.CreateDecimals(-1, 25, 50);
+        }
+
+        [TestMethod]
+        public void AddFillDecimalArray()
+        {
+            var random = new Generator("AddFillDecimalArray");
+            var data1 = random.CreateDecimals(99);
+            var data2 = (Decimal[])data1.Clone();
+            random = new Generator(1);
+            var data3 = random.CreateDecimals(99);
+            random = new Generator(1);
+            random.AddFill(data1);
+
+            for (int i = 0; i < data1.Length; i++)
+            {
+                Assert.AreEqual((Decimal)(data2[i] + data3[i]), data1[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillNullDecimalArray()
+        {
+            var random = new Generator("AddFillNullDecimalArray");
+            random.AddFill((Decimal[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithNonPow2RangeDecimal()
+        {
+            var random = new Generator("AddFillWithNonPow2RangeDecimal");
+            var data = new Decimal[99];
+            random.AddFill(57, data);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithRangeAndNullDecimalArray()
+        {
+            var random = new Generator("AddFillWithRangeAndNullDecimalArray");
+            random.AddFill(64, (Decimal[])null);
+        }
+
+        [TestMethod]
+        public void AddFillWithRangeAndDecimalArray()
+        {
+            var random = new Generator("AddFillWithRangeAndNullDecimalArray");
+            var data = new Decimal[9999];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
+        }
+
+        [TestMethod]
+        public void AddFillWithOffsetAndCountDecimalArray()
+        {
+            var random = new Generator("AddFillWithOffsetAndCountDecimalArray");
+            var data = new Decimal[9999];
+
+            for (int i = 0; i < 8; i++)
+            {
+                random.AddFill(data, 0, data.Length - i);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillWithOffsetAndNullDecimalArray()
+        {
+            var random = new Generator("AddFillWithOffsetAndNullDecimalArray");
+            random.AddFill((Decimal[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowOffsetDecimal()
+        {
+            var random = new Generator("AddFillWithLowOffsetDecimal");
+            var data = new Decimal[99];
+            random.AddFill(data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighOffsetDecimal()
+        {
+            var random = new Generator("AddFillWithLowOffsetDecimal");
+            var data = new Decimal[99];
+            random.AddFill(data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillWithZeroCountDecimal()
+        {
+            var random = new Generator("AddFillWithZeroCountDecimal");
+            var data = Enumerable.Range(0, 99).Select(t => (Decimal)t).ToArray();
+            random.AddFill(data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((Decimal)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithLowCountDecimal()
+        {
+            var random = new Generator("AddFillWithLowCountDecimal");
+            var data = new Decimal[99];
+            random.AddFill(data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillWithHighCountDecimal()
+        {
+            var random = new Generator("AddFillWithHighCountDecimal");
+            var data = new Decimal[99];
+            random.AddFill(data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillExactMultipleDecimal()
+        {
+            var random = new Generator("AddFillExactMultipleDecimal");
+            var data = new Decimal[99 * 8];
+            random.AddFill(data);
+            LooksRandom(data);
+        }
+
+        [TestMethod]
+        public void AddFillNonPow2WithOffsetDecimalArray()
+        {
+            var random = new Generator("AddFillNonPow2WithOffsetDecimalArray");
+            var data = new Decimal[99 * 8];
+            random.AddFill(57, data, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddFillRangedWithOffsetAndNullDecimalArray()
+        {
+            var random = new Generator("AddFillRangedWithOffsetAndNullDecimalArray");
+            random.AddFill(64, (Decimal[])null, 0, 99);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowOffsetDecimal()
+        {
+            var random = new Generator("AddFillRangedWithLowOffsetDecimal");
+            var data = new Decimal[99];
+            random.AddFill(64, data, -1, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighOffsetDecimal()
+        {
+            var random = new Generator("AddFillRangedWithHighOffsetDecimal");
+            var data = new Decimal[99];
+            random.AddFill(64, data, data.Length, data.Length);
+        }
+
+        [TestMethod]
+        public void AddFillRangedWithZeroCountDecimal()
+        {
+            var random = new Generator("AddFillRangedWithZeroCountDecimal");
+            var data = Enumerable.Range(0, 99).Select(t => (Decimal)t).ToArray();
+            random.AddFill(64, data, 0, 0);
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual((Decimal)i, data[i]);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowCountDecimal()
+        {
+            var random = new Generator("AddFillRangedWithLowCountDecimal");
+            var data = new Decimal[99];
+            random.AddFill(64, data, 0, -1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithLowRangeDecimal()
+        {
+            var random = new Generator("AddFillRangedWithLowCountDecimal");
+            var data = new Decimal[99];
+            random.AddFill(64, 0, data, 0, data.Length);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void AddFillRangedWithHighCountDecimal()
+        {
+            var random = new Generator("AddFillRangedWithHighCountDecimal");
+            var data = new Decimal[99];
+            random.AddFill(64, data, 0, data.Length + 1);
+        }
+
+        [TestMethod]
+        public void AddFillRangedExactMultipleDecimal()
+        {
+            var random = new Generator("AddFillRangedExactMultipleDecimal");
+            var data = new Decimal[99 * 8];
+            random.AddFill(64, data);
+            Assert.IsTrue(data.Min() < 5);
+            Assert.IsTrue(data.Max() >= 59);
+            Assert.IsTrue(data.Max() < 64);
         }
 
         private void LooksRandom(Decimal[] array)
