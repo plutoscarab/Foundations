@@ -40,15 +40,6 @@ namespace Foundations.Statistics
         }
 
         /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<sbyte> items, Func<sbyte, int> binningFunction)
-        {
-            return From(items, null, binningFunction);
-        }
-
-        /// <summary>
         /// Count the number of occurrances in each bin. The bins are as equally-sized as possible
         /// according to the range of values found in the list.
         /// </summary>
@@ -83,45 +74,6 @@ namespace Foundations.Statistics
         }
 
         /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<sbyte> items, int? binCount, Func<sbyte, int> binningFunction)
-        {
-            if (items == null)
-                throw new ArgumentNullException(nameof(items));
-
-            if (binningFunction == null)
-                throw new ArgumentNullException(nameof(binningFunction));
-
-            var hist = new int[binCount == null ? 0 : binCount.Value];
-
-            foreach (var item in items)
-            {
-                int value = binningFunction(item);
-
-                if (value < 0)
-                    throw new NotSupportedException("Result of binning function must be non-negative.");
-
-                if (hist.Length <= value)
-                {
-                    if (binCount == null)
-                    {
-                        Array.Resize(ref hist, value + 1);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException("Result of binning function must be less than bin count.");
-                    }
-                }
-
-                hist[value]++;
-            }
-
-            return hist;
-        }
-
-        /// <summary>
         /// Count the number of occurrances of each non-negative value.
         /// </summary>
         public static int[] From(IEnumerable<byte> items)
@@ -135,15 +87,6 @@ namespace Foundations.Statistics
         public static int[] From(IEnumerable<byte> items, int binCount)
         {
             return From(items, binCount, Convert.ToInt32);
-        }
-
-        /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<byte> items, Func<byte, int> binningFunction)
-        {
-            return From(items, null, binningFunction);
         }
 
         /// <summary>
@@ -181,45 +124,6 @@ namespace Foundations.Statistics
         }
 
         /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<byte> items, int? binCount, Func<byte, int> binningFunction)
-        {
-            if (items == null)
-                throw new ArgumentNullException(nameof(items));
-
-            if (binningFunction == null)
-                throw new ArgumentNullException(nameof(binningFunction));
-
-            var hist = new int[binCount == null ? 0 : binCount.Value];
-
-            foreach (var item in items)
-            {
-                int value = binningFunction(item);
-
-                if (value < 0)
-                    throw new NotSupportedException("Result of binning function must be non-negative.");
-
-                if (hist.Length <= value)
-                {
-                    if (binCount == null)
-                    {
-                        Array.Resize(ref hist, value + 1);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException("Result of binning function must be less than bin count.");
-                    }
-                }
-
-                hist[value]++;
-            }
-
-            return hist;
-        }
-
-        /// <summary>
         /// Count the number of occurrances of each non-negative value.
         /// </summary>
         public static int[] From(IEnumerable<short> items)
@@ -233,15 +137,6 @@ namespace Foundations.Statistics
         public static int[] From(IEnumerable<short> items, int binCount)
         {
             return From(items, binCount, Convert.ToInt32);
-        }
-
-        /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<short> items, Func<short, int> binningFunction)
-        {
-            return From(items, null, binningFunction);
         }
 
         /// <summary>
@@ -279,45 +174,6 @@ namespace Foundations.Statistics
         }
 
         /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<short> items, int? binCount, Func<short, int> binningFunction)
-        {
-            if (items == null)
-                throw new ArgumentNullException(nameof(items));
-
-            if (binningFunction == null)
-                throw new ArgumentNullException(nameof(binningFunction));
-
-            var hist = new int[binCount == null ? 0 : binCount.Value];
-
-            foreach (var item in items)
-            {
-                int value = binningFunction(item);
-
-                if (value < 0)
-                    throw new NotSupportedException("Result of binning function must be non-negative.");
-
-                if (hist.Length <= value)
-                {
-                    if (binCount == null)
-                    {
-                        Array.Resize(ref hist, value + 1);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException("Result of binning function must be less than bin count.");
-                    }
-                }
-
-                hist[value]++;
-            }
-
-            return hist;
-        }
-
-        /// <summary>
         /// Count the number of occurrances of each non-negative value.
         /// </summary>
         public static int[] From(IEnumerable<ushort> items)
@@ -331,15 +187,6 @@ namespace Foundations.Statistics
         public static int[] From(IEnumerable<ushort> items, int binCount)
         {
             return From(items, binCount, Convert.ToInt32);
-        }
-
-        /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<ushort> items, Func<ushort, int> binningFunction)
-        {
-            return From(items, null, binningFunction);
         }
 
         /// <summary>
@@ -377,45 +224,6 @@ namespace Foundations.Statistics
         }
 
         /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<ushort> items, int? binCount, Func<ushort, int> binningFunction)
-        {
-            if (items == null)
-                throw new ArgumentNullException(nameof(items));
-
-            if (binningFunction == null)
-                throw new ArgumentNullException(nameof(binningFunction));
-
-            var hist = new int[binCount == null ? 0 : binCount.Value];
-
-            foreach (var item in items)
-            {
-                int value = binningFunction(item);
-
-                if (value < 0)
-                    throw new NotSupportedException("Result of binning function must be non-negative.");
-
-                if (hist.Length <= value)
-                {
-                    if (binCount == null)
-                    {
-                        Array.Resize(ref hist, value + 1);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException("Result of binning function must be less than bin count.");
-                    }
-                }
-
-                hist[value]++;
-            }
-
-            return hist;
-        }
-
-        /// <summary>
         /// Count the number of occurrances of each non-negative value.
         /// </summary>
         public static int[] From(IEnumerable<int> items)
@@ -429,15 +237,6 @@ namespace Foundations.Statistics
         public static int[] From(IEnumerable<int> items, int binCount)
         {
             return From(items, binCount, Convert.ToInt32);
-        }
-
-        /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<int> items, Func<int, int> binningFunction)
-        {
-            return From(items, null, binningFunction);
         }
 
         /// <summary>
@@ -475,45 +274,6 @@ namespace Foundations.Statistics
         }
 
         /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<int> items, int? binCount, Func<int, int> binningFunction)
-        {
-            if (items == null)
-                throw new ArgumentNullException(nameof(items));
-
-            if (binningFunction == null)
-                throw new ArgumentNullException(nameof(binningFunction));
-
-            var hist = new int[binCount == null ? 0 : binCount.Value];
-
-            foreach (var item in items)
-            {
-                int value = binningFunction(item);
-
-                if (value < 0)
-                    throw new NotSupportedException("Result of binning function must be non-negative.");
-
-                if (hist.Length <= value)
-                {
-                    if (binCount == null)
-                    {
-                        Array.Resize(ref hist, value + 1);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException("Result of binning function must be less than bin count.");
-                    }
-                }
-
-                hist[value]++;
-            }
-
-            return hist;
-        }
-
-        /// <summary>
         /// Count the number of occurrances of each non-negative value.
         /// </summary>
         public static int[] From(IEnumerable<uint> items)
@@ -527,15 +287,6 @@ namespace Foundations.Statistics
         public static int[] From(IEnumerable<uint> items, int binCount)
         {
             return From(items, binCount, Convert.ToInt32);
-        }
-
-        /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<uint> items, Func<uint, int> binningFunction)
-        {
-            return From(items, null, binningFunction);
         }
 
         /// <summary>
@@ -573,45 +324,6 @@ namespace Foundations.Statistics
         }
 
         /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<uint> items, int? binCount, Func<uint, int> binningFunction)
-        {
-            if (items == null)
-                throw new ArgumentNullException(nameof(items));
-
-            if (binningFunction == null)
-                throw new ArgumentNullException(nameof(binningFunction));
-
-            var hist = new int[binCount == null ? 0 : binCount.Value];
-
-            foreach (var item in items)
-            {
-                int value = binningFunction(item);
-
-                if (value < 0)
-                    throw new NotSupportedException("Result of binning function must be non-negative.");
-
-                if (hist.Length <= value)
-                {
-                    if (binCount == null)
-                    {
-                        Array.Resize(ref hist, value + 1);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException("Result of binning function must be less than bin count.");
-                    }
-                }
-
-                hist[value]++;
-            }
-
-            return hist;
-        }
-
-        /// <summary>
         /// Count the number of occurrances of each non-negative value.
         /// </summary>
         public static int[] From(IEnumerable<long> items)
@@ -625,15 +337,6 @@ namespace Foundations.Statistics
         public static int[] From(IEnumerable<long> items, int binCount)
         {
             return From(items, binCount, Convert.ToInt32);
-        }
-
-        /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<long> items, Func<long, int> binningFunction)
-        {
-            return From(items, null, binningFunction);
         }
 
         /// <summary>
@@ -671,45 +374,6 @@ namespace Foundations.Statistics
         }
 
         /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<long> items, int? binCount, Func<long, int> binningFunction)
-        {
-            if (items == null)
-                throw new ArgumentNullException(nameof(items));
-
-            if (binningFunction == null)
-                throw new ArgumentNullException(nameof(binningFunction));
-
-            var hist = new int[binCount == null ? 0 : binCount.Value];
-
-            foreach (var item in items)
-            {
-                int value = binningFunction(item);
-
-                if (value < 0)
-                    throw new NotSupportedException("Result of binning function must be non-negative.");
-
-                if (hist.Length <= value)
-                {
-                    if (binCount == null)
-                    {
-                        Array.Resize(ref hist, value + 1);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException("Result of binning function must be less than bin count.");
-                    }
-                }
-
-                hist[value]++;
-            }
-
-            return hist;
-        }
-
-        /// <summary>
         /// Count the number of occurrances of each non-negative value.
         /// </summary>
         public static int[] From(IEnumerable<ulong> items)
@@ -723,15 +387,6 @@ namespace Foundations.Statistics
         public static int[] From(IEnumerable<ulong> items, int binCount)
         {
             return From(items, binCount, Convert.ToInt32);
-        }
-
-        /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<ulong> items, Func<ulong, int> binningFunction)
-        {
-            return From(items, null, binningFunction);
         }
 
         /// <summary>
@@ -769,45 +424,6 @@ namespace Foundations.Statistics
         }
 
         /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<ulong> items, int? binCount, Func<ulong, int> binningFunction)
-        {
-            if (items == null)
-                throw new ArgumentNullException(nameof(items));
-
-            if (binningFunction == null)
-                throw new ArgumentNullException(nameof(binningFunction));
-
-            var hist = new int[binCount == null ? 0 : binCount.Value];
-
-            foreach (var item in items)
-            {
-                int value = binningFunction(item);
-
-                if (value < 0)
-                    throw new NotSupportedException("Result of binning function must be non-negative.");
-
-                if (hist.Length <= value)
-                {
-                    if (binCount == null)
-                    {
-                        Array.Resize(ref hist, value + 1);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException("Result of binning function must be less than bin count.");
-                    }
-                }
-
-                hist[value]++;
-            }
-
-            return hist;
-        }
-
-        /// <summary>
         /// Count the number of occurrances of each non-negative value.
         /// </summary>
         public static int[] From(IEnumerable<float> items)
@@ -821,15 +437,6 @@ namespace Foundations.Statistics
         public static int[] From(IEnumerable<float> items, int binCount)
         {
             return From(items, binCount, Convert.ToInt32);
-        }
-
-        /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<float> items, Func<float, int> binningFunction)
-        {
-            return From(items, null, binningFunction);
         }
 
         /// <summary>
@@ -867,45 +474,6 @@ namespace Foundations.Statistics
         }
 
         /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<float> items, int? binCount, Func<float, int> binningFunction)
-        {
-            if (items == null)
-                throw new ArgumentNullException(nameof(items));
-
-            if (binningFunction == null)
-                throw new ArgumentNullException(nameof(binningFunction));
-
-            var hist = new int[binCount == null ? 0 : binCount.Value];
-
-            foreach (var item in items)
-            {
-                int value = binningFunction(item);
-
-                if (value < 0)
-                    throw new NotSupportedException("Result of binning function must be non-negative.");
-
-                if (hist.Length <= value)
-                {
-                    if (binCount == null)
-                    {
-                        Array.Resize(ref hist, value + 1);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException("Result of binning function must be less than bin count.");
-                    }
-                }
-
-                hist[value]++;
-            }
-
-            return hist;
-        }
-
-        /// <summary>
         /// Count the number of occurrances of each non-negative value.
         /// </summary>
         public static int[] From(IEnumerable<double> items)
@@ -919,15 +487,6 @@ namespace Foundations.Statistics
         public static int[] From(IEnumerable<double> items, int binCount)
         {
             return From(items, binCount, Convert.ToInt32);
-        }
-
-        /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<double> items, Func<double, int> binningFunction)
-        {
-            return From(items, null, binningFunction);
         }
 
         /// <summary>
@@ -965,45 +524,6 @@ namespace Foundations.Statistics
         }
 
         /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<double> items, int? binCount, Func<double, int> binningFunction)
-        {
-            if (items == null)
-                throw new ArgumentNullException(nameof(items));
-
-            if (binningFunction == null)
-                throw new ArgumentNullException(nameof(binningFunction));
-
-            var hist = new int[binCount == null ? 0 : binCount.Value];
-
-            foreach (var item in items)
-            {
-                int value = binningFunction(item);
-
-                if (value < 0)
-                    throw new NotSupportedException("Result of binning function must be non-negative.");
-
-                if (hist.Length <= value)
-                {
-                    if (binCount == null)
-                    {
-                        Array.Resize(ref hist, value + 1);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException("Result of binning function must be less than bin count.");
-                    }
-                }
-
-                hist[value]++;
-            }
-
-            return hist;
-        }
-
-        /// <summary>
         /// Count the number of occurrances of each non-negative value.
         /// </summary>
         public static int[] From(IEnumerable<decimal> items)
@@ -1017,15 +537,6 @@ namespace Foundations.Statistics
         public static int[] From(IEnumerable<decimal> items, int binCount)
         {
             return From(items, binCount, Convert.ToInt32);
-        }
-
-        /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<decimal> items, Func<decimal, int> binningFunction)
-        {
-            return From(items, null, binningFunction);
         }
 
         /// <summary>
@@ -1063,45 +574,6 @@ namespace Foundations.Statistics
         }
 
         /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<decimal> items, int? binCount, Func<decimal, int> binningFunction)
-        {
-            if (items == null)
-                throw new ArgumentNullException(nameof(items));
-
-            if (binningFunction == null)
-                throw new ArgumentNullException(nameof(binningFunction));
-
-            var hist = new int[binCount == null ? 0 : binCount.Value];
-
-            foreach (var item in items)
-            {
-                int value = binningFunction(item);
-
-                if (value < 0)
-                    throw new NotSupportedException("Result of binning function must be non-negative.");
-
-                if (hist.Length <= value)
-                {
-                    if (binCount == null)
-                    {
-                        Array.Resize(ref hist, value + 1);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException("Result of binning function must be less than bin count.");
-                    }
-                }
-
-                hist[value]++;
-            }
-
-            return hist;
-        }
-
-        /// <summary>
         /// Count the number of occurrances of each non-negative value.
         /// </summary>
         public static int[] From(IEnumerable<char> items)
@@ -1115,15 +587,6 @@ namespace Foundations.Statistics
         public static int[] From(IEnumerable<char> items, int binCount)
         {
             return From(items, binCount, Convert.ToInt32);
-        }
-
-        /// <summary>
-        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
-        /// the binning function.
-        /// </summary>
-        public static int[] From(IEnumerable<char> items, Func<char, int> binningFunction)
-        {
-            return From(items, null, binningFunction);
         }
 
         /// <summary>
@@ -1160,11 +623,21 @@ namespace Foundations.Statistics
             return From(items, binCount, _ => Convert.ToInt32((_ * (char)binCount + max) / (max + 1)));
         }
 
+
         /// <summary>
         /// Count the number of occurrances in each bin. Each value is assigned to a bin using
         /// the binning function.
         /// </summary>
-        public static int[] From(IEnumerable<char> items, int? binCount, Func<char, int> binningFunction)
+        public static int[] From<T>(IEnumerable<T> items, Func<T, int> binningFunction)
+        {
+            return From(items, null, binningFunction);
+        }
+
+        /// <summary>
+        /// Count the number of occurrances in each bin. Each value is assigned to a bin using
+        /// the binning function.
+        /// </summary>
+        public static int[] From<T>(IEnumerable<T> items, int? binCount, Func<T, int> binningFunction)
         {
             if (items == null)
                 throw new ArgumentNullException(nameof(items));
@@ -1198,6 +671,5 @@ namespace Foundations.Statistics
 
             return hist;
         }
-
     }
 }
