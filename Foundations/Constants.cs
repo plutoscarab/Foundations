@@ -39,6 +39,9 @@ namespace Foundations
         /// <summary>Square root of 2.</summary>
         public const double Sqrt2 = 1.4142135623730951;
 
+        /// <summary>Square root of π/2.</summary>
+        public const double SqrtHalfπ = 1.2533141373155003;
+
         /// <summary>Euler–Mascheroni constant.</summary>
         public const double γ = 0.57721566490153287;
     }

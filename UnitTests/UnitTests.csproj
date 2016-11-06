@@ -55,6 +55,11 @@
     <Compile Include="RandomNumbers\SystemRandomSource.cs" />
     <Compile Include="RandomNumbers\SynchronizedRandomSource.cs" />
     <Compile Include="RandomNumbers\SHA256RandomSource.cs" />
+    <Compile Include="Statistics\HistogramTests.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HistogramTests.tt</DependentUpon>
+    </Compile>
     <Compile Include="Types\Rational.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +72,10 @@
     <Content Include="RandomNumbers\GeneratorTests.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>GeneratorTests.cs</LastGenOutput>
+    </Content>
+    <Content Include="Statistics\HistogramTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>HistogramTests.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>

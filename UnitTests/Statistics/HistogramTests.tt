@@ -1,0 +1,205 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+/*
+HistogramTests.cs
+
+<#@ include file="../../License.txt" #>
+*/
+
+using System;
+using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace Foundations.Statistics
+{
+    [TestClass]
+    public class HistogramTests
+    {
+<#
+    Histogram("sbyte", true);
+    Histogram("byte", false);
+    Histogram("short", true);
+    Histogram("ushort", false);
+    Histogram("int", true);
+    Histogram("uint", false);
+    Histogram("long", true);
+    Histogram("ulong", false);
+    Histogram("float", true);
+    Histogram("double", true);
+    Histogram("decimal", true);
+    Histogram("char", false);
+#>
+    }
+}
+<#+
+void Histogram(string T, bool signed)
+{
+#>
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [TestMethod]
+	    public void From<#= T #>()
+        {
+            var arr = new [] { (<#= T #>)1, (<#= T #>)2, (<#= T #>)2, (<#= T #>)3, (<#= T #>)3, (<#= T #>)3 };
+            var hist = Histogram.From(arr);
+            Assert.AreEqual(4, hist.Length);
+            Assert.AreEqual(0, hist[0]);
+            Assert.AreEqual(1, hist[1]);
+            Assert.AreEqual(2, hist[2]);
+            Assert.AreEqual(3, hist[3]);
+        }
+
+<#+ if (signed) { #>
+        /// <summary>
+        /// 
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(NotSupportedException))]
+	    public void FromNegative<#= T #>()
+        {
+            var arr = new [] { (<#= T #>)1, (<#= T #>)2, (<#= T #>)2, (<#= T #>)3, (<#= T #>)3, (<#= T #>)(-3) };
+            Histogram.From(arr);
+        }
+
+<#+ } else { #>
+        /// <summary>
+        /// 
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(NotSupportedException))]
+	    public void FromNegative<#= T #>()
+        {
+            var arr = new [] { (<#= T #>)1, (<#= T #>)2, (<#= T #>)2, (<#= T #>)3, (<#= T #>)3, (<#= T #>)3 };
+            Histogram.From(arr, _ => Convert.ToInt32(_) - 2);
+        }
+
+<#+ } #>
+        /// <summary>
+        /// 
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+	    public void FromNull<#= T #>()
+        {
+            Histogram.From((IEnumerable<<#= T #>>)null);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [TestMethod]
+	    public void From<#= T #>WithBinCount()
+        {
+            var arr = new [] { (<#= T #>)1, (<#= T #>)2, (<#= T #>)2, (<#= T #>)3, (<#= T #>)3, (<#= T #>)3 };
+            var hist = Histogram.From(arr, 5);
+            Assert.AreEqual(5, hist.Length);
+            Assert.AreEqual(0, hist[0]);
+            Assert.AreEqual(1, hist[1]);
+            Assert.AreEqual(2, hist[2]);
+            Assert.AreEqual(3, hist[3]);
+            Assert.AreEqual(0, hist[4]);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(NotSupportedException))]
+	    public void From<#= T #>OverBinCount()
+        {
+            var arr = new [] { (<#= T #>)1, (<#= T #>)2, (<#= T #>)2, (<#= T #>)3, (<#= T #>)3, (<#= T #>)3 };
+            Histogram.From(arr, 2);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [TestMethod]
+	    public void From<#= T #>WithFunction()
+        {
+            var arr = new [] { (<#= T #>)1, (<#= T #>)2, (<#= T #>)2, (<#= T #>)3, (<#= T #>)3, (<#= T #>)3 };
+            var hist = Histogram.From(arr, _ => 3);
+            Assert.AreEqual(4, hist.Length);
+            Assert.AreEqual(0, hist[0]);
+            Assert.AreEqual(0, hist[1]);
+            Assert.AreEqual(0, hist[2]);
+            Assert.AreEqual(6, hist[3]);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+	    public void From<#= T #>WithNullFunction()
+        {
+            var arr = new [] { (<#= T #>)1, (<#= T #>)2, (<#= T #>)2, (<#= T #>)3, (<#= T #>)3, (<#= T #>)3 };
+            Histogram.From(arr, (Func<<#= T #>, int>)null);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [TestMethod]
+	    public void From<#= T #>GetMinMax()
+        {
+            var arr = new [] { (<#= T #>)1, (<#= T #>)2, (<#= T #>)2, (<#= T #>)3, (<#= T #>)3, (<#= T #>)3 };
+            <#= T #> min, max;
+            var hist = Histogram.From(arr, 5, out min, out max);
+            Assert.AreEqual(5, hist.Length);
+            Assert.AreEqual((<#= T #>)1, min);
+            Assert.AreEqual((<#= T #>)3, max);
+            Assert.AreEqual(1, hist[0]);
+            Assert.AreEqual(0, hist[1]);
+            Assert.AreEqual(2, hist[2]);
+            Assert.AreEqual(0, hist[3]);
+            Assert.AreEqual(3, hist[4]);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+	    public void From<#= T #>GetMinMaxOfNull()
+        {
+            <#= T #> min, max;
+            var hist = Histogram.From((IList<<#= T #>>)null, 5, out min, out max);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [TestMethod]
+	    public void From<#= T #>WithMax()
+        {
+            var arr = new [] { (<#= T #>)1, (<#= T #>)2, (<#= T #>)2, (<#= T #>)3, (<#= T #>)3, (<#= T #>)3 };
+            var hist = Histogram.From(arr, 5, (<#= T #>)5);
+            Assert.AreEqual(5, hist.Length);
+            Assert.AreEqual(0, hist[0]);
+            Assert.AreEqual(1, hist[1]);
+            Assert.AreEqual(2, hist[2]);
+            Assert.AreEqual(3, hist[3]);
+            Assert.AreEqual(0, hist[4]);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+	    public void From<#= T #>WithMaxValue()
+        {
+            var arr = new [] { (<#= T #>)1, (<#= T #>)2, (<#= T #>)2, (<#= T #>)3, (<#= T #>)3, (<#= T #>)3 };
+            var hist = Histogram.From(arr, 5, <#= T #>.MaxValue);
+        }
+<#+
+}
+#>
