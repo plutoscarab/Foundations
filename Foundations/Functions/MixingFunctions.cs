@@ -215,7 +215,7 @@ namespace Foundations.Functions
 				a = sbox[b ^ k[14]];
 				b = sbox[temp ^ k[15]];
 				n = (Char)a;
-				n |= (Char)((Char)b << 8);
+				n = (Char)((Char)n | ((Char)b << 8));
 				return n;
 			};
 		}
@@ -288,7 +288,7 @@ namespace Foundations.Functions
 				a = sbox[b ^ k[14]];
 				b = sbox[temp ^ k[15]];
 				n = (UInt16)a;
-				n |= (UInt16)((UInt16)b << 8);
+				n = (UInt16)((UInt16)n | ((UInt16)b << 8));
 				return n;
 			};
 		}
@@ -361,7 +361,7 @@ namespace Foundations.Functions
 				a = sbox[b ^ k[14]];
 				b = sbox[temp ^ k[15]];
 				n = (Int16)a;
-				n |= (Int16)((Int16)b << 8);
+				n = (Int16)((UInt16)n | ((UInt16)b << 8));
 				return n;
 			};
 		}
@@ -432,9 +432,9 @@ namespace Foundations.Functions
 				c = sbox[d ^ k[14]];
 				d = sbox[temp ^ k[15]];
 				n = (UInt32)a;
-				n |= (UInt32)((UInt32)b << 8);
-				n |= (UInt32)((UInt32)c << 16);
-				n |= (UInt32)((UInt32)d << 24);
+				n = (UInt32)((UInt32)n | ((UInt32)b << 8));
+				n = (UInt32)((UInt32)n | ((UInt32)c << 16));
+				n = (UInt32)((UInt32)n | ((UInt32)d << 24));
 				return n;
 			};
 		}
@@ -505,9 +505,9 @@ namespace Foundations.Functions
 				c = sbox[d ^ k[14]];
 				d = sbox[temp ^ k[15]];
 				n = (Int32)a;
-				n |= (Int32)((Int32)b << 8);
-				n |= (Int32)((Int32)c << 16);
-				n |= (Int32)((Int32)d << 24);
+				n = (Int32)((UInt32)n | ((UInt32)b << 8));
+				n = (Int32)((UInt32)n | ((UInt32)c << 16));
+				n = (Int32)((UInt32)n | ((UInt32)d << 24));
 				return n;
 			};
 		}
@@ -580,13 +580,13 @@ namespace Foundations.Functions
 				g = sbox[h ^ k[14]];
 				h = sbox[temp ^ k[15]];
 				n = (UInt64)a;
-				n |= (UInt64)((UInt64)b << 8);
-				n |= (UInt64)((UInt64)c << 16);
-				n |= (UInt64)((UInt64)d << 24);
-				n |= (UInt64)((UInt64)e << 32);
-				n |= (UInt64)((UInt64)f << 40);
-				n |= (UInt64)((UInt64)g << 48);
-				n |= (UInt64)((UInt64)h << 56);
+				n = (UInt64)((UInt64)n | ((UInt64)b << 8));
+				n = (UInt64)((UInt64)n | ((UInt64)c << 16));
+				n = (UInt64)((UInt64)n | ((UInt64)d << 24));
+				n = (UInt64)((UInt64)n | ((UInt64)e << 32));
+				n = (UInt64)((UInt64)n | ((UInt64)f << 40));
+				n = (UInt64)((UInt64)n | ((UInt64)g << 48));
+				n = (UInt64)((UInt64)n | ((UInt64)h << 56));
 				return n;
 			};
 		}
@@ -659,13 +659,13 @@ namespace Foundations.Functions
 				g = sbox[h ^ k[14]];
 				h = sbox[temp ^ k[15]];
 				n = (Int64)a;
-				n |= (Int64)((Int64)b << 8);
-				n |= (Int64)((Int64)c << 16);
-				n |= (Int64)((Int64)d << 24);
-				n |= (Int64)((Int64)e << 32);
-				n |= (Int64)((Int64)f << 40);
-				n |= (Int64)((Int64)g << 48);
-				n |= (Int64)((Int64)h << 56);
+				n = (Int64)((UInt64)n | ((UInt64)b << 8));
+				n = (Int64)((UInt64)n | ((UInt64)c << 16));
+				n = (Int64)((UInt64)n | ((UInt64)d << 24));
+				n = (Int64)((UInt64)n | ((UInt64)e << 32));
+				n = (Int64)((UInt64)n | ((UInt64)f << 40));
+				n = (Int64)((UInt64)n | ((UInt64)g << 48));
+				n = (Int64)((UInt64)n | ((UInt64)h << 56));
 				return n;
 			};
 		}

@@ -46,7 +46,7 @@ void Make(string T)
 		[TestMethod]
 		public void <#= T #>Test()
 		{
-			var generator = new Generator();
+			var generator = new Generator("<#= T #>Test");
 
 			for (int t = 0; t < 100; t++)
 			{

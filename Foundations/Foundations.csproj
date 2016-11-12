@@ -46,9 +46,7 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Coding\CodeReader.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Extensions\Array.cs" />
     <Compile Include="Functions\MixingFunctions.cs">
       <DependentUpon>MixingFunctions.tt</DependentUpon>
       <AutoGen>True</AutoGen>

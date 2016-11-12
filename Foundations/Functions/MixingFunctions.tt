@@ -81,6 +81,7 @@ void Make(string T, int bits)
 	var nb = bits / 8;
 	var bs = Enumerable.Range(0, nb).Select(i => (char)('a' + i)).ToArray();
 	var nr = 16 / nb;
+    var U = T[0] == 'I' ? "U" + T : T[0] == 'S' ? T.Substring(1) : T;
 #>
 		/// <summary>
 		/// Gets one of 2^128 different System.<#= T #> mixing functions.
@@ -159,7 +160,7 @@ void Make(string T, int bits)
 	for (int b = 1; b < nb; b++)
 	{
 #>
-				n |= (<#= T #>)((<#= T #>)<#= bs[b] #> << <#= 8 * b #>);
+				n = (<#= T #>)((<#= U #>)n | ((<#= U #>)<#= bs[b] #> << <#= 8 * b #>));
 <#+
 	}
 #>

@@ -1,0 +1,310 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+/*
+BitsTests.cs
+
+<#@ include file="../../License.txt" #>
+*/
+
+using System;
+using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Foundations.Coding;
+using Foundations.RandomNumbers;
+
+namespace Foundations
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    [TestClass]
+    public class BitsTests
+    {
+<#
+MakeMethod("Byte", 8);
+MakeMethod("SByte", 8);
+MakeMethod("UInt16", 16);
+MakeMethod("Int16", 16);
+MakeMethod("UInt32", 32);
+MakeMethod("Int32", 32);
+MakeMethod("UInt64", 64);
+MakeMethod("Int64", 64);
+#>
+    }
+}
+<#+
+void MakeMethod(string T, int bits)
+{
+#>
+        /// <summary />
+        [TestMethod]
+	    public void Count<#= T #>Test()
+        {
+            var g = new Generator("Count<#= T #>Test");
+
+            for (int i = 0; i < 100; i++)
+            {
+                var n = g.<#= T #>();
+                var m = n;
+                var k = 0;
+
+                for (int j = 0; j < <#= bits #>; j++)
+                {
+                    if ((m & 1) != 0) k++;
+                    m >>= 1;
+                }
+
+                Assert.AreEqual(k, Bits.Count(n));
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+	    public void Parity<#= T #>Test()
+        {
+            var g = new Generator("Parity<#= T #>Test");
+
+            for (int i = 0; i < 100; i++)
+            {
+                var n = g.<#= T #>();
+                var k = Bits.Count(n) & 1;
+                Assert.AreEqual(k, Bits.Parity(n));
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+	    public void FloorLog2<#= T #>Test()
+        {
+            var g = new Generator("FloorLog2<#= T #>Test");
+
+            for (int i = 0; i < 200; i++)
+            {
+                var n = g.<#= T #>();
+                n >>= g.Int32(<#= bits #>);
+                if (n <= 0) continue;
+                var m = n;
+                var k = -1;
+
+                do
+                {
+                    m >>= 1;
+                    k++;
+                }
+                while (m != 0 && m != unchecked((<#= T #>)(-1)));
+
+                Assert.AreEqual(k, Bits.FloorLog2(n));
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+	    public void FloorLog2<#= T #>ZeroTest()
+        {
+            Bits.FloorLog2((<#= T #>)0);
+        }
+
+        /// <summary />
+        [TestMethod]
+	    public void FloorLog2<#= T #>ExceptionTest()
+        {
+            var g = new Generator("FloorLog2<#= T #>ExceptionTest");
+
+            for (int i = 0; i < 20; i++)
+            {
+                var n = g.<#= T #>();
+                if (n > 0) continue;
+
+                try
+                {
+                    Bits.FloorLog2(n);
+                    Assert.Fail();
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void IsPowerOf2<#= T #>Test()
+        {
+            var g = new Generator("IsPowerOf2<#= T #>Test");
+            var powers = new HashSet<<#= T #>>();
+
+            for (int i = 0; i < <#= bits #>; i++)
+            {
+                var n = (<#= T #>)((<#= T #>)1 << i);
+
+                if (n > 0)
+                {
+                    Assert.IsTrue(Bits.IsPowerOf2(n));
+                    powers.Add(n);
+                }
+            }
+
+            for (int i = 0; i < 100; i++)
+            {
+                var n = g.<#= T #>();
+                
+                if (powers.Contains(n))
+                {
+                    Assert.IsTrue(Bits.IsPowerOf2(n));
+                }
+                else if (n > 0)
+                {
+                    Assert.IsFalse(Bits.IsPowerOf2(n));
+                }
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void IsPowerOf2<#= T #>ZeroTest()
+        {
+            Assert.IsFalse(Bits.IsPowerOf2((<#= T #>)0));
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void Choose<#= T #>Test()
+        {
+            var g = new Generator("Choose<#= T #>Test");
+
+            for (int i = 0; i < 100; i++)
+            {
+                var a = (ulong)g.<#= T #>();
+                var b = (ulong)g.<#= T #>();
+                var s = (ulong)g.<#= T #>();
+                var c = (ulong)Bits.Choose((<#= T #>)a, (<#= T #>)b, (<#= T #>)s);
+                ulong m = 0;
+
+                for (int j = 0; j < <#= bits #>; j++)
+                {
+                    var mask = 1ul << j;
+
+                    if ((s & mask) == 0)
+                        m |= (a & mask);
+                    else
+                        m |= (b & mask);
+                }
+
+                Assert.AreEqual((<#= T #>)c, (<#= T #>)m);
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void CountOfLeadingZeros<#= T #>Test()
+        {
+            var g = new Generator("CountOfLeadingZeros<#= T #>Test");
+
+            for (int i = 0; i < 100; i++)
+            {
+                var n = g.<#= T #>();
+                n >>= g.Int32(<#= bits #>);
+                var c = Bits.CountOfLeadingZeros(n);
+                int k = 0;
+
+                for (int j = 0; j < <#= bits #>; j++)
+                {
+                    if ((n & ((<#= T #>)1 << (<#= bits - 1 #> - j))) != 0)
+                        break;
+
+                    k++;
+                }
+
+                Assert.AreEqual(k, c);
+            }
+        }
+
+<#+
+    if (T[0] == 'U' || T[0] == 'B') 
+    { 
+#>
+        /// <summary />
+        [TestMethod]
+	    public void Reverse<#= T #>Test()
+        {
+            var g = new Generator("Reverse<#= T #>Test");
+
+            for (int i = 0; i < 100; i++)
+            {
+                var n = g.<#= T #>();
+                var m = n;
+                <#= T #> r = 0;
+
+                for (int j = 0; j < <#= bits #>; j++)
+                {
+                    r <<= 1;
+                    if ((m & 1) != 0) r |= 1;
+                    m >>= 1;
+                }
+
+                Assert.AreEqual(r, Bits.Reverse(n));
+            }
+        }
+
+<#+
+
+        if (bits >= 32)
+        {
+#>
+        /// <summary />
+        [TestMethod]
+	    public void RotateRight<#= T #>Test()
+        {
+            var g = new Generator("RotateRight<#= T #>Test");
+
+            for (int i = 0; i < 100; i++)
+            {
+                for (int s = 1; s < <#= bits #>; s++)
+                {
+                    var n = g.<#= T #>();
+                    var m = n;
+
+                    for (int j = 0; j < <#= bits #>; j++)
+                    {
+                        m = Bits.RotateRight(m, s);
+                    }
+
+                    Assert.AreEqual(n, m);
+                }
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+	    public void RotateLeft<#= T #>Test()
+        {
+            var g = new Generator("RotateLeft<#= T #>Test");
+
+            for (int i = 0; i < 100; i++)
+            {
+                for (int s = 1; s < <#= bits #>; s++)
+                {
+                    var n = g.<#= T #>();
+                    var m = n;
+
+                    for (int j = 0; j < <#= bits #>; j++)
+                    {
+                        m = Bits.RotateLeft(m, s);
+                    }
+
+                    Assert.AreEqual(n, m);
+                }
+            }
+        }
+
+<#+
+        }
+    }
+}
+#>

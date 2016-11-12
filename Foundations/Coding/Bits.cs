@@ -432,19 +432,51 @@ namespace Foundations.Coding
         /// </summary>
         public static ulong Reverse(ulong i)
 		{
-			return (ulong)(
-				(bytesReversed[(byte)i] << 56) |
-				(bytesReversed[(byte)(i >> 8)] << 48) |
-				(bytesReversed[(byte)(i >> 16)] << 40) |
-				(bytesReversed[(byte)(i >> 24)] << 32) |
-				(bytesReversed[(byte)(i >> 32)] << 24) |
-				(bytesReversed[(byte)(i >> 40)] << 16) |
-				(bytesReversed[(byte)(i >> 48)] << 8) |
-				(bytesReversed[(byte)(i >> 56)]));
+			return 
+				((ulong)bytesReversed[(byte)i] << 56) |
+				((ulong)bytesReversed[(byte)(i >> 8)] << 48) |
+				((ulong)bytesReversed[(byte)(i >> 16)] << 40) |
+				((ulong)bytesReversed[(byte)(i >> 24)] << 32) |
+				((ulong)bytesReversed[(byte)(i >> 32)] << 24) |
+				((ulong)bytesReversed[(byte)(i >> 40)] << 16) |
+				((ulong)bytesReversed[(byte)(i >> 48)] << 8) |
+				((ulong)bytesReversed[(byte)(i >> 56)]);
 		}
 
         /// <summary>
-        /// Determine if a <see cref="System.Int32"/> is an exact power of 2.
+        /// Determine if a <see cref="System.Byte"/> is an exact power of 2.
+        /// </summary>
+		public static bool IsPowerOf2(byte i)
+        {
+            return i != 0 && (i & (i - 1)) == 0;
+        }
+
+        /// <summary>
+        /// Determine if a <see cref="System.SByte"/> is an exact power of 2.
+        /// </summary>
+		public static bool IsPowerOf2(sbyte i)
+        {
+            return i > 0 && (i & (i - 1)) == 0;
+        }
+
+        /// <summary>
+        /// Determine if a <see cref="System.UInt16"/> is an exact power of 2.
+        /// </summary>
+		public static bool IsPowerOf2(ushort i)
+        {
+            return i != 0 && (i & (i - 1)) == 0;
+        }
+
+        /// <summary>
+        /// Determine if a <see cref="System.Int16"/> is an exact power of 2.
+        /// </summary>
+		public static bool IsPowerOf2(short i)
+        {
+            return i > 0 && (i & (i - 1)) == 0;
+        }
+
+        /// <summary>
+        /// Determine if a <see cref="System.UInt32"/> is an exact power of 2.
         /// </summary>
 		public static bool IsPowerOf2(uint i)
         {
@@ -452,7 +484,15 @@ namespace Foundations.Coding
         }
 
         /// <summary>
-        /// Determine if a <see cref="System.Int64"/> is an exact power of 2.
+        /// Determine if a <see cref="System.Int32"/> is an exact power of 2.
+        /// </summary>
+		public static bool IsPowerOf2(int i)
+        {
+            return i > 0 && (i & (i - 1)) == 0;
+        }
+
+        /// <summary>
+        /// Determine if a <see cref="System.UInt64"/> is an exact power of 2.
         /// </summary>
 		public static bool IsPowerOf2(ulong i)
         {
@@ -460,20 +500,44 @@ namespace Foundations.Coding
         }
 
         /// <summary>
+        /// Determine if a <see cref="System.Int64"/> is an exact power of 2.
+        /// </summary>
+		public static bool IsPowerOf2(long i)
+        {
+            return i > 0 && (i & (i - 1)) == 0;
+        }
+
+        /// <summary>
         /// Bitwise rotation operator.
         /// </summary>
         public static uint RotateRight(uint i, int shift)
-		{
-			return (i >> shift) | (i << -shift);
-		}
+        {
+            return (i >> shift) | (i << -shift);
+        }
 
         /// <summary>
         /// Bitwise rotation operator.
         /// </summary>
 		public static uint RotateLeft(uint i, int shift)
-		{
-			return (i << shift) | (i >> -shift);
-		}
+        {
+            return (i << shift) | (i >> -shift);
+        }
+
+        /// <summary>
+        /// Bitwise rotation operator.
+        /// </summary>
+        public static ulong RotateRight(ulong i, int shift)
+        {
+            return (i >> shift) | (i << -shift);
+        }
+
+        /// <summary>
+        /// Bitwise rotation operator.
+        /// </summary>
+		public static ulong RotateLeft(ulong i, int shift)
+        {
+            return (i << shift) | (i >> -shift);
+        }
 
         /// <summary>
         /// Select the bits from one of two values according to selection bits.
@@ -650,7 +714,7 @@ namespace Foundations.Coding
         /// </summary>
         public static int CountOfLeadingZeros(ulong i)
         {
-            int n = CountOfLeadingZeros(i >> 32);
+            int n = CountOfLeadingZeros((uint)(i >> 32));
             if (n < 32) return n;
             return 32 + CountOfLeadingZeros((uint)i);
         }

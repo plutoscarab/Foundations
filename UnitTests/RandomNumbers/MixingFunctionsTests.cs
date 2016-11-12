@@ -30,7 +30,7 @@ namespace Foundations.RandomNumbers
 		[TestMethod]
 		public void ByteTest()
 		{
-			var generator = new Generator();
+			var generator = new Generator("ByteTest");
 
 			for (int t = 0; t < 100; t++)
 			{
@@ -49,7 +49,7 @@ namespace Foundations.RandomNumbers
 		[TestMethod]
 		public void SByteTest()
 		{
-			var generator = new Generator();
+			var generator = new Generator("SByteTest");
 
 			for (int t = 0; t < 100; t++)
 			{
@@ -68,7 +68,7 @@ namespace Foundations.RandomNumbers
 		[TestMethod]
 		public void CharTest()
 		{
-			var generator = new Generator();
+			var generator = new Generator("CharTest");
 
 			for (int t = 0; t < 100; t++)
 			{
@@ -87,7 +87,7 @@ namespace Foundations.RandomNumbers
 		[TestMethod]
 		public void UInt16Test()
 		{
-			var generator = new Generator();
+			var generator = new Generator("UInt16Test");
 
 			for (int t = 0; t < 100; t++)
 			{
@@ -106,7 +106,7 @@ namespace Foundations.RandomNumbers
 		[TestMethod]
 		public void Int16Test()
 		{
-			var generator = new Generator();
+			var generator = new Generator("Int16Test");
 
 			for (int t = 0; t < 100; t++)
 			{
@@ -125,7 +125,7 @@ namespace Foundations.RandomNumbers
 		[TestMethod]
 		public void UInt32Test()
 		{
-			var generator = new Generator();
+			var generator = new Generator("UInt32Test");
 
 			for (int t = 0; t < 100; t++)
 			{
@@ -144,7 +144,7 @@ namespace Foundations.RandomNumbers
 		[TestMethod]
 		public void Int32Test()
 		{
-			var generator = new Generator();
+			var generator = new Generator("Int32Test");
 
 			for (int t = 0; t < 100; t++)
 			{
@@ -163,7 +163,7 @@ namespace Foundations.RandomNumbers
 		[TestMethod]
 		public void UInt64Test()
 		{
-			var generator = new Generator();
+			var generator = new Generator("UInt64Test");
 
 			for (int t = 0; t < 100; t++)
 			{
@@ -182,7 +182,7 @@ namespace Foundations.RandomNumbers
 		[TestMethod]
 		public void Int64Test()
 		{
-			var generator = new Generator();
+			var generator = new Generator("Int64Test");
 
 			for (int t = 0; t < 100; t++)
 			{

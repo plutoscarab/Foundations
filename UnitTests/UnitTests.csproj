@@ -40,7 +40,12 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Encoding\UniversalCodeTests.cs">
+    <Compile Include="Coding\BitsTests.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BitsTests.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Coding\UniversalCodeTests.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>UniversalCodeTests.tt</DependentUpon>
@@ -79,7 +84,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Encoding\UniversalCodeTests.tt">
+    <Content Include="Coding\BitsTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BitsTests.cs</LastGenOutput>
+    </Content>
+    <Content Include="Coding\UniversalCodeTests.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>UniversalCodeTests.cs</LastGenOutput>
     </Content>

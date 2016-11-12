@@ -12,29 +12,32 @@ Template.cs
 */
 
 using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Foundations
 {
     /// <summary>
     /// 
     /// </summary>
-    public static sealed class Class1
+    [TestClass]
+    public class Tests
     {
 <#
-MakeMethod("Method1", "Int32");
+MakeMethod("Int32");
 #>
     }
 }
 <#+
-void MakeMethod(string name, string T)
+void MakeMethod(string T)
 {
 #>
-    /// <summary>
-    /// 
-    /// </summary>
-	public static <#= T #> <#= name #>()
-    {
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        [TestMethod]
+	    public void <#= T #>Test()
+        {
+        }
 
 <#+
 }
