@@ -147,34 +147,6 @@ namespace Foundations.Coding
             return temp;
         }
 
-        /// <summary>
-        /// Returns the Elias Delta code for the specified positive integer.
-        /// </summary>
-        /// <param name="n">A positive integer.</param>
-        /// <returns>The Elias Delta code representing the integer.</returns>
-        public static Code EliasDelta(int n)
-        {
-            if (n < 1)
-                throw new ArgumentOutOfRangeException();
-
-            // special case for n=1
-            if (n == 1)
-                return new Code(1, 1);
-
-            // count the number of bits in the original number
-            int bits = Coding.Bits.Count(n);
-
-            // count the number of bits in *that* number
-            int bits2 = Coding.Bits.Count(bits);
-
-            // Remove the leading '1' bit from the original number and prefix
-            // the bits by a number representing the number of bits in the original
-            long code = (long)n ^ ((long)(bits ^ 1) << (bits - 1));
-
-            // Prefix all of that with a number of 0's equal to one less than bits2
-            return new Code(n, bits + 2 * bits2 - 2);
-        }
-
         const int fibs = 45;
         static int[] fib = new int[fibs]
             {

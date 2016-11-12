@@ -31,16 +31,22 @@ namespace Foundations.Coding
             EncodingTest(Codes.EliasGamma);
         }
 
-        private void EncodingTest(IEncoding encoding)
+        [TestMethod]
+        public void EliasDeltaTest()
         {
-            for (int i = encoding.MinValue; i < 5000; i++)
+            EncodingTest(Codes.EliasDelta);
+        }
+
+        private void EncodingTest(IEncoding<int, Code> encoding)
+        {
+            for (int i = encoding.MinEncodable; i < 5000; i++)
             {
                 var code = encoding.GetCode(i);
                 var value = encoding.GetValue(code);
                 Assert.AreEqual(i, value);
             }
 
-            for (int i = encoding.MaxValue - 5000; i > 0 && i <= encoding.MaxValue; i++)
+            for (int i = encoding.MaxEncodable - 5000; i > 0 && i <= encoding.MaxEncodable; i++)
             {
                 var code = encoding.GetCode(i);
                 var value = encoding.GetValue(code);
@@ -52,7 +58,7 @@ namespace Foundations.Coding
             for (int n = 0; n < 1000; n++)
             {
                 int i = rand.Int32();
-                if (i < encoding.MinValue || i > encoding.MaxValue) continue;
+                if (i < encoding.MinEncodable || i > encoding.MaxEncodable) continue;
                 var code = encoding.GetCode(i);
                 var value = encoding.GetValue(code);
                 Assert.AreEqual(i, value);

@@ -15,33 +15,28 @@ using System;
 namespace Foundations.Coding
 {
     /// <summary>
-    /// Encode or decode a <see cref="System.Int32"/>.
+    /// Encode or decode a <typeparam name="TValue" /> as a <typeparam name="TCode"/>.
     /// </summary>
-    public interface IEncoding
+    public interface IEncoding<TValue, TCode>
     {
         /// <summary>
         /// Gets the code corresponding to a value.
         /// </summary>
-        Code GetCode(int value);
+        TCode GetCode(TValue value);
 
         /// <summary>
         /// Gets the value corresponding to a code.
         /// </summary>
-        int GetValue(Code code);
-
-        /// <summary>
-        /// Gets the encoding category.
-        /// </summary>
-        CodeCategory Category { get; }
+        TValue GetValue(TCode code);
 
         /// <summary>
         /// Gets the minimum value that can be encoded.
         /// </summary>
-        int MinValue { get; }
+        TValue MinEncodable { get; }
 
         /// <summary>
         /// Gets the maximum value that can be encoded.
         /// </summary>
-        int MaxValue { get; }
+        TValue MaxEncodable { get; }
     }
 }

@@ -46,6 +46,7 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Coding\EliasDelta.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Functions\MixingFunctions.cs">
       <DependentUpon>MixingFunctions.tt</DependentUpon>
@@ -55,7 +56,6 @@
     <Compile Include="Coding\Bits.cs" />
     <Compile Include="Coding\Code.cs" />
     <Compile Include="Coding\EliasGamma.cs" />
-    <Compile Include="Coding\CodeCategory.cs" />
     <Compile Include="Coding\IEncoding.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
     <Compile Include="Functions\NumberTheoretic\GCD.cs">

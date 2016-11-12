@@ -1,6 +1,6 @@
 ﻿
 /*
-EliasGamma.cs
+EliasDelta.cs
 
 Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
@@ -22,15 +22,15 @@ namespace Foundations.Coding
         /// <summary>
         /// Elias Gamma code.
         /// </summary>
-        public static readonly IEncoding<int, Code> EliasGamma = new EliasGamma();
+        public static readonly IEncoding<int, Code> EliasDelta = new EliasDelta();
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed partial class EliasGamma : IEncoding<int, Code>
+    public sealed partial class EliasDelta : IEncoding<int, Code>
     {
-        internal EliasGamma()
+        internal EliasDelta()
         {
         }
 
@@ -57,32 +57,40 @@ namespace Foundations.Coding
         }
 
         /// <summary>
-        /// Gets the Elias Gamma code corresponding to a value.
+        /// Gets the Elias Delta code corresponding to a value.
         /// </summary>
         public Code GetCode(int value)
         {
             if (value < 1)
                 throw new ArgumentOutOfRangeException();
 
-            // count the number of bits in the number
+            // count the number of bits in the original number
             int bits = Bits.FloorLog2(value);
 
-            // create a code using the original bits but prefixing it with a number
-            // of 0's equal to one less than the number of bits in the original
-            return new Code(value, 2 * bits + 1);
+            // count the number of bits in *that* number
+            int bits2 = Bits.FloorLog2(bits + 1);
+
+            // Remove the leading '1' bit from the original number and prefix
+            // the bits by a number representing the number of bits in the original
+            long code = value ^ (1L << bits) ^ ((bits + 1L) << bits);
+
+            // Prefix all of that with a number of 0's equal to one less than bits2
+            return new Code(code, bits + 2 * bits2 + 1);
         }
 
         /// <summary>
-        /// Gets the value corresponding to an Elias Gamma code.
+        /// Gets the value corresponding to an Elias Delta code.
         /// </summary>
         public int GetValue(Code code)
         {
-            int f = Bits.FloorLog2(code.Bits);
+            int bits2 = code.Length - Bits.FloorLog2(code.Bits);
+            int bits = (int)(code.Bits >> (code.Length - 2 * bits2 + 1)) - 1;
 
-            if (code.Length != 2 * f + 1)
-                throw new ArgumentException("Code is not a valid Elias Gamma code.");
+            if (code.Length != bits + 2 * bits2 - 1)
+                throw new ArgumentException("Code is not a valid Elias Delta code.");
 
-            return (int)(code.Bits & ((2ul << f) - 1));
+            var mask = 1UL << bits;
+            return (int)(mask | (code.Bits & (mask - 1)));
         }
     }
 }
