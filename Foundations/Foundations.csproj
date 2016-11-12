@@ -48,6 +48,11 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions\Array.cs" />
+    <Compile Include="Functions\MixingFunctions.cs">
+      <DependentUpon>MixingFunctions.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Functions\NumberTheoretic\GCD.cs">
       <DependentUpon>GCD.tt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -112,6 +117,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Functions\MixingFunctions.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MixingFunctions.cs</LastGenOutput>
+    </Content>
     <Content Include="Functions\NumberTheoretic\GCD.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>GCD.cs</LastGenOutput>
