@@ -35,7 +35,7 @@ namespace Foundations
         /// <summary>
         /// Gets the contents of this array as an array of <see cref="Byte"/>s.
         /// </summary>
-        public static byte[] GetBytes<T>(this Array array)
+        public static byte[] GetBytes(this Array array)
         {
             if (array == null)
                 throw new ArgumentNullException(nameof(array));

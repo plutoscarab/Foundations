@@ -1,0 +1,67 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+/*
+MixingFunctionsTests.cs
+
+<#@ include file="../../License.txt" #>
+*/
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Foundations.Functions;
+
+namespace Foundations.RandomNumbers
+{
+    /// <summary>
+    /// 
+    /// </summary>
+	[TestClass]
+	public class MixingFunctionsTests
+    {
+<#
+Make("Byte");
+Make("SByte");
+Make("Char");
+Make("UInt16");
+Make("Int16");
+Make("UInt32");
+Make("Int32");
+Make("UInt64");
+Make("Int64");
+#>
+
+    }
+}
+<#+
+void Make(string T)
+{
+#>
+		[TestMethod]
+		public void <#= T #>Test()
+		{
+			var generator = new Generator();
+
+			for (int t = 0; t < 100; t++)
+			{
+				var fn = MixingFunctions.Create<#= T #>Mixer(generator);
+				var used = new HashSet<<#= T #>>();
+
+				for (int i = 0; i < 256; i++)
+				{
+					used.Add(fn((<#= T #>)i));
+				}
+
+				Assert.AreEqual(256, used.Count);
+			}
+		}
+
+<#+
+}
+#>
