@@ -1,6 +1,6 @@
 ﻿
 /*
-Array.cs
+ArrayExtensions.cs
 
 Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey

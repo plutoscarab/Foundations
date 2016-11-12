@@ -40,6 +40,11 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Encoding\UniversalCodeTests.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UniversalCodeTests.tt</DependentUpon>
+    </Compile>
     <Compile Include="Functions\Special\Jacobi.cs" />
     <Compile Include="Functions\Special\Theta.cs" />
     <Compile Include="Functions\Special\Elliptic.cs" />
@@ -69,6 +74,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Encoding\UniversalCodeTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>UniversalCodeTests.cs</LastGenOutput>
+    </Content>
     <Content Include="RandomNumbers\GeneratorTests.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>GeneratorTests.cs</LastGenOutput>
@@ -81,6 +90,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
       <ItemGroup>

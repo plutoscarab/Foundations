@@ -46,8 +46,14 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Coding\CodeReader.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Extensions\Array.cs" />
+    <Compile Include="Coding\Bits.cs" />
+    <Compile Include="Coding\Code.cs" />
+    <Compile Include="Coding\EliasGamma.cs" />
+    <Compile Include="Coding\CodeCategory.cs" />
+    <Compile Include="Coding\IEncoding.cs" />
+    <Compile Include="Extensions\ArrayExtensions.cs" />
     <Compile Include="Functions\NumberTheoretic\GCD.cs">
       <DependentUpon>GCD.tt</DependentUpon>
       <AutoGen>True</AutoGen>

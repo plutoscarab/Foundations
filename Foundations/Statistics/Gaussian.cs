@@ -24,7 +24,7 @@ namespace Foundations.Statistics
         /// <summary>
         /// Gaussian (Normal) distribution.
         /// </summary>
-        public static IContinuousProbabilityDistribution Gaussian = new Gaussian();
+        public static readonly IContinuousProbabilityDistribution Gaussian = new Gaussian();
     }
 
     /// <summary>
