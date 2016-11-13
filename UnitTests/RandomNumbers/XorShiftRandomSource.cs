@@ -27,7 +27,7 @@ namespace Foundations.UnitTests.Objects
         }
 
         [TestMethod]
-        public void Speed()
+        public void XorShiftSpeed()
         {
             var source = new XorShiftRandomSource();
             var random = new Generator(source);

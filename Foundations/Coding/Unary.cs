@@ -1,6 +1,6 @@
 ﻿
 /*
-EliasGamma.cs
+Unary.cs
 
 Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
@@ -20,18 +20,26 @@ namespace Foundations.Coding
     public static partial class Codes
     {
         /// <summary>
-        /// Elias Gamma code.
+        /// Unary code using 1's as tally bits and 0 as terminator.
         /// </summary>
-        public static readonly IEncoding<int, Code> EliasGamma = new EliasGamma();
+        public static readonly IEncoding<int, Code> UnaryOnes = new Unary(1);
+
+        /// <summary>
+        /// Unary code using 0's as tally bits and 1 as terminator.
+        /// </summary>
+        public static readonly IEncoding<int, Code> UnaryZeros = new Unary(0);
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed partial class EliasGamma : IEncoding<int, Code>
+    public sealed partial class Unary : IEncoding<int, Code>
     {
-        internal EliasGamma()
+        int tally;
+
+        internal Unary(int tally)
         {
+            this.tally = tally;
         }
 
         /// <summary>
@@ -52,24 +60,19 @@ namespace Foundations.Coding
         {
             get
             {
-                return int.MaxValue;
+                return 63;
             }
         }
 
         /// <summary>
-        /// Gets the Elias Gamma code corresponding to a value.
+        /// Gets the code corresponding to a value.
         /// </summary>
         public Code GetCode(int value)
         {
-            if (value < 1)
+            if (value < MinEncodable || value > MaxEncodable)
                 throw new ArgumentOutOfRangeException();
 
-            // count the number of bits in the number
-            int bits = Bits.FloorLog2(value);
-
-            // create a code using the original bits but prefixing it with a number
-            // of 0's equal to one less than the number of bits in the original
-            return new Code(value, 2 * bits + 1);
+            return new Code(1 - 3 * tally, value);
         }
 
         /// <summary>
@@ -77,8 +80,12 @@ namespace Foundations.Coding
         /// </summary>
         public int Read(BitReader reader)
         {
-            var u = Codes.UnaryZeros.Read(reader) - 1;
-            return (int)reader.Read(u) | (1 << u);
+            int value = 1;
+
+            while ((int)reader.Read(1) == tally)
+                value++;
+
+            return value;
         }
     }
 }

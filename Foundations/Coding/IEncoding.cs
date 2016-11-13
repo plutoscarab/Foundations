@@ -27,7 +27,7 @@ namespace Foundations.Coding
         /// <summary>
         /// Gets the value corresponding to a code.
         /// </summary>
-        TValue GetValue(TCode code);
+        TValue Read(BitReader reader);
 
         /// <summary>
         /// Gets the minimum value that can be encoded.

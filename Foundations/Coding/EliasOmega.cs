@@ -1,6 +1,6 @@
 ﻿
 /*
-EliasGamma.cs
+EliasOmega.cs
 
 Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
@@ -20,17 +20,17 @@ namespace Foundations.Coding
     public static partial class Codes
     {
         /// <summary>
-        /// Elias Gamma code.
+        /// EliasOmega code.
         /// </summary>
-        public static readonly IEncoding<int, Code> EliasGamma = new EliasGamma();
+        public static readonly IEncoding<int, Code> EliasOmega = new EliasOmega();
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed partial class EliasGamma : IEncoding<int, Code>
+    public sealed partial class EliasOmega : IEncoding<int, Code>
     {
-        internal EliasGamma()
+        internal EliasOmega()
         {
         }
 
@@ -57,28 +57,39 @@ namespace Foundations.Coding
         }
 
         /// <summary>
-        /// Gets the Elias Gamma code corresponding to a value.
+        /// Gets the code corresponding to a value.
         /// </summary>
         public Code GetCode(int value)
         {
-            if (value < 1)
+            if (value < MinEncodable || value > MaxEncodable)
                 throw new ArgumentOutOfRangeException();
 
-            // count the number of bits in the number
-            int bits = Bits.FloorLog2(value);
+            ulong bits = 0;
+            int length = 1;
 
-            // create a code using the original bits but prefixing it with a number
-            // of 0's equal to one less than the number of bits in the original
-            return new Code(value, 2 * bits + 1);
+            while (value > 1)
+            {
+                bits |= (ulong)value << length;
+                value = Bits.FloorLog2(value);
+                length += value + 1;
+            }
+
+            return new Code(bits, length);
         }
 
         /// <summary>
-        /// Reads an encoded value from a <see cref="BitReader"/>.
+        /// Gets the value corresponding to a code.
         /// </summary>
         public int Read(BitReader reader)
         {
-            var u = Codes.UnaryZeros.Read(reader) - 1;
-            return (int)reader.Read(u) | (1 << u);
+            int value = 1;
+
+            while (reader.Read(1) != 0)
+            {
+                value = (int)(reader.Read(value) | (1UL << value));
+            }
+
+            return value;
         }
     }
 }

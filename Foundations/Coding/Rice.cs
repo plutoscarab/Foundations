@@ -1,6 +1,6 @@
 ﻿
 /*
-EliasGamma.cs
+Rice.cs
 
 Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
@@ -20,18 +20,28 @@ namespace Foundations.Coding
     public static partial class Codes
     {
         /// <summary>
-        /// Elias Gamma code.
+        /// Rice code.
         /// </summary>
-        public static readonly IEncoding<int, Code> EliasGamma = new EliasGamma();
+        public static IEncoding<int, Code> Rice(int exponentOf2) => new Rice(exponentOf2);
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed partial class EliasGamma : IEncoding<int, Code>
+    public sealed partial class Rice : IEncoding<int, Code>
     {
-        internal EliasGamma()
+        private readonly int exponentOf2;
+        private readonly int mask;
+        private readonly int maxEncodable;
+
+        internal Rice(int exponentOf2)
         {
+            if (exponentOf2 < 1 || exponentOf2 > 31)
+                throw new ArgumentOutOfRangeException();
+
+            this.exponentOf2 = exponentOf2;
+            mask = (1 << exponentOf2) - 1;
+            maxEncodable = (63 - exponentOf2) * (mask + 1) + mask;
         }
 
         /// <summary>
@@ -41,7 +51,7 @@ namespace Foundations.Coding
         {
             get
             {
-                return 1;
+                return 0;
             }
         }
 
@@ -52,24 +62,21 @@ namespace Foundations.Coding
         {
             get
             {
-                return int.MaxValue;
+                return maxEncodable;
             }
         }
 
         /// <summary>
-        /// Gets the Elias Gamma code corresponding to a value.
+        /// Gets the code corresponding to a value.
         /// </summary>
         public Code GetCode(int value)
         {
-            if (value < 1)
+            if (value < MinEncodable || value > MaxEncodable)
                 throw new ArgumentOutOfRangeException();
 
-            // count the number of bits in the number
-            int bits = Bits.FloorLog2(value);
-
-            // create a code using the original bits but prefixing it with a number
-            // of 0's equal to one less than the number of bits in the original
-            return new Code(value, 2 * bits + 1);
+            return new Code(
+                Codes.UnaryOnes.GetCode((value >> exponentOf2) + 1),
+                new Code(value & mask, exponentOf2));
         }
 
         /// <summary>
@@ -77,8 +84,8 @@ namespace Foundations.Coding
         /// </summary>
         public int Read(BitReader reader)
         {
-            var u = Codes.UnaryZeros.Read(reader) - 1;
-            return (int)reader.Read(u) | (1 << u);
+            int u = Codes.UnaryOnes.Read(reader) - 1;
+            return (int)reader.Read(exponentOf2) + (u << exponentOf2);
         }
     }
 }

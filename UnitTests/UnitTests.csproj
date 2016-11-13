@@ -45,6 +45,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BitsTests.tt</DependentUpon>
     </Compile>
+    <Compile Include="Coding\BitStreamTests.cs" />
     <Compile Include="Coding\UniversalCodeTests.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

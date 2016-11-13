@@ -1,6 +1,6 @@
 ﻿
 /*
-EliasGamma.cs
+EliasFibonacci.cs
 
 Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
@@ -20,17 +20,17 @@ namespace Foundations.Coding
     public static partial class Codes
     {
         /// <summary>
-        /// Elias Gamma code.
+        /// EliasFibonacci code.
         /// </summary>
-        public static readonly IEncoding<int, Code> EliasGamma = new EliasGamma();
+        public static readonly IEncoding<int, Code> EliasFibonacci = new EliasFibonacci();
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed partial class EliasGamma : IEncoding<int, Code>
+    public sealed partial class EliasFibonacci : IEncoding<int, Code>
     {
-        internal EliasGamma()
+        internal EliasFibonacci()
         {
         }
 
@@ -57,19 +57,18 @@ namespace Foundations.Coding
         }
 
         /// <summary>
-        /// Gets the Elias Gamma code corresponding to a value.
+        /// Gets the code corresponding to a value.
         /// </summary>
         public Code GetCode(int value)
         {
-            if (value < 1)
+            if (value < MinEncodable || value > MaxEncodable)
                 throw new ArgumentOutOfRangeException();
 
-            // count the number of bits in the number
-            int bits = Bits.FloorLog2(value);
-
-            // create a code using the original bits but prefixing it with a number
-            // of 0's equal to one less than the number of bits in the original
-            return new Code(value, 2 * bits + 1);
+            int b = Bits.FloorLog2(value);
+            var f = Codes.Fibonacci.GetCode(b + 1);
+            ulong bits = (uint)value | (f.Bits << b);
+            int length = b + f.Length;
+            return new Code(bits, length);
         }
 
         /// <summary>
@@ -77,8 +76,9 @@ namespace Foundations.Coding
         /// </summary>
         public int Read(BitReader reader)
         {
-            var u = Codes.UnaryZeros.Read(reader) - 1;
-            return (int)reader.Read(u) | (1 << u);
+            int f = Codes.Fibonacci.Read(reader) - 1;
+            int value = (int)reader.Read(f);
+            return value | (1 << f);
         }
     }
 }

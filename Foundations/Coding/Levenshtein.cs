@@ -1,6 +1,6 @@
 ﻿
 /*
-EliasGamma.cs
+Levenshtein.cs
 
 Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
@@ -20,17 +20,17 @@ namespace Foundations.Coding
     public static partial class Codes
     {
         /// <summary>
-        /// Elias Gamma code.
+        /// Levenshtein code.
         /// </summary>
-        public static readonly IEncoding<int, Code> EliasGamma = new EliasGamma();
+        public static readonly IEncoding<int, Code> Levenshtein = new Levenshtein();
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed partial class EliasGamma : IEncoding<int, Code>
+    public sealed partial class Levenshtein : IEncoding<int, Code>
     {
-        internal EliasGamma()
+        internal Levenshtein()
         {
         }
 
@@ -41,7 +41,7 @@ namespace Foundations.Coding
         {
             get
             {
-                return 1;
+                return 0;
             }
         }
 
@@ -57,19 +57,30 @@ namespace Foundations.Coding
         }
 
         /// <summary>
-        /// Gets the Elias Gamma code corresponding to a value.
+        /// Gets the code corresponding to a value.
         /// </summary>
         public Code GetCode(int value)
         {
-            if (value < 1)
+            if (value < MinEncodable || value > MaxEncodable)
                 throw new ArgumentOutOfRangeException();
 
-            // count the number of bits in the number
-            int bits = Bits.FloorLog2(value);
+            ulong bits = 0;
+            int length = 0;
+            int steps = 0;
 
-            // create a code using the original bits but prefixing it with a number
-            // of 0's equal to one less than the number of bits in the original
-            return new Code(value, 2 * bits + 1);
+            while (value != 0)
+            {
+                int f = Bits.FloorLog2(value);
+                value ^= 1 << f;
+                bits |= (ulong)value << length;
+                length += f;
+                steps++;
+                value = f;
+            }
+
+            bits |= ((1UL << steps) - 1) << (length + 1);
+            length += steps + 1;
+            return new Code(bits, length);
         }
 
         /// <summary>
@@ -77,8 +88,16 @@ namespace Foundations.Coding
         /// </summary>
         public int Read(BitReader reader)
         {
-            var u = Codes.UnaryZeros.Read(reader) - 1;
-            return (int)reader.Read(u) | (1 << u);
+            int u = Codes.UnaryOnes.Read(reader) - 1;
+            if (u == 0) return 0;
+            int value = 1;
+
+            while (--u > 0)
+            {
+                value = (int)reader.Read(value) | (1 << value);
+            }
+
+            return value;
         }
     }
 }

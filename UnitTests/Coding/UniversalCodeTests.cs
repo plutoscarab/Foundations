@@ -14,8 +14,9 @@ FILE GENERATOR. IF YOU SAVE THE FILE IN VISUAL STUDIO IT WILL DO THIS FOR YOU.
 */
 
 using System;
-using Foundations.RandomNumbers;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Foundations.RandomNumbers;
 
 namespace Foundations.Coding
 {
@@ -25,6 +26,18 @@ namespace Foundations.Coding
     [TestClass]
     public class UniversalCodeTests
     {
+        [TestMethod]
+        public void UnaryZerosTest()
+        {
+            EncodingTest(Codes.UnaryZeros);
+        }
+
+        [TestMethod]
+        public void UnaryOnesTest()
+        {
+            EncodingTest(Codes.UnaryOnes);
+        }
+
         [TestMethod]
         public void EliasGammaTest()
         {
@@ -37,31 +50,69 @@ namespace Foundations.Coding
             EncodingTest(Codes.EliasDelta);
         }
 
+        [TestMethod]
+        public void EliasOmegaTest()
+        {
+            EncodingTest(Codes.EliasOmega);
+        }
+
+        [TestMethod]
+        public void FibonacciTest()
+        {
+            EncodingTest(Codes.Fibonacci);
+        }
+
+        [TestMethod]
+        public void LevenshteinTest()
+        {
+            EncodingTest(Codes.Levenshtein);
+        }
+
+        [TestMethod]
+        public void EliasFibonacciTest()
+        {
+            EncodingTest(Codes.EliasFibonacci);
+        }
+
+        [TestMethod]
+        public void TruncatedBinaryTest()
+        {
+            EncodingTest(Codes.TruncatedBinary(6000));
+        }
+
+        [TestMethod]
+        public void GolombTest()
+        {
+            EncodingTest(Codes.Golomb(141));
+        }
+
+        [TestMethod]
+        public void RiceTest()
+        {
+            EncodingTest(Codes.Rice(8));
+        }
+
         private void EncodingTest(IEncoding<int, Code> encoding)
         {
-            for (int i = encoding.MinEncodable; i < 5000; i++)
+            var writer = new BitWriter(1000);
+            var values = new List<int>();
+            var g = new Generator(encoding.GetType().Name);
+
+            for (int i = 0; i < 1000; i++)
             {
-                var code = encoding.GetCode(i);
-                var value = encoding.GetValue(code);
-                Assert.AreEqual(i, value);
+                int v = g.Int32() >> g.Int32(32);
+                if (v < encoding.MinEncodable || v > encoding.MaxEncodable) continue;
+                values.Add(v);
+                writer.Write(encoding.GetCode(v));
             }
 
-            for (int i = encoding.MaxEncodable - 5000; i > 0 && i <= encoding.MaxEncodable; i++)
-            {
-                var code = encoding.GetCode(i);
-                var value = encoding.GetValue(code);
-                Assert.AreEqual(i, value);
-            }
+            var buffer = writer.ToArray();
+            var reader = new BitReader(buffer);
 
-            var rand = new Generator($"{encoding.GetType().Name}Test");
-
-            for (int n = 0; n < 1000; n++)
+            for (int i = 0; i < values.Count; i++)
             {
-                int i = rand.Int32();
-                if (i < encoding.MinEncodable || i > encoding.MaxEncodable) continue;
-                var code = encoding.GetCode(i);
-                var value = encoding.GetValue(code);
-                Assert.AreEqual(i, value);
+                int v = encoding.Read(reader);
+                Assert.AreEqual(values[i], v);
             }
         }
     }

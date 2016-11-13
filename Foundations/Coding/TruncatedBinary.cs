@@ -1,6 +1,6 @@
 ﻿
 /*
-EliasGamma.cs
+TruncatedBinary.cs
 
 Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
@@ -20,18 +20,28 @@ namespace Foundations.Coding
     public static partial class Codes
     {
         /// <summary>
-        /// Elias Gamma code.
+        /// Truncated Binary code.
         /// </summary>
-        public static readonly IEncoding<int, Code> EliasGamma = new EliasGamma();
+        public static IEncoding<int, Code> TruncatedBinary(int range) => new TruncatedBinary(range);
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed partial class EliasGamma : IEncoding<int, Code>
+    public sealed partial class TruncatedBinary : IEncoding<int, Code>
     {
-        internal EliasGamma()
+        private int range;
+        private int bits;
+        private int extra;
+
+        internal TruncatedBinary(int range)
         {
+            if (range < 1)
+                throw new ArgumentOutOfRangeException();
+
+            this.range = range;
+            bits = Bits.FloorLog2(range - 1) + 1;
+            extra = (int)((1L << bits) - range);
         }
 
         /// <summary>
@@ -41,7 +51,7 @@ namespace Foundations.Coding
         {
             get
             {
-                return 1;
+                return 0;
             }
         }
 
@@ -52,24 +62,22 @@ namespace Foundations.Coding
         {
             get
             {
-                return int.MaxValue;
+                return range - 1;
             }
         }
 
         /// <summary>
-        /// Gets the Elias Gamma code corresponding to a value.
+        /// Gets the code corresponding to a value.
         /// </summary>
         public Code GetCode(int value)
         {
-            if (value < 1)
+            if (value < MinEncodable || value > MaxEncodable)
                 throw new ArgumentOutOfRangeException();
 
-            // count the number of bits in the number
-            int bits = Bits.FloorLog2(value);
-
-            // create a code using the original bits but prefixing it with a number
-            // of 0's equal to one less than the number of bits in the original
-            return new Code(value, 2 * bits + 1);
+            if (value < extra)
+                return new Code(value, bits - 1);
+            else
+                return new Code(extra + value, bits);
         }
 
         /// <summary>
@@ -77,8 +85,9 @@ namespace Foundations.Coding
         /// </summary>
         public int Read(BitReader reader)
         {
-            var u = Codes.UnaryZeros.Read(reader) - 1;
-            return (int)reader.Read(u) | (1 << u);
+            int value = (int)reader.Read(bits - 1);
+            if (value < extra) return value;
+            return value * 2 + (int)reader.Read(1) - extra;
         }
     }
 }

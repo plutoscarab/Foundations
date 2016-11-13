@@ -20,7 +20,7 @@ namespace Foundations.Coding
     public static partial class Codes
     {
         /// <summary>
-        /// Elias Gamma code.
+        /// Elias Delta code.
         /// </summary>
         public static readonly IEncoding<int, Code> EliasDelta = new EliasDelta();
     }
@@ -79,18 +79,13 @@ namespace Foundations.Coding
         }
 
         /// <summary>
-        /// Gets the value corresponding to an Elias Delta code.
+        /// Reads an encoded value from a <see cref="BitReader"/>.
         /// </summary>
-        public int GetValue(Code code)
+        public int Read(BitReader reader)
         {
-            int bits2 = code.Length - Bits.FloorLog2(code.Bits);
-            int bits = (int)(code.Bits >> (code.Length - 2 * bits2 + 1)) - 1;
-
-            if (code.Length != bits + 2 * bits2 - 1)
-                throw new ArgumentException("Code is not a valid Elias Delta code.");
-
-            var mask = 1UL << bits;
-            return (int)(mask | (code.Bits & (mask - 1)));
+            var u = Codes.UnaryZeros.Read(reader) - 1;
+            var len = (int)((reader.Read(u) | (1ul << u)) - 1);
+            return (int)(reader.Read(len) | (1ul << len));
         }
     }
 }

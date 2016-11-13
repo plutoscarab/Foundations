@@ -11,6 +11,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 */
 
 using System;
+using System.Linq;
 using System.Text;
 
 namespace Foundations.Coding
@@ -50,6 +51,7 @@ namespace Foundations.Coding
             if (length < 0 || length > 64)
                 throw new Exception();
 
+            if (length < 64) bits &= (1UL << length) - 1;
             this.bits = bits;
             this.length = length;
         }
@@ -147,108 +149,45 @@ namespace Foundations.Coding
             return temp;
         }
 
-        const int fibs = 45;
-        static int[] fib = new int[fibs]
-            {
-                1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765,
-                10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811, 514229, 832040, 1346269,
-                2178309, 3524578, 5702887, 9227465, 14930352, 24157817, 39088169, 63245986,
-                102334155, 165580141, 267914296, 433494437, 701408733, 1134903170, 1836311903
-            };
+        /// <summary>
+        /// Get take the leading bits from the <see cref="Code"/>.
+        /// </summary>
+        /// <param name="bitCount">The number of leading bits to return.</param>
+        /// <param name="rest">The rest of the code with those leading bits removed.</param>
+        public ulong TakeBits(int bitCount, out Code rest)
+        {
+            if (bitCount < 0 || bitCount > length)
+                throw new ArgumentOutOfRangeException(nameof(bitCount));
+
+            int newLength = length - bitCount;
+            var result = bits >> newLength;
+            rest = new Code(bits, newLength);
+            return result;
+        }
 
         /// <summary>
-        /// Returns the Fibonacci code representing the specified positive integer.
+        /// Gets the code bits with 0's exchanged for 1's and vice versa.
         /// </summary>
-        /// <param name="n">An integer between 1 and 1,836,311,902.</param>
-        /// <returns>The Fibonacci Code representation of the number.</returns>
-        public static Code Fibonacci(int n)
+        public ulong InvertedBits
         {
-            if (n < 1 || n >= fib[fibs - 1])
-                throw new ArgumentOutOfRangeException();
-
-            // find the largest Fibonacci number not greater than n
-            int i = 0;
-            while (fib[i + 1] <= n)
-                i++;
-
-            // Start forming the code. Always starts with '1' bit.
-            long code = 1;
-            int length = 1;
-
-            // Decompose n into the sum of Fibonacci numbers
-            while (i >= 0)
+            get
             {
-                // make room for the next bit
-                code <<= 1;
-                length++;
-
-                // add a '1' bit if the current Fibonacci number is in the sum
-                if (n >= fib[i])
-                {
-                    n -= fib[i];
-                    code |= 1;
-                }
-
-                // move to the next smallest Fibonacci number
-                i--;
+                if (length == 64) return ~bits;
+                return ~bits & ((1UL << length) - 1);
             }
-
-            return new Code(code, length);
         }
 
-        /// <summary>
-        /// Get the truncated binary code. This is not a prefix code.
-        /// </summary>
-        /// <param name="n">Value.</param>
-        /// <param name="m">One more than maximum value. Minimum value is zero.</param>
-        /// <returns></returns>
-        public static Code TruncatedBinary(int n, int m)
+        static char[] upperCaseLetters = Enumerable.Range(0, 65536)
+            .Select(c => (char)c)
+            .Where(c => char.IsUpper(c))
+            .ToArray();
+
+        internal void ThrowInvalidCode(Type type)
         {
-            if (m < 1 || n < 0 || n >= m)
-                throw new ArgumentOutOfRangeException();
-
-            int bits = Coding.Bits.Count(m - 1);
-            int extra = (1 << bits) - m;
-
-            if (n < extra)
-                return new Code(n, bits - 1);
-            else
-                return new Code(extra + n, bits);
-        }
-
-        /// <summary>
-        /// Get the unary code. This is a prefix code.
-        /// </summary>
-        public static Code Unary(int n)
-        {
-            if (n < 0 || n > 62)
-                throw new ArgumentOutOfRangeException();
-
-            long bits = ((1 << n) - 1) << 1;
-            return new Code(bits, n + 1);
-        }
-
-        /// <summary>
-        /// Get the Golomb code. This is a prefix code.
-        /// </summary>
-        public static Code Golomb(int n, int divisor)
-        {
-            if (n < 0 || divisor < 2)
-                throw new ArgumentOutOfRangeException();
-
-            return new Code(Unary(n / divisor), TruncatedBinary(n % divisor, divisor));
-        }
-
-        /// <summary>
-        /// Get the Rice code. This is a prefix code.
-        /// </summary>
-        public static Code Rice(int n, int powerOf2)
-        {
-            if (n < 0 || powerOf2 < 1)
-                throw new ArgumentException();
-
-            long mask = (1 << powerOf2) - 1;
-            return new Code(Unary(n >> powerOf2), new Code(n & mask, powerOf2));
+            var name = type.Name;
+            int u = name.IndexOfAny(upperCaseLetters, 1);
+            if (u != -1) name = name.Substring(0, u) + " " + name.Substring(u);
+            throw new ArgumentException($"Code {this} is not a valid {name} code.");
         }
     }
 }
