@@ -46,10 +46,11 @@
       <DependentUpon>BitsTests.tt</DependentUpon>
     </Compile>
     <Compile Include="Coding\BitStreamTests.cs" />
-    <Compile Include="Coding\UniversalCodeTests.cs">
+    <Compile Include="Coding\ComparisonTable.cs" />
+    <Compile Include="Coding\CodingTests.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>UniversalCodeTests.tt</DependentUpon>
+      <DependentUpon>CodingTests.tt</DependentUpon>
     </Compile>
     <Compile Include="Functions\Special\Jacobi.cs" />
     <Compile Include="Functions\Special\Theta.cs" />
@@ -89,9 +90,9 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BitsTests.cs</LastGenOutput>
     </Content>
-    <Content Include="Coding\UniversalCodeTests.tt">
+    <Content Include="Coding\CodingTests.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>UniversalCodeTests.cs</LastGenOutput>
+      <LastGenOutput>CodingTests.cs</LastGenOutput>
     </Content>
     <Content Include="RandomNumbers\GeneratorTests.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

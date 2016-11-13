@@ -1,6 +1,6 @@
 ﻿
 /*
-CodeTemplate.cs
+FixedWidth.cs
 
 Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
@@ -20,18 +20,24 @@ namespace Foundations.Coding
     public static partial class Codes
     {
         /// <summary>
-        /// CodeTemplate code.
+        /// FixedWidth code. Values are encoded as-is, prepended with leading
+        /// '0' bits to form a fixed-width code.
         /// </summary>
-        public static readonly IEncoding<int, Code> CodeTemplate = new CodeTemplate();
+        public static IBitEncoding FixedWidth(int bitCount) => new FixedWidth(bitCount);
     }
 
     /// <summary>
-    /// 
+    /// FixedWidth code. Values are encoded as-is, prepended with leading
+    /// '0' bits to form a fixed-width code.
     /// </summary>
-    public sealed partial class CodeTemplate : IEncoding<int, Code>
+    public sealed partial class FixedWidth : IBitEncoding
     {
-        internal CodeTemplate()
+        int bitCount;
+
+        internal FixedWidth(int bitCount)
         {
+            if (bitCount < 1 || bitCount > 31) throw new ArgumentOutOfRangeException();
+            this.bitCount = bitCount;
         }
 
         /// <summary>
@@ -41,7 +47,7 @@ namespace Foundations.Coding
         {
             get
             {
-                return 1;
+                return 0;
             }
         }
 
@@ -52,7 +58,7 @@ namespace Foundations.Coding
         {
             get
             {
-                return int.MaxValue;
+                return (1 << bitCount) - 1;
             }
         }
 
@@ -63,6 +69,8 @@ namespace Foundations.Coding
         {
             if (value < MinEncodable || value > MaxEncodable)
                 throw new ArgumentOutOfRangeException();
+
+            return new Code(value, bitCount);
         }
 
         /// <summary>
@@ -70,6 +78,7 @@ namespace Foundations.Coding
         /// </summary>
         public int Read(BitReader reader)
         {
+            return (int)reader.Read(bitCount);
         }
     }
 }

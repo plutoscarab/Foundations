@@ -20,15 +20,17 @@ namespace Foundations.Coding
     public static partial class Codes
     {
         /// <summary>
-        /// Rice code.
+        /// Rice code. Lower bits of value are preceded by unary-coded 
+        /// value of upper bits.
         /// </summary>
-        public static IEncoding<int, Code> Rice(int exponentOf2) => new Rice(exponentOf2);
+        public static IBitEncoding Rice(int exponentOf2) => new Rice(exponentOf2);
     }
 
     /// <summary>
-    /// 
+    /// Rice code. Lower bits of value are preceded by unary-coded 
+    /// value of upper bits.
     /// </summary>
-    public sealed partial class Rice : IEncoding<int, Code>
+    public sealed partial class Rice : IBitEncoding
     {
         private readonly int exponentOf2;
         private readonly int mask;

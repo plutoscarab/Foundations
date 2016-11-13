@@ -20,15 +20,17 @@ namespace Foundations.Coding
     public static partial class Codes
     {
         /// <summary>
-        /// Fibonacci code.
+        /// Fibonacci code. Value is encoded as Zeckendorf's representation
+        /// and terminated with a final '1' bit.
         /// </summary>
-        public static readonly IEncoding<int, Code> Fibonacci = new Fibonacci();
+        public static readonly IBitEncoding Fibonacci = new Fibonacci();
     }
 
     /// <summary>
-    /// 
+    /// Fibonacci code. Value is encoded as Zeckendorf's representation
+    /// and terminated with a final '1' bit.
     /// </summary>
-    public sealed partial class Fibonacci : IEncoding<int, Code>
+    public sealed partial class Fibonacci : IBitEncoding
     {
         internal Fibonacci()
         {

@@ -13,13 +13,11 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 using System;
 using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Foundations.Coding
 {
     /// <summary>
-    /// 
+    /// Reads a byte array as a stream of groups of bits.
     /// </summary>
     public sealed partial class BitReader
     {
@@ -30,27 +28,59 @@ namespace Foundations.Coding
         int shift;
 
         /// <summary>
-        /// 
+        /// Create a <see cref="BitReader"/>.
         /// </summary>
+        /// <param name="buffer">
+        /// The bits to read. Bits are assumed to be packed big-endian into bytes.
+        /// The array is read starting from its first element.
+        /// </param>
         public BitReader(byte[] buffer)
-            : this(buffer, 0)
+            : this(buffer, 0, 0)
         {
         }
 
         /// <summary>
-        /// 
+        /// Create a <see cref="BitReader"/>. 
         /// </summary>
-        public BitReader(byte[] buffer, int offset)
+        /// <param name="buffer">The bits to read. Bits are assumed to be packed big-endian into bytes.</param>
+        /// <param name="byteOffset">The position to start reading.</param>
+        public BitReader(byte[] buffer, int byteOffset)
+            : this(buffer, byteOffset, 0)
         {
+        }
+
+        /// <summary>
+        /// Create a <see cref="BitReader"/>. 
+        /// </summary>
+        /// <param name="buffer">The bits to read. Bits are assumed to be packed big-endian into bytes.</param>
+        /// <param name="byteOffset">The position to start reading.</param>
+        /// <param name="bitOffset">The number of bits to skip in the first byte, from 0 to 7.</param>
+        public BitReader(byte[] buffer, int byteOffset, int bitOffset)
+        {
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            if (byteOffset < 0 || byteOffset > buffer.Length) throw new ArgumentOutOfRangeException(nameof(byteOffset));
+            if (bitOffset < 0 || bitOffset > 7) throw new ArgumentOutOfRangeException(nameof(bitOffset));
             this.buffer = buffer;
-            this.position = offset;
+            position = byteOffset;
+            shift = bitOffset;
         }
 
         /// <summary>
-        /// 
+        /// Reads a <see cref="System.Int32"/> value using the specified <see cref="IBitEncoding"/>.
         /// </summary>
+        public int Read(IBitEncoding encoding)
+        {
+            return encoding.Read(this);
+        }
+
+        /// <summary>
+        /// Reads bits.
+        /// </summary>
+        /// <param name="count">The number of bits to read.</param>
+        /// <returns>Returns the bits, with the last bit read placed in the LSB of the result. MSBs are 0.</returns>
         public ulong Read(int count)
         {
+            if (count < 0 || count > 64) throw new ArgumentOutOfRangeException(nameof(count));
             ulong bits = 0;
             int length = 0;
 

@@ -48,10 +48,15 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Coding\CodeTemplate.cs" />
+    <None Include="Coding\BitCodeTemplate.cs" />
+    <None Include="Coding\ByteCodeTemplate.cs" />
+    <Compile Include="Coding\Base128.cs" />
+    <Compile Include="Coding\BaseN.cs" />
+    <Compile Include="Coding\FixedWidth.cs" />
     <Compile Include="Coding\BitReader.cs" />
     <Compile Include="Coding\BitWriter.cs" />
     <Compile Include="Coding\EliasFibonacci.cs" />
+    <Compile Include="Coding\IByteEncoding.cs" />
     <Compile Include="Coding\Levenshtein.cs" />
     <Compile Include="Coding\EliasOmega.cs" />
     <Compile Include="Coding\Rice.cs" />
@@ -70,7 +75,7 @@
     <Compile Include="Coding\Bits.cs" />
     <Compile Include="Coding\Code.cs" />
     <Compile Include="Coding\EliasGamma.cs" />
-    <Compile Include="Coding\IEncoding.cs" />
+    <Compile Include="Coding\IBitEncoding.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
     <Compile Include="Functions\NumberTheoretic\GCD.cs">
       <DependentUpon>GCD.tt</DependentUpon>

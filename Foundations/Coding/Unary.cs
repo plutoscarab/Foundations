@@ -22,18 +22,18 @@ namespace Foundations.Coding
         /// <summary>
         /// Unary code using 1's as tally bits and 0 as terminator.
         /// </summary>
-        public static readonly IEncoding<int, Code> UnaryOnes = new Unary(1);
+        public static readonly IBitEncoding UnaryOnes = new Unary(1);
 
         /// <summary>
         /// Unary code using 0's as tally bits and 1 as terminator.
         /// </summary>
-        public static readonly IEncoding<int, Code> UnaryZeros = new Unary(0);
+        public static readonly IBitEncoding UnaryZeros = new Unary(0);
     }
 
     /// <summary>
-    /// 
+    /// Unary code.
     /// </summary>
-    public sealed partial class Unary : IEncoding<int, Code>
+    public sealed partial class Unary : IBitEncoding
     {
         int tally;
 

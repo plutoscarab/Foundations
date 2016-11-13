@@ -20,15 +20,19 @@ namespace Foundations.Coding
     public static partial class Codes
     {
         /// <summary>
-        /// Levenshtein code.
+        /// Levenshtein code. Value is preceded by bit length of value
+        /// recursively, and then preceded by unary-coded number of steps
+        /// needed to reach 0.
         /// </summary>
-        public static readonly IEncoding<int, Code> Levenshtein = new Levenshtein();
+        public static readonly IBitEncoding Levenshtein = new Levenshtein();
     }
 
     /// <summary>
-    /// 
+    /// Levenshtein code. Value is preceded by bit length of value
+    /// recursively, and then preceded by unary-coded number of steps
+    /// needed to reach 0.
     /// </summary>
-    public sealed partial class Levenshtein : IEncoding<int, Code>
+    public sealed partial class Levenshtein : IBitEncoding
     {
         internal Levenshtein()
         {

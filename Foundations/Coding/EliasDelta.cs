@@ -20,15 +20,17 @@ namespace Foundations.Coding
     public static partial class Codes
     {
         /// <summary>
-        /// Elias Delta code.
+        /// Elias Delta code. Value is preceded by bit length, and bit length
+        /// is preceded by unary-coded length of bit length.
         /// </summary>
-        public static readonly IEncoding<int, Code> EliasDelta = new EliasDelta();
+        public static readonly IBitEncoding EliasDelta = new EliasDelta();
     }
 
     /// <summary>
-    /// 
+    /// Elias Delta code. Value is preceded by bit length, and bit length
+    /// is preceded by unary-coded length of bit length.
     /// </summary>
-    public sealed partial class EliasDelta : IEncoding<int, Code>
+    public sealed partial class EliasDelta : IBitEncoding
     {
         internal EliasDelta()
         {

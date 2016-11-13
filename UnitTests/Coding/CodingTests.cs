@@ -1,6 +1,6 @@
 ﻿
 /*
-UniversalCodeTests.cs
+CodingTests.cs
 
 Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
@@ -24,7 +24,7 @@ namespace Foundations.Coding
     /// 
     /// </summary>
     [TestClass]
-    public class UniversalCodeTests
+    public class CodingTests
     {
         [TestMethod]
         public void UnaryZerosTest()
@@ -92,7 +92,25 @@ namespace Foundations.Coding
             EncodingTest(Codes.Rice(8));
         }
 
-        private void EncodingTest(IEncoding<int, Code> encoding)
+        [TestMethod]
+        public void BaseNTest()
+        {
+            EncodingTest(Codes.BaseN(85));
+        }
+
+        [TestMethod]
+        public void PowerOf2BaseTest()
+        {
+            EncodingTest(Codes.PowerOf2Base(5));
+        }
+
+        [TestMethod]
+        public void FixedWidthTest()
+        {
+            EncodingTest(Codes.FixedWidth(27));
+        }
+
+        private void EncodingTest(IBitEncoding encoding)
         {
             var writer = new BitWriter(1000);
             var values = new List<int>();

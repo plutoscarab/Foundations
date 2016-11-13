@@ -6,7 +6,7 @@
 <#@ output extension=".cs" #>
 
 /*
-UniversalCodeTests.cs
+CodingTests.cs
 
 <#@ include file="../../License.txt" #>
 */
@@ -22,7 +22,7 @@ namespace Foundations.Coding
     /// 
     /// </summary>
     [TestClass]
-    public class UniversalCodeTests
+    public class CodingTests
     {
 <#
     Test("UnaryZeros");
@@ -36,8 +36,11 @@ namespace Foundations.Coding
     ParameterizedTest("TruncatedBinary", "6000");
     ParameterizedTest("Golomb", "141");
     ParameterizedTest("Rice", "8");
+    ParameterizedTest("BaseN", "85");
+    ParameterizedTest("PowerOf2Base", "5");
+    ParameterizedTest("FixedWidth", "27");
 #>
-        private void EncodingTest(IEncoding<int, Code> encoding)
+        private void EncodingTest(IBitEncoding encoding)
         {
             var writer = new BitWriter(1000);
             var values = new List<int>();

@@ -20,15 +20,15 @@ namespace Foundations.Coding
     public static partial class Codes
     {
         /// <summary>
-        /// Elias Gamma code.
+        /// Elias Gamma code. Value is preceded by unary-coded bit length.
         /// </summary>
-        public static readonly IEncoding<int, Code> EliasGamma = new EliasGamma();
+        public static readonly IBitEncoding EliasGamma = new EliasGamma();
     }
 
     /// <summary>
-    /// 
+    /// Elias Gamma code. Value is preceded by unary-coded bit length.
     /// </summary>
-    public sealed partial class EliasGamma : IEncoding<int, Code>
+    public sealed partial class EliasGamma : IBitEncoding
     {
         internal EliasGamma()
         {

@@ -24,7 +24,17 @@ namespace Foundations.Coding
         /// <summary>
         /// Zero-length code.
         /// </summary>
-        public static Code Empty = new Code(0, 0);
+        public static readonly Code Empty = new Code(0, 0);
+
+        /// <summary>
+        /// Single '0' bit.
+        /// </summary>
+        public static readonly Code Zero = new Code(0, 1);
+
+        /// <summary>
+        /// Single '1' bit.
+        /// </summary>
+        public static readonly Code One = new Code(1, 1);
 
         private ulong bits;
         private int length;

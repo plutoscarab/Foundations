@@ -18,7 +18,7 @@ using System.Text;
 namespace Foundations.Coding
 {
 	/// <summary>
-	/// Various operations on collections of bits.
+	/// Various operations on bits within integer values.
 	/// </summary>
 	public static class Bits
 	{

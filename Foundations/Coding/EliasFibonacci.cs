@@ -20,15 +20,15 @@ namespace Foundations.Coding
     public static partial class Codes
     {
         /// <summary>
-        /// EliasFibonacci code.
+        /// EliasFibonacci code. Value is precided by Fibonacci-coded bit length.
         /// </summary>
-        public static readonly IEncoding<int, Code> EliasFibonacci = new EliasFibonacci();
+        public static readonly IBitEncoding EliasFibonacci = new EliasFibonacci();
     }
 
     /// <summary>
-    /// 
+    /// EliasFibonacci code. Value is precided by Fibonacci-coded bit length.
     /// </summary>
-    public sealed partial class EliasFibonacci : IEncoding<int, Code>
+    public sealed partial class EliasFibonacci : IBitEncoding
     {
         internal EliasFibonacci()
         {

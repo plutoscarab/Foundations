@@ -20,18 +20,20 @@ namespace Foundations.Coding
     public static partial class Codes
     {
         /// <summary>
-        /// Golomb code.
+        /// Golomb code. Remainder after division is encoded using TruncatedBinary,
+        /// preceded by unary-coded quotient.
         /// </summary>
-        public static IEncoding<int, Code> Golomb(int divisor) => new Golomb(divisor);
+        public static IBitEncoding Golomb(int divisor) => new Golomb(divisor);
     }
 
     /// <summary>
-    /// 
+    /// Golomb code. Remainder after division is encoded using TruncatedBinary,
+    /// preceded by unary-coded quotient.
     /// </summary>
-    public sealed partial class Golomb : IEncoding<int, Code>
+    public sealed partial class Golomb : IBitEncoding
     {
         private readonly int divisor;
-        private readonly IEncoding<int, Code> remainderCode;
+        private readonly IBitEncoding remainderCode;
         private readonly int maxEncodable;
 
         internal Golomb(int divisor)

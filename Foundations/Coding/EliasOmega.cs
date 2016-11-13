@@ -20,15 +20,15 @@ namespace Foundations.Coding
     public static partial class Codes
     {
         /// <summary>
-        /// EliasOmega code.
+        /// EliasOmega code. Value is preceded by EliasOmega-encoded bit length.
         /// </summary>
-        public static readonly IEncoding<int, Code> EliasOmega = new EliasOmega();
+        public static readonly IBitEncoding EliasOmega = new EliasOmega();
     }
 
     /// <summary>
-    /// 
+    /// EliasOmega code. Value is preceded by EliasOmega-encoded bit length.
     /// </summary>
-    public sealed partial class EliasOmega : IEncoding<int, Code>
+    public sealed partial class EliasOmega : IBitEncoding
     {
         internal EliasOmega()
         {
