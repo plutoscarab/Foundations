@@ -12,7 +12,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 
 using System;
 
-namespace Foundations
+namespace Foundations.
 {
     /// <summary>
     /// 

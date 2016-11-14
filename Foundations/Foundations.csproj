@@ -48,6 +48,15 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Units\Dimension.cs" />
+    <Compile Include="Units\MetricPrefix.cs" />
+    <Compile Include="Units\ISystemOfMeasurement.cs" />
+    <Compile Include="Units\Quantity.cs" />
+    <Compile Include="Units\ScaledUnit.cs" />
+    <Compile Include="Units\SI.cs" />
+    <Compile Include="Units\Unit.cs" />
+    <Compile Include="Units\UnitSymbol.cs" />
+    <None Include="Units\Units_.cs" />
     <None Include="Coding\BitCodeTemplate.cs" />
     <None Include="Coding\ByteCodeTemplate.cs" />
     <Compile Include="Coding\Base128.cs" />
