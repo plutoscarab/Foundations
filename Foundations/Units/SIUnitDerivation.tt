@@ -1,0 +1,110 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+/*
+SIUnitDerivation.cs
+
+<#@ include file="../../License.txt" #>
+*/
+
+using System;
+
+namespace Foundations.Units
+{
+    public sealed partial class SI
+    {
+<#
+Make("Metre", 1, 0, 0, 0, 0, 0, 0);
+Make("Kilogram", 0, 1, 0, 0, 0, 0, 0);
+Make("Second", 0, 0, 1, 0, 0, 0, 0);
+Make("Hertz", 0, 0, -1, 0, 0, 0, 0);
+Make("Ampere", 0, 0, 0, 1, 0, 0, 0);
+Make("Kelvin", 0, 0, 0, 0, 1, 0, 0);
+Make("Mole", 0, 0, 0, 0, 0, 1, 0);
+Make("Candela", 0, 0, 0, 0, 0, 0, 1);
+Make("Joule", 2, 1, -2, 0, 0, 0, 0);
+Make("Watt", 2, 1, -3, 0, 0, 0, 0);
+Make("Coulomb", 0, 1, 0, 1, 0, 0, 0);
+Make("Volt", 2, 1, -3, -1, 0, 0, 0);
+Make("Farad", -2, -1, 4, 2, 0, 0, 0);
+Make("Ohm", 2, 1, -3, -2, 0, 0, 0);
+Make("Siemens", -2, -1, 3, 2, 0, 0, 0);
+Make("Henry", 2, 1, -2, -2, 0, 0, 0);
+Make("Weber", 2, 1, -2, -1, 0, 0, 0);
+Make("Tesla", 0, 1, -2, -1, 0, 0, 0);
+Make("Newton", 1, 1, -2, 0, 0, 0, 0);
+Make("Pascal", -1, 1, -2, 0, 0, 0, 0);
+Make("Lux", -2, 0, 0, 0, 0, 0, 1);
+#>
+    }
+
+	public sealed partial class SIUnit
+	{
+<#
+foreach (var u in list)
+{
+#>
+		/// <summary>
+		/// Multiply by SI.<#= u #>.
+		/// </summary>
+		public SIUnit <#= u #> => (SIUnit)(this * SI.<#= u #>);
+
+		/// <summary>
+		/// Multiply by square SI.<#= u #>.
+		/// </summary>
+		public SIUnit Square<#= u #> => (SIUnit)(this * SI.Square<#= u #>);
+
+		/// <summary>
+		/// Multiply by cubic SI.<#= u #>.
+		/// </summary>
+		public SIUnit Cubic<#= u #> => (SIUnit)(this * SI.Cubic<#= u #>);
+
+		/// <summary>
+		/// Divide by SI.<#= u #>.
+		/// </summary>
+		public SIUnit Per<#= u #> => (SIUnit)(this / SI.<#= u #>);
+
+		/// <summary>
+		/// Divide by square SI.<#= u #>.
+		/// </summary>
+		public SIUnit PerSquare<#= u #> => (SIUnit)(this / SI.Square<#= u #>);
+
+		/// <summary>
+		/// Divide by cubic SI.<#= u #>.
+		/// </summary>
+		public SIUnit PerCubic<#= u #> => (SIUnit)(this / SI.Cubic<#= u #>);
+
+<#
+}
+#>
+	}
+}
+<#+
+List<string> list = new List<string>();
+
+void Make(string name, int a, int b, int c, int d, int e, int f, int g)
+{
+	list.Add(name);
+#>
+		/// <summary>
+	    /// SI unit "<#= name #>".
+	    /// </summary>
+		public static readonly SIUnit <#= name #> = new SIUnit(Instance.Value, <#= a #>, <#= b #>, <#= c #>, <#= d #>, <#= e #>, <#= f #>, <#= g #>);
+
+		/// <summary>
+	    /// Square SI.<#= name #>.
+	    /// </summary>
+		public static readonly SIUnit Square<#= name #> = new SIUnit(Instance.Value, <#= 2 * a #>, <#= 2 * b #>, <#= 2 * c #>, <#= 2 * d #>, <#= 2 * e #>, <#= 2 * f #>, <#= 2 * g #>);
+
+		/// <summary>
+	    /// Cubic SI.<#= name #>.
+	    /// </summary>
+		public static readonly SIUnit Cubic<#= name #> = new SIUnit(Instance.Value, <#= 3 * a #>, <#= 3 * b #>, <#= 3 * c #>, <#= 3 * d #>, <#= 3 * e #>, <#= 3 * f #>, <#= 3 * g #>);
+
+<#+
+}
+#>

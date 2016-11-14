@@ -48,15 +48,22 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Quantities.cs" />
+    <Compile Include="DecimalConstants.cs" />
     <Compile Include="Units\Dimension.cs" />
     <Compile Include="Units\MetricPrefix.cs" />
     <Compile Include="Units\ISystemOfMeasurement.cs" />
     <Compile Include="Units\Quantity.cs" />
     <Compile Include="Units\ScaledUnit.cs" />
     <Compile Include="Units\SI.cs" />
+    <Compile Include="Units\SIUnit.cs" />
+    <Compile Include="Units\SIUnitDerivation.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SIUnitDerivation.tt</DependentUpon>
+    </Compile>
     <Compile Include="Units\Unit.cs" />
     <Compile Include="Units\UnitSymbol.cs" />
-    <None Include="Units\Units_.cs" />
     <None Include="Coding\BitCodeTemplate.cs" />
     <None Include="Coding\ByteCodeTemplate.cs" />
     <Compile Include="Coding\Base128.cs" />
@@ -194,6 +201,10 @@
     <Content Include="Types\ValueUnion.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ValueUnion.cs</LastGenOutput>
+    </Content>
+    <Content Include="Units\SIUnitDerivation.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SIUnitDerivation.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>

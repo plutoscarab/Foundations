@@ -131,6 +131,14 @@ namespace Foundations.Units
         }
 
         /// <summary>
+        /// Divide two quantities.
+        /// </summary>
+        public static Quantity operator /(double a, Quantity b)
+        {
+            return new Quantity(a / b.Value, -b.Unit);
+        }
+
+        /// <summary>
         /// Convert a value to a scalar quantity.
         /// </summary>
         public static implicit operator Quantity(double d)

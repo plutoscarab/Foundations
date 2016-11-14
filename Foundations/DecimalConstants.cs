@@ -1,6 +1,6 @@
 ﻿
 /*
-Constants.cs
+DecimalConstants.cs
 
 Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
@@ -15,38 +15,38 @@ using Foundations.Units;
 namespace Foundations
 {
     /// <summary>
-    /// Constants.
+    /// Decimal constants.
     /// </summary>
-    public static class Constants
+    public static class DecimalConstants
     {
-        /// <summary>PI</summary>
-        public const double π = Math.PI;
+       /// <summary>PI</summary>
+        public const decimal π = 3.1415926535897932384626433833m;
 
         /// <summary>Base of natural logarithm.</summary>
-        public const double e = 2.7182818284590452;
+        public const decimal e = 2.7182818284590452353602874714m;
 
         /// <summary>Square root of 2π.</summary>
-        public const double Sqrt2π = 2.5066282746310002;
+        public const decimal Sqrt2π = 2.5066282746310005024157652848m;
 
         /// <summary>Square root of 5.</summary>
-        public const double Sqrt5 = 2.23606797749979;
+        public const decimal Sqrt5 = 2.2360679774997896964091736687m;
 
         /// <summary>Square root of π.</summary>
-        public const double Sqrtπ = 1.772453850905516;
+        public const decimal Sqrtπ = 1.7724538509055160272981674833m;
 
         /// <summary>Square root of 3.</summary>
-        public const double Sqrt3 = 1.7320508075688772;
+        public const decimal Sqrt3 = 1.7320508075688772935274463415m;
 
         /// <summary>Golden ratio.</summary>
-        public const double φ = 1.6180339887498949;
+        public const decimal φ = 1.6180339887498948482045868344m;
 
         /// <summary>Square root of 2.</summary>
-        public const double Sqrt2 = 1.4142135623730951;
+        public const decimal Sqrt2 = 1.4142135623730950488016887242m;
 
         /// <summary>Square root of π/2.</summary>
-        public const double SqrtHalfπ = 1.2533141373155003;
+        public const decimal SqrtHalfπ = 0.88622692545275801364908374167m;
 
         /// <summary>Euler–Mascheroni constant.</summary>
-        public const double γ = 0.57721566490153287;
+        public const decimal γ = 0.57721566490153286060651209008m;
     }
 }

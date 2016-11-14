@@ -19,7 +19,7 @@ namespace Foundations.Units
     /// <summary>
     /// A product of powers of base units.
     /// </summary>
-    public sealed class Unit
+    public class Unit
     {
         /// <summary>
         /// Unit of scalar quantities.
