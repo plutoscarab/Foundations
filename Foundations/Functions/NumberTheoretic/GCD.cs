@@ -14,6 +14,7 @@ FILE GENERATOR. IF YOU SAVE THE FILE IN VISUAL STUDIO IT WILL DO THIS FOR YOU.
 */
 
 using System;
+using System.Numerics;
 
 namespace Foundations.Functions
 {
@@ -28,12 +29,12 @@ namespace Foundations.Functions
         public static int GCD(int p, int q)
         {
             if (p == 0 || q == 0) return 0;
-            p = Math.Abs(p);
-            q = Math.Abs(q);
+            p = p < 0 ? -p : p;
+            q = q < 0 ? -q : q;
 
             while (true)
             {
-                int m = p % q;
+                var m = p % q;
                 if (m == 0) return q;
                 p = q;
                 q = m;
@@ -49,7 +50,7 @@ namespace Foundations.Functions
 
             while (true)
             {
-                uint m = p % q;
+                var m = p % q;
                 if (m == 0) return q;
                 p = q;
                 q = m;
@@ -62,12 +63,12 @@ namespace Foundations.Functions
         public static long GCD(long p, long q)
         {
             if (p == 0 || q == 0) return 0;
-            p = Math.Abs(p);
-            q = Math.Abs(q);
+            p = p < 0 ? -p : p;
+            q = q < 0 ? -q : q;
 
             while (true)
             {
-                long m = p % q;
+                var m = p % q;
                 if (m == 0) return q;
                 p = q;
                 q = m;
@@ -83,7 +84,25 @@ namespace Foundations.Functions
 
             while (true)
             {
-                ulong m = p % q;
+                var m = p % q;
+                if (m == 0) return q;
+                p = q;
+                q = m;
+            }
+        }
+
+        /// <summary>
+        /// Greatest common divisor.
+        /// </summary>
+        public static BigInteger GCD(BigInteger p, BigInteger q)
+        {
+            if (p == 0 || q == 0) return 0;
+            p = p < 0 ? -p : p;
+            q = q < 0 ? -q : q;
+
+            while (true)
+            {
+                var m = p % q;
                 if (m == 0) return q;
                 p = q;
                 q = m;

@@ -18,6 +18,7 @@ using Foundations.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Foundations.UnitTests.RandomNumbers
@@ -8084,7 +8085,7 @@ namespace Foundations.UnitTests.RandomNumbers
         [TestMethod]
         public void AddFillSingleArrayWithMinAndRange()
         {
-            var random = new Generator();
+            var random = new Generator("AddFillSingleArrayWithMinAndRange");
             var data1 = new Single[9999];
             var data2 = new Single[9999];
             var data3 = new Single[9999];

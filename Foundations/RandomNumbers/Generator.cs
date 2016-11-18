@@ -5210,8 +5210,10 @@ namespace Foundations.RandomNumbers
             {
                 Next();
                 value.UInt64_0 = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
-                array[offset++] += value.Single_0 - 1f;
-                array[offset++] += value.Single_1 - 1f;
+				var sample = value.Single_0 - 1f;
+                array[offset++] += sample;
+				sample = value.Single_1 - 1f;
+                array[offset++] += sample;
                 count -= 2;
             }
 
@@ -5219,7 +5221,8 @@ namespace Foundations.RandomNumbers
             {
                 Next();
                 value.UInt64_0 = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
-                array[offset++] += value.Single_0 - 1f;
+				var sample = value.Single_0 - 1f;
+                array[offset] += sample;
             }
         }
 
@@ -5247,8 +5250,10 @@ namespace Foundations.RandomNumbers
             {
                 Next();
                 value.UInt64_0 = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
-                array[offset++] += minimum + (value.Single_0 - 1f) * range;
-                array[offset++] += minimum + (value.Single_1 - 1f) * range;
+				var sample = minimum + (value.Single_0 - 1f) * range;
+                array[offset++] += sample;
+				sample = minimum + (value.Single_1 - 1f) * range;
+                array[offset++] += sample;
                 count -= 2;
             }
 
@@ -5256,7 +5261,8 @@ namespace Foundations.RandomNumbers
             {
                 Next();
                 value.UInt64_0 = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
-                array[offset++] += minimum + (value.Single_0 - 1f) * range;
+				var sample = minimum + (value.Single_0 - 1f) * range;
+                array[offset] += sample;
             }
         }
 

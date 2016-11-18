@@ -31,7 +31,7 @@ namespace Foundations.Functions
 			if (generator == null)
 				throw new ArgumentNullException(nameof(generator));
 
-			return CreateByteMixer(generator.CreateBytes(16));
+			return CreateByteMixerInternal(generator.CreateBytes(16));
 		}
 
 		/// <summary>
@@ -45,7 +45,7 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			return CreateByteMixer(key.GetBytes());
+			return CreateByteMixerInternal(GetKeyBytes(key.GetBytes()));
 		}
 
 		/// <summary>
@@ -59,8 +59,11 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			var k = GetKeyBytes(key);
+			return CreateByteMixerInternal(GetKeyBytes(key));
+		}
 
+		private static Func<Byte, Byte> CreateByteMixerInternal(byte[] k)
+		{
 			return n => 
 			{
 				var a = (byte)(n >> 0);
@@ -93,7 +96,7 @@ namespace Foundations.Functions
 			if (generator == null)
 				throw new ArgumentNullException(nameof(generator));
 
-			return CreateSByteMixer(generator.CreateBytes(16));
+			return CreateSByteMixerInternal(generator.CreateBytes(16));
 		}
 
 		/// <summary>
@@ -107,7 +110,7 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			return CreateSByteMixer(key.GetBytes());
+			return CreateSByteMixerInternal(GetKeyBytes(key.GetBytes()));
 		}
 
 		/// <summary>
@@ -121,8 +124,11 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			var k = GetKeyBytes(key);
+			return CreateSByteMixerInternal(GetKeyBytes(key));
+		}
 
+		private static Func<SByte, SByte> CreateSByteMixerInternal(byte[] k)
+		{
 			return n => 
 			{
 				var a = (byte)(n >> 0);
@@ -155,7 +161,7 @@ namespace Foundations.Functions
 			if (generator == null)
 				throw new ArgumentNullException(nameof(generator));
 
-			return CreateCharMixer(generator.CreateBytes(16));
+			return CreateCharMixerInternal(generator.CreateBytes(16));
 		}
 
 		/// <summary>
@@ -169,7 +175,7 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			return CreateCharMixer(key.GetBytes());
+			return CreateCharMixerInternal(GetKeyBytes(key.GetBytes()));
 		}
 
 		/// <summary>
@@ -183,8 +189,11 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			var k = GetKeyBytes(key);
+			return CreateCharMixerInternal(GetKeyBytes(key));
+		}
 
+		private static Func<Char, Char> CreateCharMixerInternal(byte[] k)
+		{
 			return n => 
 			{
 				byte temp;
@@ -228,7 +237,7 @@ namespace Foundations.Functions
 			if (generator == null)
 				throw new ArgumentNullException(nameof(generator));
 
-			return CreateUInt16Mixer(generator.CreateBytes(16));
+			return CreateUInt16MixerInternal(generator.CreateBytes(16));
 		}
 
 		/// <summary>
@@ -242,7 +251,7 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			return CreateUInt16Mixer(key.GetBytes());
+			return CreateUInt16MixerInternal(GetKeyBytes(key.GetBytes()));
 		}
 
 		/// <summary>
@@ -256,8 +265,11 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			var k = GetKeyBytes(key);
+			return CreateUInt16MixerInternal(GetKeyBytes(key));
+		}
 
+		private static Func<UInt16, UInt16> CreateUInt16MixerInternal(byte[] k)
+		{
 			return n => 
 			{
 				byte temp;
@@ -301,7 +313,7 @@ namespace Foundations.Functions
 			if (generator == null)
 				throw new ArgumentNullException(nameof(generator));
 
-			return CreateInt16Mixer(generator.CreateBytes(16));
+			return CreateInt16MixerInternal(generator.CreateBytes(16));
 		}
 
 		/// <summary>
@@ -315,7 +327,7 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			return CreateInt16Mixer(key.GetBytes());
+			return CreateInt16MixerInternal(GetKeyBytes(key.GetBytes()));
 		}
 
 		/// <summary>
@@ -329,8 +341,11 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			var k = GetKeyBytes(key);
+			return CreateInt16MixerInternal(GetKeyBytes(key));
+		}
 
+		private static Func<Int16, Int16> CreateInt16MixerInternal(byte[] k)
+		{
 			return n => 
 			{
 				byte temp;
@@ -374,7 +389,7 @@ namespace Foundations.Functions
 			if (generator == null)
 				throw new ArgumentNullException(nameof(generator));
 
-			return CreateUInt32Mixer(generator.CreateBytes(16));
+			return CreateUInt32MixerInternal(generator.CreateBytes(16));
 		}
 
 		/// <summary>
@@ -388,7 +403,7 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			return CreateUInt32Mixer(key.GetBytes());
+			return CreateUInt32MixerInternal(GetKeyBytes(key.GetBytes()));
 		}
 
 		/// <summary>
@@ -402,8 +417,11 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			var k = GetKeyBytes(key);
+			return CreateUInt32MixerInternal(GetKeyBytes(key));
+		}
 
+		private static Func<UInt32, UInt32> CreateUInt32MixerInternal(byte[] k)
+		{
 			return n => 
 			{
 				byte temp;
@@ -447,7 +465,7 @@ namespace Foundations.Functions
 			if (generator == null)
 				throw new ArgumentNullException(nameof(generator));
 
-			return CreateInt32Mixer(generator.CreateBytes(16));
+			return CreateInt32MixerInternal(generator.CreateBytes(16));
 		}
 
 		/// <summary>
@@ -461,7 +479,7 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			return CreateInt32Mixer(key.GetBytes());
+			return CreateInt32MixerInternal(GetKeyBytes(key.GetBytes()));
 		}
 
 		/// <summary>
@@ -475,8 +493,11 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			var k = GetKeyBytes(key);
+			return CreateInt32MixerInternal(GetKeyBytes(key));
+		}
 
+		private static Func<Int32, Int32> CreateInt32MixerInternal(byte[] k)
+		{
 			return n => 
 			{
 				byte temp;
@@ -520,7 +541,7 @@ namespace Foundations.Functions
 			if (generator == null)
 				throw new ArgumentNullException(nameof(generator));
 
-			return CreateUInt64Mixer(generator.CreateBytes(16));
+			return CreateUInt64MixerInternal(generator.CreateBytes(16));
 		}
 
 		/// <summary>
@@ -534,7 +555,7 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			return CreateUInt64Mixer(key.GetBytes());
+			return CreateUInt64MixerInternal(GetKeyBytes(key.GetBytes()));
 		}
 
 		/// <summary>
@@ -548,8 +569,11 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			var k = GetKeyBytes(key);
+			return CreateUInt64MixerInternal(GetKeyBytes(key));
+		}
 
+		private static Func<UInt64, UInt64> CreateUInt64MixerInternal(byte[] k)
+		{
 			return n => 
 			{
 				byte temp;
@@ -599,7 +623,7 @@ namespace Foundations.Functions
 			if (generator == null)
 				throw new ArgumentNullException(nameof(generator));
 
-			return CreateInt64Mixer(generator.CreateBytes(16));
+			return CreateInt64MixerInternal(generator.CreateBytes(16));
 		}
 
 		/// <summary>
@@ -613,7 +637,7 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			return CreateInt64Mixer(key.GetBytes());
+			return CreateInt64MixerInternal(GetKeyBytes(key.GetBytes()));
 		}
 
 		/// <summary>
@@ -627,8 +651,11 @@ namespace Foundations.Functions
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			var k = GetKeyBytes(key);
+			return CreateInt64MixerInternal(GetKeyBytes(key));
+		}
 
+		private static Func<Int64, Int64> CreateInt64MixerInternal(byte[] k)
+		{
 			return n => 
 			{
 				byte temp;
@@ -692,24 +719,31 @@ namespace Foundations.Functions
 
 		private static byte[] GetKeyBytes<T>(T[] key)
 		{
-			var keyBytes = key.GetBytes();
+			var g = new Generator(key.GetBytes());
+			return g.CreateBytes(16);
+		}
 
-			if (keyBytes.Length > 16)
+		/// <summary>
+		/// </summary>
+		private static Action CreateInPlaceBitArrayMixer(byte[] key, byte[] array, int bitLength)
+		{
+			if (array == null)
+				throw new ArgumentNullException(nameof(array));
+
+			int partialBits = 8 * array.Length - bitLength;
+
+			if (partialBits < 0 || partialBits > 7) 
+				throw new ArgumentOutOfRangeException(nameof(bitLength));
+
+			if (array.Length == 0)
+				return () => {};
+
+            byte mask = (byte)((1 << partialBits) - 1);
+
+			return () => 
 			{
-				for (int i = keyBytes.Length - 16; i >= 0; i--)
-				{
-					keyBytes[i] ^= keyBytes[i + 16];
-				}
-			}
-
-			var k = new byte[16];
-
-			for (int i = 0; i < 16; i++)
-			{
-				k[i] = keyBytes[i % keyBytes.Length];
-			}
-
-			return k;
+                throw new NotImplementedException();
+			};
 		}
     }
 }

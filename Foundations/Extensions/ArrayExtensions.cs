@@ -23,13 +23,7 @@ namespace Foundations
         /// </summary>
         public static byte[] GetBytes<T>(this T[] array)
         {
-            if (array == null)
-                throw new ArgumentNullException(nameof(array));
-
-            int n = Buffer.ByteLength(array);
-            var bytes = new byte[n];
-            Buffer.BlockCopy(array, 0, bytes, 0, n);
-            return bytes;
+            return GetBytes((Array)array);
         }
 
         /// <summary>

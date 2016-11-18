@@ -10,7 +10,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 */
 
 using System;
-using Foundations.Units;
+//using Foundations.Units;
 
 namespace Foundations
 {
@@ -44,7 +44,7 @@ namespace Foundations
         public const decimal Sqrt2 = 1.4142135623730950488016887242m;
 
         /// <summary>Square root of π/2.</summary>
-        public const decimal SqrtHalfπ = 0.88622692545275801364908374167m;
+        public const decimal SqrtHalfπ = 1.2533141373155002512078826424055m;
 
         /// <summary>Euler–Mascheroni constant.</summary>
         public const decimal γ = 0.57721566490153286060651209008m;

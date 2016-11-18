@@ -54,24 +54,36 @@ Make("Int64", 64);
 
 		private static byte[] GetKeyBytes<T>(T[] key)
 		{
-			var keyBytes = key.GetBytes();
+			var g = new Generator(key.GetBytes());
+			return g.CreateBytes(16);
+		}
 
-			if (keyBytes.Length > 16)
+		/// <summary>
+		/// </summary>
+		public static Action CreateInPlaceBitArrayMixer(byte[] key, byte[] array, int bitLength)
+		{
+			if (array == null)
+				throw new ArgumentNullException(nameof(array));
+
+			int partialBits = 8 * array.Length - bitLength;
+
+			if (partialBits < 0 || partialBits > 7) 
+				throw new ArgumentOutOfRangeException(nameof(bitLength));
+
+			if (array.Length == 0)
+				return () => {};
+
+			return () => 
 			{
-				for (int i = keyBytes.Length - 16; i >= 0; i--)
+				byte b = array[0];
+
+				for (int i = 0; i < array.Length - 1; i++)
 				{
-					keyBytes[i] ^= keyBytes[i + 16];
+					array[i] = array[i + 1];
 				}
-			}
 
-			var k = new byte[16];
-
-			for (int i = 0; i < 16; i++)
-			{
-				k[i] = keyBytes[i % keyBytes.Length];
-			}
-
-			return k;
+				array[array.Length - 1] = b;
+			};
 		}
     }
 }
@@ -91,7 +103,7 @@ void Make(string T, int bits)
 			if (generator == null)
 				throw new ArgumentNullException(nameof(generator));
 
-			return Create<#= T #>Mixer(generator.CreateBytes(16));
+			return Create<#= T #>MixerInternal(generator.CreateBytes(16));
 		}
 
 		/// <summary>
@@ -105,7 +117,7 @@ void Make(string T, int bits)
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			return Create<#= T #>Mixer(key.GetBytes());
+			return Create<#= T #>MixerInternal(GetKeyBytes(key.GetBytes()));
 		}
 
 		/// <summary>
@@ -119,8 +131,11 @@ void Make(string T, int bits)
 			if (key.Length == 0)
 				throw new ArgumentException(nameof(key));
 
-			var k = GetKeyBytes(key);
+			return Create<#= T #>MixerInternal(GetKeyBytes(key));
+		}
 
+		private static Func<<#= T #>, <#= T #>> Create<#= T #>MixerInternal(byte[] k)
+		{
 			return n => 
 			{
 <#+

@@ -48,22 +48,8 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Quantities.cs" />
+    <None Include="Quantities.cs" />
     <Compile Include="DecimalConstants.cs" />
-    <Compile Include="Units\Dimension.cs" />
-    <Compile Include="Units\MetricPrefix.cs" />
-    <Compile Include="Units\ISystemOfMeasurement.cs" />
-    <Compile Include="Units\Quantity.cs" />
-    <Compile Include="Units\ScaledUnit.cs" />
-    <Compile Include="Units\SI.cs" />
-    <Compile Include="Units\SIUnit.cs" />
-    <Compile Include="Units\SIUnitDerivation.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SIUnitDerivation.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Units\Unit.cs" />
-    <Compile Include="Units\UnitSymbol.cs" />
     <None Include="Coding\BitCodeTemplate.cs" />
     <None Include="Coding\ByteCodeTemplate.cs" />
     <Compile Include="Coding\Base128.cs" />
@@ -129,6 +115,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="RandomNumbers\RandomSourceExtensions.cs" />
     <Compile Include="Sets\ReadOnlyHashSet.cs" />
     <Compile Include="Statistics\Gaussian.cs" />
     <Compile Include="Statistics\Histogram.cs">
@@ -151,6 +138,11 @@
     <Compile Include="RandomNumbers\XorShiftRandomSource.cs" />
     <Compile Include="Types\ContinuedFraction.cs" />
     <Compile Include="Types\Rational.cs" />
+    <Compile Include="Types\ValueTypes.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ValueTypes.tt</DependentUpon>
+    </Compile>
     <Compile Include="Types\ValueUnion.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -198,13 +190,13 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Histogram.cs</LastGenOutput>
     </Content>
+    <Content Include="Types\ValueTypes.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ValueTypes.cs</LastGenOutput>
+    </Content>
     <Content Include="Types\ValueUnion.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ValueUnion.cs</LastGenOutput>
-    </Content>
-    <Content Include="Units\SIUnitDerivation.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SIUnitDerivation.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>

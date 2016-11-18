@@ -936,8 +936,10 @@ void Next(string T, int m)
             {
                 Next();
                 value.UInt64_0 = <#= FixFP(T) #>;
-                array[offset++] += value.Single_0 - 1f;
-                array[offset++] += value.Single_1 - 1f;
+				var sample = value.Single_0 - 1f;
+                array[offset++] += sample;
+				sample = value.Single_1 - 1f;
+                array[offset++] += sample;
                 count -= 2;
             }
 
@@ -945,7 +947,8 @@ void Next(string T, int m)
             {
                 Next();
                 value.UInt64_0 = <#= FixFP(T) #>;
-                array[offset++] += value.Single_0 - 1f;
+				var sample = value.Single_0 - 1f;
+                array[offset] += sample;
             }
 <#+
     }
@@ -1036,8 +1039,10 @@ void Next(string T, int m)
             {
                 Next();
                 value.UInt64_0 = <#= FixFP(T) #>;
-                array[offset++] += minimum + (value.Single_0 - 1f) * range;
-                array[offset++] += minimum + (value.Single_1 - 1f) * range;
+				var sample = minimum + (value.Single_0 - 1f) * range;
+                array[offset++] += sample;
+				sample = minimum + (value.Single_1 - 1f) * range;
+                array[offset++] += sample;
                 count -= 2;
             }
 
@@ -1045,7 +1050,8 @@ void Next(string T, int m)
             {
                 Next();
                 value.UInt64_0 = <#= FixFP(T) #>;
-                array[offset++] += minimum + (value.Single_0 - 1f) * range;
+				var sample = minimum + (value.Single_0 - 1f) * range;
+                array[offset] += sample;
             }
 <#+
     }

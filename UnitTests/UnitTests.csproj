@@ -52,6 +52,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CodingTests.tt</DependentUpon>
     </Compile>
+    <Compile Include="DecimalConstantsTests.cs" />
+    <Compile Include="Extensions\ArrayExtensionsTests.cs" />
     <Compile Include="Functions\Special\Jacobi.cs" />
     <Compile Include="Functions\Special\Theta.cs" />
     <Compile Include="Functions\Special\Elliptic.cs" />
@@ -77,6 +79,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>HistogramTests.tt</DependentUpon>
     </Compile>
+    <None Include="Types\DecimalFloatTests.cs" />
     <Compile Include="Types\Rational.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -12,6 +12,7 @@ GCD.cs
 */
 
 using System;
+using System.Numerics;
 
 namespace Foundations.Functions
 {
@@ -25,6 +26,7 @@ MakeGCD("int");
 MakeGCD("uint");
 MakeGCD("long");
 MakeGCD("ulong");
+MakeGCD("BigInteger");
 #>
     }
 }
@@ -39,13 +41,13 @@ void MakeGCD(string T)
         {
             if (p == 0 || q == 0) return 0;
 <#+ if (T[0] != 'u') { #>
-            p = Math.Abs(p);
-            q = Math.Abs(q);
+            p = p < 0 ? -p : p;
+            q = q < 0 ? -q : q;
 <#+ } #>
 
             while (true)
             {
-                <#= T #> m = p % q;
+                var m = p % q;
                 if (m == 0) return q;
                 p = q;
                 q = m;
