@@ -13,7 +13,7 @@ INSTEAD, EDIT THE .tt FILE WITH THE SAME NAME AND RE-RUN THE TEXT TEMPLATING
 FILE GENERATOR. IF YOU SAVE THE FILE IN VISUAL STUDIO IT WILL DO THIS FOR YOU.
 */
 
-namespace Foundations.Functions
+namespace Foundations
 {
     /// <summary>
     /// Extension method wrappers for System.Math functions.
@@ -119,7 +119,7 @@ namespace Foundations.Functions
         /// <summary>
         /// Get the value of <see cref="System.Math.Ceiling(System.Decimal)"/> for this <see cref="System.Decimal"/> value.
         /// </summary>
-        public static System.Decimal Ceiling(this System.Decimal d)
+        public static System.Decimal CeilingExt(this System.Decimal d)
         {
             return System.Math.Ceiling(d);
         }
@@ -175,7 +175,7 @@ namespace Foundations.Functions
         /// <summary>
         /// Get the value of <see cref="System.Math.Floor(System.Decimal)"/> for this <see cref="System.Decimal"/> value.
         /// </summary>
-        public static System.Decimal Floor(this System.Decimal d)
+        public static System.Decimal FloorExt(this System.Decimal d)
         {
             return System.Math.Floor(d);
         }
@@ -439,7 +439,7 @@ namespace Foundations.Functions
         /// <summary>
         /// Get the value of <see cref="System.Math.Round(System.Decimal)"/> for this <see cref="System.Decimal"/> value.
         /// </summary>
-        public static System.Decimal Round(this System.Decimal d)
+        public static System.Decimal RoundExt(this System.Decimal d)
         {
             return System.Math.Round(d);
         }
@@ -447,7 +447,7 @@ namespace Foundations.Functions
         /// <summary>
         /// Get the value of <see cref="System.Math.Round(System.Decimal, System.Int32)"/> for this <see cref="System.Decimal"/> value.
         /// </summary>
-        public static System.Decimal Round(this System.Decimal d, System.Int32 decimals)
+        public static System.Decimal RoundExt(this System.Decimal d, System.Int32 decimals)
         {
             return System.Math.Round(d, decimals);
         }
@@ -455,7 +455,7 @@ namespace Foundations.Functions
         /// <summary>
         /// Get the value of <see cref="System.Math.Round(System.Decimal, System.MidpointRounding)"/> for this <see cref="System.Decimal"/> value.
         /// </summary>
-        public static System.Decimal Round(this System.Decimal d, System.MidpointRounding mode)
+        public static System.Decimal RoundExt(this System.Decimal d, System.MidpointRounding mode)
         {
             return System.Math.Round(d, mode);
         }
@@ -463,7 +463,7 @@ namespace Foundations.Functions
         /// <summary>
         /// Get the value of <see cref="System.Math.Round(System.Decimal, System.Int32, System.MidpointRounding)"/> for this <see cref="System.Decimal"/> value.
         /// </summary>
-        public static System.Decimal Round(this System.Decimal d, System.Int32 decimals, System.MidpointRounding mode)
+        public static System.Decimal RoundExt(this System.Decimal d, System.Int32 decimals, System.MidpointRounding mode)
         {
             return System.Math.Round(d, decimals, mode);
         }
@@ -567,7 +567,7 @@ namespace Foundations.Functions
         /// <summary>
         /// Get the value of <see cref="System.Math.Truncate(System.Decimal)"/> for this <see cref="System.Decimal"/> value.
         /// </summary>
-        public static System.Decimal Truncate(this System.Decimal d)
+        public static System.Decimal TruncateExt(this System.Decimal d)
         {
             return System.Math.Truncate(d);
         }

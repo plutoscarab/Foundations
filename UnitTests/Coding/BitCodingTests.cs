@@ -1,6 +1,6 @@
 ﻿
 /*
-CodingTests.cs
+BitCodingTests.cs
 
 Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
@@ -24,7 +24,7 @@ namespace Foundations.Coding
     /// 
     /// </summary>
     [TestClass]
-    public class CodingTests
+    public class BitCodingTests
     {
         [TestMethod]
         public void UnaryZerosTest()
@@ -121,7 +121,11 @@ namespace Foundations.Coding
                 int v = g.Int32() >> g.Int32(32);
                 if (v < encoding.MinEncodable || v > encoding.MaxEncodable) continue;
                 values.Add(v);
-                writer.Write(encoding.GetCode(v));
+
+                if (i < 500)
+                    writer.Write(encoding.GetCode(v));
+                else
+                    encoding.Write(writer, v);
             }
 
             var buffer = writer.ToArray();
@@ -131,6 +135,16 @@ namespace Foundations.Coding
             {
                 int v = encoding.Read(reader);
                 Assert.AreEqual(values[i], v);
+            }
+
+            try
+            {
+                encoding.GetCode(encoding.MinEncodable - 1);
+                Assert.Fail("Expected ArgumentOutOfRangeException");
+            }
+            catch(Exception e)
+            {
+                Assert.AreEqual("ArgumentOutOfRangeException", e.GetType().Name);
             }
         }
     }

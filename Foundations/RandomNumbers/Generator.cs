@@ -316,6 +316,22 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Create a pseudo-random number generator initialized with provided values.
+        /// </summary>
+        public Generator(IRandomSource source, params bool[] seed)
+            : this(source, seed.GetBytes())
+        {
+        }
+
+        /// <summary>
+        /// Create a pseudo-random number generator initialized with provided values.
+        /// </summary>
+        public Generator(params bool[] seed)
+            : this(null, seed.GetBytes())
+        {
+        }
+
+        /// <summary>
         /// Create a pseudo-random number generator seeded with string contents.
         /// </summary>
         public Generator(IRandomSource source, string seed)
@@ -5671,6 +5687,706 @@ namespace Foundations.RandomNumbers
 
             var rand = new Generator(source, seed);
             rand.Fill(state);
+        }
+        /// <summary>
+        /// Gets a random <see cref="System.Boolean"/> value.
+        /// </summary>
+        public Boolean Boolean()
+        {
+            Next();
+            return (value.UInt64_0 & 1UL) != 0;
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.Boolean"/> values.
+        /// </summary>
+        public void Fill(Boolean[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with random <see cref="System.Boolean"/> values.
+        /// </summary>
+        unsafe public void Fill(Boolean[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            fixed (Boolean* ptr = &array[offset])
+            {
+                var p = ptr;
+
+                while (count >= 64)
+                {
+                    Next();
+                    *p++ = (value.UInt32_0 & 0x1) != 0;
+                    *p++ = (value.UInt32_0 & 0x2) != 0;
+                    *p++ = (value.UInt32_0 & 0x4) != 0;
+                    *p++ = (value.UInt32_0 & 0x8) != 0;
+                    *p++ = (value.UInt32_0 & 0x10) != 0;
+                    *p++ = (value.UInt32_0 & 0x20) != 0;
+                    *p++ = (value.UInt32_0 & 0x40) != 0;
+                    *p++ = (value.UInt32_0 & 0x80) != 0;
+                    *p++ = (value.UInt32_0 & 0x100) != 0;
+                    *p++ = (value.UInt32_0 & 0x200) != 0;
+                    *p++ = (value.UInt32_0 & 0x400) != 0;
+                    *p++ = (value.UInt32_0 & 0x800) != 0;
+                    *p++ = (value.UInt32_0 & 0x1000) != 0;
+                    *p++ = (value.UInt32_0 & 0x2000) != 0;
+                    *p++ = (value.UInt32_0 & 0x4000) != 0;
+                    *p++ = (value.UInt32_0 & 0x8000) != 0;
+                    *p++ = (value.UInt32_0 & 0x10000) != 0;
+                    *p++ = (value.UInt32_0 & 0x20000) != 0;
+                    *p++ = (value.UInt32_0 & 0x40000) != 0;
+                    *p++ = (value.UInt32_0 & 0x80000) != 0;
+                    *p++ = (value.UInt32_0 & 0x100000) != 0;
+                    *p++ = (value.UInt32_0 & 0x200000) != 0;
+                    *p++ = (value.UInt32_0 & 0x400000) != 0;
+                    *p++ = (value.UInt32_0 & 0x800000) != 0;
+                    *p++ = (value.UInt32_0 & 0x1000000) != 0;
+                    *p++ = (value.UInt32_0 & 0x2000000) != 0;
+                    *p++ = (value.UInt32_0 & 0x4000000) != 0;
+                    *p++ = (value.UInt32_0 & 0x8000000) != 0;
+                    *p++ = (value.UInt32_0 & 0x10000000) != 0;
+                    *p++ = (value.UInt32_0 & 0x20000000) != 0;
+                    *p++ = (value.UInt32_0 & 0x40000000) != 0;
+                    *p++ = (value.UInt32_0 & 0x80000000) != 0;
+                    *p++ = (value.UInt32_1 & 0x1) != 0;
+                    *p++ = (value.UInt32_1 & 0x2) != 0;
+                    *p++ = (value.UInt32_1 & 0x4) != 0;
+                    *p++ = (value.UInt32_1 & 0x8) != 0;
+                    *p++ = (value.UInt32_1 & 0x10) != 0;
+                    *p++ = (value.UInt32_1 & 0x20) != 0;
+                    *p++ = (value.UInt32_1 & 0x40) != 0;
+                    *p++ = (value.UInt32_1 & 0x80) != 0;
+                    *p++ = (value.UInt32_1 & 0x100) != 0;
+                    *p++ = (value.UInt32_1 & 0x200) != 0;
+                    *p++ = (value.UInt32_1 & 0x400) != 0;
+                    *p++ = (value.UInt32_1 & 0x800) != 0;
+                    *p++ = (value.UInt32_1 & 0x1000) != 0;
+                    *p++ = (value.UInt32_1 & 0x2000) != 0;
+                    *p++ = (value.UInt32_1 & 0x4000) != 0;
+                    *p++ = (value.UInt32_1 & 0x8000) != 0;
+                    *p++ = (value.UInt32_1 & 0x10000) != 0;
+                    *p++ = (value.UInt32_1 & 0x20000) != 0;
+                    *p++ = (value.UInt32_1 & 0x40000) != 0;
+                    *p++ = (value.UInt32_1 & 0x80000) != 0;
+                    *p++ = (value.UInt32_1 & 0x100000) != 0;
+                    *p++ = (value.UInt32_1 & 0x200000) != 0;
+                    *p++ = (value.UInt32_1 & 0x400000) != 0;
+                    *p++ = (value.UInt32_1 & 0x800000) != 0;
+                    *p++ = (value.UInt32_1 & 0x1000000) != 0;
+                    *p++ = (value.UInt32_1 & 0x2000000) != 0;
+                    *p++ = (value.UInt32_1 & 0x4000000) != 0;
+                    *p++ = (value.UInt32_1 & 0x8000000) != 0;
+                    *p++ = (value.UInt32_1 & 0x10000000) != 0;
+                    *p++ = (value.UInt32_1 & 0x20000000) != 0;
+                    *p++ = (value.UInt32_1 & 0x40000000) != 0;
+                    *p++ = (value.UInt32_1 & 0x80000000) != 0;
+                    count -= 64;
+                }
+
+                if (count == 0)
+                    return;
+
+                Next();
+
+                switch (count)
+                {
+                    case 63:
+                        *p++ = (value.UInt32_0 & 0x1) != 0;
+                        goto case 62;
+                    case 62:
+                        *p++ = (value.UInt32_0 & 0x2) != 0;
+                        goto case 61;
+                    case 61:
+                        *p++ = (value.UInt32_0 & 0x4) != 0;
+                        goto case 60;
+                    case 60:
+                        *p++ = (value.UInt32_0 & 0x8) != 0;
+                        goto case 59;
+                    case 59:
+                        *p++ = (value.UInt32_0 & 0x10) != 0;
+                        goto case 58;
+                    case 58:
+                        *p++ = (value.UInt32_0 & 0x20) != 0;
+                        goto case 57;
+                    case 57:
+                        *p++ = (value.UInt32_0 & 0x40) != 0;
+                        goto case 56;
+                    case 56:
+                        *p++ = (value.UInt32_0 & 0x80) != 0;
+                        goto case 55;
+                    case 55:
+                        *p++ = (value.UInt32_0 & 0x100) != 0;
+                        goto case 54;
+                    case 54:
+                        *p++ = (value.UInt32_0 & 0x200) != 0;
+                        goto case 53;
+                    case 53:
+                        *p++ = (value.UInt32_0 & 0x400) != 0;
+                        goto case 52;
+                    case 52:
+                        *p++ = (value.UInt32_0 & 0x800) != 0;
+                        goto case 51;
+                    case 51:
+                        *p++ = (value.UInt32_0 & 0x1000) != 0;
+                        goto case 50;
+                    case 50:
+                        *p++ = (value.UInt32_0 & 0x2000) != 0;
+                        goto case 49;
+                    case 49:
+                        *p++ = (value.UInt32_0 & 0x4000) != 0;
+                        goto case 48;
+                    case 48:
+                        *p++ = (value.UInt32_0 & 0x8000) != 0;
+                        goto case 47;
+                    case 47:
+                        *p++ = (value.UInt32_0 & 0x10000) != 0;
+                        goto case 46;
+                    case 46:
+                        *p++ = (value.UInt32_0 & 0x20000) != 0;
+                        goto case 45;
+                    case 45:
+                        *p++ = (value.UInt32_0 & 0x40000) != 0;
+                        goto case 44;
+                    case 44:
+                        *p++ = (value.UInt32_0 & 0x80000) != 0;
+                        goto case 43;
+                    case 43:
+                        *p++ = (value.UInt32_0 & 0x100000) != 0;
+                        goto case 42;
+                    case 42:
+                        *p++ = (value.UInt32_0 & 0x200000) != 0;
+                        goto case 41;
+                    case 41:
+                        *p++ = (value.UInt32_0 & 0x400000) != 0;
+                        goto case 40;
+                    case 40:
+                        *p++ = (value.UInt32_0 & 0x800000) != 0;
+                        goto case 39;
+                    case 39:
+                        *p++ = (value.UInt32_0 & 0x1000000) != 0;
+                        goto case 38;
+                    case 38:
+                        *p++ = (value.UInt32_0 & 0x2000000) != 0;
+                        goto case 37;
+                    case 37:
+                        *p++ = (value.UInt32_0 & 0x4000000) != 0;
+                        goto case 36;
+                    case 36:
+                        *p++ = (value.UInt32_0 & 0x8000000) != 0;
+                        goto case 35;
+                    case 35:
+                        *p++ = (value.UInt32_0 & 0x10000000) != 0;
+                        goto case 34;
+                    case 34:
+                        *p++ = (value.UInt32_0 & 0x20000000) != 0;
+                        goto case 33;
+                    case 33:
+                        *p++ = (value.UInt32_0 & 0x40000000) != 0;
+                        goto case 32;
+                    case 32:
+                        *p++ = (value.UInt32_0 & 0x80000000) != 0;
+                        goto case 31;
+                    case 31:
+                        *p++ = (value.UInt32_1 & 0x1) != 0;
+                        goto case 30;
+                    case 30:
+                        *p++ = (value.UInt32_1 & 0x2) != 0;
+                        goto case 29;
+                    case 29:
+                        *p++ = (value.UInt32_1 & 0x4) != 0;
+                        goto case 28;
+                    case 28:
+                        *p++ = (value.UInt32_1 & 0x8) != 0;
+                        goto case 27;
+                    case 27:
+                        *p++ = (value.UInt32_1 & 0x10) != 0;
+                        goto case 26;
+                    case 26:
+                        *p++ = (value.UInt32_1 & 0x20) != 0;
+                        goto case 25;
+                    case 25:
+                        *p++ = (value.UInt32_1 & 0x40) != 0;
+                        goto case 24;
+                    case 24:
+                        *p++ = (value.UInt32_1 & 0x80) != 0;
+                        goto case 23;
+                    case 23:
+                        *p++ = (value.UInt32_1 & 0x100) != 0;
+                        goto case 22;
+                    case 22:
+                        *p++ = (value.UInt32_1 & 0x200) != 0;
+                        goto case 21;
+                    case 21:
+                        *p++ = (value.UInt32_1 & 0x400) != 0;
+                        goto case 20;
+                    case 20:
+                        *p++ = (value.UInt32_1 & 0x800) != 0;
+                        goto case 19;
+                    case 19:
+                        *p++ = (value.UInt32_1 & 0x1000) != 0;
+                        goto case 18;
+                    case 18:
+                        *p++ = (value.UInt32_1 & 0x2000) != 0;
+                        goto case 17;
+                    case 17:
+                        *p++ = (value.UInt32_1 & 0x4000) != 0;
+                        goto case 16;
+                    case 16:
+                        *p++ = (value.UInt32_1 & 0x8000) != 0;
+                        goto case 15;
+                    case 15:
+                        *p++ = (value.UInt32_1 & 0x10000) != 0;
+                        goto case 14;
+                    case 14:
+                        *p++ = (value.UInt32_1 & 0x20000) != 0;
+                        goto case 13;
+                    case 13:
+                        *p++ = (value.UInt32_1 & 0x40000) != 0;
+                        goto case 12;
+                    case 12:
+                        *p++ = (value.UInt32_1 & 0x80000) != 0;
+                        goto case 11;
+                    case 11:
+                        *p++ = (value.UInt32_1 & 0x100000) != 0;
+                        goto case 10;
+                    case 10:
+                        *p++ = (value.UInt32_1 & 0x200000) != 0;
+                        goto case 9;
+                    case 9:
+                        *p++ = (value.UInt32_1 & 0x400000) != 0;
+                        goto case 8;
+                    case 8:
+                        *p++ = (value.UInt32_1 & 0x800000) != 0;
+                        goto case 7;
+                    case 7:
+                        *p++ = (value.UInt32_1 & 0x1000000) != 0;
+                        goto case 6;
+                    case 6:
+                        *p++ = (value.UInt32_1 & 0x2000000) != 0;
+                        goto case 5;
+                    case 5:
+                        *p++ = (value.UInt32_1 & 0x4000000) != 0;
+                        goto case 4;
+                    case 4:
+                        *p++ = (value.UInt32_1 & 0x8000000) != 0;
+                        goto case 3;
+                    case 3:
+                        *p++ = (value.UInt32_1 & 0x10000000) != 0;
+                        goto case 2;
+                    case 2:
+                        *p++ = (value.UInt32_1 & 0x20000000) != 0;
+                        goto case 1;
+                    case 1:
+                        *p++ = (value.UInt32_1 & 0x40000000) != 0;
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Mixes random <see cref="System.Boolean"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        public void XorFill(Boolean[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mixes random <see cref="System.Boolean"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        unsafe public void XorFill(Boolean[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            fixed (Boolean* ptr = &array[offset])
+            {
+                var p = ptr;
+
+                while (count >= 64)
+                {
+                    Next();
+                    *p++ ^= (value.UInt32_0 & 0x1) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x2) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x4) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x8) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x10) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x20) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x40) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x80) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x100) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x200) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x400) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x800) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x1000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x2000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x4000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x8000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x10000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x20000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x40000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x80000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x100000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x200000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x400000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x800000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x1000000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x2000000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x4000000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x8000000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x10000000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x20000000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x40000000) != 0;
+                    *p++ ^= (value.UInt32_0 & 0x80000000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x1) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x2) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x4) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x8) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x10) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x20) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x40) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x80) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x100) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x200) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x400) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x800) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x1000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x2000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x4000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x8000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x10000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x20000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x40000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x80000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x100000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x200000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x400000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x800000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x1000000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x2000000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x4000000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x8000000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x10000000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x20000000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x40000000) != 0;
+                    *p++ ^= (value.UInt32_1 & 0x80000000) != 0;
+                    count -= 64;
+                }
+
+                if (count == 0)
+                    return;
+
+                Next();
+
+                switch (count)
+                {
+                    case 63:
+                        *p++ ^= (value.UInt32_0 & 0x1) != 0;
+                        goto case 62;
+                    case 62:
+                        *p++ ^= (value.UInt32_0 & 0x2) != 0;
+                        goto case 61;
+                    case 61:
+                        *p++ ^= (value.UInt32_0 & 0x4) != 0;
+                        goto case 60;
+                    case 60:
+                        *p++ ^= (value.UInt32_0 & 0x8) != 0;
+                        goto case 59;
+                    case 59:
+                        *p++ ^= (value.UInt32_0 & 0x10) != 0;
+                        goto case 58;
+                    case 58:
+                        *p++ ^= (value.UInt32_0 & 0x20) != 0;
+                        goto case 57;
+                    case 57:
+                        *p++ ^= (value.UInt32_0 & 0x40) != 0;
+                        goto case 56;
+                    case 56:
+                        *p++ ^= (value.UInt32_0 & 0x80) != 0;
+                        goto case 55;
+                    case 55:
+                        *p++ ^= (value.UInt32_0 & 0x100) != 0;
+                        goto case 54;
+                    case 54:
+                        *p++ ^= (value.UInt32_0 & 0x200) != 0;
+                        goto case 53;
+                    case 53:
+                        *p++ ^= (value.UInt32_0 & 0x400) != 0;
+                        goto case 52;
+                    case 52:
+                        *p++ ^= (value.UInt32_0 & 0x800) != 0;
+                        goto case 51;
+                    case 51:
+                        *p++ ^= (value.UInt32_0 & 0x1000) != 0;
+                        goto case 50;
+                    case 50:
+                        *p++ ^= (value.UInt32_0 & 0x2000) != 0;
+                        goto case 49;
+                    case 49:
+                        *p++ ^= (value.UInt32_0 & 0x4000) != 0;
+                        goto case 48;
+                    case 48:
+                        *p++ ^= (value.UInt32_0 & 0x8000) != 0;
+                        goto case 47;
+                    case 47:
+                        *p++ ^= (value.UInt32_0 & 0x10000) != 0;
+                        goto case 46;
+                    case 46:
+                        *p++ ^= (value.UInt32_0 & 0x20000) != 0;
+                        goto case 45;
+                    case 45:
+                        *p++ ^= (value.UInt32_0 & 0x40000) != 0;
+                        goto case 44;
+                    case 44:
+                        *p++ ^= (value.UInt32_0 & 0x80000) != 0;
+                        goto case 43;
+                    case 43:
+                        *p++ ^= (value.UInt32_0 & 0x100000) != 0;
+                        goto case 42;
+                    case 42:
+                        *p++ ^= (value.UInt32_0 & 0x200000) != 0;
+                        goto case 41;
+                    case 41:
+                        *p++ ^= (value.UInt32_0 & 0x400000) != 0;
+                        goto case 40;
+                    case 40:
+                        *p++ ^= (value.UInt32_0 & 0x800000) != 0;
+                        goto case 39;
+                    case 39:
+                        *p++ ^= (value.UInt32_0 & 0x1000000) != 0;
+                        goto case 38;
+                    case 38:
+                        *p++ ^= (value.UInt32_0 & 0x2000000) != 0;
+                        goto case 37;
+                    case 37:
+                        *p++ ^= (value.UInt32_0 & 0x4000000) != 0;
+                        goto case 36;
+                    case 36:
+                        *p++ ^= (value.UInt32_0 & 0x8000000) != 0;
+                        goto case 35;
+                    case 35:
+                        *p++ ^= (value.UInt32_0 & 0x10000000) != 0;
+                        goto case 34;
+                    case 34:
+                        *p++ ^= (value.UInt32_0 & 0x20000000) != 0;
+                        goto case 33;
+                    case 33:
+                        *p++ ^= (value.UInt32_0 & 0x40000000) != 0;
+                        goto case 32;
+                    case 32:
+                        *p++ ^= (value.UInt32_0 & 0x80000000) != 0;
+                        goto case 31;
+                    case 31:
+                        *p++ ^= (value.UInt32_1 & 0x1) != 0;
+                        goto case 30;
+                    case 30:
+                        *p++ ^= (value.UInt32_1 & 0x2) != 0;
+                        goto case 29;
+                    case 29:
+                        *p++ ^= (value.UInt32_1 & 0x4) != 0;
+                        goto case 28;
+                    case 28:
+                        *p++ ^= (value.UInt32_1 & 0x8) != 0;
+                        goto case 27;
+                    case 27:
+                        *p++ ^= (value.UInt32_1 & 0x10) != 0;
+                        goto case 26;
+                    case 26:
+                        *p++ ^= (value.UInt32_1 & 0x20) != 0;
+                        goto case 25;
+                    case 25:
+                        *p++ ^= (value.UInt32_1 & 0x40) != 0;
+                        goto case 24;
+                    case 24:
+                        *p++ ^= (value.UInt32_1 & 0x80) != 0;
+                        goto case 23;
+                    case 23:
+                        *p++ ^= (value.UInt32_1 & 0x100) != 0;
+                        goto case 22;
+                    case 22:
+                        *p++ ^= (value.UInt32_1 & 0x200) != 0;
+                        goto case 21;
+                    case 21:
+                        *p++ ^= (value.UInt32_1 & 0x400) != 0;
+                        goto case 20;
+                    case 20:
+                        *p++ ^= (value.UInt32_1 & 0x800) != 0;
+                        goto case 19;
+                    case 19:
+                        *p++ ^= (value.UInt32_1 & 0x1000) != 0;
+                        goto case 18;
+                    case 18:
+                        *p++ ^= (value.UInt32_1 & 0x2000) != 0;
+                        goto case 17;
+                    case 17:
+                        *p++ ^= (value.UInt32_1 & 0x4000) != 0;
+                        goto case 16;
+                    case 16:
+                        *p++ ^= (value.UInt32_1 & 0x8000) != 0;
+                        goto case 15;
+                    case 15:
+                        *p++ ^= (value.UInt32_1 & 0x10000) != 0;
+                        goto case 14;
+                    case 14:
+                        *p++ ^= (value.UInt32_1 & 0x20000) != 0;
+                        goto case 13;
+                    case 13:
+                        *p++ ^= (value.UInt32_1 & 0x40000) != 0;
+                        goto case 12;
+                    case 12:
+                        *p++ ^= (value.UInt32_1 & 0x80000) != 0;
+                        goto case 11;
+                    case 11:
+                        *p++ ^= (value.UInt32_1 & 0x100000) != 0;
+                        goto case 10;
+                    case 10:
+                        *p++ ^= (value.UInt32_1 & 0x200000) != 0;
+                        goto case 9;
+                    case 9:
+                        *p++ ^= (value.UInt32_1 & 0x400000) != 0;
+                        goto case 8;
+                    case 8:
+                        *p++ ^= (value.UInt32_1 & 0x800000) != 0;
+                        goto case 7;
+                    case 7:
+                        *p++ ^= (value.UInt32_1 & 0x1000000) != 0;
+                        goto case 6;
+                    case 6:
+                        *p++ ^= (value.UInt32_1 & 0x2000000) != 0;
+                        goto case 5;
+                    case 5:
+                        *p++ ^= (value.UInt32_1 & 0x4000000) != 0;
+                        goto case 4;
+                    case 4:
+                        *p++ ^= (value.UInt32_1 & 0x8000000) != 0;
+                        goto case 3;
+                    case 3:
+                        *p++ ^= (value.UInt32_1 & 0x10000000) != 0;
+                        goto case 2;
+                    case 2:
+                        *p++ ^= (value.UInt32_1 & 0x20000000) != 0;
+                        goto case 1;
+                    case 1:
+                        *p++ ^= (value.UInt32_1 & 0x40000000) != 0;
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Boolean values.
+        /// </summary>
+        public IEnumerable<Boolean> Booleans()
+        {
+            while (true)
+            {
+                Next();
+                yield return (value.UInt32_0 & 0x1) != 0;
+                yield return (value.UInt32_0 & 0x2) != 0;
+                yield return (value.UInt32_0 & 0x4) != 0;
+                yield return (value.UInt32_0 & 0x8) != 0;
+                yield return (value.UInt32_0 & 0x10) != 0;
+                yield return (value.UInt32_0 & 0x20) != 0;
+                yield return (value.UInt32_0 & 0x40) != 0;
+                yield return (value.UInt32_0 & 0x80) != 0;
+                yield return (value.UInt32_0 & 0x100) != 0;
+                yield return (value.UInt32_0 & 0x200) != 0;
+                yield return (value.UInt32_0 & 0x400) != 0;
+                yield return (value.UInt32_0 & 0x800) != 0;
+                yield return (value.UInt32_0 & 0x1000) != 0;
+                yield return (value.UInt32_0 & 0x2000) != 0;
+                yield return (value.UInt32_0 & 0x4000) != 0;
+                yield return (value.UInt32_0 & 0x8000) != 0;
+                yield return (value.UInt32_0 & 0x10000) != 0;
+                yield return (value.UInt32_0 & 0x20000) != 0;
+                yield return (value.UInt32_0 & 0x40000) != 0;
+                yield return (value.UInt32_0 & 0x80000) != 0;
+                yield return (value.UInt32_0 & 0x100000) != 0;
+                yield return (value.UInt32_0 & 0x200000) != 0;
+                yield return (value.UInt32_0 & 0x400000) != 0;
+                yield return (value.UInt32_0 & 0x800000) != 0;
+                yield return (value.UInt32_0 & 0x1000000) != 0;
+                yield return (value.UInt32_0 & 0x2000000) != 0;
+                yield return (value.UInt32_0 & 0x4000000) != 0;
+                yield return (value.UInt32_0 & 0x8000000) != 0;
+                yield return (value.UInt32_0 & 0x10000000) != 0;
+                yield return (value.UInt32_0 & 0x20000000) != 0;
+                yield return (value.UInt32_0 & 0x40000000) != 0;
+                yield return (value.UInt32_0 & 0x80000000) != 0;
+                yield return (value.UInt32_1 & 0x1) != 0;
+                yield return (value.UInt32_1 & 0x2) != 0;
+                yield return (value.UInt32_1 & 0x4) != 0;
+                yield return (value.UInt32_1 & 0x8) != 0;
+                yield return (value.UInt32_1 & 0x10) != 0;
+                yield return (value.UInt32_1 & 0x20) != 0;
+                yield return (value.UInt32_1 & 0x40) != 0;
+                yield return (value.UInt32_1 & 0x80) != 0;
+                yield return (value.UInt32_1 & 0x100) != 0;
+                yield return (value.UInt32_1 & 0x200) != 0;
+                yield return (value.UInt32_1 & 0x400) != 0;
+                yield return (value.UInt32_1 & 0x800) != 0;
+                yield return (value.UInt32_1 & 0x1000) != 0;
+                yield return (value.UInt32_1 & 0x2000) != 0;
+                yield return (value.UInt32_1 & 0x4000) != 0;
+                yield return (value.UInt32_1 & 0x8000) != 0;
+                yield return (value.UInt32_1 & 0x10000) != 0;
+                yield return (value.UInt32_1 & 0x20000) != 0;
+                yield return (value.UInt32_1 & 0x40000) != 0;
+                yield return (value.UInt32_1 & 0x80000) != 0;
+                yield return (value.UInt32_1 & 0x100000) != 0;
+                yield return (value.UInt32_1 & 0x200000) != 0;
+                yield return (value.UInt32_1 & 0x400000) != 0;
+                yield return (value.UInt32_1 & 0x800000) != 0;
+                yield return (value.UInt32_1 & 0x1000000) != 0;
+                yield return (value.UInt32_1 & 0x2000000) != 0;
+                yield return (value.UInt32_1 & 0x4000000) != 0;
+                yield return (value.UInt32_1 & 0x8000000) != 0;
+                yield return (value.UInt32_1 & 0x10000000) != 0;
+                yield return (value.UInt32_1 & 0x20000000) != 0;
+                yield return (value.UInt32_1 & 0x40000000) != 0;
+                yield return (value.UInt32_1 & 0x80000000) != 0;
+            }
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Boolean"/>s and fill it with random values.
+        /// </summary>
+        public Boolean[] CreateBooleans(int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Boolean[count];
+            Fill(data);
+            return data;
         }
 
         private void Next()

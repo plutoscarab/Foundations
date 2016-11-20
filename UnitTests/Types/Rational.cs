@@ -39,6 +39,7 @@ namespace Foundations.UnitTests.Types
             Assert.AreEqual(new Rational(8890, 80009), Rational.Approximate("0.111112"));
             Assert.AreEqual(new Rational(91, 272), Rational.Approximate(".33456"));
             Assert.AreEqual(new Rational(22, 7), Rational.Approximate("3.14"));
+            Assert.AreEqual(new Rational(355, 113), Rational.Approximate("3.1416"));
         }
 
         [TestMethod]

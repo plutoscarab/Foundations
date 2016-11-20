@@ -49,7 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Quantities.cs" />
-    <Compile Include="DecimalConstants.cs" />
+    <Compile Include="Constants.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Constants.tt</DependentUpon>
+    </Compile>
     <None Include="Coding\BitCodeTemplate.cs" />
     <None Include="Coding\ByteCodeTemplate.cs" />
     <Compile Include="Coding\Base128.cs" />
@@ -67,7 +71,6 @@
     <Compile Include="Coding\TruncatedBinary.cs" />
     <Compile Include="Coding\Fibonacci.cs" />
     <Compile Include="Coding\EliasDelta.cs" />
-    <Compile Include="Constants.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Functions\MixingFunctions.cs">
       <DependentUpon>MixingFunctions.tt</DependentUpon>
@@ -100,7 +103,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Functions\Special\MathExtensions.cs">
+    <Compile Include="Extensions\MathExtensions.cs">
       <DependentUpon>MathExtensions.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -116,6 +119,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="RandomNumbers\RandomSourceExtensions.cs" />
+    <Compile Include="RandomNumbers\RandomStream.cs" />
     <Compile Include="Sets\ReadOnlyHashSet.cs" />
     <Compile Include="Statistics\Gaussian.cs" />
     <Compile Include="Statistics\Histogram.cs">
@@ -150,6 +154,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Constants.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Constants.cs</LastGenOutput>
+    </Content>
     <Content Include="Functions\MixingFunctions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>MixingFunctions.cs</LastGenOutput>
@@ -170,7 +178,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Jacobi.cs</LastGenOutput>
     </Content>
-    <Content Include="Functions\Special\MathExtensions.tt">
+    <Content Include="Extensions\MathExtensions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>MathExtensions.cs</LastGenOutput>
     </Content>

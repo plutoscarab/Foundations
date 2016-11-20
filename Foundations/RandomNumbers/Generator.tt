@@ -163,6 +163,7 @@ namespace Foundations.RandomNumbers
     Seed("char");
     Seed("float");
     Seed("double");
+    Seed("bool");
 #>
 
         /// <summary>
@@ -193,6 +194,167 @@ namespace Foundations.RandomNumbers
     Next("Single", 2);
     Next("Decimal", 1);
 #>
+        /// <summary>
+        /// Gets a random <see cref="System.Boolean"/> value.
+        /// </summary>
+        public Boolean Boolean()
+        {
+            Next();
+            return (value.UInt64_0 & 1UL) != 0;
+        }
+
+        /// <summary>
+        /// Fill a provided array with random <see cref="System.Boolean"/> values.
+        /// </summary>
+        public void Fill(Boolean[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with random <see cref="System.Boolean"/> values.
+        /// </summary>
+        unsafe public void Fill(Boolean[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            fixed (Boolean* ptr = &array[offset])
+            {
+                var p = ptr;
+
+                while (count >= 64)
+                {
+                    Next();
+<# for (int i = 0; i < 64; i++) { #>
+                    *p++ = (value.UInt32_<#= i / 32 #> & 0x<#= (1u << (i % 32)).ToString("X") #>) != 0;
+<# } #>
+                    count -= 64;
+                }
+
+                if (count == 0)
+                    return;
+
+                Next();
+
+                switch (count)
+                {
+<# for (int i = 63; i > 0; i--) { #>
+                    case <#= i #>:
+                        *p++ = (value.UInt32_<#= (63-i)/32 #> & 0x<#= (1u << ((63 - i) % 32)).ToString("X") #>) != 0;
+<#   if (i > 1) { #>
+                        goto case <#= i - 1 #>;
+<#   } else { #>
+                        break;
+<#
+     }
+   } 
+#>
+                }
+            }
+        }
+
+        /// <summary>
+        /// Mixes random <see cref="System.Boolean"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        public void XorFill(Boolean[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            XorFill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Mixes random <see cref="System.Boolean"/> values into an array using exclusive-OR operation.
+        /// </summary>
+        unsafe public void XorFill(Boolean[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            fixed (Boolean* ptr = &array[offset])
+            {
+                var p = ptr;
+
+                while (count >= 64)
+                {
+                    Next();
+<# for (int i = 0; i < 64; i++) { #>
+                    *p++ ^= (value.UInt32_<#= i/32 #> & 0x<#= (1u << (i % 32)).ToString("X") #>) != 0;
+<# } #>
+                    count -= 64;
+                }
+
+                if (count == 0)
+                    return;
+
+                Next();
+
+                switch (count)
+                {
+<# for (int i = 63; i > 0; i--) { #>
+                    case <#= i #>:
+                        *p++ ^= (value.UInt32_<#= (63-i)/32 #> & 0x<#= (1u << ((63 - i)%32)).ToString("X") #>) != 0;
+<#   if (i > 1) { #>
+                        goto case <#= i - 1 #>;
+<#   } else { #>
+                        break;
+<#
+     }
+   } 
+#>
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of Boolean values.
+        /// </summary>
+        public IEnumerable<Boolean> Booleans()
+        {
+            while (true)
+            {
+                Next();
+<# for (int i = 0; i < 64; i++) { #>
+                yield return (value.UInt32_<#= i/32 #> & 0x<#= (1u << (i % 32)).ToString("X") #>) != 0;
+<# } #>
+            }
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="System.Boolean"/>s and fill it with random values.
+        /// </summary>
+        public Boolean[] CreateBooleans(int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new Boolean[count];
+            Fill(data);
+            return data;
+        }
 
         private void Next()
         {
@@ -399,7 +561,7 @@ void Next(string T, int m)
     if (T != "Single" && T != "Double" && T != "Decimal")
     {
         UT = T.EndsWith("Byte") ? "Byte" :
-             T[0] == 'U' ? T :
+             T[0] == 'U' || T == "Boolean" ? T :
              "U" + T;
 
         U = "(" + UT + ")";

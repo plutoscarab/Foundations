@@ -1,0 +1,114 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+/*
+MathExtensions.cs
+
+<#@ include file="../../License.txt" #>
+*/
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Foundations.RandomNumbers;
+
+namespace Foundations
+{
+    /// <summary/>
+    [TestClass]
+    public sealed class MathExtensionsTests
+    {
+<#
+    foreach (var method in typeof(Math).GetMethods().Where(m => m.IsStatic).OrderBy(m => m.Name))
+    {
+        var args = method.GetParameters();
+        var paramList = new StringBuilder();
+        var argList = new StringBuilder();
+        var typeList = new StringBuilder();
+        var methodName = method.Name;
+
+        if (method.ReturnType.GetMethod(methodName, System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public, null, args.Select(a => a.ParameterType).ToArray(), null) != null)
+        {
+            methodName += "Ext";
+        }
+
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (i > 0) { paramList.Append(", "); argList.Append(", "); }
+            if (args[i].IsOut) 
+            {
+                paramList.Append("out ");
+                argList.Append("out ");
+            }
+            var argType = args[i].ParameterType.ToString().Replace("&", "");
+            typeList.Append(argType);
+            paramList.Append(argType + " " + args[i].Name);
+            argList.Append(args[i].Name);
+        }
+#>
+        /// <summary/>
+        [TestMethod]
+        public void Math<#= methodName #><#= typeList.Replace("System.", "") #>Test()
+        {
+            var g = new Generator("Math<#= methodName #><#= typeList.Replace("System.", "") #>Test");
+
+            for (int test = 0; test < 100; test++)
+            {
+<#
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (args[i].IsOut)
+            {
+#>
+                <#= args[i].ParameterType.ToString().Replace("&", "") #> <#= args[i].Name #>, actual_<#= args[i].Name #>;
+<#
+            }
+            else if (args[i].ParameterType.IsEnum)
+            {
+                var values = Enum.GetValues(args[i].ParameterType);
+#>
+                var <#= args[i].Name #> = new [] {
+<#
+                foreach (var value in values)
+                {
+#>
+                    <#= args[i].ParameterType.ToString().Replace("&", "") #>.<#= value #>,
+<#
+                }
+#>
+                }[g.Int32(<#= values.Length #>)];
+<#
+            }
+            else if (args[i].Name == "digits")
+            {
+#>
+                var digits = g.Int32(16);
+<#
+            }
+            else if (args[i].Name == "decimals")
+            {
+#>
+                var decimals = g.Int32(29);
+<#
+            }
+            else
+            {
+#>
+                var <#= args[i].Name #> = g.<#= args[i].ParameterType.ToString().Replace("&", "").Replace("System.", "") #>();
+<#
+            }
+        }
+#>
+                var expected = System.Math.<#= method.Name #>(<#= argList #>);
+                var actual = <#= args[0].Name #>.<#= methodName #>(<#= string.Join(", ", args.Skip(1).Select(a => (a.IsOut ? "out actual_" : "") + a.Name)) #>);
+                Assert.AreEqual(expected, actual);
+            }
+        }
+
+<#
+    }
+#>
+    }
+}

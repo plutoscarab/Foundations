@@ -8,10 +8,10 @@
 /*
 MathExtensions.cs
 
-<#@ include file="../../../License.txt" #>
+<#@ include file="../../License.txt" #>
 */
 
-namespace Foundations.Functions
+namespace Foundations
 {
     /// <summary>
     /// Extension method wrappers for System.Math functions.
@@ -25,6 +25,12 @@ namespace Foundations.Functions
         var paramList = new StringBuilder();
         var argList = new StringBuilder();
         var typeList = new StringBuilder();
+        var methodName = method.Name;
+
+        if (method.ReturnType.GetMethod(methodName, System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public, null, args.Select(a => a.ParameterType).ToArray(), null) != null)
+        {
+            methodName += "Ext";
+        }
 
         for (int i = 0; i < args.Length; i++)
         {
@@ -44,7 +50,7 @@ namespace Foundations.Functions
         /// <summary>
         /// Get the value of <see cref="System.Math.<#= method.Name #>(<#= typeList #>)"/> for this <see cref="<#= method.ReturnType #>"/> value.
         /// </summary>
-        public static <#= method.ReturnType #> <#= method.Name #>(this <#= paramList #>)
+        public static <#= method.ReturnType #> <#= methodName #>(this <#= paramList #>)
         {
             return System.Math.<#= method.Name #>(<#= argList #>);
         }

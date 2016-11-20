@@ -1,6 +1,6 @@
 ﻿
 /*
-Class1.cs
+Rational.cs
 
 Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
@@ -37,6 +37,11 @@ namespace Foundations.Types
         /// The constant 1/2.
         /// </summary>
         public static readonly Rational OneHalf = CreateRaw(1, 2);
+
+        /// <summary>
+        /// The constant 2.
+        /// </summary>
+        public static readonly Rational Two = CreateRaw(2, 1);
 
         /// <summary>
         /// Not a rational number.
@@ -573,8 +578,8 @@ namespace Foundations.Types
         /// The result
         /// is the <see cref="Rational"/> with the smallest possible denominator
         /// that equals the specified number when rounded to the same number of
-        /// significant digits. For example Approximate("0.1") returns 1/7, and
-        /// Approximate("0.10") returns 1/10.
+        /// significant digits. For example Approximate("0.1") returns 1/7 because
+        /// 1/7 is between 0.05 and 0.15, whereas Approximate("0.10") returns 1/10.
         /// </result>
         public static Rational Approximate(string dec)
         {
@@ -633,5 +638,23 @@ namespace Foundations.Types
             }
         }
 
+        /// <summary>
+        /// Returns the next rational number in the Moshe Newman enumeration of the Calkin Wilf tree.
+        /// (Eventually lists all positive rational numbers if you start with zero.)
+        /// </summary>
+        public Rational Next()
+        {
+            return Next(this);
+        }
+
+        /// <summary>
+        /// Returns the next rational number in the Calkin Wilf tree.
+        /// (Eventually lists all positive rational numbers if you start with zero.)
+        /// </summary>
+        /// <remarks>Uses the Moshe Newman recurrence relation.</remarks>
+        public static Rational Next(Rational x)
+        {
+            return Reciprocal(Floor(x) * Two + One - x);
+        }
     }
 }

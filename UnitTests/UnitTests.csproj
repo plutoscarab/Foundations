@@ -40,6 +40,11 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Coding\ByteCodingTests.cs">
+      <DependentUpon>ByteCodingTests.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Coding\BitsTests.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -47,13 +52,18 @@
     </Compile>
     <Compile Include="Coding\BitStreamTests.cs" />
     <Compile Include="Coding\ComparisonTable.cs" />
-    <Compile Include="Coding\CodingTests.cs">
+    <Compile Include="Coding\BitCodingTests.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>CodingTests.tt</DependentUpon>
+      <DependentUpon>BitCodingTests.tt</DependentUpon>
     </Compile>
     <Compile Include="DecimalConstantsTests.cs" />
     <Compile Include="Extensions\ArrayExtensionsTests.cs" />
+    <Compile Include="Extensions\MathExtensionsTests.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MathExtensionsTests.tt</DependentUpon>
+    </Compile>
     <Compile Include="Functions\Special\Jacobi.cs" />
     <Compile Include="Functions\Special\Theta.cs" />
     <Compile Include="Functions\Special\Elliptic.cs" />
@@ -89,13 +99,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Coding\ByteCodingTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ByteCodingTests.cs</LastGenOutput>
+    </Content>
     <Content Include="Coding\BitsTests.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BitsTests.cs</LastGenOutput>
     </Content>
-    <Content Include="Coding\CodingTests.tt">
+    <Content Include="Coding\BitCodingTests.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>CodingTests.cs</LastGenOutput>
+      <LastGenOutput>BitCodingTests.cs</LastGenOutput>
+    </Content>
+    <Content Include="Extensions\MathExtensionsTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MathExtensionsTests.cs</LastGenOutput>
     </Content>
     <Content Include="RandomNumbers\GeneratorTests.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

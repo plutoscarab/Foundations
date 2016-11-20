@@ -54,7 +54,7 @@ namespace Foundations.Coding
         /// <summary>
         /// Read a <see cref="System.Int64"/> from a <see cref="Stream"/>.
         /// </summary>
-        public ulong Read(Stream stream)
+        public ulong ReadUInt64(Stream stream)
         {
             ulong value = 0;
             int shift = 0;
