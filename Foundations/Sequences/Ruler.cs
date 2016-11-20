@@ -1,7 +1,7 @@
 ﻿
 /*
 Ruler.cs
-http://oeis.org/A001511
+http://oeis.org/A007814
 
 Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
@@ -11,8 +11,6 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 
 */
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Foundations
@@ -20,21 +18,18 @@ namespace Foundations
     public static partial class Sequences
     {
         /// <summary>
-        /// The ruler sequence 1,2,1,3,1,2,1,4,1,2,1,3,...
+        /// The ruler sequence 0,1,0,2,0,1,0,3,0,1,0,2,0,1,0,4,...
+        /// The highest power of 2 dividing n.
+        /// The bit position that changes in adjacent Grey codes.
         /// </summary>
         public static IEnumerable<int> Ruler()
         {
-            return Ruler(1);
-        }
+            yield return 0;
 
-        private static IEnumerable<int> Ruler(int n)
-        {
-            yield return n;
-            
-            foreach (var r in Ruler(n + 1))
+            foreach (var n in Ruler())
             {
-                yield return r;
-                yield return n;
+                yield return n + 1;
+                yield return 0;
             }
         }
     }
