@@ -1,0 +1,155 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+/*
+SubrandomTests.cs
+
+<#@ include file="../../License.txt" #>
+*/
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace Foundations.RandomNumbers
+{
+    /// <summary />
+    [TestClass]
+    public class SubrandomTests
+    {
+<#
+MakeMethod("Double", "D");
+MakeMethod("Single", "F");
+MakeMethod("Decimal", "M");
+#>
+    }
+}
+<#+
+void MakeMethod(string T, string suffix)
+{
+#>
+        private <#= T #> StarDiscrepency(List<<#= T #>> s)
+        {
+            s.Sort();
+            var d = 0<#= suffix #>;
+
+            for (int i = 1; i < s.Count; i++)
+            {
+                d = Math.Max(d, Math.Abs(i / (<#= T #>)s.Count - s[i]));
+            }
+
+            return d;
+        }
+
+        private void Test(Generator g, Func<IEnumerable<<#= T #>>> sequence)
+        {
+            int wins = 0;
+
+            for (int test = 0; test < 10; test++)
+            {
+                var s = sequence().Take(1000).ToList();
+                var d = StarDiscrepency(s);
+                s = g.<#= T #>s().Take(1000).ToList();
+                var d2 = StarDiscrepency(s);
+                if (d < d2) wins++;
+            }
+
+            Assert.IsTrue(wins >= 7);
+        }
+
+        /// <summary />
+        [TestMethod]
+	    public void AdditiveRecurrence<#= T #>Test()
+        {
+            var g = new Generator("AdditiveRecurrence<#= T #>Test");
+            Test(g, () => Subrandom.AdditiveRecurrence<#= suffix #>());
+        }
+
+        /// <summary />
+        [TestMethod]
+	    public void AdditiveRecurrenceGenerator<#= T #>Test()
+        {
+            var g = new Generator("AdditiveRecurrenceGenerator<#= T #>Test");
+            Test(g, () => Subrandom.AdditiveRecurrence<#= suffix #>(g));
+        }
+
+        /// <summary />
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+	    public void AdditiveRecurrenceNullGenerator<#= T #>Test()
+        {
+            Test(null, () => Subrandom.AdditiveRecurrence<#= suffix #>((Generator)null));
+        }
+
+        /// <summary />
+        [TestMethod]
+	    public void AdditiveRecurrenceAlpha<#= T #>Test()
+        {
+            var g = new Generator("AdditiveRecurrenceAlpha<#= T #>Test");
+            Test(g, () => Subrandom.AdditiveRecurrence(g.<#= T #>()));
+        }
+
+        /// <summary />
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+	    public void AdditiveRecurrenceLowAlpha<#= T #>Test()
+        {
+            Test(null, () => Subrandom.AdditiveRecurrence(0<#= suffix #>));
+        }
+
+        /// <summary />
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+	    public void AdditiveRecurrenceHighAlpha<#= T #>Test()
+        {
+            Test(null, () => Subrandom.AdditiveRecurrence(1<#= suffix #>));
+        }
+
+        /// <summary />
+        [TestMethod]
+	    public void AdditiveRecurrenceSZeroAlpha<#= T #>Test()
+        {
+            var g = new Generator("AdditiveRecurrenceSZeroAlpha<#= T #>Test");
+            Test(g, () => Subrandom.AdditiveRecurrence(g.<#= T #>(), g.<#= T #>()));
+        }
+
+        /// <summary />
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+	    public void AdditiveRecurrenceSZeroLowAlpha<#= T #>Test()
+        {
+            Test(null, () => Subrandom.AdditiveRecurrence(0<#= suffix #>, 0.5<#= suffix #>));
+        }
+
+        /// <summary />
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+	    public void AdditiveRecurrenceSZeroHighAlpha<#= T #>Test()
+        {
+            Test(null, () => Subrandom.AdditiveRecurrence(1<#= suffix #>, 0.5<#= suffix #>));
+        }
+
+        /// <summary />
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+	    public void AdditiveRecurrenceLowSZero<#= T #>Test()
+        {
+            Test(null, () => Subrandom.AdditiveRecurrence(0.5<#= suffix #>, 0<#= suffix #>));
+        }
+
+        /// <summary />
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+	    public void AdditiveRecurrenceHighSZero<#= T #>Test()
+        {
+            Test(null, () => Subrandom.AdditiveRecurrence(0.5<#= suffix #>, 1<#= suffix #>));
+        }
+
+<#+
+}
+#>

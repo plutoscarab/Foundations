@@ -72,6 +72,11 @@
     <Compile Include="Coding\Fibonacci.cs" />
     <Compile Include="Coding\EliasDelta.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="Extensions\MathStatic.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MathStatic.tt</DependentUpon>
+    </Compile>
     <Compile Include="Functions\MixingFunctions.cs">
       <DependentUpon>MixingFunctions.tt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -120,6 +125,11 @@
     </Compile>
     <Compile Include="RandomNumbers\RandomSourceExtensions.cs" />
     <Compile Include="RandomNumbers\RandomStream.cs" />
+    <Compile Include="RandomNumbers\Subrandom.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Subrandom.tt</DependentUpon>
+    </Compile>
     <Compile Include="Sets\ReadOnlyHashSet.cs" />
     <Compile Include="Statistics\Gaussian.cs" />
     <Compile Include="Statistics\Histogram.cs">
@@ -158,6 +168,10 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Constants.cs</LastGenOutput>
     </Content>
+    <Content Include="Extensions\MathStatic.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MathStatic.cs</LastGenOutput>
+    </Content>
     <Content Include="Functions\MixingFunctions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>MixingFunctions.cs</LastGenOutput>
@@ -193,6 +207,10 @@
     <Content Include="RandomNumbers\Generator.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Generator.cs</LastGenOutput>
+    </Content>
+    <Content Include="RandomNumbers\Subrandom.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Subrandom.cs</LastGenOutput>
     </Content>
     <Content Include="Statistics\Histogram.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

@@ -1,0 +1,90 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+/*
+Subrandom.cs
+
+<#@ include file="../../License.txt" #>
+*/
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Foundations.RandomNumbers
+{
+    /// <summary>
+    /// Low-discrepency sequences, a.k.a. subrandom or quasirandom numbers.
+    /// </summary>
+    public static class Subrandom
+    {
+<#
+Make("Double", "D", "Math");
+Make("Single", "F", "Math");
+Make("Decimal", "M", "MathM");
+#>
+    }
+}
+<#+
+void Make(string T, string suffix, string math)
+{
+#>
+        /// <summary>
+        /// Additive recurrence, sₙ = (s₀ + αn) mod 1.
+        /// </summary>
+        /// <param name="s0">Value from 0 to 1 exclusive.</param>
+        /// <param name="α">Value from 0 to 1 exclusive.</param>
+	    public static IEnumerable<<#= T #>> AdditiveRecurrence(<#= T #> s0, <#= T #> α)
+        {
+            if (s0 <= 0 || s0 >= 1) throw new ArgumentOutOfRangeException(nameof(s0));
+            if (α <= 0 || α >= 1) throw new ArgumentOutOfRangeException(nameof(α));
+            var s = s0;
+
+            while (true)
+            {
+                yield return s;
+                s += α;
+                if (s >= 1) s -= 1;
+            }
+        }
+
+        /// <summary>
+        /// Additive recurrence, sₙ = (α + αn) mod 1.
+        /// </summary>
+        /// <param name="α">Value from 0 to 1 exclusive.</param>
+	    public static IEnumerable<<#= T #>> AdditiveRecurrence(<#= T #> α)
+        {
+            return AdditiveRecurrence(α, α);
+        }
+
+        /// <summary>
+        /// Additive recurrence sₙ = (s₀ + αn) mod 1 with random s₀ and algebraic α of degree 2
+        /// using specified random number generator.
+        /// </summary>
+	    public static IEnumerable<<#= T #>> AdditiveRecurrence<#= suffix #>(Generator generator)
+        {
+            if (generator == null) throw new ArgumentNullException();
+
+            return AdditiveRecurrence(generator.<#= T #>(), (<#= T #>)
+                generator.UInt64s()
+                    .Select(u => <#= math #>.Sqrt(u))
+                    .Select(f => f - <#= math #>.Floor(f))
+                    .First(f => f > 0.3<#= suffix #> && f < 0.7<#= suffix #>));
+        }
+
+        /// <summary>
+        /// Additive recurrence sₙ = (s₀ + αn) mod 1 with random s₀ and algebraic α of degree 2
+        /// using default random number generator.
+        /// </summary>
+	    public static IEnumerable<<#= T #>> AdditiveRecurrence<#= suffix #>()
+        {
+            return AdditiveRecurrence<#= suffix #>(new Generator());
+        }
+
+<#+
+}
+#>

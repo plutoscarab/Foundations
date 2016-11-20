@@ -1,0 +1,128 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+/*
+MathStatic.cs
+
+<#@ include file="../../License.txt" #>
+*/
+
+using System;
+
+namespace Foundations
+{
+<#
+Make("Decimal", "M", 96);
+Copy("Decimal", "M");
+Wrap("Single", "F", "Double");
+#>
+}
+<#+
+void Copy(string T, string suffix)
+{
+#>
+    /// <summary>
+    /// Implementations of <see cref="System.Math"/> methods for <see cref="System.<#= T #>"/> arguments.
+    /// </summary>
+    public static partial class Math<#= suffix #>
+    {
+<#+
+    foreach (var method in typeof(Math).GetMethods().Where(m => m.IsStatic).OrderBy(m => m.Name)
+        .Where(m => m.GetParameters().Count() == 1 && m.GetParameters().First().ParameterType.Name == T))
+    {
+#>
+        /// <summary>Copy of System.Math.<#= method.Name #> for class consistency.</summary>
+        public static <#= T #> <#= method.Name #>(<#= T #> x) => Math.<#= method.Name #>(x);
+
+<#+
+    }
+#>
+    }
+
+<#+
+}
+
+void Wrap(string T, string suffix, string from)
+{
+#>
+    /// <summary>
+    /// Implementations of <see cref="System.Math"/> methods for <see cref="System.<#= T #>"/> arguments.
+    /// </summary>
+    public static partial class Math<#= suffix #>
+    {
+<#+
+    foreach (var method in typeof(Math).GetMethods().Where(m => m.IsStatic).OrderBy(m => m.Name)
+        .GroupBy(m => m.Name)
+        .Where(m => m.Count() == 1 && m.First().GetParameters().Count() == 1 && m.First().GetParameters().First().ParameterType.Name == from))
+    {
+#>
+        /// <summary><see cref="System.<#= T #>"/> wrapper for System.Math.<#= method.Key #>.</summary>
+        public static <#= T #> <#= method.Key #>(<#= T #> x) => (<#= T #>)Math.<#= method.Key #>(x);
+
+<#+
+    }
+#>
+    }
+
+    /// <summary>
+    /// Extension methods to access <see cref="Math<#= suffix #>"/> methods.
+    /// </summary>
+    public static partial class MathExtensions
+    {
+<#+
+    foreach (var method in typeof(Math).GetMethods().Where(m => m.IsStatic).OrderBy(m => m.Name)
+        .GroupBy(m => m.Name)
+        .Where(m => m.Count() == 1 && m.First().GetParameters().Count() == 1 && m.First().GetParameters().First().ParameterType.Name == from))
+    {
+#>
+        /// <summary></summary>
+        public static <#= T #> <#= method.Key #>(this <#= T #> x) => Math<#= suffix #>.<#= method.Key #>(x);
+
+<#+
+    }
+#>
+    }
+
+<#+
+}
+
+void Make(string T, string suffix, int precision)
+{
+#>
+    /// <summary>
+    /// Implementations of <see cref="System.Math"/> methods for <see cref="System.<#= T #>"/> arguments.
+    /// </summary>
+    public static partial class Math<#= suffix #>
+    {
+        /// <summary>
+        /// Square root.
+        /// </summary>
+        public static <#= T #> Sqrt(<#= T #> x)
+        {
+            if (x < 0<#= suffix #>) throw new ArgumentOutOfRangeException();
+			var s = (<#= T #>)Math.Sqrt((double)x);
+<#+ for (int i = 0; i < Math.Log(precision / 53, 2); i++) { #>
+            s = (x / s + s) / 2<#= suffix #>;
+<#+ } #>
+			return (x / s + s) / 2<#= suffix #>;
+        }
+    }
+
+    /// <summary>
+    /// Extension methods to access <see cref="Math<#= suffix #>"/> methods.
+    /// </summary>
+    public static partial class MathExtensions
+    {
+        /// <summary>
+        /// Square root.
+        /// </summary>
+        public static <#= T #> Sqrt(this <#= T #> x) => Math<#= suffix #>.Sqrt(x);
+    }
+
+<#+
+}
+#>

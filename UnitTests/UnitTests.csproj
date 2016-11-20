@@ -80,6 +80,11 @@
       <DependentUpon>MixingFunctionsTests.tt</DependentUpon>
     </Compile>
     <Compile Include="RandomNumbers\StreamSource.cs" />
+    <Compile Include="RandomNumbers\SubrandomTests.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SubrandomTests.tt</DependentUpon>
+    </Compile>
     <Compile Include="RandomNumbers\XorShiftRandomSource.cs" />
     <Compile Include="RandomNumbers\SystemRandomSource.cs" />
     <Compile Include="RandomNumbers\SynchronizedRandomSource.cs" />
@@ -122,6 +127,10 @@
     <Content Include="RandomNumbers\MixingFunctionsTests.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>MixingFunctionsTests.cs</LastGenOutput>
+    </Content>
+    <Content Include="RandomNumbers\SubrandomTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SubrandomTests.cs</LastGenOutput>
     </Content>
     <Content Include="Statistics\HistogramTests.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

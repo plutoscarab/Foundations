@@ -18,7 +18,7 @@ namespace Foundations.
     /// <summary>
     /// 
     /// </summary>
-    public static sealed class Class1
+    public sealed class Class1
     {
 <#
 MakeMethod("Method1", "Int32");
@@ -29,12 +29,12 @@ MakeMethod("Method1", "Int32");
 void MakeMethod(string name, string T)
 {
 #>
-    /// <summary>
-    /// 
-    /// </summary>
-	public static <#= T #> <#= name #>()
-    {
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+	    public static <#= T #> <#= name #>()
+        {
+        }
 
 <#+
 }
