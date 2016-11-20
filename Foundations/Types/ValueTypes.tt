@@ -15,13 +15,11 @@ using System;
 
 namespace Foundations.Types
 {
-	/// <summary>
-	/// This decimal type is intended to be used in technical/scientific
-	/// applications to accomodate smaller exponents than <see cref="System.Decimal"/>,
-	/// but it is lower precision (64 bits instead of 96).
-	/// </summary>
+    /// <summary>
+    /// An integer power of a factor.
+    /// </summary>
 <#
-
+Type("Factor", "<T>", true, "T:Value:The factor.", "int:Exponent:Exponent of the factor.");
 #>
 	internal static class HashHelper
 	{
@@ -29,11 +27,13 @@ namespace Foundations.Types
 	}
 }
 <#+
-void Type(string name, bool equatable, params string[] arglist)
+void Type(string name, string generics, bool equatable, params string[] arglist)
 {
 	var args = arglist.Select(arg => arg.Split(':')).ToArray();
+    var tname = name + generics;
+    var sname = tname.Replace("<", "{").Replace(">", "}");
 #>
-	public partial struct <#= name #><#= equatable ? $" : IEquatable<{name}>" : "" #>
+	public partial struct <#= tname #><#= equatable ? $" : IEquatable<{tname}>" : "" #>
 	{
 <#+
 	foreach (var arg in args)
@@ -45,7 +45,7 @@ void Type(string name, bool equatable, params string[] arglist)
 <#+
 	}
 #>
-		/// <summary>Create an instance of <see cref="<#= name #>"/>.</summary>
+		/// <summary>Create an instance of <see cref="<#= sname #>"/>.</summary>
 		public <#= name #>(<#= string.Join(", ", args.Select(arg => arg[0] + " " + Param(arg[1]))) #>)
 		{
 <#+
@@ -77,11 +77,11 @@ void Type(string name, bool equatable, params string[] arglist)
 		/// <summary>Implementation of <see cref="object.Equals(object)"/>.</summary>
 		public override bool Equals(object obj)
 		{
-			return obj is <#= name #> && Equals((<#= name #>)obj);
+			return obj is <#= tname #> && Equals((<#= tname #>)obj);
 		}
 
-		/// <summary>Implementation of <see cref="IEquatable{<#= name #>}.Equals"/>.</summary>
-		public bool Equals(<#= name #> other)
+		/// <summary>Implementation of <see cref="IEquatable{U}.Equals"/>.</summary>
+		public bool Equals(<#= tname #> other)
 		{
 <#+
 	foreach (var arg in args)
@@ -95,13 +95,13 @@ void Type(string name, bool equatable, params string[] arglist)
 		}
 
 		/// <summary>Equality operator.</summary>
-		public static bool operator ==(<#= name #> a, <#= name #> b)
+		public static bool operator ==(<#= tname #> a, <#= tname #> b)
 		{
 			return a.Equals(b);
 		}
 
 		/// <summary>Inequality operator.</summary>
-		public static bool operator !=(<#= name #> a, <#= name #> b)
+		public static bool operator !=(<#= tname #> a, <#= tname #> b)
 		{
 			return !a.Equals(b);
 		}

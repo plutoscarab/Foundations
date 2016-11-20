@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Quantities.cs" />
+    <Compile Include="Collections\Pool.cs" />
     <Compile Include="Constants.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -87,7 +88,7 @@
     <Compile Include="Coding\EliasGamma.cs" />
     <Compile Include="Coding\IBitEncoding.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
-    <Compile Include="Functions\NumberTheoretic\GCD.cs">
+    <Compile Include="Functions\GCD.cs">
       <DependentUpon>GCD.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -123,6 +124,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Sequences\Primes.cs" />
     <Compile Include="RandomNumbers\RandomSourceExtensions.cs" />
     <Compile Include="RandomNumbers\RandomStream.cs" />
     <Compile Include="RandomNumbers\Subrandom.cs">
@@ -130,7 +132,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Subrandom.tt</DependentUpon>
     </Compile>
-    <Compile Include="Sets\ReadOnlyHashSet.cs" />
+    <Compile Include="Collections\ReadOnlyHashSet.cs" />
+    <Compile Include="Sequences\Ruler.cs" />
     <Compile Include="Statistics\Gaussian.cs" />
     <Compile Include="Statistics\Histogram.cs">
       <AutoGen>True</AutoGen>
@@ -152,6 +155,7 @@
     <Compile Include="RandomNumbers\XorShiftRandomSource.cs" />
     <Compile Include="Types\ContinuedFraction.cs" />
     <Compile Include="Types\Rational.cs" />
+    <Compile Include="Types\UInt128.cs" />
     <Compile Include="Types\ValueTypes.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -176,7 +180,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>MixingFunctions.cs</LastGenOutput>
     </Content>
-    <Content Include="Functions\NumberTheoretic\GCD.tt">
+    <Content Include="Functions\GCD.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>GCD.cs</LastGenOutput>
     </Content>

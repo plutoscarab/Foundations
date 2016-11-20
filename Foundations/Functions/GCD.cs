@@ -16,12 +16,12 @@ FILE GENERATOR. IF YOU SAVE THE FILE IN VISUAL STUDIO IT WILL DO THIS FOR YOU.
 using System;
 using System.Numerics;
 
-namespace Foundations.Functions
+namespace Foundations
 {
     /// <summary>
     /// Number-theoretic functions.
     /// </summary>
-	public static partial class NumberTheoretic
+	public static partial class Numbers
     {
         /// <summary>
         /// Greatest common divisor.

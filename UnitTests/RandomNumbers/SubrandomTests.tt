@@ -150,6 +150,58 @@ void MakeMethod(string T, string suffix)
             Test(null, () => Subrandom.AdditiveRecurrence(0.5<#= suffix #>, 1<#= suffix #>));
         }
 
+        /// <summary />
+        [TestMethod]
+        public void VanDerCorput<#= T #>Base2Test()
+        {
+            var g = new Generator("VanDerCorput<#= T #>Base2Test");
+            Test(g, () => Subrandom.VanDerCorput<#= suffix #>(2));
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void VanDerCorput<#= T #>Base3Test()
+        {
+            var g = new Generator("VanDerCorput<#= T #>Base3Test");
+            Test(g, () => Subrandom.VanDerCorput<#= suffix #>(3));
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void Halton<#= T #>Test()
+        {
+            var g = new Generator("Halton<#= T #>Test");
+            
+            foreach (var item in Subrandom.Halton<#= suffix #>(new[] { 2, 3 }).Take(100))
+            {
+                System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}");
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void Halton<#= T #>PrimesTest()
+        {
+            var g = new Generator("Halton<#= T #>PrimesTest");
+            
+            foreach (var item in Subrandom.Halton<#= suffix #>(3).Take(100))
+            {
+                System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}, {item[2]}");
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void Hammersley<#= T #>PrimesTest()
+        {
+            var g = new Generator("Hammersley<#= T #>PrimesTest");
+            
+            foreach (var item in Subrandom.Hammersley<#= suffix #>(2, 256))
+            {
+                System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}");
+            }
+        }
+
 <#+
 }
 #>

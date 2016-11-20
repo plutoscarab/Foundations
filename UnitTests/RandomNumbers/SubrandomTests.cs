@@ -141,6 +141,58 @@ namespace Foundations.RandomNumbers
             Test(null, () => Subrandom.AdditiveRecurrence(0.5D, 1D));
         }
 
+        /// <summary />
+        [TestMethod]
+        public void VanDerCorputDoubleBase2Test()
+        {
+            var g = new Generator("VanDerCorputDoubleBase2Test");
+            Test(g, () => Subrandom.VanDerCorputD(2));
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void VanDerCorputDoubleBase3Test()
+        {
+            var g = new Generator("VanDerCorputDoubleBase3Test");
+            Test(g, () => Subrandom.VanDerCorputD(3));
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void HaltonDoubleTest()
+        {
+            var g = new Generator("HaltonDoubleTest");
+            
+            foreach (var item in Subrandom.HaltonD(new[] { 2, 3 }).Take(100))
+            {
+                System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}");
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void HaltonDoublePrimesTest()
+        {
+            var g = new Generator("HaltonDoublePrimesTest");
+            
+            foreach (var item in Subrandom.HaltonD(3).Take(100))
+            {
+                System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}, {item[2]}");
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void HammersleyDoublePrimesTest()
+        {
+            var g = new Generator("HammersleyDoublePrimesTest");
+            
+            foreach (var item in Subrandom.HammersleyD(2, 256))
+            {
+                System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}");
+            }
+        }
+
         private Single StarDiscrepency(List<Single> s)
         {
             s.Sort();
@@ -258,6 +310,58 @@ namespace Foundations.RandomNumbers
             Test(null, () => Subrandom.AdditiveRecurrence(0.5F, 1F));
         }
 
+        /// <summary />
+        [TestMethod]
+        public void VanDerCorputSingleBase2Test()
+        {
+            var g = new Generator("VanDerCorputSingleBase2Test");
+            Test(g, () => Subrandom.VanDerCorputF(2));
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void VanDerCorputSingleBase3Test()
+        {
+            var g = new Generator("VanDerCorputSingleBase3Test");
+            Test(g, () => Subrandom.VanDerCorputF(3));
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void HaltonSingleTest()
+        {
+            var g = new Generator("HaltonSingleTest");
+            
+            foreach (var item in Subrandom.HaltonF(new[] { 2, 3 }).Take(100))
+            {
+                System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}");
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void HaltonSinglePrimesTest()
+        {
+            var g = new Generator("HaltonSinglePrimesTest");
+            
+            foreach (var item in Subrandom.HaltonF(3).Take(100))
+            {
+                System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}, {item[2]}");
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void HammersleySinglePrimesTest()
+        {
+            var g = new Generator("HammersleySinglePrimesTest");
+            
+            foreach (var item in Subrandom.HammersleyF(2, 256))
+            {
+                System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}");
+            }
+        }
+
         private Decimal StarDiscrepency(List<Decimal> s)
         {
             s.Sort();
@@ -373,6 +477,58 @@ namespace Foundations.RandomNumbers
 	    public void AdditiveRecurrenceHighSZeroDecimalTest()
         {
             Test(null, () => Subrandom.AdditiveRecurrence(0.5M, 1M));
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void VanDerCorputDecimalBase2Test()
+        {
+            var g = new Generator("VanDerCorputDecimalBase2Test");
+            Test(g, () => Subrandom.VanDerCorputM(2));
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void VanDerCorputDecimalBase3Test()
+        {
+            var g = new Generator("VanDerCorputDecimalBase3Test");
+            Test(g, () => Subrandom.VanDerCorputM(3));
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void HaltonDecimalTest()
+        {
+            var g = new Generator("HaltonDecimalTest");
+            
+            foreach (var item in Subrandom.HaltonM(new[] { 2, 3 }).Take(100))
+            {
+                System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}");
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void HaltonDecimalPrimesTest()
+        {
+            var g = new Generator("HaltonDecimalPrimesTest");
+            
+            foreach (var item in Subrandom.HaltonM(3).Take(100))
+            {
+                System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}, {item[2]}");
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void HammersleyDecimalPrimesTest()
+        {
+            var g = new Generator("HammersleyDecimalPrimesTest");
+            
+            foreach (var item in Subrandom.HammersleyM(2, 256))
+            {
+                System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}");
+            }
         }
 
     }

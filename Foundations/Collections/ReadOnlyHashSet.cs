@@ -14,7 +14,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Foundations
+namespace Foundations.Collections
 {
     /// <summary>
     /// Represents a read-only set with O(1) lookup.

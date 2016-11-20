@@ -8,18 +8,18 @@
 /*
 GCD.cs
 
-<#@ include file="../../../License.txt" #>
+<#@ include file="../../License.txt" #>
 */
 
 using System;
 using System.Numerics;
 
-namespace Foundations.Functions
+namespace Foundations
 {
     /// <summary>
     /// Number-theoretic functions.
     /// </summary>
-	public static partial class NumberTheoretic
+	public static partial class Numbers
     {
 <#
 MakeGCD("int");

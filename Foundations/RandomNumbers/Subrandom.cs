@@ -77,6 +77,136 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Van der Corput sequence.
+        /// </summary>
+        public static IEnumerable<Double> VanDerCorputD(int @base)
+        {
+            if (@base < 2) throw new ArgumentOutOfRangeException();
+            var digits = new int[1];
+            long denom = @base;
+
+            while (true)
+            {
+                int i = 0;
+                long num = 0;
+
+                while (true)
+                {
+                    num = num * @base + ++digits[i];
+                    if (digits[i] < @base) break;
+                    digits[i] = 0;
+                    num -= @base;
+                    i++;
+
+                    if (i >= digits.Length)
+                    {
+                        Array.Resize(ref digits, digits.Length + 1);
+                        denom *= @base;
+                    }
+                }
+
+                while (++i < digits.Length)
+                {
+                    num = num * @base + digits[i];
+                }
+
+                yield return num / (Double)denom;
+            }
+        }
+
+        /// <summary>
+        /// Halton sequence.
+        /// </summary>
+        public static IEnumerable<Double[]> HaltonD(int[] bases)
+        {
+            if (bases == null) throw new ArgumentNullException();
+            if (bases.Length == 0) throw new ArgumentException();
+
+            for (int i = 1; i < bases.Length; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    int gcd = Numbers.GCD(bases[i], bases[j]);
+
+                    if (gcd != 1)
+                    {
+                        throw new ArgumentException($"Values must be coprime. {bases[i]} and {bases[j]} share a factor of {gcd}.");
+                    }
+                }
+            }
+
+            var s = bases.Select(b => VanDerCorputD(b).GetEnumerator()).ToArray();
+            var x = new Double[bases.Length];
+
+            while (true)
+            {
+                for (int i = 0; i < bases.Length; i++)
+                {
+                    s[i].MoveNext();
+                    x[i] = s[i].Current;
+                }
+
+                yield return x;
+            }
+        }
+
+        /// <summary>
+        /// Halton sequence.
+        /// </summary>
+        public static IEnumerable<Double[]> HaltonD(int dimension)
+        {
+            if (dimension < 0) throw new ArgumentOutOfRangeException();
+            return HaltonD(Sequences.Primes().Select(_ => (int)_).Take(dimension).ToArray());
+        }
+
+        /// <summary>
+        /// Hammersley set.
+        /// </summary>
+        public static IEnumerable<Double[]> HammersleyD(int[] bases, int N)
+        {
+            if (bases == null) throw new ArgumentNullException();
+            if (bases.Length == 0) throw new ArgumentException();
+            if (N < 0) throw new ArgumentOutOfRangeException();
+
+            for (int i = 1; i < bases.Length; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    int gcd = Numbers.GCD(bases[i], bases[j]);
+
+                    if (gcd != 1)
+                    {
+                        throw new ArgumentException($"Values must be coprime. {bases[i]} and {bases[j]} share a factor of {gcd}.");
+                    }
+                }
+            }
+
+            var s = bases.Select(b => VanDerCorputD(b).GetEnumerator()).ToArray();
+            var x = new Double[bases.Length + 1];
+
+            for (int n = 1; n <= N; n++)
+            {
+                for (int i = 0; i < bases.Length; i++)
+                {
+                    s[i].MoveNext();
+                    x[i] = s[i].Current;
+                }
+
+                x[bases.Length] = n / (Double)N;
+                yield return x;
+            }
+        }
+
+        /// <summary>
+        /// Hammersley sequence.
+        /// </summary>
+        public static IEnumerable<Double[]> HammersleyD(int dimension, int N)
+        {
+            if (dimension < 2) throw new ArgumentOutOfRangeException();
+            return HammersleyD(Sequences.Primes().Select(_ => (int)_).Take(dimension - 1).ToArray(), N);
+        }
+
+        /// <summary>
         /// Additive recurrence, sₙ = (s₀ + αn) mod 1.
         /// </summary>
         /// <param name="s0">Value from 0 to 1 exclusive.</param>
@@ -129,6 +259,136 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Van der Corput sequence.
+        /// </summary>
+        public static IEnumerable<Single> VanDerCorputF(int @base)
+        {
+            if (@base < 2) throw new ArgumentOutOfRangeException();
+            var digits = new int[1];
+            long denom = @base;
+
+            while (true)
+            {
+                int i = 0;
+                long num = 0;
+
+                while (true)
+                {
+                    num = num * @base + ++digits[i];
+                    if (digits[i] < @base) break;
+                    digits[i] = 0;
+                    num -= @base;
+                    i++;
+
+                    if (i >= digits.Length)
+                    {
+                        Array.Resize(ref digits, digits.Length + 1);
+                        denom *= @base;
+                    }
+                }
+
+                while (++i < digits.Length)
+                {
+                    num = num * @base + digits[i];
+                }
+
+                yield return num / (Single)denom;
+            }
+        }
+
+        /// <summary>
+        /// Halton sequence.
+        /// </summary>
+        public static IEnumerable<Single[]> HaltonF(int[] bases)
+        {
+            if (bases == null) throw new ArgumentNullException();
+            if (bases.Length == 0) throw new ArgumentException();
+
+            for (int i = 1; i < bases.Length; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    int gcd = Numbers.GCD(bases[i], bases[j]);
+
+                    if (gcd != 1)
+                    {
+                        throw new ArgumentException($"Values must be coprime. {bases[i]} and {bases[j]} share a factor of {gcd}.");
+                    }
+                }
+            }
+
+            var s = bases.Select(b => VanDerCorputF(b).GetEnumerator()).ToArray();
+            var x = new Single[bases.Length];
+
+            while (true)
+            {
+                for (int i = 0; i < bases.Length; i++)
+                {
+                    s[i].MoveNext();
+                    x[i] = s[i].Current;
+                }
+
+                yield return x;
+            }
+        }
+
+        /// <summary>
+        /// Halton sequence.
+        /// </summary>
+        public static IEnumerable<Single[]> HaltonF(int dimension)
+        {
+            if (dimension < 0) throw new ArgumentOutOfRangeException();
+            return HaltonF(Sequences.Primes().Select(_ => (int)_).Take(dimension).ToArray());
+        }
+
+        /// <summary>
+        /// Hammersley set.
+        /// </summary>
+        public static IEnumerable<Single[]> HammersleyF(int[] bases, int N)
+        {
+            if (bases == null) throw new ArgumentNullException();
+            if (bases.Length == 0) throw new ArgumentException();
+            if (N < 0) throw new ArgumentOutOfRangeException();
+
+            for (int i = 1; i < bases.Length; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    int gcd = Numbers.GCD(bases[i], bases[j]);
+
+                    if (gcd != 1)
+                    {
+                        throw new ArgumentException($"Values must be coprime. {bases[i]} and {bases[j]} share a factor of {gcd}.");
+                    }
+                }
+            }
+
+            var s = bases.Select(b => VanDerCorputF(b).GetEnumerator()).ToArray();
+            var x = new Single[bases.Length + 1];
+
+            for (int n = 1; n <= N; n++)
+            {
+                for (int i = 0; i < bases.Length; i++)
+                {
+                    s[i].MoveNext();
+                    x[i] = s[i].Current;
+                }
+
+                x[bases.Length] = n / (Single)N;
+                yield return x;
+            }
+        }
+
+        /// <summary>
+        /// Hammersley sequence.
+        /// </summary>
+        public static IEnumerable<Single[]> HammersleyF(int dimension, int N)
+        {
+            if (dimension < 2) throw new ArgumentOutOfRangeException();
+            return HammersleyF(Sequences.Primes().Select(_ => (int)_).Take(dimension - 1).ToArray(), N);
+        }
+
+        /// <summary>
         /// Additive recurrence, sₙ = (s₀ + αn) mod 1.
         /// </summary>
         /// <param name="s0">Value from 0 to 1 exclusive.</param>
@@ -178,6 +438,136 @@ namespace Foundations.RandomNumbers
 	    public static IEnumerable<Decimal> AdditiveRecurrenceM()
         {
             return AdditiveRecurrenceM(new Generator());
+        }
+
+        /// <summary>
+        /// Van der Corput sequence.
+        /// </summary>
+        public static IEnumerable<Decimal> VanDerCorputM(int @base)
+        {
+            if (@base < 2) throw new ArgumentOutOfRangeException();
+            var digits = new int[1];
+            long denom = @base;
+
+            while (true)
+            {
+                int i = 0;
+                long num = 0;
+
+                while (true)
+                {
+                    num = num * @base + ++digits[i];
+                    if (digits[i] < @base) break;
+                    digits[i] = 0;
+                    num -= @base;
+                    i++;
+
+                    if (i >= digits.Length)
+                    {
+                        Array.Resize(ref digits, digits.Length + 1);
+                        denom *= @base;
+                    }
+                }
+
+                while (++i < digits.Length)
+                {
+                    num = num * @base + digits[i];
+                }
+
+                yield return num / (Decimal)denom;
+            }
+        }
+
+        /// <summary>
+        /// Halton sequence.
+        /// </summary>
+        public static IEnumerable<Decimal[]> HaltonM(int[] bases)
+        {
+            if (bases == null) throw new ArgumentNullException();
+            if (bases.Length == 0) throw new ArgumentException();
+
+            for (int i = 1; i < bases.Length; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    int gcd = Numbers.GCD(bases[i], bases[j]);
+
+                    if (gcd != 1)
+                    {
+                        throw new ArgumentException($"Values must be coprime. {bases[i]} and {bases[j]} share a factor of {gcd}.");
+                    }
+                }
+            }
+
+            var s = bases.Select(b => VanDerCorputM(b).GetEnumerator()).ToArray();
+            var x = new Decimal[bases.Length];
+
+            while (true)
+            {
+                for (int i = 0; i < bases.Length; i++)
+                {
+                    s[i].MoveNext();
+                    x[i] = s[i].Current;
+                }
+
+                yield return x;
+            }
+        }
+
+        /// <summary>
+        /// Halton sequence.
+        /// </summary>
+        public static IEnumerable<Decimal[]> HaltonM(int dimension)
+        {
+            if (dimension < 0) throw new ArgumentOutOfRangeException();
+            return HaltonM(Sequences.Primes().Select(_ => (int)_).Take(dimension).ToArray());
+        }
+
+        /// <summary>
+        /// Hammersley set.
+        /// </summary>
+        public static IEnumerable<Decimal[]> HammersleyM(int[] bases, int N)
+        {
+            if (bases == null) throw new ArgumentNullException();
+            if (bases.Length == 0) throw new ArgumentException();
+            if (N < 0) throw new ArgumentOutOfRangeException();
+
+            for (int i = 1; i < bases.Length; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    int gcd = Numbers.GCD(bases[i], bases[j]);
+
+                    if (gcd != 1)
+                    {
+                        throw new ArgumentException($"Values must be coprime. {bases[i]} and {bases[j]} share a factor of {gcd}.");
+                    }
+                }
+            }
+
+            var s = bases.Select(b => VanDerCorputM(b).GetEnumerator()).ToArray();
+            var x = new Decimal[bases.Length + 1];
+
+            for (int n = 1; n <= N; n++)
+            {
+                for (int i = 0; i < bases.Length; i++)
+                {
+                    s[i].MoveNext();
+                    x[i] = s[i].Current;
+                }
+
+                x[bases.Length] = n / (Decimal)N;
+                yield return x;
+            }
+        }
+
+        /// <summary>
+        /// Hammersley sequence.
+        /// </summary>
+        public static IEnumerable<Decimal[]> HammersleyM(int dimension, int N)
+        {
+            if (dimension < 2) throw new ArgumentOutOfRangeException();
+            return HammersleyM(Sequences.Primes().Select(_ => (int)_).Take(dimension - 1).ToArray(), N);
         }
 
     }

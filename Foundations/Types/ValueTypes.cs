@@ -17,11 +17,60 @@ using System;
 
 namespace Foundations.Types
 {
-	/// <summary>
-	/// This decimal type is intended to be used in technical/scientific
-	/// applications to accomodate smaller exponents than <see cref="System.Decimal"/>,
-	/// but it is lower precision (64 bits instead of 96).
-	/// </summary>
+    /// <summary>
+    /// An integer power of a factor.
+    /// </summary>
+	public partial struct Factor<T> : IEquatable<Factor<T>>
+	{
+		/// <summary>The factor.</summary>
+		public readonly T Value;
+
+		/// <summary>Exponent of the factor.</summary>
+		public readonly int Exponent;
+
+		/// <summary>Create an instance of <see cref="Factor{T}"/>.</summary>
+		public Factor(T value, int exponent)
+		{
+			Value = value;
+			Exponent = exponent;
+		}
+
+		/// <summary>Implementation of <see	cref="object.GetHashCode"/>.</summary>
+		public override int GetHashCode()
+		{
+			int h = -829975572;
+			h = HashHelper.Mixer(h + Value.GetHashCode());
+			h = HashHelper.Mixer(h + Exponent.GetHashCode());
+			return h;
+		}
+
+		/// <summary>Implementation of <see cref="object.Equals(object)"/>.</summary>
+		public override bool Equals(object obj)
+		{
+			return obj is Factor<T> && Equals((Factor<T>)obj);
+		}
+
+		/// <summary>Implementation of <see cref="IEquatable{U}.Equals"/>.</summary>
+		public bool Equals(Factor<T> other)
+		{
+			if (!Value.Equals(other.Value)) return false;
+			if (!Exponent.Equals(other.Exponent)) return false;
+			return true;
+		}
+
+		/// <summary>Equality operator.</summary>
+		public static bool operator ==(Factor<T> a, Factor<T> b)
+		{
+			return a.Equals(b);
+		}
+
+		/// <summary>Inequality operator.</summary>
+		public static bool operator !=(Factor<T> a, Factor<T> b)
+		{
+			return !a.Equals(b);
+		}
+	}
+
 	internal static class HashHelper
 	{
 		public static Func<int, int> Mixer = Functions.MixingFunctions.CreateInt32Mixer(new[] { 0, 1, 1, 8, 9, 9, 9, 8, 8, 1, 9, 9, 9, 1, 1, 9, 7, 2, 5, 3 });
