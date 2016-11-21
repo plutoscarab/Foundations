@@ -19,7 +19,11 @@ namespace Foundations.Types
     /// An integer power of a factor.
     /// </summary>
 <#
-Type("Factor", "<T>", true, "T:Value:The factor.", "int:Exponent:Exponent of the factor.");
+Type("Factor", "<T>", true, true, "T:Value:The factor.", "int:Exponent:Exponent of the factor.");
+#>
+
+<#
+Type("SmallDegreePolyGF2", "", true, true, "ulong:Coefficients:The coefficients of the polynomial.");
 #>
 	internal static class HashHelper
 	{
@@ -27,7 +31,7 @@ Type("Factor", "<T>", true, "T:Value:The factor.", "int:Exponent:Exponent of the
 	}
 }
 <#+
-void Type(string name, string generics, bool equatable, params string[] arglist)
+void Type(string name, string generics, bool constructor, bool equatable, params string[] arglist)
 {
 	var args = arglist.Select(arg => arg.Split(':')).ToArray();
     var tname = name + generics;
@@ -44,6 +48,9 @@ void Type(string name, string generics, bool equatable, params string[] arglist)
 
 <#+
 	}
+
+    if (constructor)
+    {
 #>
 		/// <summary>Create an instance of <see cref="<#= sname #>"/>.</summary>
 		public <#= name #>(<#= string.Join(", ", args.Select(arg => arg[0] + " " + Param(arg[1]))) #>)
@@ -57,7 +64,12 @@ void Type(string name, string generics, bool equatable, params string[] arglist)
 	}
 #>
 		}
-<#+ if (equatable) { #>
+<#+ 
+    }
+    
+    if (equatable) 
+    { 
+#>
 
 		/// <summary>Implementation of <see	cref="object.GetHashCode"/>.</summary>
 		public override int GetHashCode()

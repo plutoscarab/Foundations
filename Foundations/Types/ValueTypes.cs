@@ -71,6 +71,52 @@ namespace Foundations.Types
 		}
 	}
 
+
+	public partial struct SmallDegreePolyGF2 : IEquatable<SmallDegreePolyGF2>
+	{
+		/// <summary>The coefficients of the polynomial.</summary>
+		public readonly ulong Coefficients;
+
+		/// <summary>Create an instance of <see cref="SmallDegreePolyGF2"/>.</summary>
+		public SmallDegreePolyGF2(ulong coefficients)
+		{
+			Coefficients = coefficients;
+		}
+
+		/// <summary>Implementation of <see	cref="object.GetHashCode"/>.</summary>
+		public override int GetHashCode()
+		{
+			int h = 1588331146;
+			h = HashHelper.Mixer(h + Coefficients.GetHashCode());
+			return h;
+		}
+
+		/// <summary>Implementation of <see cref="object.Equals(object)"/>.</summary>
+		public override bool Equals(object obj)
+		{
+			return obj is SmallDegreePolyGF2 && Equals((SmallDegreePolyGF2)obj);
+		}
+
+		/// <summary>Implementation of <see cref="IEquatable{U}.Equals"/>.</summary>
+		public bool Equals(SmallDegreePolyGF2 other)
+		{
+			if (!Coefficients.Equals(other.Coefficients)) return false;
+			return true;
+		}
+
+		/// <summary>Equality operator.</summary>
+		public static bool operator ==(SmallDegreePolyGF2 a, SmallDegreePolyGF2 b)
+		{
+			return a.Equals(b);
+		}
+
+		/// <summary>Inequality operator.</summary>
+		public static bool operator !=(SmallDegreePolyGF2 a, SmallDegreePolyGF2 b)
+		{
+			return !a.Equals(b);
+		}
+	}
+
 	internal static class HashHelper
 	{
 		public static Func<int, int> Mixer = Functions.MixingFunctions.CreateInt32Mixer(new[] { 0, 1, 1, 8, 9, 9, 9, 8, 8, 1, 9, 9, 9, 1, 1, 9, 7, 2, 5, 3 });

@@ -96,6 +96,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>HistogramTests.tt</DependentUpon>
     </Compile>
+    <Compile Include="Types\SmallDegreePolyGF2Tests.cs" />
     <None Include="Types\DecimalFloatTests.cs" />
     <Compile Include="Types\Rational.cs" />
   </ItemGroup>
