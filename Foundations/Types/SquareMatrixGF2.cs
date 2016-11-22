@@ -21,7 +21,7 @@ namespace Foundations.Types
     public sealed partial class SquareMatrixGF2
     {
         private int size;
-        private BitArray bits;
+        private uint[][] rows;
 
         /// <summary>
         /// 
@@ -30,7 +30,9 @@ namespace Foundations.Types
         public SquareMatrixGF2(int size)
         {
             if (size < 1) throw new ArgumentOutOfRangeException();
-            bits = new BitArray(size * size);
+            rows = new uint[size][];
+            for (int i = 0; i < size; i++)
+                rows[i] = new uint[(size + 31) / 32];
             this.size = size;
         }
 
@@ -42,9 +44,14 @@ namespace Foundations.Types
         /// <returns></returns>
         public bool this[int row, int col]
         {
-            get { return bits[row * size + col]; }
-            set { bits[row * size + col] = value; }
-        }
+            get { return (rows[row][col >> 5] & (1u << (col & 31))) != 0; }
+            set {
+                if (value)
+                    rows[row][col >> 5] |= 1u << (col & 31);
+                else
+                    rows[row][col >> 5] &= ~(1u << (col & 31));
+            }
+        } 
 
         /// <summary>
         /// 
@@ -83,19 +90,19 @@ namespace Foundations.Types
 
         private void SwapRows(int row1, int row2)
         {
-            for (int col = 0; col < size; col++)
+            for (int col = (size + 31) / 32 - 1; col >= 0; col--)
             {
-                bool temp = this[row1, col];
-                this[row1, col] = this[row2, col];
-                this[row2, col] = temp;
+                uint temp = rows[row1][col];
+                rows[row1][col] = rows[row2][col];
+                rows[row2][col] = temp;
             }
         }
 
         private void SubtractRow(int row1, int row2)
         {
-            for (int col = 0; col < size; col++)
+            for (int col = (size + 31) / 32 - 1; col >= 0; col--)
             {
-                this[row2, col] ^= this[row1, col];
+                rows[row2][col] ^= rows[row1][col];
             }
         }
     }

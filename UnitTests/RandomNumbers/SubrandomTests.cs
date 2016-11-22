@@ -28,7 +28,7 @@ namespace Foundations.RandomNumbers
         private Double StarDiscrepency(List<Double> s)
         {
             s.Sort();
-            var d = 0D;
+            Double d = 0;
 
             for (int i = 1; i < s.Count; i++)
             {
@@ -44,11 +44,11 @@ namespace Foundations.RandomNumbers
 
             for (int test = 0; test < 10; test++)
             {
-                var s = sequence().Take(1000).ToList();
-                var d = StarDiscrepency(s);
-                s = g.Doubles().Take(1000).ToList();
-                var d2 = StarDiscrepency(s);
-                if (d < d2) wins++;
+                var s1 = sequence().Take(1000).ToList();
+                var d1 = StarDiscrepency(s1);
+                var s2 = g.Doubles().Take(1000).ToList();
+                var d2 = StarDiscrepency(s2);
+                if (d1 < d2) wins++;
             }
 
             Assert.IsTrue(wins >= 7);
@@ -205,6 +205,9 @@ namespace Foundations.RandomNumbers
             {
                 System.Diagnostics.Trace.WriteLine(item);
             }
+
+            var g = new Generator("SobolDoubleTest");
+            Test(g, () => Subrandom.SobolD(p, m));
         }
 
         [TestMethod]
@@ -221,7 +224,7 @@ namespace Foundations.RandomNumbers
         private Single StarDiscrepency(List<Single> s)
         {
             s.Sort();
-            var d = 0F;
+            Single d = 0;
 
             for (int i = 1; i < s.Count; i++)
             {
@@ -237,11 +240,11 @@ namespace Foundations.RandomNumbers
 
             for (int test = 0; test < 10; test++)
             {
-                var s = sequence().Take(1000).ToList();
-                var d = StarDiscrepency(s);
-                s = g.Singles().Take(1000).ToList();
-                var d2 = StarDiscrepency(s);
-                if (d < d2) wins++;
+                var s1 = sequence().Take(1000).ToList();
+                var d1 = StarDiscrepency(s1);
+                var s2 = g.Singles().Take(1000).ToList();
+                var d2 = StarDiscrepency(s2);
+                if (d1 < d2) wins++;
             }
 
             Assert.IsTrue(wins >= 7);
@@ -398,6 +401,9 @@ namespace Foundations.RandomNumbers
             {
                 System.Diagnostics.Trace.WriteLine(item);
             }
+
+            var g = new Generator("SobolSingleTest");
+            Test(g, () => Subrandom.SobolF(p, m));
         }
 
         [TestMethod]
@@ -414,7 +420,7 @@ namespace Foundations.RandomNumbers
         private Decimal StarDiscrepency(List<Decimal> s)
         {
             s.Sort();
-            var d = 0M;
+            Decimal d = 0;
 
             for (int i = 1; i < s.Count; i++)
             {
@@ -430,11 +436,11 @@ namespace Foundations.RandomNumbers
 
             for (int test = 0; test < 10; test++)
             {
-                var s = sequence().Take(1000).ToList();
-                var d = StarDiscrepency(s);
-                s = g.Decimals().Take(1000).ToList();
-                var d2 = StarDiscrepency(s);
-                if (d < d2) wins++;
+                var s1 = sequence().Take(1000).ToList();
+                var d1 = StarDiscrepency(s1);
+                var s2 = g.Decimals().Take(1000).ToList();
+                var d2 = StarDiscrepency(s2);
+                if (d1 < d2) wins++;
             }
 
             Assert.IsTrue(wins >= 7);
@@ -591,6 +597,9 @@ namespace Foundations.RandomNumbers
             {
                 System.Diagnostics.Trace.WriteLine(item);
             }
+
+            var g = new Generator("SobolDecimalTest");
+            Test(g, () => Subrandom.SobolM(p, m));
         }
 
         [TestMethod]
@@ -602,6 +611,118 @@ namespace Foundations.RandomNumbers
             {
                 System.Diagnostics.Trace.WriteLine(item);
             }
+        }
+
+        private Rational StarDiscrepency(List<Rational> s)
+        {
+            s.Sort();
+            Rational d = 0;
+
+            for (int i = 1; i < s.Count; i++)
+            {
+                d = Rational.Max(d, Rational.Abs(i / (Rational)s.Count - s[i]));
+            }
+
+            return d;
+        }
+
+        private void Test(Generator g, Func<IEnumerable<Rational>> sequence)
+        {
+            int wins = 0;
+
+            for (int test = 0; test < 10; test++)
+            {
+                var s1 = sequence().Take(1000).ToList();
+                var d1 = StarDiscrepency(s1);
+                var s2 = g.Doubles().Take(1000).ToList();
+                var d2 = StarDiscrepency(s2);
+                if (d1 < d2) wins++;
+            }
+
+            Assert.IsTrue(wins >= 7);
+        }
+
+
+        /// <summary />
+        [TestMethod]
+        public void VanDerCorputRationalBase2Test()
+        {
+            var g = new Generator("VanDerCorputRationalBase2Test");
+            Test(g, () => Subrandom.VanDerCorputR(2));
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void VanDerCorputRationalBase3Test()
+        {
+            var g = new Generator("VanDerCorputRationalBase3Test");
+            Test(g, () => Subrandom.VanDerCorputR(3));
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void HaltonRationalTest()
+        {
+            var g = new Generator("HaltonRationalTest");
+            
+            foreach (var item in Subrandom.HaltonR(new[] { 2, 3 }).Take(100))
+            {
+                System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}");
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void HaltonRationalPrimesTest()
+        {
+            var g = new Generator("HaltonRationalPrimesTest");
+            
+            foreach (var item in Subrandom.HaltonR(3).Take(100))
+            {
+                System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}, {item[2]}");
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void HammersleyRationalPrimesTest()
+        {
+            var g = new Generator("HammersleyRationalPrimesTest");
+            
+            foreach (var item in Subrandom.HammersleyR(2, 256))
+            {
+                System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}");
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void SobolRationalTest()
+        {
+            var p = new PolyGF2(3, 1, 0);
+            var m = new[] { 1, 3, 7 };
+
+            foreach (var item in Subrandom.SobolR(p, m).Take(1000))
+            {
+                System.Diagnostics.Trace.WriteLine(item);
+            }
+
+            var g = new Generator("SobolRationalTest");
+            Test(g, () => Subrandom.SobolR(p, m));
+        }
+
+        [TestMethod]
+        public void SobolRationalCodeTest()
+        {
+            var s = Subrandom.SobolR(13, 1, 1, 1, 3, 11);
+
+            foreach (var item in s.Take(1000))
+            {
+                System.Diagnostics.Trace.WriteLine(item);
+            }
+
+            var g = new Generator("SobolRationalCodeTest");
+            Test(g, () => s);
         }
 
     }

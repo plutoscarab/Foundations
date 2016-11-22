@@ -79,6 +79,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>MixingFunctionsTests.tt</DependentUpon>
     </Compile>
+    <Compile Include="RandomNumbers\SobolInitialValues.cs" />
     <Compile Include="RandomNumbers\StreamSource.cs" />
     <Compile Include="RandomNumbers\SubrandomTests.cs">
       <AutoGen>True</AutoGen>

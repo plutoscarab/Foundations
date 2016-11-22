@@ -554,6 +554,9 @@ namespace Foundations.Types
 
             foreach (var d in GetAllIrreducible())
             {
+                if (this == d)
+                    return true;
+
                 if (this % d == Zero)
                 {
                     factor = d;

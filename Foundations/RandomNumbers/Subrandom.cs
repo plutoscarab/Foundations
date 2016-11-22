@@ -77,7 +77,7 @@ namespace Foundations.RandomNumbers
             return AdditiveRecurrenceD(new Generator());
         }
 
-        /// <summary>
+      /// <summary>
         /// Van der Corput sequence.
         /// </summary>
         public static IEnumerable<Double> VanDerCorputD(int @base)
@@ -155,8 +155,13 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public static IEnumerable<Double> SobolD(PolyGF2 primitivePolynomial, params int[] initialValues)
         {
-            foreach (var s in Sobol(primitivePolynomial, initialValues))
+            var v = SobolDirectionVectors(64, primitivePolynomial, initialValues);
+            ulong s = 0;
+            var d = ((System.Numerics.BigInteger)1) << 64;
+
+            foreach (var r in Sequences.Ruler())
             {
+                s ^= v[r];
                 yield return s / 18446744073709551616D;
             }
         }
@@ -167,11 +172,7 @@ namespace Foundations.RandomNumbers
         public static IEnumerable<Double> SobolD(int polynomialCode, params int[] initialValues)
         {
             var primitivePolynomial = PolyGF2.FromCode(2UL * (ulong)polynomialCode ^ 1UL ^ (1UL << initialValues.Length));
-
-            foreach (var s in Sobol(primitivePolynomial, initialValues))
-            {
-                yield return s / 18446744073709551616D;
-            }
+            return SobolD(primitivePolynomial, initialValues);
         }
 
         /// <summary>
@@ -226,7 +227,7 @@ namespace Foundations.RandomNumbers
             return AdditiveRecurrenceF(new Generator());
         }
 
-        /// <summary>
+      /// <summary>
         /// Van der Corput sequence.
         /// </summary>
         public static IEnumerable<Single> VanDerCorputF(int @base)
@@ -304,8 +305,13 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public static IEnumerable<Single> SobolF(PolyGF2 primitivePolynomial, params int[] initialValues)
         {
-            foreach (var s in Sobol(primitivePolynomial, initialValues))
+            var v = SobolDirectionVectors(64, primitivePolynomial, initialValues);
+            ulong s = 0;
+            var d = ((System.Numerics.BigInteger)1) << 64;
+
+            foreach (var r in Sequences.Ruler())
             {
+                s ^= v[r];
                 yield return s / 18446744073709551616F;
             }
         }
@@ -316,11 +322,7 @@ namespace Foundations.RandomNumbers
         public static IEnumerable<Single> SobolF(int polynomialCode, params int[] initialValues)
         {
             var primitivePolynomial = PolyGF2.FromCode(2UL * (ulong)polynomialCode ^ 1UL ^ (1UL << initialValues.Length));
-
-            foreach (var s in Sobol(primitivePolynomial, initialValues))
-            {
-                yield return s / 18446744073709551616F;
-            }
+            return SobolF(primitivePolynomial, initialValues);
         }
 
         /// <summary>
@@ -375,7 +377,7 @@ namespace Foundations.RandomNumbers
             return AdditiveRecurrenceM(new Generator());
         }
 
-        /// <summary>
+      /// <summary>
         /// Van der Corput sequence.
         /// </summary>
         public static IEnumerable<Decimal> VanDerCorputM(int @base)
@@ -453,8 +455,13 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public static IEnumerable<Decimal> SobolM(PolyGF2 primitivePolynomial, params int[] initialValues)
         {
-            foreach (var s in Sobol(primitivePolynomial, initialValues))
+            var v = SobolDirectionVectors(64, primitivePolynomial, initialValues);
+            ulong s = 0;
+            var d = ((System.Numerics.BigInteger)1) << 64;
+
+            foreach (var r in Sequences.Ruler())
             {
+                s ^= v[r];
                 yield return s / 18446744073709551616M;
             }
         }
@@ -465,11 +472,105 @@ namespace Foundations.RandomNumbers
         public static IEnumerable<Decimal> SobolM(int polynomialCode, params int[] initialValues)
         {
             var primitivePolynomial = PolyGF2.FromCode(2UL * (ulong)polynomialCode ^ 1UL ^ (1UL << initialValues.Length));
+            return SobolM(primitivePolynomial, initialValues);
+        }
 
-            foreach (var s in Sobol(primitivePolynomial, initialValues))
+      /// <summary>
+        /// Van der Corput sequence.
+        /// </summary>
+        public static IEnumerable<Rational> VanDerCorputR(int @base)
+        {
+            foreach (var pair in VanDerCorput(@base))
             {
-                yield return s / 18446744073709551616M;
+                yield return pair.Item1 / (Rational)pair.Item2;
             }
+        }
+
+        /// <summary>
+        /// Halton sequence.
+        /// </summary>
+        public static IEnumerable<Rational[]> HaltonR(int[] bases)
+        {
+            ValidateHalton(bases);
+            var s = bases.Select(b => VanDerCorputR(b).GetEnumerator()).ToArray();
+            var x = new Rational[bases.Length];
+
+            while (true)
+            {
+                for (int i = 0; i < bases.Length; i++)
+                {
+                    s[i].MoveNext();
+                    x[i] = s[i].Current;
+                }
+
+                yield return x;
+            }
+        }
+
+        /// <summary>
+        /// Halton sequence.
+        /// </summary>
+        public static IEnumerable<Rational[]> HaltonR(int dimension)
+        {
+            if (dimension < 0) throw new ArgumentOutOfRangeException();
+            return HaltonR(Sequences.Primes().Select(_ => (int)_).Take(dimension).ToArray());
+        }
+
+        /// <summary>
+        /// Hammersley set.
+        /// </summary>
+        public static IEnumerable<Rational[]> HammersleyR(int[] bases, int N)
+        {
+            if (N < 0) throw new ArgumentOutOfRangeException();
+            ValidateHalton(bases);
+            var s = bases.Select(b => VanDerCorputR(b).GetEnumerator()).ToArray();
+            var x = new Rational[bases.Length + 1];
+
+            for (int n = 1; n <= N; n++)
+            {
+                for (int i = 0; i < bases.Length; i++)
+                {
+                    s[i].MoveNext();
+                    x[i] = s[i].Current;
+                }
+
+                x[bases.Length] = n / (Rational)N;
+                yield return x;
+            }
+        }
+
+        /// <summary>
+        /// Hammersley sequence.
+        /// </summary>
+        public static IEnumerable<Rational[]> HammersleyR(int dimension, int N)
+        {
+            if (dimension < 2) throw new ArgumentOutOfRangeException();
+            return HammersleyR(Sequences.Primes().Select(_ => (int)_).Take(dimension - 1).ToArray(), N);
+        }
+
+        /// <summary>
+        /// Sobol sequence.
+        /// </summary>
+        public static IEnumerable<Rational> SobolR(PolyGF2 primitivePolynomial, params int[] initialValues)
+        {
+            var v = SobolDirectionVectors(64, primitivePolynomial, initialValues);
+            ulong s = 0;
+            var d = ((System.Numerics.BigInteger)1) << 64;
+
+            foreach (var r in Sequences.Ruler())
+            {
+                s ^= v[r];
+                yield return new Rational(s, d);
+            }
+        }
+
+        /// <summary>
+        /// Sobol sequence.
+        /// </summary>
+        public static IEnumerable<Rational> SobolR(int polynomialCode, params int[] initialValues)
+        {
+            var primitivePolynomial = PolyGF2.FromCode(2UL * (ulong)polynomialCode ^ 1UL ^ (1UL << initialValues.Length));
+            return SobolR(primitivePolynomial, initialValues);
         }
 
         private static IEnumerable<Tuple<long, long>> VanDerCorput(int @base)
@@ -545,7 +646,7 @@ namespace Foundations.RandomNumbers
             }
         }
 
-        private static IEnumerable<ulong> Sobol(PolyGF2 primitivePolynomial, int[] initialValues)
+        internal static ulong[] SobolDirectionVectors(int d, PolyGF2 primitivePolynomial, int[] initialValues)
         {
             if (initialValues == null) 
                 throw new ArgumentNullException(nameof(initialValues));
@@ -570,7 +671,7 @@ namespace Foundations.RandomNumbers
 
             // Validate initial values.
 
-            var v = new ulong[64];
+            var v = new ulong[d];
             long max = 1;
             var m = initialValues;
 
@@ -591,14 +692,15 @@ namespace Foundations.RandomNumbers
             }
 
             // Compute remaining direction vectors.
+            var exponents = new HashSet<int>(primitivePolynomial.Exponents);
 
-            for (int i = n; i < 64; i++)
+            for (int i = n; i < d; i++)
             {
                 ulong sum = v[i - n] >> n;
 
                 for (int j = 1; j <= n; j++)
                 {
-                    if (primitivePolynomial.Exponents.Contains(n - j))
+                    if (exponents.Contains(n - j))
                     {
                         sum ^= v[i - j];
                     }
@@ -607,14 +709,7 @@ namespace Foundations.RandomNumbers
                 v[i] = sum;
             }
 
-            // Gray code ordering.
-            ulong s = 0;
-
-            foreach (var r in Sequences.Ruler())
-            {
-                s ^= v[r];
-                yield return s;
-            }
+            return v;
         }
     }
 }

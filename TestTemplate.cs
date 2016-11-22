@@ -15,11 +15,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Foundations.
 {
-    /// <summary />
     [TestClass]
     public class Tests
     {
-        /// <summary />
         [TestMethod]
         public void Test()
         {

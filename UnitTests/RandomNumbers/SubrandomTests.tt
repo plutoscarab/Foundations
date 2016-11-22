@@ -27,6 +27,7 @@ namespace Foundations.RandomNumbers
 MakeMethod("Double", "D");
 MakeMethod("Single", "F");
 MakeMethod("Decimal", "M");
+MakeMethod("Rational", "R");
 #>
     }
 }
@@ -37,11 +38,15 @@ void MakeMethod(string T, string suffix)
         private <#= T #> StarDiscrepency(List<<#= T #>> s)
         {
             s.Sort();
-            var d = 0<#= suffix #>;
+            <#= T #> d = 0;
 
             for (int i = 1; i < s.Count; i++)
             {
+<#+ if (suffix == "R") { #>
+                d = Rational.Max(d, Rational.Abs(i / (<#= T #>)s.Count - s[i]));
+<#+ } else { #>
                 d = Math.Max(d, Math.Abs(i / (<#= T #>)s.Count - s[i]));
+<#+ } #>
             }
 
             return d;
@@ -53,16 +58,17 @@ void MakeMethod(string T, string suffix)
 
             for (int test = 0; test < 10; test++)
             {
-                var s = sequence().Take(1000).ToList();
-                var d = StarDiscrepency(s);
-                s = g.<#= T #>s().Take(1000).ToList();
-                var d2 = StarDiscrepency(s);
-                if (d < d2) wins++;
+                var s1 = sequence().Take(1000).ToList();
+                var d1 = StarDiscrepency(s1);
+                var s2 = g.<#= suffix == "R" ? "Double" : T #>s().Take(1000).ToList();
+                var d2 = StarDiscrepency(s2);
+                if (d1 < d2) wins++;
             }
 
             Assert.IsTrue(wins >= 7);
         }
 
+<#+ if (suffix != "R") { #>
         /// <summary />
         [TestMethod]
 	    public void AdditiveRecurrence<#= T #>Test()
@@ -150,6 +156,7 @@ void MakeMethod(string T, string suffix)
         {
             Test(null, () => Subrandom.AdditiveRecurrence(0.5<#= suffix #>, 1<#= suffix #>));
         }
+<#+ } #>
 
         /// <summary />
         [TestMethod]
@@ -214,6 +221,9 @@ void MakeMethod(string T, string suffix)
             {
                 System.Diagnostics.Trace.WriteLine(item);
             }
+
+            var g = new Generator("Sobol<#= T #>Test");
+            Test(g, () => Subrandom.Sobol<#= suffix #>(p, m));
         }
 
         [TestMethod]
