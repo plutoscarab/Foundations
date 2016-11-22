@@ -159,6 +159,9 @@ namespace Foundations
         /// </summary>
 		public static IEnumerable<Factor<Num>> PrimeFactors(Num n)
         {
+            if (n == 1)
+                yield break;
+
             if (n < 2)
                 throw new ArgumentOutOfRangeException();
 

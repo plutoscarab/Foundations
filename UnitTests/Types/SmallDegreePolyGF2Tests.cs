@@ -97,5 +97,18 @@ namespace Foundations.Types
                 Trace.WriteLine("");
             }
         }
+
+        [TestMethod]
+        public void SobolCoefficients()
+        {
+            Trace.WriteLine("s\ta\tP");
+            foreach (var p in SmallDegreePolyGF2.Primes().Skip(1).Take(1000))
+            {
+                var a = p.Coefficients;
+                a ^= 1ul << p.Degree;
+                a >>= 1;
+                Trace.WriteLine($"{p.Degree}\t{a}\t{p}");
+            }
+        }
     }
 }

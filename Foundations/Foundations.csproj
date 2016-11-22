@@ -154,8 +154,10 @@
     <Compile Include="RandomNumbers\SystemRandomSource.cs" />
     <Compile Include="RandomNumbers\XorShiftRandomSource.cs" />
     <Compile Include="Types\ContinuedFraction.cs" />
+    <Compile Include="Types\PolyGF2.cs" />
     <Compile Include="Types\SmallDegreePolyGF2.cs" />
     <Compile Include="Types\Rational.cs" />
+    <Compile Include="Types\SquareMatrixGF2.cs" />
     <Compile Include="Types\UInt128.cs" />
     <Compile Include="Types\ValueTypes.cs">
       <AutoGen>True</AutoGen>

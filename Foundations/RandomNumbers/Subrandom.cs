@@ -16,6 +16,7 @@ FILE GENERATOR. IF YOU SAVE THE FILE IN VISUAL STUDIO IT WILL DO THIS FOR YOU.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Foundations.Types;
 
 namespace Foundations.RandomNumbers
 {
@@ -31,7 +32,7 @@ namespace Foundations.RandomNumbers
         /// <param name="α">Value from 0 to 1 exclusive.</param>
 	    public static IEnumerable<Double> AdditiveRecurrence(Double s0, Double α)
         {
-            if (s0 <= 0 || s0 >= 1) throw new ArgumentOutOfRangeException(nameof(s0));
+            if (s0 < 0 || s0 >= 1) throw new ArgumentOutOfRangeException(nameof(s0));
             if (α <= 0 || α >= 1) throw new ArgumentOutOfRangeException(nameof(α));
             var s = s0;
 
@@ -81,36 +82,9 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public static IEnumerable<Double> VanDerCorputD(int @base)
         {
-            if (@base < 2) throw new ArgumentOutOfRangeException();
-            var digits = new int[1];
-            long denom = @base;
-
-            while (true)
+            foreach (var pair in VanDerCorput(@base))
             {
-                int i = 0;
-                long num = 0;
-
-                while (true)
-                {
-                    num = num * @base + ++digits[i];
-                    if (digits[i] < @base) break;
-                    digits[i] = 0;
-                    num -= @base;
-                    i++;
-
-                    if (i >= digits.Length)
-                    {
-                        Array.Resize(ref digits, digits.Length + 1);
-                        denom *= @base;
-                    }
-                }
-
-                while (++i < digits.Length)
-                {
-                    num = num * @base + digits[i];
-                }
-
-                yield return num / (Double)denom;
+                yield return pair.Item1 / (Double)pair.Item2;
             }
         }
 
@@ -119,22 +93,7 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public static IEnumerable<Double[]> HaltonD(int[] bases)
         {
-            if (bases == null) throw new ArgumentNullException();
-            if (bases.Length == 0) throw new ArgumentException();
-
-            for (int i = 1; i < bases.Length; i++)
-            {
-                for (int j = 0; j < i; j++)
-                {
-                    int gcd = Numbers.GCD(bases[i], bases[j]);
-
-                    if (gcd != 1)
-                    {
-                        throw new ArgumentException($"Values must be coprime. {bases[i]} and {bases[j]} share a factor of {gcd}.");
-                    }
-                }
-            }
-
+            ValidateHalton(bases);
             var s = bases.Select(b => VanDerCorputD(b).GetEnumerator()).ToArray();
             var x = new Double[bases.Length];
 
@@ -164,23 +123,8 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public static IEnumerable<Double[]> HammersleyD(int[] bases, int N)
         {
-            if (bases == null) throw new ArgumentNullException();
-            if (bases.Length == 0) throw new ArgumentException();
             if (N < 0) throw new ArgumentOutOfRangeException();
-
-            for (int i = 1; i < bases.Length; i++)
-            {
-                for (int j = 0; j < i; j++)
-                {
-                    int gcd = Numbers.GCD(bases[i], bases[j]);
-
-                    if (gcd != 1)
-                    {
-                        throw new ArgumentException($"Values must be coprime. {bases[i]} and {bases[j]} share a factor of {gcd}.");
-                    }
-                }
-            }
-
+            ValidateHalton(bases);
             var s = bases.Select(b => VanDerCorputD(b).GetEnumerator()).ToArray();
             var x = new Double[bases.Length + 1];
 
@@ -207,13 +151,37 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Sobol sequence.
+        /// </summary>
+        public static IEnumerable<Double> SobolD(PolyGF2 primitivePolynomial, params int[] initialValues)
+        {
+            foreach (var s in Sobol(primitivePolynomial, initialValues))
+            {
+                yield return s / 18446744073709551616D;
+            }
+        }
+
+        /// <summary>
+        /// Sobol sequence.
+        /// </summary>
+        public static IEnumerable<Double> SobolD(int polynomialCode, params int[] initialValues)
+        {
+            var primitivePolynomial = PolyGF2.FromCode(2UL * (ulong)polynomialCode ^ 1UL ^ (1UL << initialValues.Length));
+
+            foreach (var s in Sobol(primitivePolynomial, initialValues))
+            {
+                yield return s / 18446744073709551616D;
+            }
+        }
+
+        /// <summary>
         /// Additive recurrence, sₙ = (s₀ + αn) mod 1.
         /// </summary>
         /// <param name="s0">Value from 0 to 1 exclusive.</param>
         /// <param name="α">Value from 0 to 1 exclusive.</param>
 	    public static IEnumerable<Single> AdditiveRecurrence(Single s0, Single α)
         {
-            if (s0 <= 0 || s0 >= 1) throw new ArgumentOutOfRangeException(nameof(s0));
+            if (s0 < 0 || s0 >= 1) throw new ArgumentOutOfRangeException(nameof(s0));
             if (α <= 0 || α >= 1) throw new ArgumentOutOfRangeException(nameof(α));
             var s = s0;
 
@@ -263,36 +231,9 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public static IEnumerable<Single> VanDerCorputF(int @base)
         {
-            if (@base < 2) throw new ArgumentOutOfRangeException();
-            var digits = new int[1];
-            long denom = @base;
-
-            while (true)
+            foreach (var pair in VanDerCorput(@base))
             {
-                int i = 0;
-                long num = 0;
-
-                while (true)
-                {
-                    num = num * @base + ++digits[i];
-                    if (digits[i] < @base) break;
-                    digits[i] = 0;
-                    num -= @base;
-                    i++;
-
-                    if (i >= digits.Length)
-                    {
-                        Array.Resize(ref digits, digits.Length + 1);
-                        denom *= @base;
-                    }
-                }
-
-                while (++i < digits.Length)
-                {
-                    num = num * @base + digits[i];
-                }
-
-                yield return num / (Single)denom;
+                yield return pair.Item1 / (Single)pair.Item2;
             }
         }
 
@@ -301,22 +242,7 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public static IEnumerable<Single[]> HaltonF(int[] bases)
         {
-            if (bases == null) throw new ArgumentNullException();
-            if (bases.Length == 0) throw new ArgumentException();
-
-            for (int i = 1; i < bases.Length; i++)
-            {
-                for (int j = 0; j < i; j++)
-                {
-                    int gcd = Numbers.GCD(bases[i], bases[j]);
-
-                    if (gcd != 1)
-                    {
-                        throw new ArgumentException($"Values must be coprime. {bases[i]} and {bases[j]} share a factor of {gcd}.");
-                    }
-                }
-            }
-
+            ValidateHalton(bases);
             var s = bases.Select(b => VanDerCorputF(b).GetEnumerator()).ToArray();
             var x = new Single[bases.Length];
 
@@ -346,23 +272,8 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public static IEnumerable<Single[]> HammersleyF(int[] bases, int N)
         {
-            if (bases == null) throw new ArgumentNullException();
-            if (bases.Length == 0) throw new ArgumentException();
             if (N < 0) throw new ArgumentOutOfRangeException();
-
-            for (int i = 1; i < bases.Length; i++)
-            {
-                for (int j = 0; j < i; j++)
-                {
-                    int gcd = Numbers.GCD(bases[i], bases[j]);
-
-                    if (gcd != 1)
-                    {
-                        throw new ArgumentException($"Values must be coprime. {bases[i]} and {bases[j]} share a factor of {gcd}.");
-                    }
-                }
-            }
-
+            ValidateHalton(bases);
             var s = bases.Select(b => VanDerCorputF(b).GetEnumerator()).ToArray();
             var x = new Single[bases.Length + 1];
 
@@ -389,13 +300,37 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Sobol sequence.
+        /// </summary>
+        public static IEnumerable<Single> SobolF(PolyGF2 primitivePolynomial, params int[] initialValues)
+        {
+            foreach (var s in Sobol(primitivePolynomial, initialValues))
+            {
+                yield return s / 18446744073709551616F;
+            }
+        }
+
+        /// <summary>
+        /// Sobol sequence.
+        /// </summary>
+        public static IEnumerable<Single> SobolF(int polynomialCode, params int[] initialValues)
+        {
+            var primitivePolynomial = PolyGF2.FromCode(2UL * (ulong)polynomialCode ^ 1UL ^ (1UL << initialValues.Length));
+
+            foreach (var s in Sobol(primitivePolynomial, initialValues))
+            {
+                yield return s / 18446744073709551616F;
+            }
+        }
+
+        /// <summary>
         /// Additive recurrence, sₙ = (s₀ + αn) mod 1.
         /// </summary>
         /// <param name="s0">Value from 0 to 1 exclusive.</param>
         /// <param name="α">Value from 0 to 1 exclusive.</param>
 	    public static IEnumerable<Decimal> AdditiveRecurrence(Decimal s0, Decimal α)
         {
-            if (s0 <= 0 || s0 >= 1) throw new ArgumentOutOfRangeException(nameof(s0));
+            if (s0 < 0 || s0 >= 1) throw new ArgumentOutOfRangeException(nameof(s0));
             if (α <= 0 || α >= 1) throw new ArgumentOutOfRangeException(nameof(α));
             var s = s0;
 
@@ -445,36 +380,9 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public static IEnumerable<Decimal> VanDerCorputM(int @base)
         {
-            if (@base < 2) throw new ArgumentOutOfRangeException();
-            var digits = new int[1];
-            long denom = @base;
-
-            while (true)
+            foreach (var pair in VanDerCorput(@base))
             {
-                int i = 0;
-                long num = 0;
-
-                while (true)
-                {
-                    num = num * @base + ++digits[i];
-                    if (digits[i] < @base) break;
-                    digits[i] = 0;
-                    num -= @base;
-                    i++;
-
-                    if (i >= digits.Length)
-                    {
-                        Array.Resize(ref digits, digits.Length + 1);
-                        denom *= @base;
-                    }
-                }
-
-                while (++i < digits.Length)
-                {
-                    num = num * @base + digits[i];
-                }
-
-                yield return num / (Decimal)denom;
+                yield return pair.Item1 / (Decimal)pair.Item2;
             }
         }
 
@@ -483,22 +391,7 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public static IEnumerable<Decimal[]> HaltonM(int[] bases)
         {
-            if (bases == null) throw new ArgumentNullException();
-            if (bases.Length == 0) throw new ArgumentException();
-
-            for (int i = 1; i < bases.Length; i++)
-            {
-                for (int j = 0; j < i; j++)
-                {
-                    int gcd = Numbers.GCD(bases[i], bases[j]);
-
-                    if (gcd != 1)
-                    {
-                        throw new ArgumentException($"Values must be coprime. {bases[i]} and {bases[j]} share a factor of {gcd}.");
-                    }
-                }
-            }
-
+            ValidateHalton(bases);
             var s = bases.Select(b => VanDerCorputM(b).GetEnumerator()).ToArray();
             var x = new Decimal[bases.Length];
 
@@ -528,23 +421,8 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public static IEnumerable<Decimal[]> HammersleyM(int[] bases, int N)
         {
-            if (bases == null) throw new ArgumentNullException();
-            if (bases.Length == 0) throw new ArgumentException();
             if (N < 0) throw new ArgumentOutOfRangeException();
-
-            for (int i = 1; i < bases.Length; i++)
-            {
-                for (int j = 0; j < i; j++)
-                {
-                    int gcd = Numbers.GCD(bases[i], bases[j]);
-
-                    if (gcd != 1)
-                    {
-                        throw new ArgumentException($"Values must be coprime. {bases[i]} and {bases[j]} share a factor of {gcd}.");
-                    }
-                }
-            }
-
+            ValidateHalton(bases);
             var s = bases.Select(b => VanDerCorputM(b).GetEnumerator()).ToArray();
             var x = new Decimal[bases.Length + 1];
 
@@ -570,5 +448,173 @@ namespace Foundations.RandomNumbers
             return HammersleyM(Sequences.Primes().Select(_ => (int)_).Take(dimension - 1).ToArray(), N);
         }
 
+        /// <summary>
+        /// Sobol sequence.
+        /// </summary>
+        public static IEnumerable<Decimal> SobolM(PolyGF2 primitivePolynomial, params int[] initialValues)
+        {
+            foreach (var s in Sobol(primitivePolynomial, initialValues))
+            {
+                yield return s / 18446744073709551616M;
+            }
+        }
+
+        /// <summary>
+        /// Sobol sequence.
+        /// </summary>
+        public static IEnumerable<Decimal> SobolM(int polynomialCode, params int[] initialValues)
+        {
+            var primitivePolynomial = PolyGF2.FromCode(2UL * (ulong)polynomialCode ^ 1UL ^ (1UL << initialValues.Length));
+
+            foreach (var s in Sobol(primitivePolynomial, initialValues))
+            {
+                yield return s / 18446744073709551616M;
+            }
+        }
+
+        private static IEnumerable<Tuple<long, long>> VanDerCorput(int @base)
+        {
+            if (@base < 2) throw new ArgumentOutOfRangeException();
+            var digits = new int[1];
+            long denom = @base;
+
+            while (true)
+            {
+                int i = 0;
+                long num = 0;
+
+                while (true)
+                {
+                    num = num * @base + ++digits[i];
+                    if (digits[i] < @base) break;
+                    digits[i] = 0;
+                    num -= @base;
+                    i++;
+
+                    if (i >= digits.Length)
+                    {
+                        Array.Resize(ref digits, digits.Length + 1);
+                        denom *= @base;
+                    }
+                }
+
+                while (++i < digits.Length)
+                {
+                    num = num * @base + digits[i];
+                }
+
+                yield return Tuple.Create(num, denom);
+            }
+        }
+
+        private static void ValidateHalton(int[] bases)
+        {
+            if (bases == null) throw new ArgumentNullException();
+            if (bases.Length == 0) throw new ArgumentException();
+
+            for (int i = 1; i < bases.Length; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    int gcd = Numbers.GCD(bases[i], bases[j]);
+
+                    if (gcd != 1)
+                    {
+                        throw new ArgumentException($"Values must be coprime. {bases[i]} and {bases[j]} share a factor of {gcd}.");
+                    }
+                }
+            }
+        }
+
+        private static void ValidateHammersley(int[] bases)
+        {
+            if (bases == null) throw new ArgumentNullException();
+            if (bases.Length == 0) throw new ArgumentException();
+
+            for (int i = 1; i < bases.Length; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    int gcd = Numbers.GCD(bases[i], bases[j]);
+
+                    if (gcd != 1)
+                    {
+                        throw new ArgumentException($"Values must be coprime. {bases[i]} and {bases[j]} share a factor of {gcd}.");
+                    }
+                }
+            }
+        }
+
+        private static IEnumerable<ulong> Sobol(PolyGF2 primitivePolynomial, int[] initialValues)
+        {
+            if (initialValues == null) 
+                throw new ArgumentNullException(nameof(initialValues));
+
+            int n = initialValues.Length;
+            if (n != primitivePolynomial.Degree) 
+                throw new ArgumentException("The number of initial values must be the same as the degree of the primitive polynomial.");
+
+            PolyGF2 factor;
+            long order;
+
+            if (!primitivePolynomial.IsPrimitive(out factor, out order)) 
+            {
+                ulong q = (1UL << primitivePolynomial.Degree) - 1UL;
+                var o = new PolyGF2((int)order, 0);
+
+                if (factor != PolyGF2.Zero)
+                    throw new ArgumentException($"Polynomial is not primitive because it is divisible by {factor} = ({primitivePolynomial}) / ({primitivePolynomial / factor}).");
+                else
+                    throw new ArgumentException($"Polynomial is not primitive because it only has order {order} and not {q}. ({o}) / ({primitivePolynomial}) = ({o / primitivePolynomial})");
+            }
+
+            // Validate initial values.
+
+            var v = new ulong[64];
+            long max = 1;
+            var m = initialValues;
+
+            for (int i = 0; i < n; i++)
+            {
+                max <<= 1;
+
+                if (m[i] < 0)
+                    throw new ArgumentException($"Initial values cannot be negative. {m[i]} is definitely negative.");
+                
+                if (m[i] >= max) 
+                    throw new ArgumentException($"The i-th initial value (starting with i=0) must be less than 2^i. ${m[i]} should be less than {max}.");
+                
+                if ((m[i] & 1) == 0) 
+                    throw new ArgumentException($"Initial values must be odd. {m[i]} is even.");
+                
+                v[i] = (ulong)m[i] << (63 - i);
+            }
+
+            // Compute remaining direction vectors.
+
+            for (int i = n; i < 64; i++)
+            {
+                ulong sum = v[i - n] >> n;
+
+                for (int j = 1; j <= n; j++)
+                {
+                    if (primitivePolynomial.Exponents.Contains(n - j))
+                    {
+                        sum ^= v[i - j];
+                    }
+                }
+
+                v[i] = sum;
+            }
+
+            // Gray code ordering.
+            ulong s = 0;
+
+            foreach (var r in Sequences.Ruler())
+            {
+                s ^= v[r];
+                yield return s;
+            }
+        }
     }
 }

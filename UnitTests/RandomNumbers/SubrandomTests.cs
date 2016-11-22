@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Foundations.Types;
 
 namespace Foundations.RandomNumbers
 {
@@ -114,7 +115,7 @@ namespace Foundations.RandomNumbers
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
 	    public void AdditiveRecurrenceSZeroLowAlphaDoubleTest()
         {
-            Test(null, () => Subrandom.AdditiveRecurrence(0D, 0.5D));
+            Test(null, () => Subrandom.AdditiveRecurrence(-1D, 0.5D));
         }
 
         /// <summary />
@@ -190,6 +191,30 @@ namespace Foundations.RandomNumbers
             foreach (var item in Subrandom.HammersleyD(2, 256))
             {
                 System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}");
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void SobolDoubleTest()
+        {
+            var p = new PolyGF2(3, 1, 0);
+            var m = new[] { 1, 3, 7 };
+
+            foreach (var item in Subrandom.SobolD(p, m).Take(1000))
+            {
+                System.Diagnostics.Trace.WriteLine(item);
+            }
+        }
+
+        [TestMethod]
+        public void SobolDoubleCodeTest()
+        {
+            var s = Subrandom.SobolD(13, 1, 1, 1, 3, 11);
+
+            foreach (var item in s.Take(1000))
+            {
+                System.Diagnostics.Trace.WriteLine(item);
             }
         }
 
@@ -283,7 +308,7 @@ namespace Foundations.RandomNumbers
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
 	    public void AdditiveRecurrenceSZeroLowAlphaSingleTest()
         {
-            Test(null, () => Subrandom.AdditiveRecurrence(0F, 0.5F));
+            Test(null, () => Subrandom.AdditiveRecurrence(-1F, 0.5F));
         }
 
         /// <summary />
@@ -359,6 +384,30 @@ namespace Foundations.RandomNumbers
             foreach (var item in Subrandom.HammersleyF(2, 256))
             {
                 System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}");
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void SobolSingleTest()
+        {
+            var p = new PolyGF2(3, 1, 0);
+            var m = new[] { 1, 3, 7 };
+
+            foreach (var item in Subrandom.SobolF(p, m).Take(1000))
+            {
+                System.Diagnostics.Trace.WriteLine(item);
+            }
+        }
+
+        [TestMethod]
+        public void SobolSingleCodeTest()
+        {
+            var s = Subrandom.SobolF(13, 1, 1, 1, 3, 11);
+
+            foreach (var item in s.Take(1000))
+            {
+                System.Diagnostics.Trace.WriteLine(item);
             }
         }
 
@@ -452,7 +501,7 @@ namespace Foundations.RandomNumbers
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
 	    public void AdditiveRecurrenceSZeroLowAlphaDecimalTest()
         {
-            Test(null, () => Subrandom.AdditiveRecurrence(0M, 0.5M));
+            Test(null, () => Subrandom.AdditiveRecurrence(-1M, 0.5M));
         }
 
         /// <summary />
@@ -528,6 +577,30 @@ namespace Foundations.RandomNumbers
             foreach (var item in Subrandom.HammersleyM(2, 256))
             {
                 System.Diagnostics.Trace.WriteLine($"{item[0]}, {item[1]}");
+            }
+        }
+
+        /// <summary />
+        [TestMethod]
+        public void SobolDecimalTest()
+        {
+            var p = new PolyGF2(3, 1, 0);
+            var m = new[] { 1, 3, 7 };
+
+            foreach (var item in Subrandom.SobolM(p, m).Take(1000))
+            {
+                System.Diagnostics.Trace.WriteLine(item);
+            }
+        }
+
+        [TestMethod]
+        public void SobolDecimalCodeTest()
+        {
+            var s = Subrandom.SobolM(13, 1, 1, 1, 3, 11);
+
+            foreach (var item in s.Take(1000))
+            {
+                System.Diagnostics.Trace.WriteLine(item);
             }
         }
 

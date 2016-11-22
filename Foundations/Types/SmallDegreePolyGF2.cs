@@ -307,7 +307,7 @@ namespace Foundations.Types
                     yield break;
                 }
 
-                if ((d * d).Coefficients > Coefficients)
+                if ((d * d).Degree > Degree)
                 {
                     yield return new Factor<SmallDegreePolyGF2>(this, 1);
                     yield break;
