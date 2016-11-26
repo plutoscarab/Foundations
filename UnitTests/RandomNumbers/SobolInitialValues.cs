@@ -24,7 +24,11 @@ namespace Foundations.RandomNumbers
         [TestMethod]
         public void SobolInitialValues()
         {
-            const int max = 20;
+            SobolInitialValues(20);
+        }
+
+        public void SobolInitialValues(int max)
+        {
             int d = 2;
             var g = new Generator("SobolInitialValue");
             var v = new bool[max + 1][];

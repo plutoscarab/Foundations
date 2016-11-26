@@ -40,5 +40,14 @@ namespace Foundations
             var n = Sequences.Ruler().Take(100000).Sum();
             Assert.AreEqual(99994, n);
         }
+
+        [TestMethod]
+        public void RulerSkipTest()
+        {
+            var r1 = Sequences.Ruler().Skip(1000000).Take(100).ToList();
+            var r2 = Sequences.Ruler(1000000).Take(100).ToList();
+            for (int i = 0; i < 100; i++)
+                Assert.AreEqual(r1[i], r2[i]);
+        }
     }
 }

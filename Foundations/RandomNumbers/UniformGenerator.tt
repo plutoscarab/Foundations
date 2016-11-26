@@ -1,0 +1,401 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+/*
+UniformGenerator.cs
+
+<#@ include file="../../License.txt" #>
+*/
+
+using System;
+using System.Collections.Generic;
+using System.Numerics;
+using Foundations.Types;
+
+namespace Foundations.RandomNumbers
+{
+    /// <summary>
+    /// Equidistributed number generator.
+    /// </summary>
+    public sealed partial class UniformGenerator
+    {
+        private IUniformSource source;
+     
+        /// <summary>
+        /// Create an equidistributed number generator
+        /// using the specified uniform source.
+        /// </summary>
+        public UniformGenerator(IUniformSource source)
+        {
+            this.source = source;
+        }
+
+        private UniformGenerator(IUniformSource source, bool throwIfNonClonable)
+        {
+            this.source = source.Clone();
+
+            if (this.source ==  null && throwIfNonClonable)
+                throw new ArgumentException("Source generator is using a source that cannot be cloned.");
+        }
+
+        /// <summary>
+        /// Create an equidistributed number generator with the same state as an existing one.
+        /// </summary>
+        public UniformGenerator(UniformGenerator generator)
+            : this(generator.source, true)
+        {
+        }
+
+        /// <summary>
+        /// Gets a copy of this <see cref="UniformGenerator"/> with the same state.
+        /// </summary>
+        public UniformGenerator Clone()
+        {
+            var source = this.source.Clone();
+            if (source == null) return null;
+            return new UniformGenerator(source, false);
+        }
+
+        private static BigInteger TwoTo64 = BigInteger.Pow(2, 64);
+<#
+    Next("UInt64", 64);
+    Next("Int64", 63);
+    Next("UInt32", 32);
+    Next("Int32", 31);
+    Next("UInt16", 16);
+    Next("Int16", 15);
+    Next("Byte", 8);
+    Next("SByte", 7);
+    Next("Double", 64);
+    Next("Single", 32);
+    Next("Rational", 1);
+#>
+    }
+}
+<#+
+List<string> types = new List<string>();
+
+void Next(string T, int bits)
+{
+    types.Add(T);
+    var FT = T == "Rational" ? "Foundations.Types.Rational" : "System." + T;
+#>
+
+        /// <summary>
+        /// Gets an equidistributed <see cref="<#= FT #>"/> value.
+        /// </summary>
+        public <#= T #> <#= T #>()
+        {
+<#+
+    if (T == "Single" || T == "Double")
+    {
+#>
+            return (<#= T #>)(BitConverter.Int64BitsToDouble(((Int64() >> 11) & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000) - 1.0);
+<#+
+    }
+    else if (T == "Decimal")
+    {
+#>
+            return source.Next() / 18446744073709551616M;
+<#+
+    }
+    else if (T == "Rational")
+    {
+#>
+            return new Rational(source.Next(), TwoTo64);
+<#+
+    }
+    else
+    {
+#>
+            return (<#= T #>)(source.Next() >> <#= 64 - bits #>);
+<#+
+    }
+#>
+        }
+
+        /// <summary>
+        /// Gets an equidistributed <see cref="<#= FT #>"/> value.
+        /// </summary>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between 0 (inclusive) and range (exclusive).</returns>
+        public <#= T #> <#= T #>(<#= T #> range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+<#+
+    if (T == "Single" || T == "Double" || T == "Decimal" || T == "Rational")
+    {
+#>
+            return range * <#= T #>();
+<#+
+    }
+    else
+    {
+        string U;
+
+        switch (T[0])
+        {
+            case 'U':
+            case 'B': 
+                U = T; 
+                break;
+            case 'S':
+                U = T.Substring(1);
+                break;
+            default:
+                U = "U" + T;
+                break; 
+        }
+#>
+            return (<#= T #>)(((<#= U #>)range * (UInt128)UInt64()).Hi);
+<#+
+    }
+#>
+        }
+
+        /// <summary>
+        /// Gets an equidistributed <see cref="<#= FT #>"/> value.
+        /// </summary>
+        /// <param ref="minimum">The minimum value to return.</param>
+        /// <param ref="range">The range of values to return.</param>
+        /// <returns>Returns a value between minimum (inclusive) and minimum+range (exclusive).</returns>
+        public <#= T #> <#= T #>(<#= T #> minimum, <#= T #> range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+<#+ if (T != "Rational") { #>
+            if (System.<#= T #>.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+<#+ } #>
+            return (<#= T #>)(minimum + <#= T #>(range));
+        }
+
+        /// <summary>
+        /// Fill a provided array with equidistributed <see cref="<#= FT #>"/> values.
+        /// </summary>
+        public void Fill(<#= T #>[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a provided array with equidistributed <see cref="<#= FT #>"/> values.
+        /// </summary>
+        public void Fill(<#= T #> range, <#= T #>[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a provided array with equidistributed <see cref="<#= FT #>"/> values.
+        /// </summary>
+        public void Fill(<#= T #> minimum, <#= T #> range, <#= T #>[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            Fill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with equidistributed <see cref="<#= FT #>"/> values.
+        /// </summary>
+        unsafe public void Fill(<#= T #>[] array, int offset, int count)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset > array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count == 0)
+                return;
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] = <#= T #>();
+            }
+        }
+
+        /// <summary>
+        /// Fill a specified portion of a provided array with equidistributed <see cref="<#= FT #>"/> values.
+        /// </summary>
+        public void Fill(<#= T #> minimum, <#= T #> range, <#= T #>[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+<#+ if (T != "Rational") { #>
+            if (System.<#= T #>.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+<#+ } #>
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] = <#= T #>(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Adds equidistributed <see cref="<#= FT #>"/> values in [0, range) to values in an array.
+        /// </summary>
+        public void AddFill(<#= T #> range, <#= T #>[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(0, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds equidistributed <see cref="<#= FT #>"/> values in [minimum, minimum + range) to values in an array.
+        /// </summary>
+        public void AddFill(<#= T #> minimum, <#= T #> range, <#= T #>[] array)
+        {
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            AddFill(minimum, range, array, 0, array.Length);
+        }
+
+        /// <summary>
+        /// Adds equidistributed <see cref="<#= FT #>"/> values in [minimum, minimum + range) to part of an array.
+        /// </summary>
+        public void AddFill(<#= T #> minimum, <#= T #> range, <#= T #>[] array, int offset, int count)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+<#+ if (T != "Rational") { #>
+            if (System.<#= T #>.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+<#+ } #>
+            if (array == null) 
+                throw new ArgumentNullException(nameof(array));
+
+            if (offset < 0 || offset >= array.Length) 
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0 || count > array.Length - offset) 
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            while (count-- > 0)
+            {
+                array[offset++] += <#= T #>(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Adds equidistributed <see cref="<#= FT #>"/> values in [0, range) to part of an array.
+        /// </summary>
+        public void AddFill(<#= T #> range, <#= T #>[] array, int offset, int count)
+        {
+            AddFill(0, range, array, offset, count);
+        }
+
+        /// <summary>
+        /// Gets a sequence of <#= T #> values.
+        /// </summary>
+        public IEnumerable<<#= T #>> <#= T #>s()
+        {
+            while (true)
+            {
+                yield return <#= T #>();
+            }
+        }
+
+        /// <summary>
+        /// Gets a sequence of <#= T #> values in [0, range).
+        /// </summary>
+        public IEnumerable<<#= T #>> <#= T #>s(<#= T #> range)
+        {
+            return <#= T #>s(0, range);
+        }
+
+        /// <summary>
+        /// Gets a sequence of <#= T #> values in [minimum, minimum + range).
+        /// </summary>
+        public IEnumerable<<#= T #>> <#= T #>s(<#= T #> minimum, <#= T #> range)
+        {
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+<#+ if (T != "Rational") { #>
+            if (System.<#= T #>.MaxValue - range < minimum)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+<#+ } #>
+            while (true)
+            {
+                yield return <#= T #>(minimum, range);
+            }
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="<#= FT #>"/>s and fill it with equidistributed values.
+        /// </summary>
+        public <#= T #>[] Create<#= T #>s(int count)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new <#= T #>[count];
+            Fill(data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="<#= FT #>"/>s and fill it with equidistributed values in [0, range).
+        /// </summary>
+        public <#= T #>[] Create<#= T #>s(int count, <#= T #> range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new <#= T #>[count];
+            Fill(range, data);
+            return data;
+        }
+
+        /// <summary>
+        /// Allocate an array of <see cref="<#= FT #>"/>s and fill it with equidistributed values in [minimum, minimum + range).
+        /// </summary>
+        public <#= T #>[] Create<#= T #>s(int count, <#= T #> minimum, <#= T #> range)
+        {
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var data = new <#= T #>[count];
+            Fill(minimum, range, data);
+            return data;
+        }
+<#+
+}
+#>

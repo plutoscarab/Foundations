@@ -26,9 +26,26 @@ namespace Foundations
         {
             yield return 0;
 
-            foreach (var n in Ruler())
+            foreach (var r in Ruler())
             {
-                yield return n + 1;
+                yield return r + 1;
+                yield return 0;
+            }
+        }
+
+        /// <summary>
+        /// The ruler sequence skipping some initial values.
+        /// </summary>
+        public static IEnumerable<int> Ruler(ulong skip)
+        {
+            if ((skip & 1) == 0)
+            {
+                yield return 0;
+            }
+
+            foreach (var r in Ruler(skip / 2))
+            {
+                yield return r + 1;
                 yield return 0;
             }
         }

@@ -11,14 +11,13 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 */
 
 using System;
-using System.Collections;
 
 namespace Foundations.Types
 {
     /// <summary>
     /// 
     /// </summary>
-    public sealed partial class SquareMatrixGF2
+    internal sealed partial class SquareMatrixGF2
     {
         private int size;
         private uint[][] rows;

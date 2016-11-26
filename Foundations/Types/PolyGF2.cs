@@ -23,23 +23,22 @@ namespace Foundations.Types
     public partial struct PolyGF2 : IEquatable<PolyGF2>
     {
         /// <summary>
-        /// 
+        /// The constant value 0.
         /// </summary>
         public static readonly PolyGF2 Zero = new PolyGF2();
 
         /// <summary>
-        /// 
+        /// The constant value 1.
         /// </summary>
         public static readonly PolyGF2 One = new PolyGF2(0);
 
         private static readonly int[] expZero = new int[0];
 
         private int[] exponentsInternal;
-
         private int[] exponents => exponentsInternal == null ? expZero : exponentsInternal;
 
         /// <summary>
-        /// 
+        /// Gets the exponents of the terms of the polynomial.
         /// </summary>
         public IEnumerable<int> Exponents
         {
@@ -47,29 +46,29 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Gets the degree of the polynomial.
         /// </summary>
         public int Degree => exponents.Length == 0 ? 0 : exponents[exponents.Length - 1];
 
         /// <summary>
-        /// 
+        /// Gets the number of terms in the polynomial.
         /// </summary>
         public int TermCount => exponents.Length;
 
         /// <summary>
-        /// 
+        /// Indicates whether the polynomial equals 0.
         /// </summary>
         public bool IsZero => exponents.Length == 0;
 
         /// <summary>
-        /// 
+        /// Indicates whether the polynomial equals 1.
         /// </summary>
         public bool IsOne => exponents.Length == 1 && exponents[0] == 0;
 
         /// <summary>
-        /// 
+        /// Creates a <see cref="PolyGF2"/> with terms indicated
+        /// by the specified exponents.
         /// </summary>
-        /// <param name="exponents"></param>
         public PolyGF2(IEnumerable<int> exponents)
         {
             if (exponents == null) throw new ArgumentNullException();
@@ -77,9 +76,9 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Creates a <see cref="PolyGF2"/> with terms indicated
+        /// by the specified exponents.
         /// </summary>
-        /// <param name="exponents"></param>
         public PolyGF2(params int[] exponents)
         {
             if (exponents == null) throw new ArgumentNullException();
@@ -117,10 +116,9 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Creates a <see cref="PolyGF2"/> with terms corresponding
+        /// bits set in the code value.
         /// </summary>
-        /// <param name="code"></param>
-        /// <returns></returns>
         public static PolyGF2 FromCode(ulong code)
         {
             var list = new List<int>();
@@ -161,7 +159,7 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Unary plus.
         /// </summary>
         public static PolyGF2 operator +(PolyGF2 p)
         {
@@ -169,7 +167,7 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Negation operator.
         /// </summary>
         public static PolyGF2 operator -(PolyGF2 p)
         {
@@ -177,7 +175,7 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Addition operator.
         /// </summary>
         public static PolyGF2 operator +(PolyGF2 p, PolyGF2 q)
         {
@@ -234,7 +232,7 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Subtraction operator.
         /// </summary>
         public static PolyGF2 operator -(PolyGF2 p, PolyGF2 q)
         {
@@ -242,7 +240,7 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Multiplication operator.
         /// </summary>
         public static PolyGF2 operator *(PolyGF2 p, PolyGF2 q)
         {
@@ -275,10 +273,8 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Gets the next polynomial in code order.
         /// </summary>
-        /// <param name="p"></param>
-        /// <returns></returns>
         public static PolyGF2 operator ++(PolyGF2 p)
         {
             return new PolyGF2(Increment(p.exponents));
@@ -297,35 +293,34 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Gets the previous polynomial in code order.
         /// </summary>
-        /// <param name="p"></param>
-        /// <returns></returns>
         public static PolyGF2 operator --(PolyGF2 p)
         {
             return new PolyGF2(Decrement(p.exponents));
         }
 
         /// <summary>
-        /// 
+        /// Enum specifying the ordering of polynomials returned
+        /// from <see cref="GetAll(Order)"/>.
         /// </summary>
         public enum Order
         {
             /// <summary>
-            /// 
+            /// Return the polynomials in code order.
             /// </summary>
             CodeOrder,
 
             /// <summary>
-            /// 
+            /// Return the polynomials in an order where successive
+            /// polynomials differ by a single term.
             /// </summary>
             GrayCodeOrder
         };
 
         /// <summary>
-        /// 
+        /// Get all polynomials over GF(2) in code order.
         /// </summary>
-        /// <returns></returns>
         public static IEnumerable<PolyGF2> GetAll()
         {
             var p = Zero;
@@ -338,9 +333,9 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Gets all polynomials over GF(2) in Gray code order,
+        /// in which successive polynomials differ by only one term.
         /// </summary>
-        /// <returns></returns>
         private static IEnumerable<PolyGF2> GetAllGrayCodeOrder()
         {
             var p = Zero;
@@ -353,10 +348,8 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Get all polynomials over GF(2) in the specified order.
         /// </summary>
-        /// <param name="order"></param>
-        /// <returns></returns>
         public static IEnumerable<PolyGF2> GetAll(Order order)
         {
             switch (order)
@@ -368,11 +361,8 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Division operator.
         /// </summary>
-        /// <param name="p"></param>
-        /// <param name="q"></param>
-        /// <returns></returns>
         public static PolyGF2 operator /(PolyGF2 p, PolyGF2 q)
         {
             PolyGF2 r;
@@ -380,11 +370,8 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Modulo operator.
         /// </summary>
-        /// <param name="p"></param>
-        /// <param name="q"></param>
-        /// <returns></returns>
         public static PolyGF2 operator %(PolyGF2 p, PolyGF2 q)
         {
             PolyGF2 r;
@@ -393,12 +380,8 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Gets the quotient and remainder of a polynomial division.
         /// </summary>
-        /// <param name="p"></param>
-        /// <param name="q"></param>
-        /// <param name="rem"></param>
-        /// <returns></returns>
         public static PolyGF2 DivRem(PolyGF2 p, PolyGF2 q, out PolyGF2 rem)
         {
             if (q.IsZero) throw new DivideByZeroException();
@@ -451,10 +434,8 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Implementation of <see cref="IEquatable{PolyGF2}"/>.
         /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
         public bool Equals(PolyGF2 other)
         {
             if (other.TermCount != TermCount) return false;
@@ -467,19 +448,16 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Implementation of <see cref="object.Equals(object)"/>.
         /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
         public override bool Equals(object obj)
         {
             return obj is PolyGF2 && Equals((PolyGF2)obj);
         }
 
         /// <summary>
-        /// 
+        /// Implementation of <see cref="object.GetHashCode"/>.
         /// </summary>
-        /// <returns></returns>
         public override int GetHashCode()
         {
             int h = "PolyGF2".GetHashCode();
@@ -493,29 +471,23 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Equality operator.
         /// </summary>
-        /// <param name="p"></param>
-        /// <param name="q"></param>
-        /// <returns></returns>
         public static bool operator ==(PolyGF2 p, PolyGF2 q)
         {
             return p.Equals(q);
         }
 
         /// <summary>
-        /// 
+        /// Inequality operator.
         /// </summary>
-        /// <param name="p"></param>
-        /// <param name="q"></param>
-        /// <returns></returns>
         public static bool operator !=(PolyGF2 p, PolyGF2 q)
         {
             return !p.Equals(q);
         }
 
         /// <summary>
-        /// Sequence of irreducible polynomials over GF(2).
+        /// Gets all irreducible polynomials over GF(2).
         /// </summary>
         public static IEnumerable<PolyGF2> GetAllIrreducible()
         {
@@ -547,7 +519,7 @@ namespace Foundations.Types
         /// <summary>
         /// Determines if this polynomial is irreducible (has no non-constant factors).
         /// </summary>
-        /// <param name="factor">One of the factors if the polynomial is reducible.</param>
+        /// <param name="factor">One of the factors, if the polynomial is reducible.</param>
         public bool IsIrreducible(out PolyGF2 factor)
         {
             factor = Zero;
@@ -573,7 +545,6 @@ namespace Foundations.Types
         /// <summary>
         /// Gets all primitive polynomials over GF(2).
         /// </summary>
-        /// <returns></returns>
         public static IEnumerable<PolyGF2> GetAllPrimitive()
         {
             int d = -1;
@@ -651,9 +622,9 @@ namespace Foundations.Types
         }
 
         /// <summary>
-        /// 
+        /// Gets a value in which the set bits indicate which exponents
+        /// have terms present in the polynomial.
         /// </summary>
-        /// <returns></returns>
         public ulong GetCode()
         {
             if (Degree > 63) throw new OverflowException();
@@ -850,10 +821,6 @@ namespace Foundations.Types
             1,11,0,1,11,2,5,
         };
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         internal static IEnumerable<PolyGF2> SmallIrreducibles()
         {
             yield return new PolyGF2(1);

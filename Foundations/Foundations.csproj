@@ -124,6 +124,16 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="RandomNumbers\Quasirandom\AdditiveRecurrence.cs" />
+    <Compile Include="RandomNumbers\Quasirandom\Sobol.cs" />
+    <Compile Include="RandomNumbers\Quasirandom\VanDerCorput.cs" />
+    <Compile Include="RandomNumbers\UniformGenerator.cs">
+      <DependentUpon>UniformGenerator.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="RandomNumbers\IUniformSource.cs" />
+    <Compile Include="RandomNumbers\UniformRandom.cs" />
     <Compile Include="Sequences\Primes.cs" />
     <Compile Include="RandomNumbers\RandomSourceExtensions.cs" />
     <Compile Include="RandomNumbers\RandomStream.cs" />
@@ -211,6 +221,10 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Theta.cs</LastGenOutput>
     </Content>
+    <Content Include="RandomNumbers\UniformGenerator.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>UniformGenerator.cs</LastGenOutput>
+    </Content>
     <Content Include="RandomNumbers\Generator.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Generator.cs</LastGenOutput>
@@ -235,6 +249,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
