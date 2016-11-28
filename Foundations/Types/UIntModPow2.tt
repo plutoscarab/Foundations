@@ -6,7 +6,7 @@
 <#@ output extension=".cs" #>
 
 /*
-IntegerModP.cs
+UIntModPow2.cs
 
 <#@ include file="../../License.txt" #>
 */
@@ -16,115 +16,118 @@ using System;
 namespace Foundations.Types
 {
 <#
-new[] { 2, 3, 5, 7, 11, 13, 17, 19 }.ToList().ForEach(Make);
+Enumerable.Range(1, 63).ToList().ForEach(Make);
 #>
 }
 <#+
-void Make(int p)
+void Make(int n)
 {
-    string T = "Z" + p;
-    string mod = (p & (p - 1)) == 0 ? $"& 0x{p-1:X}" : $"% {p}";
-    var mul = new int[p * p];
-    var inv = new int[p];
-    var div = new int[p * p];
-    var rem = new int[p * p];
-
-    int index = 0;
-    for (int i = 0; i < p; i++)
-    for (int j = 0; j < p; j++)
-    {
-        mul[index] = (i * j) % p;
-        if (mul[index] == 1)
-            if (inv[i] == 0) inv[i] = j; 
-            else inv[i] = -1;
-        div[index] = j == 0 ? 0 : i / j;
-        rem[index] = j == 0 ? 0 : i % j;
-        index++;
-    }
-    for (int i = 0; i < p; i++)
-        if (inv[i] == -1) inv[i] = 0;
+    var T = "UInt" + n;
+    if (n == 16 || n == 32) T += "Ex";
+    var mod = $"& 0x{(1L<<n)-1:X}";
+    var U = n <= 8 ? "byte" : n <= 16 ? "ushort" : n <= 32 ? "uint" : "ulong";    
+    var L = n <= 16 ? "int" : "long";
 #>
     /// <summary>
-    /// Integer modulo <#= p #>.
+    /// Unsigned <#= n #>-bit integer.
     /// </summary>
-    public struct <#= T #> : IEquatable<<#= T #>>
+    public struct <#= T #> : IEquatable<<#= T #>>, IComparable<<#= T #>>
     {
-        private static readonly byte[] mul = new byte[] { <#+ foreach (var i in mul) Write($"{i},"); #> };
-        private static readonly byte[] inv = new byte[] { <#+ foreach (var i in inv) Write($"{i},"); #> };
-        private static readonly byte[] div = new byte[] { <#+ foreach (var i in div) Write($"{i},"); #> };
-        private static readonly byte[] rem = new byte[] { <#+ foreach (var i in rem) Write($"{i},"); #> };
-
         /// <summary>
         /// The numeric value of the <see cref="<#= T #>"/>.
         /// </summary>
-        public readonly int Value;
+        public readonly <#= U #> Value;
+
+        /// <summary>
+        /// Creates a <see cref="<#= T #>"/>.
+        /// </summary>
+        public <#= T #>(<#= U #> value)
+        {
+            Value = (<#= U #>)(value <#= mod #>);
+        }
 
         /// <summary>
         /// Creates a <see cref="<#= T #>"/>.
         /// </summary>
         public <#= T #>(int value)
         {
-            Value = value <#= mod #>;
-<#+ if ((p & (p - 1)) != 0) { #>
-            if (Value < 0) Value += <#= p #>;
-<#+ } #>
+            Value = (<#= U #>)(value <#= mod #>);
         }
 
-        private <#= T #>(bool dummy, int value)
-        { Value = value; }
+        /// <summary>
+        /// Creates a <see cref="<#= T #>"/>.
+        /// </summary>
+        public <#= T #>(long value)
+        {
+            Value = (<#= U #>)(value <#= mod #>);
+        }
 
         /// <summary>
         /// Explicitly converts a <see cref="<#= T #>"/> to a <see cref="System.Int32"/>.
         /// </summary>
-        public static explicit operator int(<#= T #> value)
+        public static explicit operator <#= U #>(<#= T #> value)
         { return value.Value; }
 
         /// <summary>
         /// Implicitly converts a <see cref="System.Int32"/> to a <see cref="<#= T #>"/>.
         /// </summary>
-        public static implicit operator <#= T #>(int value)
+        public static implicit operator <#= T #>(<#= U #> value)
         { return new <#= T #>(value); }
 
         /// <summary>
+        /// Implementation of <see cref="object.ToString"/>.
         /// </summary>
         public override string ToString()
         { return Value.ToString(); }
         
         /// <summary>
+        /// Implementation of <see cref="object.GetHashCode"/>.
         /// </summary>
         public override int GetHashCode()
         { return Value.GetHashCode(); }
 
         /// <summary>
+        /// Implementation of <see cref="object.Equals(object)"/>.
         /// </summary>
         public override bool Equals(object obj)
         { return obj is <#= T #> && Equals((<#= T #>)obj); }
 
         /// <summary>
+        /// Implementation of <see cref="IEquatable{<#= T #>}"/>.
         /// </summary>
         public bool Equals(<#= T #> other)
         { return Value == other.Value; }
 
         /// <summary>
+        /// Equality operator.
         /// </summary>
         public static bool operator ==(<#= T #> a, <#= T #> b)
         { return a.Equals(b); }
 
         /// <summary>
+        /// Inequality operator.
         /// </summary>
         public static bool operator !=(<#= T #> a, <#= T #> b)
         { return !a.Equals(b); }
 
         /// <summary>
+        /// Implementation of <see cref="IComparable{<#= T #>}"/>.
         /// </summary>
-        public static <#= T #> operator +(<#= T #> a, <#= T #> b)
+        public int CompareTo(<#= T #> other)
         {
-            var result = a.Value + b.Value;
-            if (result >= <#= p #>) result -= <#= p #>;
-            return new <#= T #>(false, result);
+            return Value.CompareTo(other.Value);
         }
 
         /// <summary>
+        /// Addition operator.
+        /// </summary>
+        public static <#= T #> operator +(<#= T #> a, <#= T #> b)
+        {
+            return new <#= T #>(a.Value + b.Value);
+        }
+
+        /// <summary>
+        /// Add.
         /// </summary>
         public <#= T #> Add(<#= T #> other)
         {
@@ -132,15 +135,15 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Subtraction operator.
         /// </summary>
         public static <#= T #> operator -(<#= T #> a, <#= T #> b)
         {
-            var result = a.Value + b.Value;
-            if (result < 0) result += <#= p #>;
-            return new <#= T #>(false, result);
+            return new <#= T #>(a.Value - b.Value);
         }
 
         /// <summary>
+        /// Subtract.
         /// </summary>
         public <#= T #> Subtract(<#= T #> other)
         {
@@ -148,21 +151,23 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Unary negation operator.
         /// </summary>
         public static <#= T #> operator -(<#= T #> value)
         {
-            if (value.Value == 0) return value;
-            return new <#= T #>(false, <#= p #> - value.Value);
+            return new <#= T #>(0 - value.Value);
         }
 
         /// <summary>
+        /// Multiplication operator.
         /// </summary>
         public static <#= T #> operator *(<#= T #> a, <#= T #> b)
         {
-            return new <#= T #>(false, mul[a.Value * <#= p #> + b.Value]);
+            return new <#= T #>(a.Value * b.Value);
         }
 
         /// <summary>
+        /// Multiply.
         /// </summary>
         public <#= T #> Multiply(<#= T #> other)
         {
@@ -170,13 +175,15 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Division operator.
         /// </summary>
         public static <#= T #> operator /(<#= T #> a, <#= T #> b)
         {
-            return new <#= T #>(false, div[a.Value * <#= p #> + b.Value]);
+            return new <#= T #>(a.Value / b.Value);
         }
 
         /// <summary>
+        /// Divide.
         /// </summary>
         public <#= T #> Divide(<#= T #> other)
         {
@@ -184,51 +191,32 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Modulo operator.
         /// </summary>
         public static <#= T #> operator %(<#= T #> a, <#= T #> b)
         {
-            return new <#= T #>(false, rem[a.Value * <#= p #> + b.Value]);
+            return new <#= T #>(a.Value % b.Value);
         }
 
         /// <summary>
+        /// Modulo.
         /// </summary>
         public <#= T #> Modulo(<#= T #> other)
         {
             return this % other;
         }
+<#+ if (n <= 32) { #>
 
         /// <summary>
-        /// </summary>
-        public static <#= T #> DivRem(<#= T #> a, <#= T #> b, out <#= T #> r)
-        {
-            int index = a.Value * <#= p #> + b.Value;
-            r = new <#= T #>(false, rem[index]);
-            return new <#= T #>(false, div[index]);
-        }
-
-        /// <summary>
-        /// </summary>
-        public <#= T #> Inverse()
-        {
-            return Inverse(this);
-        }
-
-        /// <summary>
-        /// </summary>
-        public static <#= T #> Inverse(<#= T #> value)
-        {
-            var result = inv[value.Value];
-            if (result == 0) throw new DivideByZeroException();
-            return new <#= T #>(false, div[result]);
-        }
-
-        /// <summary>
+        /// Modular exponentiation.
         /// </summary>
         public static <#= T #> Pow(<#= T #> value, int exponent)
         {
+            if (exponent < 0) throw new ArgumentOutOfRangeException(nameof(exponent));
             if (exponent == 0) return 1;
-            var result = 1;
-            var b = value.Value;
+            if (value.Value == 0) return 0;
+            <#= L #> result = 1;
+            <#= L #> b = value.Value;
             var e = Math.Abs(exponent);
 
             while (e > 0)
@@ -242,24 +230,20 @@ void Make(int p)
                 b = (b * b) <#= mod #>;
             }
 
-            if (exponent < 0) 
-            {
-                result = inv[result];
-                if (result == 0) throw new DivideByZeroException();
-            }
-
-            return new <#= T #>(false, result);
+            return new <#= T #>(result);
         }
+<#+ } #>
 
-<#+ if ((p & (p - 1)) == 0) { #>
         /// <summary>
+        /// Bitwise AND.
         /// </summary>
         public static <#= T #> operator &(<#= T #> a, <#= T #> b)
         {
-            return new <#= T #>(false, a.Value & b.Value);
+            return new <#= T #>(a.Value & b.Value);
         }
 
         /// <summary>
+        /// Bitwise AND.
         /// </summary>
         public <#= T #> And(<#= T #> other)
         {
@@ -267,13 +251,15 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Bitwise OR.
         /// </summary>
         public static <#= T #> operator |(<#= T #> a, <#= T #> b)
         {
-            return new <#= T #>(false, a.Value | b.Value);
+            return new <#= T #>(a.Value | b.Value);
         }
 
         /// <summary>
+        /// Bitwise OR.
         /// </summary>
         public <#= T #> Or(<#= T #> other)
         {
@@ -281,13 +267,15 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Bitwise XOR.
         /// </summary>
         public static <#= T #> operator ^(<#= T #> a, <#= T #> b)
         {
-            return new <#= T #>(false, a.Value ^ b.Value);
+            return new <#= T #>(a.Value ^ b.Value);
         }
 
         /// <summary>
+        /// Bitwise XOR.
         /// </summary>
         public <#= T #> Xor(<#= T #> other)
         {
@@ -295,20 +283,36 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Bitwise NOT.
         /// </summary>
         public static <#= T #> operator ~(<#= T #> value)
         {
-            return new <#= T #>(false, ~value.Value);
+            return new <#= T #>(~value.Value);
         }
 
         /// <summary>
+        /// Bitwise NOT.
         /// </summary>
         public <#= T #> Not()
         {
             return ~this;
         }
 
-<#+} #>
+        /// <summary>
+        /// Right-shift operator.
+        /// </summary>
+        public static <#= T #> operator >>(<#= T #> value, int shift)
+        {
+            return new <#= T #>(value.Value >> shift);
+        }
+
+        /// <summary>
+        /// Left-shift operator.
+        /// </summary>
+        public static <#= T #> operator <<(<#= T #> value, int shift)
+        {
+            return new <#= T #>(value.Value << shift);
+        }
     }
 
 <#+

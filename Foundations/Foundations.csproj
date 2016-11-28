@@ -164,6 +164,11 @@
     <Compile Include="RandomNumbers\SystemRandomSource.cs" />
     <Compile Include="RandomNumbers\XorShiftRandomSource.cs" />
     <Compile Include="Types\ContinuedFraction.cs" />
+    <Compile Include="Types\UIntModPow2.cs">
+      <DependentUpon>UIntModPow2.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Types\IntegerModP.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -241,6 +246,10 @@
     <Content Include="Statistics\Histogram.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Histogram.cs</LastGenOutput>
+    </Content>
+    <Content Include="Types\UIntModPow2.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>UIntModPow2.cs</LastGenOutput>
     </Content>
     <Content Include="Types\IntegerModP.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
