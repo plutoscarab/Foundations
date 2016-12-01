@@ -93,6 +93,7 @@
     <Compile Include="RandomNumbers\SystemRandomSource.cs" />
     <Compile Include="RandomNumbers\SynchronizedRandomSource.cs" />
     <Compile Include="RandomNumbers\SHA256RandomSource.cs" />
+    <Compile Include="Sequences\FactorialsTests.cs" />
     <Compile Include="Sequences\RulerTests.cs" />
     <Compile Include="Sequences\PrimesTests.cs" />
     <Compile Include="Statistics\HistogramTests.cs">
