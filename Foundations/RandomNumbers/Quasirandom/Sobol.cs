@@ -18,35 +18,57 @@ using Foundations.Types;
 namespace Foundations.RandomNumbers
 {
     /// <summary>
-    /// 
+    /// Sobol sequence of quasirandom values in [0, 2^64),
+    /// and implementation of <see cref="IUniformSource"/>.
     /// </summary>
     public sealed class Sobol : IUniformSource
     {
         readonly ulong[] v;
         ulong value;
         ulong skip;
-        readonly IEnumerator<int> ruler;
+        IEnumerator<int> ruler;
 
         /// <summary>
-        /// 
+        /// Creates a <see cref="Sobol"/> with specified initial
+        /// values and primitive polynomial coefficients for extending
+        /// the initial values to a full set of direction vectors.
         /// </summary>
-        /// <param name="polynomialExponents"></param>
-        /// <param name="initialValues"></param>
         public Sobol(int[] polynomialExponents, params int[] initialValues)
+            : this(GetDirectionVectors(64, polynomialExponents, initialValues))
         {
-            v = GetDirectionVectors(64, polynomialExponents, initialValues);
-            ruler = Sequences.Ruler().GetEnumerator();
         }
 
         /// <summary>
-        /// 
+        /// Creates a <see cref="Sobol"/> with specified initial
+        /// values and primitive polynomial coefficients packed into
+        /// bits, with leading and trailing coefficient omitted.
         /// </summary>
-        /// <param name="polynomialCode"></param>
-        /// <param name="initialValues"></param>
+        /// <param name="polynomialCode">Bit 0 corresponds to x^1.</param>
+        /// <param name="initialValues">Initial values.</param>
         public Sobol(int polynomialCode, params int[] initialValues)
             : this(PolyGF2.FromCode(2UL * (ulong)polynomialCode ^ 1UL ^ (1UL << initialValues.Length))
                   .Exponents.ToArray(), initialValues)
         {
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Sobol"/> using specified 
+        /// direction vectors.
+        /// </summary>
+        public Sobol(ulong[] directionVectors)
+        {
+            v = directionVectors;
+            if (v == null) throw new ArgumentNullException();
+            if (v.Length < 64) throw new ArgumentException("If you want to supply fewer than 64 direction vectors, use one of the other constructors.");
+            if (v.Length > 64) throw new ArgumentException("Do not provide more than 64 direction vectors.");
+
+            for (int i = 0; i < 64; i++)
+            {
+                if (i < 63 && (v[i] << (i + 1)) != 0) throw new ArgumentException($"{63 - i} least-significant bits of element {i} must be 0.");
+                if ((v[i] << i) == 0) throw new ArgumentException($"Bit {63 - i} of element {i} must be 1.");
+            }
+
+            ruler = Sequences.Ruler().GetEnumerator();
         }
 
         private Sobol(Sobol other)
@@ -74,7 +96,30 @@ namespace Foundations.RandomNumbers
         {
             skip++;
             ruler.MoveNext();
-            return value ^= v[ruler.Current];
+            var result = value;
+            value ^= v[ruler.Current];
+            return result;
+        }
+
+        /// <summary>
+        /// Skip past a number of sequence values. This is
+        /// a fast O(1) operation, independent of the count of values 
+        /// skipped.
+        /// </summary>
+        public void Skip(ulong count)
+        {
+            skip += count;
+            value = 0;
+            ulong g = skip ^ (skip >> 1);
+            
+            for (int i = 0; i < 64; i++)
+            {
+                if ((g & 1) != 0) value ^= v[i];
+                g >>= 1;
+            }
+
+            ruler.Dispose();
+            ruler = Sequences.Ruler(skip).GetEnumerator();
         }
 
         internal static ulong[] GetDirectionVectors(int d, int[] polynomialExponents, int[] initialValues)

@@ -1,6 +1,6 @@
 ﻿
 /*
-Sobol.cs
+SobolTests.cs
 
 Copyright © 2016 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
@@ -52,6 +52,17 @@ namespace Foundations.RandomNumbers
             Assert.AreEqual((Rational)11 / 16, g.Rational());
             Assert.AreEqual((Rational)3 / 16, g.Rational());
             Assert.AreEqual((Rational)15 / 16, g.Rational());
+        }
+
+        [TestMethod]
+        public void SobolSkip()
+        {
+            IUniformSource s1 = new Sobol(new[] { 0, 1, 3 }, 1, 3, 7);
+            var s2 = (Sobol)s1.Clone();
+            for (int i = 0; i < 1000; i++) s1.Next();
+            s2.Skip(1000);
+            for (int i = 0; i < 1000; i++)
+                Assert.AreEqual(s1.Next(), s2.Next());
         }
     }
 }

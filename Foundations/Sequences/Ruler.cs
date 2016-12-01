@@ -12,6 +12,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 */
 
 using System.Collections.Generic;
+using Foundations.Coding;
 
 namespace Foundations
 {
@@ -24,13 +25,7 @@ namespace Foundations
         /// </summary>
         public static IEnumerable<int> Ruler()
         {
-            yield return 0;
-
-            foreach (var r in Ruler())
-            {
-                yield return r + 1;
-                yield return 0;
-            }
+            return Ruler(0);
         }
 
         /// <summary>
@@ -38,15 +33,14 @@ namespace Foundations
         /// </summary>
         public static IEnumerable<int> Ruler(ulong skip)
         {
-            if ((skip & 1) == 0)
-            {
-                yield return 0;
-            }
+            ulong g = skip ^ (skip >> 1);
 
-            foreach (var r in Ruler(skip / 2))
+            while (true)
             {
-                yield return r + 1;
-                yield return 0;
+                skip++;
+                ulong g2 = skip ^ (skip >> 1);
+                yield return Bits.FloorLog2(g ^ g2);
+                g = g2;
             }
         }
     }

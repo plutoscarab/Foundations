@@ -53,7 +53,7 @@ namespace Foundations.Types
             Assert.AreEqual(0xDul, d.Coefficients);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void SmallDegreePolyGF2PrimesTest()
         {
             var last = 3ul;

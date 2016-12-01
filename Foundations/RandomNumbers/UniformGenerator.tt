@@ -109,6 +109,12 @@ void Next(string T, int bits)
             return new Rational(source.Next(), TwoTo64);
 <#+
     }
+    else if (bits == 64)
+    {
+#>
+            return (<#= T #>)source.Next();
+<#+
+    }
     else
     {
 #>
@@ -137,24 +143,26 @@ void Next(string T, int bits)
     }
     else
     {
-        string U;
-
-        switch (T[0])
+        if (bits == 64)
         {
-            case 'U':
-            case 'B': 
-                U = T; 
-                break;
-            case 'S':
-                U = T.Substring(1);
-                break;
-            default:
-                U = "U" + T;
-                break; 
-        }
 #>
-            return (<#= T #>)(((<#= U #>)range * (UInt128)UInt64()).Hi);
+            return (<#= T #>)((range * (UInt128)UInt64()).Hi);
+<#+     } 
+        else 
+        { 
+            string I = "long";
+
+            switch (T[0])
+            {
+                case 'U':
+                case 'B':
+                    I = "ulong";
+                    break;
+            }
+#>
+            return (<#= T #>)((range * (<#= I #>)(UInt64() >> <#= 64 - bits #>)) >> <#= bits #>);
 <#+
+        }
     }
 #>
         }
@@ -336,7 +344,13 @@ void Next(string T, int bits)
         /// </summary>
         public IEnumerable<<#= T #>> <#= T #>s(<#= T #> range)
         {
-            return <#= T #>s(0, range);
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while (true)
+            {
+                yield return <#= T #>(range);
+            }
         }
 
         /// <summary>

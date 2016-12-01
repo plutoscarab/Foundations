@@ -69,7 +69,7 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public UInt64 UInt64()
         {
-            return (UInt64)(source.Next() >> 0);
+            return (UInt64)source.Next();
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace Foundations.RandomNumbers
             if (range <= 0)
                 throw new ArgumentOutOfRangeException(nameof(range));
 
-            return (UInt64)(((UInt64)range * (UInt128)UInt64()).Hi);
+            return (UInt64)((range * (UInt128)UInt64()).Hi);
         }
 
         /// <summary>
@@ -256,7 +256,13 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public IEnumerable<UInt64> UInt64s(UInt64 range)
         {
-            return UInt64s(0, range);
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while (true)
+            {
+                yield return UInt64(range);
+            }
         }
 
         /// <summary>
@@ -333,7 +339,7 @@ namespace Foundations.RandomNumbers
             if (range <= 0)
                 throw new ArgumentOutOfRangeException(nameof(range));
 
-            return (Int64)(((UInt64)range * (UInt128)UInt64()).Hi);
+            return (Int64)((range * (long)(UInt64() >> 1)) >> 63);
         }
 
         /// <summary>
@@ -507,7 +513,13 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public IEnumerable<Int64> Int64s(Int64 range)
         {
-            return Int64s(0, range);
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while (true)
+            {
+                yield return Int64(range);
+            }
         }
 
         /// <summary>
@@ -584,7 +596,7 @@ namespace Foundations.RandomNumbers
             if (range <= 0)
                 throw new ArgumentOutOfRangeException(nameof(range));
 
-            return (UInt32)(((UInt32)range * (UInt128)UInt64()).Hi);
+            return (UInt32)((range * (ulong)(UInt64() >> 32)) >> 32);
         }
 
         /// <summary>
@@ -758,7 +770,13 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public IEnumerable<UInt32> UInt32s(UInt32 range)
         {
-            return UInt32s(0, range);
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while (true)
+            {
+                yield return UInt32(range);
+            }
         }
 
         /// <summary>
@@ -835,7 +853,7 @@ namespace Foundations.RandomNumbers
             if (range <= 0)
                 throw new ArgumentOutOfRangeException(nameof(range));
 
-            return (Int32)(((UInt32)range * (UInt128)UInt64()).Hi);
+            return (Int32)((range * (long)(UInt64() >> 33)) >> 31);
         }
 
         /// <summary>
@@ -1009,7 +1027,13 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public IEnumerable<Int32> Int32s(Int32 range)
         {
-            return Int32s(0, range);
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while (true)
+            {
+                yield return Int32(range);
+            }
         }
 
         /// <summary>
@@ -1086,7 +1110,7 @@ namespace Foundations.RandomNumbers
             if (range <= 0)
                 throw new ArgumentOutOfRangeException(nameof(range));
 
-            return (UInt16)(((UInt16)range * (UInt128)UInt64()).Hi);
+            return (UInt16)((range * (ulong)(UInt64() >> 48)) >> 16);
         }
 
         /// <summary>
@@ -1260,7 +1284,13 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public IEnumerable<UInt16> UInt16s(UInt16 range)
         {
-            return UInt16s(0, range);
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while (true)
+            {
+                yield return UInt16(range);
+            }
         }
 
         /// <summary>
@@ -1337,7 +1367,7 @@ namespace Foundations.RandomNumbers
             if (range <= 0)
                 throw new ArgumentOutOfRangeException(nameof(range));
 
-            return (Int16)(((UInt16)range * (UInt128)UInt64()).Hi);
+            return (Int16)((range * (long)(UInt64() >> 49)) >> 15);
         }
 
         /// <summary>
@@ -1511,7 +1541,13 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public IEnumerable<Int16> Int16s(Int16 range)
         {
-            return Int16s(0, range);
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while (true)
+            {
+                yield return Int16(range);
+            }
         }
 
         /// <summary>
@@ -1588,7 +1624,7 @@ namespace Foundations.RandomNumbers
             if (range <= 0)
                 throw new ArgumentOutOfRangeException(nameof(range));
 
-            return (Byte)(((Byte)range * (UInt128)UInt64()).Hi);
+            return (Byte)((range * (ulong)(UInt64() >> 56)) >> 8);
         }
 
         /// <summary>
@@ -1762,7 +1798,13 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public IEnumerable<Byte> Bytes(Byte range)
         {
-            return Bytes(0, range);
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while (true)
+            {
+                yield return Byte(range);
+            }
         }
 
         /// <summary>
@@ -1839,7 +1881,7 @@ namespace Foundations.RandomNumbers
             if (range <= 0)
                 throw new ArgumentOutOfRangeException(nameof(range));
 
-            return (SByte)(((Byte)range * (UInt128)UInt64()).Hi);
+            return (SByte)((range * (long)(UInt64() >> 57)) >> 7);
         }
 
         /// <summary>
@@ -2013,7 +2055,13 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public IEnumerable<SByte> SBytes(SByte range)
         {
-            return SBytes(0, range);
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while (true)
+            {
+                yield return SByte(range);
+            }
         }
 
         /// <summary>
@@ -2264,7 +2312,13 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public IEnumerable<Double> Doubles(Double range)
         {
-            return Doubles(0, range);
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while (true)
+            {
+                yield return Double(range);
+            }
         }
 
         /// <summary>
@@ -2515,7 +2569,13 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public IEnumerable<Single> Singles(Single range)
         {
-            return Singles(0, range);
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while (true)
+            {
+                yield return Single(range);
+            }
         }
 
         /// <summary>
@@ -2757,7 +2817,13 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public IEnumerable<Rational> Rationals(Rational range)
         {
-            return Rationals(0, range);
+            if (range <= 0)
+                throw new ArgumentOutOfRangeException(nameof(range));
+
+            while (true)
+            {
+                yield return Rational(range);
+            }
         }
 
         /// <summary>

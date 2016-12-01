@@ -79,7 +79,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>MixingFunctionsTests.tt</DependentUpon>
     </Compile>
-    <Compile Include="RandomNumbers\Quasirandom\Sobol.cs" />
+    <Compile Include="RandomNumbers\Quasirandom\SobolTests.cs" />
     <Compile Include="RandomNumbers\Quasirandom\AdditiveRecurrenceTests.cs" />
     <Compile Include="RandomNumbers\Quasirandom\VanDerCorputTests.cs" />
     <Compile Include="RandomNumbers\SobolInitialValues.cs" />
