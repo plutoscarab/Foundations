@@ -135,6 +135,7 @@
     <Compile Include="RandomNumbers\IUniformSource.cs" />
     <Compile Include="RandomNumbers\UniformRandom.cs" />
     <Compile Include="Sequences\Factorials.cs" />
+    <Compile Include="Sequences\Permutation.cs" />
     <Compile Include="Sequences\Primes.cs" />
     <Compile Include="RandomNumbers\RandomSourceExtensions.cs" />
     <Compile Include="RandomNumbers\RandomStream.cs" />

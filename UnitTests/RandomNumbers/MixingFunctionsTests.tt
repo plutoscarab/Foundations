@@ -13,7 +13,6 @@ MixingFunctionsTests.cs
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Foundations.Functions;
 
@@ -59,6 +58,44 @@ void Make(string T)
 				}
 
 				Assert.AreEqual(256, used.Count);
+			}
+		}
+
+		[TestMethod]
+		public void <#= T #>InverseTest()
+		{
+			var generator = new Generator("<#= T #>InverseTest");
+
+			for (int t = 0; t < 100; t++)
+			{
+				var fn = MixingFunctions.Create<#= T #>InverseMixer(generator);
+				var used = new HashSet<<#= T #>>();
+
+				for (int i = 0; i < 256; i++)
+				{
+					used.Add(fn((<#= T #>)i));
+				}
+
+				Assert.AreEqual(256, used.Count);
+			}
+		}
+
+		[TestMethod]
+		public void <#= T #>RoundTripTest()
+		{
+			var generator = new Generator("<#= T #>RoundTripTest");
+            var clone = generator.Clone();
+
+			for (int t = 0; t < 100; t++)
+			{
+				var f = MixingFunctions.Create<#= T #>Mixer(generator);
+				var g = MixingFunctions.Create<#= T #>InverseMixer(clone);
+
+				for (int i = 0; i < 256; i++)
+				{
+					Assert.AreEqual((<#= T #>)i, g(f((<#= T #>)i)));
+                    Assert.AreEqual((<#= T #>)i, f(g((<#= T #>)i)));
+				}
 			}
 		}
 

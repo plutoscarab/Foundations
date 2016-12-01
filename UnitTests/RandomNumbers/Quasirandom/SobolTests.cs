@@ -25,6 +25,7 @@ namespace Foundations.RandomNumbers
         {
             IUniformSource source = new Sobol(new[] { 0, 1, 3 }, 1, 3, 7);
             var g = new UniformGenerator(source);
+            Assert.AreEqual(0.0, g.Double());
             Assert.AreEqual(0.5, g.Double());
             Assert.AreEqual(0.25, g.Double());
             Assert.AreEqual(0.75, g.Double());
@@ -42,6 +43,7 @@ namespace Foundations.RandomNumbers
         {
             IUniformSource source = new Sobol(new[] { 0, 1, 3 }, 1, 3, 7);
             var g = new UniformGenerator(source);
+            Assert.AreEqual((Rational)0 / 1, g.Rational());
             Assert.AreEqual((Rational)1 / 2, g.Rational());
             Assert.AreEqual((Rational)1 / 4, g.Rational());
             Assert.AreEqual((Rational)3 / 4, g.Rational());
