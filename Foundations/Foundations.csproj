@@ -49,7 +49,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Quantities.cs" />
+    <Compile Include="Coding\Huffman.cs" />
     <Compile Include="Collections\Pool.cs" />
+    <Compile Include="Collections\PriorityQueue.cs" />
+    <Compile Include="Collections\Map.cs" />
+    <Compile Include="Collections\MinTree.cs" />
+    <Compile Include="Collections\MaxTree.cs" />
+    <Compile Include="Collections\SortedTree.cs" />
+    <Compile Include="Collections\Tree.cs" />
     <Compile Include="Constants.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
