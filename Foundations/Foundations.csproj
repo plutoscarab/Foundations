@@ -173,32 +173,6 @@
     <Compile Include="RandomNumbers\SystemRandomSource.cs" />
     <Compile Include="RandomNumbers\XorShiftRandomSource.cs" />
     <Compile Include="Types\ContinuedFraction.cs" />
-    <Compile Include="Types\Fixed12p20.cs">
-      <DependentUpon>FixedPoint.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Types\Fixed16p16.cs">
-      <DependentUpon>FixedPoint.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Types\Fixed20p12.cs">
-      <DependentUpon>FixedPoint.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Types\Fixed24p8.cs">
-      <DependentUpon>FixedPoint.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Types\Fixed28p4.cs">
-      <DependentUpon>FixedPoint.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Types\Fixed4p28.cs">
-      <DependentUpon>FixedPoint.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Types\Fixed8p24.cs">
-      <DependentUpon>FixedPoint.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Types\FixedPoint.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>FixedPoint.tt</DependentUpon>
-    </Compile>
     <Compile Include="Types\UIntModPow2.cs">
       <DependentUpon>UIntModPow2.tt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -281,10 +255,6 @@
     <Content Include="Statistics\Histogram.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Histogram.cs</LastGenOutput>
-    </Content>
-    <Content Include="Types\FixedPoint.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>FixedPoint.cs</LastGenOutput>
     </Content>
     <Content Include="Types\UIntModPow2.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
