@@ -1,0 +1,211 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+/*
+FixedPointTests.cs
+
+<#@ include file="../../License.txt" #>
+*/
+
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Foundations.RandomNumbers;
+
+namespace Foundations.Types
+{
+    [TestClass]
+    public class FixedPointTests
+    {
+<#
+for (int i = 4; i < 32; i += 4) MakeMethod(i);
+#>
+    }
+}
+<#+
+void MakeMethod(int nw)
+{
+    int nf = 32 - nw;
+    var T = $"Fixed{nw}p{nf}";
+#>
+        [TestMethod]
+	    public void <#= T #>Parse()
+        {
+            var x = <#= T #>.Parse("3.125");
+            Assert.AreEqual("3.125", x.ToString());
+        }
+
+        [TestMethod]
+	    public void <#= T #>TryParse()
+        {
+            <#= T #> x;
+            var ok = <#= T #>.TryParse("-3.125", out x);
+            Assert.IsTrue(ok);
+            Assert.AreEqual("-3.125", x.ToString());
+            ok = <#= T #>.TryParse("foo", out x);
+            Assert.IsFalse(ok);
+        }
+
+        [TestMethod]
+	    public void <#= T #>CastFromDecimal()
+        {
+            var x = (<#= T #>)3.125m;
+            Assert.AreEqual("3.125", x.ToString());
+        }
+
+        [TestMethod]
+	    public void <#= T #>CastFromDouble()
+        {
+            var x = (<#= T #>)(-1.75d);
+            Assert.AreEqual("-1.75", x.ToString());
+        }
+
+        [TestMethod]
+	    public void <#= T #>CastToDecimal()
+        {
+            var x = (<#= T #>)3.125m;
+            var d = (decimal)x;
+            Assert.AreEqual(3.125m, d);
+        }
+
+        [TestMethod]
+	    public void <#= T #>CastToDouble()
+        {
+            var x = (<#= T #>)3.125d;
+            var d = (double)x;
+            Assert.AreEqual(3.125d, d);
+        }
+
+        [TestMethod]
+	    public void <#= T #>CastToFloat()
+        {
+            var x = (<#= T #>)3.125f;
+            var d = (float)x;
+            Assert.AreEqual(3.125f, d);
+        }
+
+        [TestMethod]
+        public void <#= T #>Add()
+        {
+            var x = (<#= T #>)3.125;
+            var y = (<#= T #>)(-1.75);
+            var z = x + y;
+            Assert.AreEqual((<#= T #>)(3.125 - 1.75), z);
+        }
+
+        [TestMethod]
+        public void <#= T #>Subtract()
+        {
+            var x = (<#= T #>)3.125;
+            var y = (<#= T #>)(-1.75);
+            var z = x - y;
+            Assert.AreEqual((<#= T #>)(3.125 + 1.75), z);
+        }
+
+        [TestMethod]
+        public void <#= T #>Multiply()
+        {
+            var x = (<#= T #>)3.25;
+            var y = (<#= T #>)(-1.75);
+            var z = x * y;
+            Assert.AreEqual((<#= T #>)(3.25 * -1.75), z);
+        }
+
+        [TestMethod]
+        public void <#= T #>Divide()
+        {
+            var x = (<#= T #>)1;
+            var y = (<#= T #>)3;
+            var z = x / y;
+            Assert.AreEqual((<#= T #>)(1.0 / 3.0), z);
+        }
+
+        [TestMethod]
+        public void <#= T #>Floor()
+        {
+            var g = new Generator("<#= T #>Floor");
+
+            for (int i = 0; i < 100; i++)
+            {
+                var x = (<#= T #>)g.Double(-7, 7);
+                var f = x.Floor();
+                Assert.IsTrue(f <= x);
+                Assert.IsTrue(x - f < <#= T #>.One);
+            }
+        }
+
+        [TestMethod]
+        public void <#= T #>Ceiling()
+        {
+            var g = new Generator("<#= T #>Ceiling");
+
+            for (int i = 0; i < 100; i++)
+            {
+                var x = (<#= T #>)g.Double(-7, 7);
+                var f = x.Ceiling();
+                Assert.IsTrue(f >= x);
+                Assert.IsTrue(f - x < <#= T #>.One);
+            }
+        }
+
+        [TestMethod]
+        public void <#= T #>Round()
+        {
+            var g = new Generator("<#= T #>Round");
+
+            for (int i = 0; i < 100; i++)
+            {
+                var x = (<#= T #>)g.Double(-7, 7);
+                var f = x.Round();
+                Assert.IsTrue(<#= T #>.Abs(f - x) <= (<#= T #>)0.5);
+            }
+        }
+
+        [TestMethod]
+        public void <#= T #>Truncate()
+        {
+            var g = new Generator("<#= T #>Truncate");
+
+            for (int i = 0; i < 100; i++)
+            {
+                var x = (<#= T #>)g.Double(-7, 7);
+                var f = x.Truncate();
+                
+                if (x >= 0)
+                {
+                    Assert.IsTrue(f <= x);
+                    Assert.IsTrue(x - f < <#= T #>.One);
+                }
+                else
+                {
+                    Assert.IsTrue(f >= x);
+                    Assert.IsTrue(f - x < <#= T #>.One);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void <#= T #>Frac()
+        {
+            var g = new Generator("<#= T #>Frac");
+
+            for (int i = 0; i < 100; i++)
+            {
+                var x = (<#= T #>)g.Double(-7, 7);
+                var f = x.Frac();
+                Assert.IsTrue(f >= 0);
+                Assert.IsTrue(f < 1);
+                var t = x.Truncate();
+                if (x >= 0)
+                    Assert.AreEqual(x, t + f);
+                else
+                    Assert.AreEqual(x, t - f);
+            }
+        }
+
+<#+
+}
+#>

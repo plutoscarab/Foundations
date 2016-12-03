@@ -101,6 +101,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>HistogramTests.tt</DependentUpon>
     </Compile>
+    <Compile Include="Types\FixedPointTests.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FixedPointTests.tt</DependentUpon>
+    </Compile>
     <Compile Include="Types\PolyGF2Tests.cs" />
     <Compile Include="Types\SmallDegreePolyGF2Tests.cs" />
     <None Include="Types\DecimalFloatTests.cs" />
@@ -144,6 +149,10 @@
     <Content Include="Statistics\HistogramTests.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>HistogramTests.cs</LastGenOutput>
+    </Content>
+    <Content Include="Types\FixedPointTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>FixedPointTests.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>

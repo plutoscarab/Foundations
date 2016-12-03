@@ -1,12 +1,20 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
 <#@ assembly name="System.Core" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
+<#@ include file="../../TemplateFilemanager.CS.ttinclude" #>
+<#
+var manager = TemplateFileManager.Create(this);
+
+for (int i = minNW; i <= maxNW; i += incNW)
+{
+    manager.StartNewFile($"Fixed{i}p{32 - i}.cs");
+#>
 
 /*
-FixedPoint.cs
+Fixed<#= i #>p<#= 32 - i #>.cs
 
 <#@ include file="../../License.txt" #>
 */
@@ -17,10 +25,12 @@ using Foundations.RandomNumbers;
 
 namespace Foundations.Types
 {
-<#
-for (int i = minNW; i <= maxNW; i += incNW) Make(i, 32, "int");
-#>
+<# Make(i, 32, "int"); #>
+}<#
 }
+
+manager.Process();
+#>
 <#+
 const int minNW = 4;
 const int maxNW = 28;
@@ -130,7 +140,8 @@ void Make(int nw, int bits, string t)
         /// </summary>
         public static <#= T #> Parse(string s)
         {
-            return new <#= T #>((<#= t #>)(double.Parse(s) * <#= 1L << nf #>d + .5d));
+            var d = double.Parse(s);
+            return new <#= T #>((<#= t #>)(d * <#= 1L << nf #>d + .5d * Math.Sign(d)));
         }
 
         /// <summary>
@@ -138,7 +149,8 @@ void Make(int nw, int bits, string t)
         /// </summary>
         public static <#= T #> Parse(string s, IFormatProvider provider)
         {
-            return new <#= T #>((<#= t #>)(double.Parse(s, provider) * <#= 1L << nf #>d + .5d));
+            var d = double.Parse(s, provider);
+            return new <#= T #>((<#= t #>)(d * <#= 1L << nf #>d + .5d * Math.Sign(d)));
         }
 
         /// <summary>
@@ -146,7 +158,8 @@ void Make(int nw, int bits, string t)
         /// </summary>
         public static <#= T #> Parse(string s, NumberStyles style)
         {
-            return new <#= T #>((<#= t #>)(double.Parse(s, style) * <#= 1L << nf #>d + .5d));
+            var d = double.Parse(s, style);
+            return new <#= T #>((<#= t #>)(d * <#= 1L << nf #>d + .5d * Math.Sign(d)));
         }
 
         /// <summary>
@@ -154,7 +167,8 @@ void Make(int nw, int bits, string t)
         /// </summary>
         public static <#= T #> Parse(string s, NumberStyles style, IFormatProvider provider)
         {
-            return new <#= T #>((<#= t #>)(double.Parse(s, style, provider) * <#= 1L << nf #>d + .5d));
+            var d = double.Parse(s, style, provider);
+            return new <#= T #>((<#= t #>)(d * <#= 1L << nf #>d + .5d * Math.Sign(d)));
         }
 
         /// <summary>
@@ -170,7 +184,7 @@ void Make(int nw, int bits, string t)
                 return false;
             }
 
-            result = new <#= T #>((<#= t #>)(d * <#= 1L << nf #>d + .5d));
+            result = new <#= T #>((<#= t #>)(d * <#= 1L << nf #>d + .5d * Math.Sign(d)));
             return true;
         }
 
@@ -187,7 +201,7 @@ void Make(int nw, int bits, string t)
                 return false;
             }
 
-            result = new <#= T #>((<#= t #>)(d * <#= 1L << nf #>d + .5d));
+            result = new <#= T #>((<#= t #>)(d * <#= 1L << nf #>d + .5d * Math.Sign(d)));
             return true;
         }
 
@@ -229,7 +243,7 @@ void Make(int nw, int bits, string t)
         public static explicit operator <#= T #>(decimal value)
         {
             if (value < <#= min #>m || value > <#= max #>m) throw new ArgumentOutOfRangeException();
-            return new <#= T #>((<#= t #>)(value * <#= 1L << nf #>m + .5m));
+            return new <#= T #>((<#= t #>)(value * <#= 1L << nf #>m + .5m * Math.Sign(value)));
         }
 
         /// <summary>
@@ -248,7 +262,7 @@ void Make(int nw, int bits, string t)
 <#+ if (bits < 52) {#>
             if (value < <#= min #>d || value > <#= max #>d) throw new ArgumentOutOfRangeException();
 <#+ } #>
-            return new <#= T #>((<#= t #>)(value * <#= 1L << nf #>d + .5d));
+            return new <#= T #>((<#= t #>)(value * <#= 1L << nf #>d + .5d * Math.Sign(value)));
         }
 
         /// <summary>
@@ -468,6 +482,22 @@ void Make(int nw, int bits, string t)
         }
 
         /// <summary>
+        /// Increment operator.
+        /// </summary>
+        public static <#= T #> operator ++(<#= T #> value)
+        {
+            return value + One;
+        }
+
+        /// <summary>
+        /// Decrement operator.
+        /// </summary>
+        public static <#= T #> operator --(<#= T #> value)
+        {
+            return value - One;
+        }
+
+        /// <summary>
         /// Addition operator.
         /// </summary>
         public static <#= T #> operator +(<#= T #> a, <#= T #> b)
@@ -657,7 +687,6 @@ for (int i = minNW; i <= maxNW; i += incNW) Cast(i, bits, T, t, nf);
             return new <#= T #>(g.Int32(<#= 1L << nf #>));
         }
     }
-
 <#+
 }
 

@@ -334,16 +334,16 @@ public class TemplateFileManager
 	/// <param name="list"></param>
 	private void WriteLog(IEnumerable<OutputFile> list)
 	{
-		this._textTransformation.WriteLine("// Generated helper templates");
+		//this._textTransformation.WriteLine("// Generated helper templates");
 		foreach (var item in templatePlaceholderList)
 		{
-			this._textTransformation.WriteLine("// " + this.GetDirectorySolutionRelative(item));
+			//this._textTransformation.WriteLine("// " + this.GetDirectorySolutionRelative(item));
 		}
 
-		this._textTransformation.WriteLine("// Generated items");
+		//this._textTransformation.WriteLine("// Generated items");
 		foreach (var item in list)
 		{
-			this._textTransformation.WriteLine("// " + this.GetDirectorySolutionRelative(item.FileName));
+			//this._textTransformation.WriteLine("// " + this.GetDirectorySolutionRelative(item.FileName));
 		}
 	}
 
