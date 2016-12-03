@@ -12,13 +12,14 @@ MathStatic.cs
 */
 
 using System;
+using Foundations.Types;
 
 namespace Foundations
 {
 <#
 Make("Decimal", "M", 96);
 Copy("Decimal", "M");
-Wrap("Single", "F", "Double");
+Wrap("Single", "static partial class", "MathF", "Double");
 #>
 }
 <#+
@@ -46,13 +47,13 @@ void Copy(string T, string suffix)
 <#+
 }
 
-void Wrap(string T, string suffix, string from)
+void Wrap(string T, string cls, string math, string from)
 {
 #>
     /// <summary>
-    /// Implementations of <see cref="System.Math"/> methods for <see cref="System.<#= T #>"/> arguments.
+    /// Implementations of <see cref="System.Math"/> methods for <see cref="<#= T #>"/> arguments.
     /// </summary>
-    public static partial class Math<#= suffix #>
+    public <#= cls #> <#= math #>
     {
 <#+
     foreach (var method in typeof(Math).GetMethods().Where(m => m.IsStatic).OrderBy(m => m.Name)
@@ -60,8 +61,8 @@ void Wrap(string T, string suffix, string from)
         .Where(m => m.Count() == 1 && m.First().GetParameters().Count() == 1 && m.First().GetParameters().First().ParameterType.Name == from))
     {
 #>
-        /// <summary><see cref="System.<#= T #>"/> wrapper for System.Math.<#= method.Key #>.</summary>
-        public static <#= T #> <#= method.Key #>(<#= T #> x) => (<#= T #>)Math.<#= method.Key #>(x);
+        /// <summary><see cref="<#= T #>"/> wrapper for System.Math.<#= method.Key #>.</summary>
+        public static <#= T #> <#= method.Key #>(<#= T #> x) => (<#= T #>)Math.<#= method.Key #>((double)x);
 
 <#+
     }
@@ -69,7 +70,7 @@ void Wrap(string T, string suffix, string from)
     }
 
     /// <summary>
-    /// Extension methods to access <see cref="Math<#= suffix #>"/> methods.
+    /// Extension methods to access <see cref="<#= math #>"/> methods.
     /// </summary>
     public static partial class MathExtensions
     {
@@ -79,8 +80,8 @@ void Wrap(string T, string suffix, string from)
         .Where(m => m.Count() == 1 && m.First().GetParameters().Count() == 1 && m.First().GetParameters().First().ParameterType.Name == from))
     {
 #>
-        /// <summary></summary>
-        public static <#= T #> <#= method.Key #>(this <#= T #> x) => Math<#= suffix #>.<#= method.Key #>(x);
+        /// <summary><#= method.Key #></summary>
+        public static <#= T #> <#= method.Key #>(this <#= T #> x) => <#= math #>.<#= method.Key #>(x);
 
 <#+
     }
