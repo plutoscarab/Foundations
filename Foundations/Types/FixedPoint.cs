@@ -358,6 +358,38 @@ namespace Foundations.Types
         }
 
         /// <summary>
+        /// Less-than operator.
+        /// </summary>
+        public static bool operator <(Fixed4p28 a, Fixed4p28 b)
+        {
+            return a.value < b.value;
+        }
+
+        /// <summary>
+        /// Greater-than operator.
+        /// </summary>
+        public static bool operator >(Fixed4p28 a, Fixed4p28 b)
+        {
+            return a.value > b.value;
+        }
+
+        /// <summary>
+        /// Less-than-or-equal operator.
+        /// </summary>
+        public static bool operator <=(Fixed4p28 a, Fixed4p28 b)
+        {
+            return a.value <= b.value;
+        }
+
+        /// <summary>
+        /// Greater-than-or-equal operator.
+        /// </summary>
+        public static bool operator >=(Fixed4p28 a, Fixed4p28 b)
+        {
+            return a.value >= b.value;
+        }
+
+        /// <summary>
         /// Implementation of <see cref="IComparable{Fixed4p28}"/>.
         /// </summary>
         public int CompareTo(Fixed4p28 other)
@@ -1092,6 +1124,38 @@ namespace Foundations.Types
         public override int GetHashCode()
         {
             return value ^ 502103533;
+        }
+
+        /// <summary>
+        /// Less-than operator.
+        /// </summary>
+        public static bool operator <(Fixed8p24 a, Fixed8p24 b)
+        {
+            return a.value < b.value;
+        }
+
+        /// <summary>
+        /// Greater-than operator.
+        /// </summary>
+        public static bool operator >(Fixed8p24 a, Fixed8p24 b)
+        {
+            return a.value > b.value;
+        }
+
+        /// <summary>
+        /// Less-than-or-equal operator.
+        /// </summary>
+        public static bool operator <=(Fixed8p24 a, Fixed8p24 b)
+        {
+            return a.value <= b.value;
+        }
+
+        /// <summary>
+        /// Greater-than-or-equal operator.
+        /// </summary>
+        public static bool operator >=(Fixed8p24 a, Fixed8p24 b)
+        {
+            return a.value >= b.value;
         }
 
         /// <summary>
@@ -1831,6 +1895,38 @@ namespace Foundations.Types
         }
 
         /// <summary>
+        /// Less-than operator.
+        /// </summary>
+        public static bool operator <(Fixed12p20 a, Fixed12p20 b)
+        {
+            return a.value < b.value;
+        }
+
+        /// <summary>
+        /// Greater-than operator.
+        /// </summary>
+        public static bool operator >(Fixed12p20 a, Fixed12p20 b)
+        {
+            return a.value > b.value;
+        }
+
+        /// <summary>
+        /// Less-than-or-equal operator.
+        /// </summary>
+        public static bool operator <=(Fixed12p20 a, Fixed12p20 b)
+        {
+            return a.value <= b.value;
+        }
+
+        /// <summary>
+        /// Greater-than-or-equal operator.
+        /// </summary>
+        public static bool operator >=(Fixed12p20 a, Fixed12p20 b)
+        {
+            return a.value >= b.value;
+        }
+
+        /// <summary>
         /// Implementation of <see cref="IComparable{Fixed12p20}"/>.
         /// </summary>
         public int CompareTo(Fixed12p20 other)
@@ -2563,6 +2659,38 @@ namespace Foundations.Types
         public override int GetHashCode()
         {
             return value ^ -833057312;
+        }
+
+        /// <summary>
+        /// Less-than operator.
+        /// </summary>
+        public static bool operator <(Fixed16p16 a, Fixed16p16 b)
+        {
+            return a.value < b.value;
+        }
+
+        /// <summary>
+        /// Greater-than operator.
+        /// </summary>
+        public static bool operator >(Fixed16p16 a, Fixed16p16 b)
+        {
+            return a.value > b.value;
+        }
+
+        /// <summary>
+        /// Less-than-or-equal operator.
+        /// </summary>
+        public static bool operator <=(Fixed16p16 a, Fixed16p16 b)
+        {
+            return a.value <= b.value;
+        }
+
+        /// <summary>
+        /// Greater-than-or-equal operator.
+        /// </summary>
+        public static bool operator >=(Fixed16p16 a, Fixed16p16 b)
+        {
+            return a.value >= b.value;
         }
 
         /// <summary>
@@ -3300,6 +3428,38 @@ namespace Foundations.Types
         }
 
         /// <summary>
+        /// Less-than operator.
+        /// </summary>
+        public static bool operator <(Fixed20p12 a, Fixed20p12 b)
+        {
+            return a.value < b.value;
+        }
+
+        /// <summary>
+        /// Greater-than operator.
+        /// </summary>
+        public static bool operator >(Fixed20p12 a, Fixed20p12 b)
+        {
+            return a.value > b.value;
+        }
+
+        /// <summary>
+        /// Less-than-or-equal operator.
+        /// </summary>
+        public static bool operator <=(Fixed20p12 a, Fixed20p12 b)
+        {
+            return a.value <= b.value;
+        }
+
+        /// <summary>
+        /// Greater-than-or-equal operator.
+        /// </summary>
+        public static bool operator >=(Fixed20p12 a, Fixed20p12 b)
+        {
+            return a.value >= b.value;
+        }
+
+        /// <summary>
         /// Implementation of <see cref="IComparable{Fixed20p12}"/>.
         /// </summary>
         public int CompareTo(Fixed20p12 other)
@@ -4033,6 +4193,38 @@ namespace Foundations.Types
         }
 
         /// <summary>
+        /// Less-than operator.
+        /// </summary>
+        public static bool operator <(Fixed24p8 a, Fixed24p8 b)
+        {
+            return a.value < b.value;
+        }
+
+        /// <summary>
+        /// Greater-than operator.
+        /// </summary>
+        public static bool operator >(Fixed24p8 a, Fixed24p8 b)
+        {
+            return a.value > b.value;
+        }
+
+        /// <summary>
+        /// Less-than-or-equal operator.
+        /// </summary>
+        public static bool operator <=(Fixed24p8 a, Fixed24p8 b)
+        {
+            return a.value <= b.value;
+        }
+
+        /// <summary>
+        /// Greater-than-or-equal operator.
+        /// </summary>
+        public static bool operator >=(Fixed24p8 a, Fixed24p8 b)
+        {
+            return a.value >= b.value;
+        }
+
+        /// <summary>
         /// Implementation of <see cref="IComparable{Fixed24p8}"/>.
         /// </summary>
         public int CompareTo(Fixed24p8 other)
@@ -4762,6 +4954,38 @@ namespace Foundations.Types
         public override int GetHashCode()
         {
             return value ^ 1950285781;
+        }
+
+        /// <summary>
+        /// Less-than operator.
+        /// </summary>
+        public static bool operator <(Fixed28p4 a, Fixed28p4 b)
+        {
+            return a.value < b.value;
+        }
+
+        /// <summary>
+        /// Greater-than operator.
+        /// </summary>
+        public static bool operator >(Fixed28p4 a, Fixed28p4 b)
+        {
+            return a.value > b.value;
+        }
+
+        /// <summary>
+        /// Less-than-or-equal operator.
+        /// </summary>
+        public static bool operator <=(Fixed28p4 a, Fixed28p4 b)
+        {
+            return a.value <= b.value;
+        }
+
+        /// <summary>
+        /// Greater-than-or-equal operator.
+        /// </summary>
+        public static bool operator >=(Fixed28p4 a, Fixed28p4 b)
+        {
+            return a.value >= b.value;
         }
 
         /// <summary>

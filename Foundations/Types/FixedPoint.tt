@@ -380,6 +380,38 @@ void Make(int nw, int bits, string t)
         }
 
         /// <summary>
+        /// Less-than operator.
+        /// </summary>
+        public static bool operator <(<#= T #> a, <#= T #> b)
+        {
+            return a.value < b.value;
+        }
+
+        /// <summary>
+        /// Greater-than operator.
+        /// </summary>
+        public static bool operator >(<#= T #> a, <#= T #> b)
+        {
+            return a.value > b.value;
+        }
+
+        /// <summary>
+        /// Less-than-or-equal operator.
+        /// </summary>
+        public static bool operator <=(<#= T #> a, <#= T #> b)
+        {
+            return a.value <= b.value;
+        }
+
+        /// <summary>
+        /// Greater-than-or-equal operator.
+        /// </summary>
+        public static bool operator >=(<#= T #> a, <#= T #> b)
+        {
+            return a.value >= b.value;
+        }
+
+        /// <summary>
         /// Implementation of <see cref="IComparable{<#= T #>}"/>.
         /// </summary>
         public int CompareTo(<#= T #> other)
