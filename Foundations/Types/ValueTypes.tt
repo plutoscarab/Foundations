@@ -12,6 +12,7 @@ ValueTypes.cs
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace Foundations.Types
 {
@@ -27,7 +28,28 @@ Type("SmallDegreePolyGF2", "", true, true, "ulong:Coefficients:The coefficients 
 #>
 	internal static class HashHelper
 	{
-		public static Func<int, int> Mixer = Functions.MixingFunctions.CreateInt32Mixer(new[] { 0, 1, 1, 8, 9, 9, 9, 8, 8, 1, 9, 9, 9, 1, 1, 9, 7, 2, 5, 3 });
+		public static int Mixer(int h)
+        {
+            return (h ^ (h >> 17)) * -913361523;
+        }
+
+        public static int Mixer<T>(int h, IEnumerable<T> items)
+        {
+            foreach (var item in items) h = Mixer(h + item.GetHashCode());
+            return h;
+        }
+
+        public static int Mixer<T>(int h, params T[] items)
+        {
+            foreach (var item in items) h = Mixer(h + item.GetHashCode());
+            return h;
+        }
+
+        public static int Finisher(int h)
+        {
+            h = Mixer(h);
+            return h ^ (h >> 17);
+        }
 	}
 }
 <#+
@@ -83,7 +105,7 @@ void Type(string name, string generics, bool constructor, bool equatable, params
 <#+
 	}
 #>
-			return h;
+			return HashHelper.Finisher(h);
 		}
 
 		/// <summary>Implementation of <see cref="object.Equals(object)"/>.</summary>

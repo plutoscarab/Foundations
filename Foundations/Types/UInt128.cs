@@ -12,6 +12,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 
 using System;
 using System.Text;
+using Foundations.Types;
 
 namespace Foundations
 {
@@ -107,8 +108,7 @@ namespace Foundations
         /// </summary>
         public override int GetHashCode()
         {
-            int h = hi.GetHashCode();
-            return lo.GetHashCode() ^ (h << 16) ^ (h >> 16);
+            return HashHelper.Finisher(HashHelper.Mixer(-1428872695, hi, lo));
         }
 
         /// <summary>

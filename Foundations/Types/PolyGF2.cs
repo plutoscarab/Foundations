@@ -460,14 +460,7 @@ namespace Foundations.Types
         /// </summary>
         public override int GetHashCode()
         {
-            int h = "PolyGF2".GetHashCode();
-
-            foreach (var e in exponents)
-            {
-                h = HashHelper.Mixer(h + e.GetHashCode());
-            }
-
-            return h;
+            return HashHelper.Finisher(HashHelper.Mixer(-721784075, exponents));
         }
 
         /// <summary>

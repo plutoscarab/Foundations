@@ -66,8 +66,8 @@ namespace Foundations.Types
         private static readonly Rational decimalMax = (BigInteger)decimal.MaxValue;
         private static readonly Rational decimalMin = (BigInteger)decimal.MinValue;
 
-        BigInteger p;
-        BigInteger q;
+        readonly BigInteger p;
+        readonly BigInteger q;
 
         /// <summary>
         /// Constructor.
@@ -95,12 +95,15 @@ namespace Foundations.Types
             this.q = q;
         }
 
+        private Rational(BigInteger p, BigInteger q, bool check)
+        {
+            this.p = p;
+            this.q = q;
+        }
+
         private static Rational CreateRaw(BigInteger p, BigInteger q)
         {
-            var r = new Rational();
-            r.p = p;
-            r.q = q;
-            return r;
+            return new Rational(p, q, false);
         }
 
         /// <summary>
@@ -179,9 +182,10 @@ namespace Foundations.Types
         /// <returns></returns>
         public override int GetHashCode()
         {
-            int h = P.GetHashCode();
-            h = (h << 11) ^ (h >> 22);
-            return h + Q.GetHashCode();
+            int h = 1466494808;
+            h = HashHelper.Mixer(h + P.GetHashCode());
+            h = HashHelper.Mixer(h + Q.GetHashCode());
+            return HashHelper.Finisher(h);
         }
 
         /// <summary>
