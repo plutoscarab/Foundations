@@ -122,7 +122,21 @@ namespace Foundations.Types
 	{
 		public static int Mixer(int h)
         {
-            return (h ^ (h >> 17)) * -913361523;
+            return (int)(((uint)h ^ ((uint)h >> 17)) * 0xC98F358D);
+
+            // One pass through Mixer followed by one pass through Finisher
+            // results in essentially 100% 1-bit avalanche as far as I can tell
+            // by statistical testing. There are other values of shift and
+            // multiply that do this. Some other choices:
+            //
+            //                                Longest   Fixed
+            // Shift  Multiplier   Weight       Cycle  Points
+            //    17  0xC98F358D  17 bits  0xFFFE8861       3  long cycle (this)
+            //    16  0xB94C9657  17 bits  0xFF9701A2       1  no addl fixed points
+            //    14  0x08112B29  10 bits  0x9145F4FE       1  low weight, no addl fixed
+            //    14  0xF5F6ED4D  22 bits  0xFC34BD59       2  high weight, long cycle
+            //    16  0xFADDD2EB  22 bits  0x84B68C7B       1  high weight, no addl fixed
+            //    16  0x0115A68D  12 bits  0xFB5C8D7D       2  small multiplier
         }
 
         public static int Mixer<T>(int h, IEnumerable<T> items)
@@ -140,7 +154,7 @@ namespace Foundations.Types
         public static int Finisher(int h)
         {
             h = Mixer(h);
-            return h ^ (h >> 17);
+            return (int)((uint)h ^ ((uint)h >> 17));
         }
 	}
 }
