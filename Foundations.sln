@@ -20,6 +20,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundations", "Foundations\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceHarness", "PerformanceHarness\PerformanceHarness.csproj", "{13A27BC3-C74B-40CA-B104-AA08D725B54F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{C9DD39E4-F4EA-48AC-B28A-E9758C1C9308}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGramDemo", "NGramDemo\NGramDemo.csproj", "{EC52613B-3199-4535-8424-14624FC560F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,8 +42,15 @@ Global
 		{13A27BC3-C74B-40CA-B104-AA08D725B54F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13A27BC3-C74B-40CA-B104-AA08D725B54F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13A27BC3-C74B-40CA-B104-AA08D725B54F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC52613B-3199-4535-8424-14624FC560F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC52613B-3199-4535-8424-14624FC560F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC52613B-3199-4535-8424-14624FC560F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC52613B-3199-4535-8424-14624FC560F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EC52613B-3199-4535-8424-14624FC560F4} = {C9DD39E4-F4EA-48AC-B28A-E9758C1C9308}
 	EndGlobalSection
 EndGlobal

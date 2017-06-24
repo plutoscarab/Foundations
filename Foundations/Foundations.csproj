@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Foundations</RootNamespace>
     <AssemblyName>Foundations</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,6 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Quantities.cs" />
+    <Compile Include="BclExtensions\QueueStream.cs" />
+    <Compile Include="BclExtensions\MultiAwaitable.cs" />
+    <Compile Include="BclExtensions\WriteOnceStream.cs" />
+    <Compile Include="BclExtensions\ReadOnceStream.cs" />
     <Compile Include="Coding\Huffman.cs" />
     <Compile Include="Collections\Pool.cs" />
     <Compile Include="Collections\PriorityQueue.cs" />
@@ -172,6 +177,7 @@
     <Compile Include="RandomNumbers\SynchronizedRandomSource.cs" />
     <Compile Include="RandomNumbers\SystemRandomSource.cs" />
     <Compile Include="RandomNumbers\XorShiftRandomSource.cs" />
+    <Compile Include="Statistics\NGram.cs" />
     <Compile Include="Types\ContinuedFraction.cs" />
     <Compile Include="Types\UIntModPow2.cs">
       <DependentUpon>UIntModPow2.tt</DependentUpon>

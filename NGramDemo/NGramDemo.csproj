@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{13A27BC3-C74B-40CA-B104-AA08D725B54F}</ProjectGuid>
+    <ProjectGuid>{EC52613B-3199-4535-8424-14624FC560F4}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PerformanceHarness</RootNamespace>
-    <AssemblyName>PerformanceHarness</AssemblyName>
+    <RootNamespace>Foundations.Demos.NGramDemo</RootNamespace>
+    <AssemblyName>NGramDemo</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -52,13 +52,17 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Foundations\Foundations.csproj">
-      <Project>{c15ed2ad-444c-46dc-8313-8ed602fa0a11}</Project>
+      <Project>{C15ED2AD-444C-46DC-8313-8ED602FA0A11}</Project>
       <Name>Foundations</Name>
     </ProjectReference>
-    <ProjectReference Include="..\UnitTests\UnitTests.csproj">
-      <Project>{84eab0ef-9cd2-4e81-b8ba-8adf00c14ab1}</Project>
-      <Name>UnitTests</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="USFemaleFirstNames.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="USLastNames.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
