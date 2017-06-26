@@ -55,7 +55,7 @@ void Make(int p)
         private static readonly byte[] rem = new byte[] { <#+ foreach (var i in rem) Write($"{i},"); #> };
 
         /// <summary>
-        /// The numeric value of the <see cref="<#= T #>"/>.
+        /// The numerical value of the <see cref="<#= T #>"/>.
         /// </summary>
         public readonly int Value;
 
@@ -86,36 +86,43 @@ void Make(int p)
         { return new <#= T #>(value); }
 
         /// <summary>
+        /// Gets a string representation of this <see cref="Z<#= p #>"/>.
         /// </summary>
         public override string ToString()
         { return Value.ToString(); }
         
         /// <summary>
+        /// Gets the hash code.
         /// </summary>
         public override int GetHashCode()
         { return Value.GetHashCode(); }
 
         /// <summary>
+        /// Equality test.
         /// </summary>
         public override bool Equals(object obj)
         { return obj is <#= T #> && Equals((<#= T #>)obj); }
 
         /// <summary>
+        /// Equality test.
         /// </summary>
         public bool Equals(<#= T #> other)
         { return Value == other.Value; }
 
         /// <summary>
+        /// Equality operator.
         /// </summary>
         public static bool operator ==(<#= T #> a, <#= T #> b)
         { return a.Equals(b); }
 
         /// <summary>
+        /// Inequality operator.
         /// </summary>
         public static bool operator !=(<#= T #> a, <#= T #> b)
         { return !a.Equals(b); }
 
         /// <summary>
+        /// Addition operator.
         /// </summary>
         public static <#= T #> operator +(<#= T #> a, <#= T #> b)
         {
@@ -125,6 +132,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Addition.
         /// </summary>
         public <#= T #> Add(<#= T #> other)
         {
@@ -132,6 +140,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Subtraction operator.
         /// </summary>
         public static <#= T #> operator -(<#= T #> a, <#= T #> b)
         {
@@ -141,6 +150,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Subtraction.
         /// </summary>
         public <#= T #> Subtract(<#= T #> other)
         {
@@ -148,6 +158,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Negation operator.
         /// </summary>
         public static <#= T #> operator -(<#= T #> value)
         {
@@ -156,6 +167,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Multiplication operator.
         /// </summary>
         public static <#= T #> operator *(<#= T #> a, <#= T #> b)
         {
@@ -163,6 +175,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Multiplication.
         /// </summary>
         public <#= T #> Multiply(<#= T #> other)
         {
@@ -170,6 +183,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Division operator.
         /// </summary>
         public static <#= T #> operator /(<#= T #> a, <#= T #> b)
         {
@@ -177,6 +191,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Division.
         /// </summary>
         public <#= T #> Divide(<#= T #> other)
         {
@@ -184,6 +199,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Modulo operator.
         /// </summary>
         public static <#= T #> operator %(<#= T #> a, <#= T #> b)
         {
@@ -191,6 +207,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Gets the remainder after division.
         /// </summary>
         public <#= T #> Modulo(<#= T #> other)
         {
@@ -198,6 +215,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Division with remainder.
         /// </summary>
         public static <#= T #> DivRem(<#= T #> a, <#= T #> b, out <#= T #> r)
         {
@@ -207,6 +225,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Multiplicative inverse.
         /// </summary>
         public <#= T #> Inverse()
         {
@@ -214,6 +233,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Multiplicative inverse.
         /// </summary>
         public static <#= T #> Inverse(<#= T #> value)
         {
@@ -223,6 +243,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Integer exponentiation.
         /// </summary>
         public static <#= T #> Pow(<#= T #> value, int exponent)
         {
@@ -253,6 +274,7 @@ void Make(int p)
 
 <#+ if ((p & (p - 1)) == 0) { #>
         /// <summary>
+        /// Bitwise AND.
         /// </summary>
         public static <#= T #> operator &(<#= T #> a, <#= T #> b)
         {
@@ -260,6 +282,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Bitwise AND.
         /// </summary>
         public <#= T #> And(<#= T #> other)
         {
@@ -267,6 +290,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Bitwise OR.
         /// </summary>
         public static <#= T #> operator |(<#= T #> a, <#= T #> b)
         {
@@ -274,6 +298,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Bitwise OR.
         /// </summary>
         public <#= T #> Or(<#= T #> other)
         {
@@ -281,6 +306,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Bitwise XOR.
         /// </summary>
         public static <#= T #> operator ^(<#= T #> a, <#= T #> b)
         {
@@ -288,6 +314,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Bitwise XOR.
         /// </summary>
         public <#= T #> Xor(<#= T #> other)
         {
@@ -295,6 +322,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Bitwise NOT.
         /// </summary>
         public static <#= T #> operator ~(<#= T #> value)
         {
@@ -302,6 +330,7 @@ void Make(int p)
         }
 
         /// <summary>
+        /// Bitwise NOT.
         /// </summary>
         public <#= T #> Not()
         {
