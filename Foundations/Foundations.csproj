@@ -50,10 +50,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Quantities.cs" />
-    <Compile Include="BclExtensions\QueueStream.cs" />
-    <Compile Include="BclExtensions\MultiAwaitable.cs" />
-    <Compile Include="BclExtensions\WriteOnceStream.cs" />
-    <Compile Include="BclExtensions\ReadOnceStream.cs" />
+    <Compile Include="Async\IAwaiter.cs" />
+    <Compile Include="Async\ManualResetEventAwaiter.cs" />
+    <Compile Include="IO\QueueStream.cs" />
+    <Compile Include="Async\ManualResetEventAsync.cs" />
+    <Compile Include="IO\WriteOnceStream.cs" />
+    <Compile Include="IO\ReadOnceStream.cs" />
     <Compile Include="Coding\Huffman.cs" />
     <Compile Include="Collections\Pool.cs" />
     <Compile Include="Collections\PriorityQueue.cs" />

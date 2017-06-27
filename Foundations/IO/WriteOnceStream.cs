@@ -13,7 +13,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 using System;
 using System.IO;
 
-namespace Foundations.BclExtensions
+namespace Foundations.IO
 {
     /// <summary>
     /// A write-only, non-seekable <see cref="System.IO.Stream"/>.

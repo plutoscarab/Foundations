@@ -42,8 +42,8 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BclExtensions\ReadOnceStreamTests.cs" />
-    <Compile Include="BclExtensions\QueueStreamTests.cs" />
+    <Compile Include="IO\ReadOnceStreamTests.cs" />
+    <Compile Include="IO\QueueStreamTests.cs" />
     <Compile Include="Coding\ByteCodingTests.cs">
       <DependentUpon>ByteCodingTests.tt</DependentUpon>
       <AutoGen>True</AutoGen>

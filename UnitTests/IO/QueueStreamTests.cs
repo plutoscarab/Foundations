@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 using Foundations.RandomNumbers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Foundations.BclExtensions
+namespace Foundations.IO
 {
     [TestClass]
     public class QueueStreamTests

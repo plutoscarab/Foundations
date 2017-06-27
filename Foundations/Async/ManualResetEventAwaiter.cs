@@ -1,6 +1,6 @@
 ﻿
 /*
-MultiAwaitable.cs
+ManualResetEventAwaiter.cs
 
 Copyright © 2017 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
@@ -11,16 +11,15 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 */
 
 using System;
-using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace Foundations.BclExtensions
+namespace Foundations.Async
 {
     /// <summary>
     /// 
     /// </summary>
-    public sealed class MultiAwaiter : INotifyCompletion
+    internal sealed class ManualResetEventAwaiter : IAwaiter
     {
         bool isCompleted;
         Action continuation;
@@ -82,38 +81,5 @@ namespace Foundations.BclExtensions
         /// 
         /// </summary>
         public void GetResult() { }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public sealed class MultiAwaitable
-    {
-        MultiAwaiter awaiter = new MultiAwaiter();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Reset()
-        {
-            awaiter.Reset();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Set()
-        {
-            awaiter.Set();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public MultiAwaiter GetAwaiter()
-        {
-            return awaiter;
-        }
     }
 }
