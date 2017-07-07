@@ -156,6 +156,14 @@ namespace Foundations.RandomNumbers
         }
 
         /// <summary>
+        /// Gets a synchronized ("thread-safe") copy of this <see cref="Generator"/>.
+        /// </summary>
+        public Generator Synchronized()
+        {
+            return new Generator(new SynchronizedRandomSource(source));
+        }
+
+        /// <summary>
         /// Create a pseudo-random number generator initialized with provided values.
         /// </summary>
         public Generator(IRandomSource source, params ulong[] seed)

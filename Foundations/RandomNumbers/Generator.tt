@@ -152,6 +152,14 @@ namespace Foundations.RandomNumbers
             if (source == null) return null;
             return new Generator(source, false);
         }
+
+        /// <summary>
+        /// Gets a synchronized ("thread-safe") copy of this <see cref="Generator"/>.
+        /// </summary>
+        public Generator Synchronized()
+        {
+            return new Generator(new SynchronizedRandomSource(source));
+        }
 <#
     Seed("ulong");
     Seed("long");

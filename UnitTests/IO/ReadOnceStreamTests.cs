@@ -14,7 +14,7 @@ using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Foundations.BclExtensions
+namespace Foundations.IO
 {
     [TestClass()]
     public class ReadOnceStreamTests

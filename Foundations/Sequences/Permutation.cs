@@ -23,7 +23,7 @@ namespace Foundations
     /// </summary>
     public static partial class Permutation
     {
-        private static Generator gen = new Generator(Generator.DefaultSourceFactory().Synchronized());
+        private static Generator gen = new Generator().Synchronized();
 
         /// <summary>
         /// Creates a random permutation.

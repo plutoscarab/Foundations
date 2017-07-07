@@ -16,11 +16,14 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Foundations.Async;
 
-namespace Foundations.BclExtensions
+namespace Foundations.IO
 {
     /// <summary>
-    /// 
+    /// A <see cref="Stream"/> that supports writing on one thread and reading
+    /// on a separate thread. The bytes written by the writer are held in 
+    /// memory, up to the specified capacity, until read by the reader.
     /// </summary>
     public sealed class QueueStream : Stream
     {
@@ -30,12 +33,13 @@ namespace Foundations.BclExtensions
         long length;
         long position;
         byte[] partialItem;
-        MultiAwaitable readAwaitable = new MultiAwaitable();
-        MultiAwaitable writeAwaitable = new MultiAwaitable();
+        ManualResetEventAsync readAwaitable = new ManualResetEventAsync();
+        ManualResetEventAsync writeAwaitable = new ManualResetEventAsync();
 
         /// <summary>
-        /// 
+        /// <see cref="QueueStream"/> constructor.
         /// </summary>
+        /// <param name="capacity">The count of bytes that can be held in the stream after writing and before reading.</param>
         public QueueStream(long capacity)
         {
             Contract.Requires(capacity > 0, nameof(capacity));
@@ -44,17 +48,17 @@ namespace Foundations.BclExtensions
         }
 
         /// <summary>
-        /// 
+        /// Returns true, indicating that the stream can be read.
         /// </summary>
         public override bool CanRead => true;
 
         /// <summary>
-        /// 
+        /// Returns false, indicating that seek operations are not supported.
         /// </summary>
         public override bool CanSeek => false;
 
         /// <summary>
-        /// 
+        /// Returns true, indicating that the stream can be written to.
         /// </summary>
         public override bool CanWrite => true;
 
@@ -80,40 +84,37 @@ namespace Foundations.BclExtensions
         }
 
         /// <summary>
-        /// 
+        /// Does nothing.
         /// </summary>
         public override void Flush()
         {
         }
 
         /// <summary>
-        /// 
+        /// Not supported.
         /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="origin"></param>
-        /// <returns></returns>
         public override long Seek(long offset, SeekOrigin origin)
         {
             throw new NotSupportedException();
         }
 
         /// <summary>
-        /// 
+        /// Not supported.
         /// </summary>
-        /// <param name="value"></param>
         public override void SetLength(long value)
         {
             throw new NotSupportedException();
         }
 
         /// <summary>
-        /// 
+        /// Reads a sequence of bytes from the current stream and advances the 
+        /// position within the stream by the number of bytes read.
         /// </summary>
-        /// <param name="buffer"></param>
-        /// <param name="offset"></param>
-        /// <param name="count"></param>
+        /// <param name="buffer">An array of bytes. When this method returns, the buffer contains the specified byte array with the values between <paramref name="offset"/> and (<paramref name="offset"/> + <paramref name="count"/> - 1) replaced by the bytes read from the current source.</param>
+        /// <param name="offset">The zero-based byte offset in <paramref name="buffer"/> at which to begin storing the data read from the current stream.</param>
+        /// <param name="count">The maximum number of bytes to be read from the current stream.</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available, or zero (0) if the end of the stream has been reached.</returns>
         public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             Contract.Requires(buffer != null);
@@ -170,25 +171,25 @@ namespace Foundations.BclExtensions
         }
 
         /// <summary>
-        /// 
+        /// Reads a sequence of bytes from the current stream and advances the 
+        /// position within the stream by the number of bytes read.
         /// </summary>
-        /// <param name="buffer"></param>
-        /// <param name="offset"></param>
-        /// <param name="count"></param>
-        /// <returns></returns>
+        /// <param name="buffer">An array of bytes. When this method returns, the buffer contains the specified byte array with the values between <paramref name="offset"/> and (<paramref name="offset"/> + <paramref name="count"/> - 1) replaced by the bytes read from the current source.</param>
+        /// <param name="offset">The zero-based byte offset in <paramref name="buffer"/> at which to begin storing the data read from the current stream.</param>
+        /// <param name="count">The maximum number of bytes to be read from the current stream.</param>
+        /// <returns>The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available, or zero (0) if the end of the stream has been reached.</returns>
         public override int Read(byte[] buffer, int offset, int count)
         {
             return ReadAsync(buffer, offset, count).Result;
         }
 
         /// <summary>
-        /// 
+        /// Writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.
         /// </summary>
-        /// <param name="buffer"></param>
-        /// <param name="offset"></param>
-        /// <param name="count"></param>
+        /// <param name="buffer">An array of bytes. This method copies <paramref name="count"/> bytes from <paramref name="buffer"/> to the current stream.</param>
+        /// <param name="offset">The zero-based byte offset in <paramref name="buffer"/> at which to begin copying bytes to the current stream.</param>
+        /// <param name="count">The number of bytes to be written to the current stream.</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
         public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             Contract.Requires(buffer != null);
@@ -218,21 +219,19 @@ namespace Foundations.BclExtensions
         }
 
         /// <summary>
-        /// 
+        /// Writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.
         /// </summary>
-        /// <param name="buffer"></param>
-        /// <param name="offset"></param>
-        /// <param name="count"></param>
+        /// <param name="buffer">An array of bytes. This method copies <paramref name="count"/> bytes from <paramref name="buffer"/> to the current stream.</param>
+        /// <param name="offset">The zero-based byte offset in <paramref name="buffer"/> at which to begin copying bytes to the current stream.</param>
+        /// <param name="count">The number of bytes to be written to the current stream.</param>
         public override void Write(byte[] buffer, int offset, int count)
         {
             WriteAsync(buffer, offset, count).Wait();
         }
 
         /// <summary>
-        /// 
+        /// Does nothing.
         /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
         public override Task FlushAsync(CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
