@@ -11,6 +11,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 */
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Foundations.RandomNumbers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -61,9 +62,14 @@ namespace Foundations.BclExtensions
                 }
             });
 
-            Task.WaitAny(writer, reader, Task.Delay(10000));
+            Task.WaitAny(writer, reader, Task.Delay(100));
             Assert.IsFalse(writer.IsFaulted, "writer");
             Assert.IsFalse(reader.IsFaulted, "reader");
+            int w = numWrites;
+            int r = numReads;
+            Thread.Sleep(100);
+            Assert.IsTrue(numWrites > w, "writes");
+            Assert.IsTrue(numReads > r, "reads");
             Console.WriteLine($"Writes: {numWrites:N0}");
             Console.WriteLine($"Reads: {numReads:N0}");
             Console.WriteLine($"Bytes: {stream.Position:N0}");

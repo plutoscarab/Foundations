@@ -13,6 +13,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Foundations.BclExtensions
@@ -48,8 +49,9 @@ namespace Foundations.BclExtensions
 
                 if (continuation != null)
                 {
-                    Task.Run(continuation);
+                    Action action = continuation;
                     continuation = null;
+                    ThreadPool.QueueUserWorkItem(_ => action());
                 }
             }
         }
@@ -64,7 +66,7 @@ namespace Foundations.BclExtensions
             {
                 if (isCompleted)
                 {
-                    Task.Run(continuation);
+                    ThreadPool.QueueUserWorkItem(_ => continuation());
                 }
                 else
                 {

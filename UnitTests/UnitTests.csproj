@@ -68,6 +68,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>MathExtensionsTests.tt</DependentUpon>
     </Compile>
+    <Compile Include="Formats\TarHeaderTests.cs" />
+    <Compile Include="Formats\TarReaderTests.cs" />
+    <Compile Include="Formats\TarWriterTests.cs" />
     <Compile Include="Functions\Special\Jacobi.cs" />
     <Compile Include="Functions\Special\Theta.cs" />
     <Compile Include="Functions\Special\Elliptic.cs" />
@@ -107,6 +110,15 @@
     </Compile>
     <Compile Include="Types\PolyGF2Tests.cs" />
     <Compile Include="Types\SmallDegreePolyGF2Tests.cs" />
+    <Content Include="Formats\Test.tar.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Formats\Test.tar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Formats\Test.tar.gz">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Types\DecimalFloatTests.cs" />
     <Compile Include="Types\Rational.cs" />
   </ItemGroup>

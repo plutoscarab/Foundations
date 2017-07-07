@@ -90,6 +90,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>MathStatic.tt</DependentUpon>
     </Compile>
+    <Compile Include="Formats\TarReader.cs" />
+    <Compile Include="Formats\TarEntry.cs" />
+    <Compile Include="Formats\TarEntryType.cs" />
+    <Compile Include="Formats\TarHeader.cs" />
+    <Compile Include="Formats\TarStream.cs" />
+    <Compile Include="Formats\TarWriter.cs" />
     <Compile Include="Functions\MixingFunctions.cs">
       <DependentUpon>MixingFunctions.tt</DependentUpon>
       <AutoGen>True</AutoGen>
