@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Foundations.BclExtensions;
+using Foundations.IO;
 
 namespace Foundations.Formats
 {
