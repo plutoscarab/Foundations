@@ -1,6 +1,6 @@
 ﻿
 /*
-Class1.cs
+SpaceFilling.cs
 
 Copyright © 2018 Pluto Scarab Software. Most Rights Reserved.
 Author: Bret Mulvey
@@ -12,12 +12,12 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 
 using System;
 
-namespace Foundations.
+namespace Foundations
 {
     /// <summary>
-    /// 
+    /// Space-fulling curves.
     /// </summary>
-    public static partial class Class1
+    public static partial class SpaceFilling
     {
     }
 }

@@ -70,7 +70,6 @@
     </Compile>
     <Compile Include="Formats\TarHeaderTests.cs" />
     <Compile Include="Formats\TarReaderTests.cs" />
-    <Compile Include="Formats\TarWriterTests.cs" />
     <Compile Include="Functions\Special\Jacobi.cs" />
     <Compile Include="Functions\Special\Theta.cs" />
     <Compile Include="Functions\Special\Elliptic.cs" />

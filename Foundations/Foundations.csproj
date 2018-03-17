@@ -52,6 +52,7 @@
     <None Include="Quantities.cs" />
     <Compile Include="Async\IAwaiter.cs" />
     <Compile Include="Async\ManualResetEventAwaiter.cs" />
+    <Compile Include="Functions\SpaceFilling.cs" />
     <Compile Include="IO\QueueStream.cs" />
     <Compile Include="Async\ManualResetEventAsync.cs" />
     <Compile Include="IO\WriteOnceStream.cs" />
@@ -97,7 +98,6 @@
     <Compile Include="Formats\TarEntryType.cs" />
     <Compile Include="Formats\TarHeader.cs" />
     <Compile Include="Formats\TarStream.cs" />
-    <Compile Include="Formats\TarWriter.cs" />
     <Compile Include="Functions\MixingFunctions.cs">
       <DependentUpon>MixingFunctions.tt</DependentUpon>
       <AutoGen>True</AutoGen>
