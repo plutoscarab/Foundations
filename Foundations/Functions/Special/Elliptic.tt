@@ -64,6 +64,10 @@ namespace Foundations.Functions
 <#
 MakeF("Complex", "{0}.Real", "Complex");
 MakeF("Double", "{0}", "Math");
+MakeE("Complex", "{0}.Real", "Complex");
+MakeE("Double", "{0}", "Math");
+MakeΠ("Complex", "{0}.Real", "Complex");
+MakeΠ("Double", "{0}", "Math");
 #>
     }
 }
@@ -119,6 +123,51 @@ public void MakeF(string T, string realFmt, string math)
 
                 return sinφ * CarlsonSymmetric.RF(cosφ * cosφ, 1 - m * sinφ * sinφ, 1) + offset;
             };
+        }
+<#+
+}
+
+public void MakeE(string T, string realFmt, string math)
+{
+    var φreal = string.Format(realFmt, "φ");
+#>
+
+        /// <summary>
+        /// Incomplete elliptic integral of the second kind E(φ | m).
+        /// </summary>
+        /// <param name="φ">Argument.</param>
+        /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
+        public static <#= T #> E(<#= T #> φ, double m)
+        {
+			if (φ == 0) return 0;
+
+            <#= T #>
+                sinφ = <#= math #>.Sin(φ),
+                c = 1 / (sinφ * sinφ);
+
+            return CarlsonSymmetric.RF(c - 1, c - m, c) - (m / 3) * CarlsonSymmetric.RD(c - 1, c - m, c);
+        }
+<#+
+}
+
+public void MakeΠ(string T, string realFmt, string math)
+{
+    var φreal = string.Format(realFmt, "φ");
+#>
+
+        /// <summary>
+        /// Incomplete elliptic integral of the third kind Π(φ | m, n).
+        /// </summary>
+        /// <param name="φ">Argument.</param>
+        /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
+		/// <param name="n" />
+        public static <#= T #> Π(<#= T #> φ, double m, <#= T #> n)
+        {
+            <#= T #>
+                sinφ = <#= math #>.Sin(φ),
+                c = 1 / (sinφ * sinφ);
+
+            return CarlsonSymmetric.RF(c - 1, c - m, c) - (n / 3) * CarlsonSymmetric.RJ(c - 1, c - m, c, c + n);
         }
 <#+
 }

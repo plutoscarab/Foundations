@@ -31,14 +31,14 @@ namespace Foundations.Functions
     public static partial class CarlsonSymmetric
     {
 <# 
-MakeRF("Complex", "Complex"); 
-MakeRF("Double", "Math"); 
+MakeR("Complex", "Complex"); 
+MakeR("double", "Math"); 
 #>
     }
 }
 
 <#+
-public void MakeRF(string T, string math)
+public void MakeR(string T, string math)
 {
 #>
         /// <summary>
@@ -83,6 +83,111 @@ public void MakeRF(string T, string math)
                 E3 = X * Y * Z;
 
             return (1 + E3 * (1 / 14d + 3 * E3 / 104) + E2 * (1 / 10d + 3 * E3 / 44 + E2 * (1 / 24d + E3 / 16 + 5 * E2 / 208))) / <#= math #>.Sqrt(A);
+        }
+
+        /// <summary>
+        /// Symmetric elliptic integral of the second kind.
+        /// </summary>
+        public static <#= T #> RD(<#= T #> x, <#= T #> y, <#= T #> z)
+        {
+            if ((x == 0 && y == 0) || z == 0)
+			{
+				throw new ArgumentOutOfRangeException();
+			}
+
+            <#= T #>
+                A0 = (x + y + 3 * z) / 5,
+                A = A0,
+				sum = 0;
+
+            double
+                r = 10 * Machine.ε,
+                Q = Math.Pow(r / 4, -1 / 6d) * Math.Max(Math.Max(<#= math #>.Abs(A - x), <#= math #>.Abs(A - y)), <#= math #>.Abs(A - z));
+
+			var m = 0;
+
+            while (Q >= <#= math #>.Abs(A))
+            {
+                <#= T #>
+                    sx = <#= math #>.Sqrt(x),
+                    sy = <#= math #>.Sqrt(y),
+                    sz = <#= math #>.Sqrt(z),
+                    λ = sx * sy + sy * sz + sz * sx;
+
+				sum += 1 / (Math.Pow(4, m) * sz * (z + λ));
+				m++;
+                A = (A + λ) / 4;
+                x = (x + λ) / 4;
+                y = (y + λ) / 4;
+                z = (z + λ) / 4;
+                Q /= 4;
+            }
+
+            <#= T #>
+                X = (A0 - x) / (A * Math.Pow(4, m)),
+                Y = (A0 - y) / (A * Math.Pow(4, m)),
+                Z = -(X + Y) / 3,
+                XY = X * Y,
+				ZZ = Z * Z,
+				E2 = XY - 6 * ZZ,
+				E3 = (3 * XY - 8 * ZZ) * Z,
+				E4 = 3 * (XY - ZZ) * ZZ,
+				E5 = XY * ZZ * Z;
+
+            return (1 + E2 * (9 * E2 / 88 - 9 * E3 / 52 - 3 / 14d) + E3 / 6 - 3 * E4 / 22 + 3 * E5 / 26) / (Math.Pow(4, m) * <#= math #>.Pow(A, 1.5)) + 3 * sum;
+        }
+
+        /// <summary>
+        /// Symmetric elliptic integral of the third kind.
+        /// </summary>
+        public static <#= T #> RJ(<#= T #> x, <#= T #> y, <#= T #> z, <#= T #> p)
+        {
+            <#= T #>
+                A0 = (x + y + z + 2 * p) / 5,
+				δ = (p - x) * (p - y) * (p - z),
+                A = A0,
+				sum = 0;
+
+            double
+                r = 10 * Machine.ε,
+                Q = Math.Pow(r / 4, -1 / 6d) * Math.Max(Math.Max(Math.Max(<#= math #>.Abs(A - x), <#= math #>.Abs(A - y)), <#= math #>.Abs(A - z)), <#= math #>.Abs(A - p));
+
+			var m = 0;
+
+            while (Q >= <#= math #>.Abs(A))
+            {
+                <#= T #>
+                    sx = <#= math #>.Sqrt(x),
+                    sy = <#= math #>.Sqrt(y),
+                    sz = <#= math #>.Sqrt(z),
+					sp = <#= math #>.Sqrt(p),
+                    λ = sx * sy + sy * sz + sz * sx,
+					d = (sp + sx) * (sp + sy) * (sp + sz),
+					e = δ / (d * d * Math.Pow(4, 3 * m));
+
+				sum += RF(1, 1 + e, 1 + e) / (d * Math.Pow(4, m));
+				m++;
+                A = (A + λ) / 4;
+                x = (x + λ) / 4;
+                y = (y + λ) / 4;
+                z = (z + λ) / 4;
+                p = (p + λ) / 4;
+                Q /= 4;
+            }
+
+            <#= T #>
+                X = (A0 - x) / (A * Math.Pow(4, m)),
+                Y = (A0 - y) / (A * Math.Pow(4, m)),
+				Z = (A0 - z) / (A * Math.Pow(4, m)),
+                P = (-X - Y - Z) / 2,
+                XYZ = X * Y * Z,
+				E2 = X * Y + Y * Z + X * Z - 3 * P * P,
+				PPP = P * P * P,
+				E3 = XYZ + 2 * E2 * P + 4 * PPP,
+				E4 = (2 * XYZ + E2 * P + 3 * PPP) * P,
+				E5 = XYZ * P * P;
+
+            return (1 - 3 * E2 / 14 + E3 / 6 + 9 * E2 * E2 / 88 - 3 * E4 / 22 - 9 * E2 * E3 / 52 + 3 * E5 / 26) / (Math.Pow(4, m) * <#= math #>.Pow(A, 1.5)) + 6 * sum;
         }
 
 <#+

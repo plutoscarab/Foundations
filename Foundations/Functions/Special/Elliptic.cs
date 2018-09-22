@@ -159,5 +159,67 @@ namespace Foundations.Functions
                 return sinφ * CarlsonSymmetric.RF(cosφ * cosφ, 1 - m * sinφ * sinφ, 1) + offset;
             };
         }
+
+        /// <summary>
+        /// Incomplete elliptic integral of the second kind E(φ | m).
+        /// </summary>
+        /// <param name="φ">Argument.</param>
+        /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
+        public static Complex E(Complex φ, double m)
+        {
+			if (φ == 0) return 0;
+
+            Complex
+                sinφ = Complex.Sin(φ),
+                c = 1 / (sinφ * sinφ);
+
+            return CarlsonSymmetric.RF(c - 1, c - m, c) - (m / 3) * CarlsonSymmetric.RD(c - 1, c - m, c);
+        }
+
+        /// <summary>
+        /// Incomplete elliptic integral of the second kind E(φ | m).
+        /// </summary>
+        /// <param name="φ">Argument.</param>
+        /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
+        public static Double E(Double φ, double m)
+        {
+			if (φ == 0) return 0;
+
+            Double
+                sinφ = Math.Sin(φ),
+                c = 1 / (sinφ * sinφ);
+
+            return CarlsonSymmetric.RF(c - 1, c - m, c) - (m / 3) * CarlsonSymmetric.RD(c - 1, c - m, c);
+        }
+
+        /// <summary>
+        /// Incomplete elliptic integral of the third kind Π(φ | m, n).
+        /// </summary>
+        /// <param name="φ">Argument.</param>
+        /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
+		/// <param name="n" />
+        public static Complex Π(Complex φ, double m, Complex n)
+        {
+            Complex
+                sinφ = Complex.Sin(φ),
+                c = 1 / (sinφ * sinφ);
+
+            return CarlsonSymmetric.RF(c - 1, c - m, c) - (n / 3) * CarlsonSymmetric.RJ(c - 1, c - m, c, c + n);
+        }
+
+        /// <summary>
+        /// Incomplete elliptic integral of the third kind Π(φ | m, n).
+        /// </summary>
+        /// <param name="φ">Argument.</param>
+        /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
+		/// <param name="n" />
+        public static Double Π(Double φ, double m, Double n)
+        {
+            Double
+                sinφ = Math.Sin(φ),
+                c = 1 / (sinφ * sinφ);
+
+            return CarlsonSymmetric.RF(c - 1, c - m, c) - (n / 3) * CarlsonSymmetric.RJ(c - 1, c - m, c, c + n);
+        }
     }
 }

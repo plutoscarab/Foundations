@@ -53,6 +53,11 @@
     <Compile Include="Async\IAwaiter.cs" />
     <Compile Include="Async\ManualResetEventAwaiter.cs" />
     <Compile Include="Functions\SpaceFilling.cs" />
+    <Compile Include="Functions\Special\Elliptic.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Elliptic.tt</DependentUpon>
+    </Compile>
     <Compile Include="IO\QueueStream.cs" />
     <Compile Include="Async\ManualResetEventAsync.cs" />
     <Compile Include="IO\WriteOnceStream.cs" />
@@ -116,11 +121,6 @@
     <Compile Include="Functions\Poly.cs" />
     <Compile Include="Functions\Special\CarlsonSymmetric.cs">
       <DependentUpon>CarlsonSymmetric.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Functions\Special\Elliptic.cs">
-      <DependentUpon>Elliptic.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
