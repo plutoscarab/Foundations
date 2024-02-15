@@ -10,7 +10,6 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 */
 
 using System;
-using Foundations.Units;
 
 namespace Foundations
 {
@@ -26,16 +25,16 @@ namespace Foundations
         public static readonly Quantity N = 6.022140857e23 / SI.Mole;
 
         /// <summary>Boltzmann constant.</summary>
-        public static readonly Quantity k = 1.38064852e-23 * SI.Joule.PerKelvin;
+        public static readonly Quantity k = 1.38064852e-23 * SI.Joule / SI.Kelvin;
 
         /// <summary>Stefan-Boltzmann constant.</summary>
-        public static readonly Quantity σ = 5.670367e-8 * SI.Watt.PerSquareMetre / (SI.Kelvin ^ 4);
+        public static readonly Quantity σ = 5.670367e-8 * SI.Watt / SI.SquareMetre / (SI.Kelvin ^ 4);
 
         /// <summary>Electric constant.</summary>
-        public static readonly Quantity ε0 = 8.854187817e-12 * SI.Farad.PerMetre;
+        public static readonly Quantity ε0 = 8.854187817e-12 * SI.Farad / SI.Metre;
 
         /// <summary>Magnetic constant.</summary>
-        public static readonly Quantity μ0 = 4e-7 * Constants.π * SI.Newton.PerSquareAmpere;
+        public static readonly Quantity μ0 = 4e-7 * Constants.π * SI.Newton / (SI.Ampere ^ 2);
 
         /// <summary>Electron volt.</summary>
         public static readonly Quantity eV = 1.6021766208e-19 * SI.Joule;
@@ -62,22 +61,22 @@ namespace Foundations
         public static readonly Quantity me = 9.10938356e-31 * SI.Kilogram;
 
         /// <summary>Molar gas constant.</summary>
-        public static readonly Quantity R = 8.3144598 * SI.Joule.PerMole.PerKelvin;
+        public static readonly Quantity R = 8.3144598 * SI.Joule / SI.Mole / SI.Kelvin;
 
         /// <summary>Newtonian constant of gravitation.</summary>
-        public static readonly Quantity G = 6.67408e-11 * SI.CubicMetre.PerKilogram.PerSquareSecond;
+        public static readonly Quantity G = 6.67408e-11 * SI.CubicMetre / SI.Kilogram / (SI.Second ^ 2);
 
         /// <summary>Standard gravity.</summary>
-        public static readonly Quantity g0 = 9.80665 * SI.Metre.PerSquareSecond;
+        public static readonly Quantity g0 = 9.80665 * SI.Metre / (SI.Second ^ 2);
 
         /// <summary>Standard atmosphere.</summary>
         public static readonly Quantity atm = 101325 * SI.Pascal;
 
         /// <summary>Planck constant.</summary>
-        public static readonly Quantity h = 6.626070040e-34 * SI.Joule.Second;
+        public static readonly Quantity h = 6.626070040e-34 * SI.Joule * SI.Second;
 
         /// <summary>Reduced Planck constant (h / 2π).</summary>
-        public static readonly Quantity ħ = 1.054571800e-34 * SI.Joule.Second;
+        public static readonly Quantity ħ = 1.054571800e-34 * SI.Joule * SI.Second;
 
         /// <summary>Rydberg constant.</summary>
         public static readonly Quantity Rinf = 10973731.568508 / SI.Metre;
