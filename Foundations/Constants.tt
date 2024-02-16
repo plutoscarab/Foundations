@@ -9,13 +9,13 @@
 Constants.cs
 
 <#@ include file="../License.txt" #>
+
 */
 
 using System;
 
 namespace Foundations
-{
-<#
+{<#
 Make("Constants", "Double", "d");
 Make("DecimalConstants", "Decimal", "m");
 Make("SingleConstants", "Single", "f");
@@ -78,7 +78,6 @@ void Make(string className, string typeName, string suffix)
         /// <summary>Base-10 logarithm of 2.</summary>
         public const <#= typeName #> Log2       = 0.3010299956639811952137388947<#= suffix #>;
     }
-
 <#+
 }
 #>
