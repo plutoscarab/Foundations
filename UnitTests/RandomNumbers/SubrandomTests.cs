@@ -16,8 +16,8 @@ FILE GENERATOR. IF YOU SAVE THE FILE IN VISUAL STUDIO IT WILL DO THIS FOR YOU.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Foundations.Types;
+using Foundations.UnitTesting;
 
 namespace Foundations.RandomNumbers
 {

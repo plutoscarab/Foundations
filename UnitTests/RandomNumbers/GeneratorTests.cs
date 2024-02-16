@@ -15,7 +15,7 @@ FILE GENERATOR. IF YOU SAVE THE FILE IN VISUAL STUDIO IT WILL DO THIS FOR YOU.
 
 using Foundations.RandomNumbers;
 using Foundations.Types;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Foundations.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;

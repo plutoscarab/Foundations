@@ -1,5 +1,5 @@
 ﻿<#@ template debug="false" hostspecific="false" language="C#" #>
-<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Core.dll" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
@@ -9,11 +9,12 @@
 Generator.cs
 
 <#@ include file="../../License.txt" #>
+
 */
 
 using Foundations.RandomNumbers;
 using Foundations.Types;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Foundations.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;

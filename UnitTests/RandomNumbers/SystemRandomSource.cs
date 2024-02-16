@@ -10,7 +10,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 */
 
 using Foundations.RandomNumbers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Foundations.UnitTesting;
 using System;
 using System.Diagnostics;
 

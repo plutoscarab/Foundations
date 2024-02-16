@@ -17,7 +17,7 @@ namespace Foundations.Types
     /// <summary>
     /// 
     /// </summary>
-    internal sealed partial class SquareMatrixGF2
+    public sealed partial class SquareMatrixGF2
     {
         private int size;
         private uint[][] rows;

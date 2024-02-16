@@ -13,7 +13,7 @@ INSTEAD, EDIT THE .tt FILE WITH THE SIMILAR NAME AND RE-RUN THE TEXT TEMPLATING
 FILE GENERATOR. IF YOU SAVE THE FILE IN VISUAL STUDIO IT WILL DO THIS FOR YOU.
 */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Foundations.UnitTesting;
 using Foundations.RandomNumbers;
 
 namespace Foundations
@@ -84,6 +84,21 @@ namespace Foundations
 
         /// <summary/>
         [TestMethod]
+        public void MathAbsDecimalTest()
+        {
+            var g = new Generator("MathAbsDecimalTest");
+
+            for (int test = 0; test < 100; test++)
+            {
+                var value = g.Decimal();
+                var expected = System.Math.Abs(value);
+                var actual = value.Abs();
+                Assert.AreEqual(expected, actual);
+            }
+        }
+
+        /// <summary/>
+        [TestMethod]
         public void MathAbsSingleTest()
         {
             var g = new Generator("MathAbsSingleTest");
@@ -106,21 +121,6 @@ namespace Foundations
             for (int test = 0; test < 100; test++)
             {
                 var value = g.Double();
-                var expected = System.Math.Abs(value);
-                var actual = value.Abs();
-                Assert.AreEqual(expected, actual);
-            }
-        }
-
-        /// <summary/>
-        [TestMethod]
-        public void MathAbsDecimalTest()
-        {
-            var g = new Generator("MathAbsDecimalTest");
-
-            for (int test = 0; test < 100; test++)
-            {
-                var value = g.Decimal();
                 var expected = System.Math.Abs(value);
                 var actual = value.Abs();
                 Assert.AreEqual(expected, actual);
@@ -361,21 +361,6 @@ namespace Foundations
 
         /// <summary/>
         [TestMethod]
-        public void MathLogDoubleTest()
-        {
-            var g = new Generator("MathLogDoubleTest");
-
-            for (int test = 0; test < 100; test++)
-            {
-                var d = g.Double();
-                var expected = System.Math.Log(d);
-                var actual = d.Log();
-                Assert.AreEqual(expected, actual);
-            }
-        }
-
-        /// <summary/>
-        [TestMethod]
         public void MathLogDoubleDoubleTest()
         {
             var g = new Generator("MathLogDoubleDoubleTest");
@@ -386,6 +371,21 @@ namespace Foundations
                 var newBase = g.Double();
                 var expected = System.Math.Log(a, newBase);
                 var actual = a.Log(newBase);
+                Assert.AreEqual(expected, actual);
+            }
+        }
+
+        /// <summary/>
+        [TestMethod]
+        public void MathLogDoubleTest()
+        {
+            var g = new Generator("MathLogDoubleTest");
+
+            for (int test = 0; test < 100; test++)
+            {
+                var d = g.Double();
+                var expected = System.Math.Log(d);
+                var actual = d.Log();
                 Assert.AreEqual(expected, actual);
             }
         }
@@ -775,21 +775,6 @@ namespace Foundations
 
         /// <summary/>
         [TestMethod]
-        public void MathRoundDoubleTest()
-        {
-            var g = new Generator("MathRoundDoubleTest");
-
-            for (int test = 0; test < 100; test++)
-            {
-                var a = g.Double();
-                var expected = System.Math.Round(a);
-                var actual = a.Round();
-                Assert.AreEqual(expected, actual);
-            }
-        }
-
-        /// <summary/>
-        [TestMethod]
         public void MathRoundDoubleInt32Test()
         {
             var g = new Generator("MathRoundDoubleInt32Test");
@@ -909,6 +894,21 @@ namespace Foundations
                 }[g.Int32(2)];
                 var expected = System.Math.Round(d, decimals, mode);
                 var actual = d.RoundExt(decimals, mode);
+                Assert.AreEqual(expected, actual);
+            }
+        }
+
+        /// <summary/>
+        [TestMethod]
+        public void MathRoundDoubleTest()
+        {
+            var g = new Generator("MathRoundDoubleTest");
+
+            for (int test = 0; test < 100; test++)
+            {
+                var a = g.Double();
+                var expected = System.Math.Round(a);
+                var actual = a.Round();
                 Assert.AreEqual(expected, actual);
             }
         }

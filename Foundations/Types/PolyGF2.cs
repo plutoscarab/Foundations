@@ -814,7 +814,7 @@ namespace Foundations.Types
             1,11,0,1,11,2,5,
         };
 
-        internal static IEnumerable<PolyGF2> SmallIrreducibles()
+        public static IEnumerable<PolyGF2> SmallIrreducibles()
         {
             yield return new PolyGF2(1);
             yield return new PolyGF2(0, 1);

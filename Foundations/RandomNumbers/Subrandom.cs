@@ -646,7 +646,7 @@ namespace Foundations.RandomNumbers
             }
         }
 
-        internal static ulong[] SobolDirectionVectors(int d, PolyGF2 primitivePolynomial, int[] initialValues)
+        public static ulong[] SobolDirectionVectors(int d, PolyGF2 primitivePolynomial, int[] initialValues)
         {
             if (initialValues == null) 
                 throw new ArgumentNullException(nameof(initialValues));

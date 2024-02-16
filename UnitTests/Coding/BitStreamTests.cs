@@ -10,12 +10,9 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 
 */
 
-using System;
 using System.Collections.Generic;
-using System.IO;
-using Foundations.Coding;
 using Foundations.RandomNumbers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Foundations.UnitTesting;
 
 namespace Foundations.Coding
 {

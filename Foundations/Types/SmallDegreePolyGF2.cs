@@ -11,7 +11,6 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -83,7 +82,7 @@ namespace Foundations.Types
             return s.ToString();
         }
 
-        internal static string Superscript(int n)
+        public static string Superscript(int n)
         {
             if (n == 1) return "";
             return new string(n.ToString().Select(c => "⁰¹²³⁴⁵⁶⁷⁸⁹"[c - '0']).ToArray());
