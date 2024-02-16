@@ -24,37 +24,40 @@ namespace Foundations.UnitTests.Objects
         {
             var source = new SynchronizedRandomSource(Generator.DefaultSourceFactory());
             var random = new Generator(source, "SynchronizedTest".ToCharArray());
+            var random2 = random.Clone();
             var values = new HashSet<uint>();
 
             for (int i = 0; i < 10000; i++)
             {
-                values.Add(random.UInt32());
+                var r = random.UInt32();
+                values.Add(r);
             }
 
-            random = new Generator(source, "SynchronizedTest".ToCharArray());
             var values1 = new HashSet<uint>();
             var values2 = new HashSet<uint>();
 
             Parallel.Invoke(
-                delegate
+                () =>
                 {
                     for (int i = 0; i < 5000; i++)
                     {
-                        values1.Add(random.UInt32());
+                        var r = random2.UInt32();
+                        values1.Add(r);
                     }
                 },
 
-                delegate
+                () =>
                 {
                     for (int i = 0; i < 5000; i++)
                     {
-                        values2.Add(random.UInt32());
+                        var r = random2.UInt32();
+                        values2.Add(r);
                     }
                 }
             );
 
             values1.UnionWith(values2);
-            values.ExceptWith(values1);
+            values.SymmetricExceptWith(values1);
             Assert.AreEqual(0, values.Count);
         }
 

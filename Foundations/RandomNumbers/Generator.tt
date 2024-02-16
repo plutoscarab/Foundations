@@ -1,5 +1,5 @@
 ﻿<#@ template debug="false" hostspecific="false" language="C#" #>
-<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Core.dll" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
@@ -9,6 +9,7 @@
 Generator.cs
 
 <#@ include file="../../License.txt" #>
+
 */
 
 using Foundations.Types;
@@ -54,7 +55,6 @@ namespace Foundations.RandomNumbers
         }
         
         private IRandomSource source;
-        private ValueUnion value;
      
         /// <summary>
         /// Create a pseudo-random number generator initialized using system entropy
@@ -207,7 +207,8 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public Boolean Boolean()
         {
-            Next();
+            ValueUnion value = new();
+            Next(ref value);
             return (value.UInt64_0 & 1UL) != 0;
         }
 
@@ -239,13 +240,15 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             fixed (Boolean* ptr = &array[offset])
             {
                 var p = ptr;
 
                 while (count >= 64)
                 {
-                    Next();
+                    Next(ref value);
 <# for (int i = 0; i < 64; i++) { #>
                     *p++ = (value.UInt32_<#= i / 32 #> & 0x<#= (1u << (i % 32)).ToString("X") #>) != 0;
 <# } #>
@@ -255,7 +258,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
-                Next();
+                Next(ref value);
 
                 switch (count)
                 {
@@ -302,13 +305,15 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             fixed (Boolean* ptr = &array[offset])
             {
                 var p = ptr;
 
                 while (count >= 64)
                 {
-                    Next();
+                    Next(ref value);
 <# for (int i = 0; i < 64; i++) { #>
                     *p++ ^= (value.UInt32_<#= i/32 #> & 0x<#= (1u << (i % 32)).ToString("X") #>) != 0;
 <# } #>
@@ -318,7 +323,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
-                Next();
+                Next(ref value);
 
                 switch (count)
                 {
@@ -342,9 +347,11 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public IEnumerable<Boolean> Booleans()
         {
+            ValueUnion value = new();
+
             while (true)
             {
-                Next();
+                Next(ref value);
 <# for (int i = 0; i < 64; i++) { #>
                 yield return (value.UInt32_<#= i/32 #> & 0x<#= (1u << (i % 32)).ToString("X") #>) != 0;
 <# } #>
@@ -364,7 +371,7 @@ namespace Foundations.RandomNumbers
             return data;
         }
 
-        private void Next()
+        private void Next(ref ValueUnion value)
         {
             source.Next(ref value);
         }
@@ -374,7 +381,8 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public ValueUnion ValueUnion()
         {
-            Next();
+            ValueUnion value = new();
+            Next(ref value);
             return value;
         }
 
@@ -524,7 +532,8 @@ void Next(string T, int m)
     if (T == "Single" || T == "Double")
     {
 #>
-            Next();
+            ValueUnion value = new();
+            Next(ref value);
             return (<#= T #>)(BitConverter.Int64BitsToDouble((value.Int64_0 & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000) - 1.0);
 <#+
     }
@@ -543,7 +552,8 @@ void Next(string T, int m)
     else
     {
 #>
-            Next();
+            ValueUnion value = new();
+            Next(ref value);
             return value.<#= T #>_0;
 <#+
     }
@@ -722,10 +732,11 @@ void Next(string T, int m)
 <#+
         }
 #>
+                ValueUnion value = new();
 
                 while (count >= <#= m #>)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ = <#= FixFP(T) #>;
 <#+
         if (T == "Single")
@@ -752,7 +763,7 @@ void Next(string T, int m)
                 if (count == 0)
                     return;
 
-                Next();
+                Next(ref value);
                 ulong sample = <#= FixFP(T) #>;
                 var p1 = (<#= T #>*)p;
                 var p2 = (<#= T #>*)&sample;
@@ -766,7 +777,7 @@ void Next(string T, int m)
                 if (count == 0)
                     return;
 
-                Next();
+                Next(ref value);
                 ulong sample = <#= FixFP(T) #>;
                 var p1 = (<#= T #>*)p;
                 var p2 = (<#= T #>*)&sample;
@@ -822,9 +833,11 @@ void Next(string T, int m)
     {
 #>
 
+            ValueUnion value = new();
+
             while (count >= 2)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 = <#= FixFP(T) #>;
                 array[offset++] = minimum + (value.Single_0 - 1f) * range;
                 array[offset++] = minimum + (value.Single_1 - 1f) * range;
@@ -833,7 +846,7 @@ void Next(string T, int m)
 
             if (count >= 1)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 = <#= FixFP(T) #>;
                 array[offset++] = minimum + (value.Single_0 - 1f) * range;
             }
@@ -843,9 +856,11 @@ void Next(string T, int m)
     {
 #>
 
+            ValueUnion value = new();
+
             while (count > 0)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
 <#+
         for (int i = 0; i < m; i++)
@@ -924,13 +939,15 @@ void Next(string T, int m)
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             fixed (<#= T #>* ptr = &array[offset])
             {
                 var p = (ulong*)ptr;
 
                 while (count >= <#= m #>)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0;
                     count -= <#= m #>;
                 }
@@ -993,6 +1010,7 @@ void Next(string T, int m)
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
             ulong mask = GetRangeMask(range);
 <#+
         for (int i = m / 2; i > 0; i /= 2)
@@ -1009,7 +1027,7 @@ void Next(string T, int m)
 
                 while (count >= <#= m #>)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0 & mask;
                     count -= <#= m #>;
                 }
@@ -1102,9 +1120,11 @@ void Next(string T, int m)
     {
 #>
 
+            ValueUnion value = new();
+
             while (count >= 2)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 = <#= FixFP(T) #>;
 				var sample = value.Single_0 - 1f;
                 array[offset++] += sample;
@@ -1115,7 +1135,7 @@ void Next(string T, int m)
 
             if (count >= 1)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 = <#= FixFP(T) #>;
 				var sample = value.Single_0 - 1f;
                 array[offset] += sample;
@@ -1126,9 +1146,11 @@ void Next(string T, int m)
     {
 #>
 
+            ValueUnion value = new();
+
             while (count >= <#= m #>)
             {
-                Next();
+                Next(ref value);
 <#+
         for (int i = 0; i < m; i++)
         {
@@ -1143,7 +1165,7 @@ void Next(string T, int m)
             if (count == 0)
                 return;
 
-            Next();
+            Next(ref value);
 <#+
         for (int i = 0; i < m - 1; i++)
         {
@@ -1205,9 +1227,11 @@ void Next(string T, int m)
     {
 #>
 
+            ValueUnion value = new();
+
             while (count >= 2)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 = <#= FixFP(T) #>;
 				var sample = minimum + (value.Single_0 - 1f) * range;
                 array[offset++] += sample;
@@ -1218,7 +1242,7 @@ void Next(string T, int m)
 
             if (count >= 1)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 = <#= FixFP(T) #>;
 				var sample = minimum + (value.Single_0 - 1f) * range;
                 array[offset] += sample;
@@ -1229,9 +1253,11 @@ void Next(string T, int m)
     {
 #>
 
+            ValueUnion value = new();
+
             while (count > 0)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
 <#+
         for (int i = 0; i < m; i++)
@@ -1274,7 +1300,13 @@ void Next(string T, int m)
         /// Gets a sequence of <#= T #> values.
         /// </summary>
         public IEnumerable<<#= T #>> <#= T #>s()
-        {
+        {<#+
+    if (m > 1)
+    {
+#>            
+            ValueUnion value = new();
+
+<#+ } #>            
             while (true)
             {
 <#+ 
@@ -1287,7 +1319,7 @@ void Next(string T, int m)
     else if (T == "Single")
     {
 #>
-                Next();
+                Next(ref value);
                 value.UInt64_0 = <#= FixFP(T) #>;
                 yield return value.Single_0 - 1f;
                 yield return value.Single_1 - 1f;
@@ -1296,7 +1328,7 @@ void Next(string T, int m)
     else
     {
 #>
-                Next();
+                Next(ref value);
 <#+
         for (int i = 0; i < m; i++) 
         { 
@@ -1341,6 +1373,14 @@ void Next(string T, int m)
 <#+
         }
     }
+
+    if (T != "Double" && T != "Decimal")
+    {
+#>
+
+            ValueUnion value = new();
+<#+    
+    }
 #>
 
             while(true)
@@ -1349,7 +1389,7 @@ void Next(string T, int m)
     if (T == "Single")
     {
 #>
-                Next();
+                Next(ref value);
                 value.UInt64_0 = <#= FixFP(T) #>;
                 yield return minimum + (value.Single_0 - 1f) * range;
                 yield return minimum + (value.Single_1 - 1f) * range;
@@ -1364,7 +1404,7 @@ void Next(string T, int m)
     else
     {
 #>
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
 <#+
         for (int i = 0; i < m; i++)

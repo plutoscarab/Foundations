@@ -62,7 +62,7 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public IRandomSource Clone()
         {
-            return source.Clone();
+            return new SynchronizedRandomSource(source.Clone());
         }
     }
 }

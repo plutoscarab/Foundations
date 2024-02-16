@@ -56,7 +56,6 @@ namespace Foundations.RandomNumbers
         }
         
         private IRandomSource source;
-        private ValueUnion value;
      
         /// <summary>
         /// Create a pseudo-random number generator initialized using system entropy
@@ -360,7 +359,8 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public UInt64 UInt64()
         {
-            Next();
+            ValueUnion value = new();
+            Next(ref value);
             return value.UInt64_0;
         }
 
@@ -468,10 +468,11 @@ namespace Foundations.RandomNumbers
             fixed (UInt64* ptr = &array[offset])
             {
                 var p = (ulong*)ptr;
+                ValueUnion value = new();
 
                 while (count >= 1)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ = value.UInt64_0;
                     count -= 1;
                 }
@@ -550,13 +551,15 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             fixed (UInt64* ptr = &array[offset])
             {
                 var p = (ulong*)ptr;
 
                 while (count >= 1)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0;
                     count -= 1;
                 }
@@ -587,6 +590,7 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
             ulong mask = GetRangeMask(range);
 
             fixed (UInt64* ptr = &array[offset])
@@ -595,7 +599,7 @@ namespace Foundations.RandomNumbers
 
                 while (count >= 1)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0 & mask;
                     count -= 1;
                 }
@@ -693,7 +697,7 @@ namespace Foundations.RandomNumbers
         /// Gets a sequence of UInt64 values.
         /// </summary>
         public IEnumerable<UInt64> UInt64s()
-        {
+        {            
             while (true)
             {
                 yield return UInt64();
@@ -721,9 +725,11 @@ namespace Foundations.RandomNumbers
 
             ulong mask = GetRangeMask(range);
 
+            ValueUnion value = new();
+
             while(true)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
                 if (value.UInt64_0 < range) yield return (UInt64)(minimum + value.UInt64_0);
             }
@@ -788,7 +794,8 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public Int64 Int64()
         {
-            Next();
+            ValueUnion value = new();
+            Next(ref value);
             return value.Int64_0;
         }
 
@@ -904,10 +911,11 @@ namespace Foundations.RandomNumbers
             fixed (Int64* ptr = &array[offset])
             {
                 var p = (ulong*)ptr;
+                ValueUnion value = new();
 
                 while (count >= 1)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ = value.UInt64_0;
                     count -= 1;
                 }
@@ -986,13 +994,15 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             fixed (Int64* ptr = &array[offset])
             {
                 var p = (ulong*)ptr;
 
                 while (count >= 1)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0;
                     count -= 1;
                 }
@@ -1023,6 +1033,7 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
             ulong mask = GetRangeMask(range);
 
             fixed (Int64* ptr = &array[offset])
@@ -1031,7 +1042,7 @@ namespace Foundations.RandomNumbers
 
                 while (count >= 1)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0 & mask;
                     count -= 1;
                 }
@@ -1129,7 +1140,7 @@ namespace Foundations.RandomNumbers
         /// Gets a sequence of Int64 values.
         /// </summary>
         public IEnumerable<Int64> Int64s()
-        {
+        {            
             while (true)
             {
                 yield return Int64();
@@ -1157,9 +1168,11 @@ namespace Foundations.RandomNumbers
 
             ulong mask = GetRangeMask(range);
 
+            ValueUnion value = new();
+
             while(true)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
                 if (value.Int64_0 < range) yield return (Int64)(minimum + value.Int64_0);
             }
@@ -1259,7 +1272,8 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public UInt32 UInt32()
         {
-            Next();
+            ValueUnion value = new();
+            Next(ref value);
             return value.UInt32_0;
         }
 
@@ -1366,10 +1380,11 @@ namespace Foundations.RandomNumbers
             fixed (UInt32* ptr = &array[offset])
             {
                 var p = (ulong*)ptr;
+                ValueUnion value = new();
 
                 while (count >= 2)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ = value.UInt64_0;
                     count -= 2;
                 }
@@ -1377,7 +1392,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
-                Next();
+                Next(ref value);
                 ulong sample = value.UInt64_0;
                 var p1 = (UInt32*)p;
                 var p2 = (UInt32*)&sample;
@@ -1408,9 +1423,11 @@ namespace Foundations.RandomNumbers
             ulong mask = GetRangeMask(range);
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while (count > 0)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
 
                 if (value.UInt32_0 < range) 
@@ -1471,13 +1488,15 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             fixed (UInt32* ptr = &array[offset])
             {
                 var p = (ulong*)ptr;
 
                 while (count >= 2)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0;
                     count -= 2;
                 }
@@ -1516,6 +1535,7 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
             ulong mask = GetRangeMask(range);
             mask |= mask << 32;
 
@@ -1525,7 +1545,7 @@ namespace Foundations.RandomNumbers
 
                 while (count >= 2)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0 & mask;
                     count -= 2;
                 }
@@ -1587,9 +1607,11 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             while (count >= 2)
             {
-                Next();
+                Next(ref value);
                 array[offset++] += value.UInt32_0;
                 array[offset++] += value.UInt32_1;
                 count -= 2;
@@ -1598,7 +1620,7 @@ namespace Foundations.RandomNumbers
             if (count == 0)
                 return;
 
-            Next();
+            Next(ref value);
 
             array[offset++] += value.UInt32_0; 
             if (--count == 0) return;
@@ -1627,9 +1649,11 @@ namespace Foundations.RandomNumbers
             ulong mask = GetRangeMask(range);
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while (count > 0)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
 
                 if (value.UInt32_0 < range) 
@@ -1658,10 +1682,13 @@ namespace Foundations.RandomNumbers
         /// Gets a sequence of UInt32 values.
         /// </summary>
         public IEnumerable<UInt32> UInt32s()
-        {
+        {            
+            ValueUnion value = new();
+
+            
             while (true)
             {
-                Next();
+                Next(ref value);
                 yield return value.UInt32_0;
                 yield return value.UInt32_1;
             }
@@ -1689,9 +1716,11 @@ namespace Foundations.RandomNumbers
             ulong mask = GetRangeMask(range);
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while(true)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
                 if (value.UInt32_0 < range) yield return (UInt32)(minimum + value.UInt32_0);
                 if (value.UInt32_1 < range) yield return (UInt32)(minimum + value.UInt32_1);
@@ -1757,7 +1786,8 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public Int32 Int32()
         {
-            Next();
+            ValueUnion value = new();
+            Next(ref value);
             return value.Int32_0;
         }
 
@@ -1872,10 +1902,11 @@ namespace Foundations.RandomNumbers
             fixed (Int32* ptr = &array[offset])
             {
                 var p = (ulong*)ptr;
+                ValueUnion value = new();
 
                 while (count >= 2)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ = value.UInt64_0;
                     count -= 2;
                 }
@@ -1883,7 +1914,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
-                Next();
+                Next(ref value);
                 ulong sample = value.UInt64_0;
                 var p1 = (Int32*)p;
                 var p2 = (Int32*)&sample;
@@ -1914,9 +1945,11 @@ namespace Foundations.RandomNumbers
             ulong mask = GetRangeMask(range);
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while (count > 0)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
 
                 if (value.Int32_0 < range) 
@@ -1977,13 +2010,15 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             fixed (Int32* ptr = &array[offset])
             {
                 var p = (ulong*)ptr;
 
                 while (count >= 2)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0;
                     count -= 2;
                 }
@@ -2022,6 +2057,7 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
             ulong mask = GetRangeMask(range);
             mask |= mask << 32;
 
@@ -2031,7 +2067,7 @@ namespace Foundations.RandomNumbers
 
                 while (count >= 2)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0 & mask;
                     count -= 2;
                 }
@@ -2093,9 +2129,11 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             while (count >= 2)
             {
-                Next();
+                Next(ref value);
                 array[offset++] += value.Int32_0;
                 array[offset++] += value.Int32_1;
                 count -= 2;
@@ -2104,7 +2142,7 @@ namespace Foundations.RandomNumbers
             if (count == 0)
                 return;
 
-            Next();
+            Next(ref value);
 
             array[offset++] += value.Int32_0; 
             if (--count == 0) return;
@@ -2133,9 +2171,11 @@ namespace Foundations.RandomNumbers
             ulong mask = GetRangeMask(range);
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while (count > 0)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
 
                 if (value.Int32_0 < range) 
@@ -2164,10 +2204,13 @@ namespace Foundations.RandomNumbers
         /// Gets a sequence of Int32 values.
         /// </summary>
         public IEnumerable<Int32> Int32s()
-        {
+        {            
+            ValueUnion value = new();
+
+            
             while (true)
             {
-                Next();
+                Next(ref value);
                 yield return value.Int32_0;
                 yield return value.Int32_1;
             }
@@ -2195,9 +2238,11 @@ namespace Foundations.RandomNumbers
             ulong mask = GetRangeMask(range);
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while(true)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
                 if (value.Int32_0 < range) yield return (Int32)(minimum + value.Int32_0);
                 if (value.Int32_1 < range) yield return (Int32)(minimum + value.Int32_1);
@@ -2298,7 +2343,8 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public UInt16 UInt16()
         {
-            Next();
+            ValueUnion value = new();
+            Next(ref value);
             return value.UInt16_0;
         }
 
@@ -2404,10 +2450,11 @@ namespace Foundations.RandomNumbers
             fixed (UInt16* ptr = &array[offset])
             {
                 var p = (ulong*)ptr;
+                ValueUnion value = new();
 
                 while (count >= 4)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ = value.UInt64_0;
                     count -= 4;
                 }
@@ -2415,7 +2462,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
-                Next();
+                Next(ref value);
                 ulong sample = value.UInt64_0;
                 var p1 = (UInt16*)p;
                 var p2 = (UInt16*)&sample;
@@ -2451,9 +2498,11 @@ namespace Foundations.RandomNumbers
             mask |= mask << 16;
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while (count > 0)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
 
                 if (value.UInt16_0 < range) 
@@ -2526,13 +2575,15 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             fixed (UInt16* ptr = &array[offset])
             {
                 var p = (ulong*)ptr;
 
                 while (count >= 4)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0;
                     count -= 4;
                 }
@@ -2575,6 +2626,7 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
             ulong mask = GetRangeMask(range);
             mask |= mask << 16;
             mask |= mask << 32;
@@ -2585,7 +2637,7 @@ namespace Foundations.RandomNumbers
 
                 while (count >= 4)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0 & mask;
                     count -= 4;
                 }
@@ -2651,9 +2703,11 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             while (count >= 4)
             {
-                Next();
+                Next(ref value);
                 array[offset++] += value.UInt16_0;
                 array[offset++] += value.UInt16_1;
                 array[offset++] += value.UInt16_2;
@@ -2664,7 +2718,7 @@ namespace Foundations.RandomNumbers
             if (count == 0)
                 return;
 
-            Next();
+            Next(ref value);
 
             array[offset++] += value.UInt16_0; 
             if (--count == 0) return;
@@ -2700,9 +2754,11 @@ namespace Foundations.RandomNumbers
             mask |= mask << 16;
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while (count > 0)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
 
                 if (value.UInt16_0 < range) 
@@ -2743,10 +2799,13 @@ namespace Foundations.RandomNumbers
         /// Gets a sequence of UInt16 values.
         /// </summary>
         public IEnumerable<UInt16> UInt16s()
-        {
+        {            
+            ValueUnion value = new();
+
+            
             while (true)
             {
-                Next();
+                Next(ref value);
                 yield return value.UInt16_0;
                 yield return value.UInt16_1;
                 yield return value.UInt16_2;
@@ -2777,9 +2836,11 @@ namespace Foundations.RandomNumbers
             mask |= mask << 16;
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while(true)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
                 if (value.UInt16_0 < range) yield return (UInt16)(minimum + value.UInt16_0);
                 if (value.UInt16_1 < range) yield return (UInt16)(minimum + value.UInt16_1);
@@ -2847,7 +2908,8 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public Int16 Int16()
         {
-            Next();
+            ValueUnion value = new();
+            Next(ref value);
             return value.Int16_0;
         }
 
@@ -2961,10 +3023,11 @@ namespace Foundations.RandomNumbers
             fixed (Int16* ptr = &array[offset])
             {
                 var p = (ulong*)ptr;
+                ValueUnion value = new();
 
                 while (count >= 4)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ = value.UInt64_0;
                     count -= 4;
                 }
@@ -2972,7 +3035,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
-                Next();
+                Next(ref value);
                 ulong sample = value.UInt64_0;
                 var p1 = (Int16*)p;
                 var p2 = (Int16*)&sample;
@@ -3008,9 +3071,11 @@ namespace Foundations.RandomNumbers
             mask |= mask << 16;
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while (count > 0)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
 
                 if (value.Int16_0 < range) 
@@ -3083,13 +3148,15 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             fixed (Int16* ptr = &array[offset])
             {
                 var p = (ulong*)ptr;
 
                 while (count >= 4)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0;
                     count -= 4;
                 }
@@ -3132,6 +3199,7 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
             ulong mask = GetRangeMask(range);
             mask |= mask << 16;
             mask |= mask << 32;
@@ -3142,7 +3210,7 @@ namespace Foundations.RandomNumbers
 
                 while (count >= 4)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0 & mask;
                     count -= 4;
                 }
@@ -3208,9 +3276,11 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             while (count >= 4)
             {
-                Next();
+                Next(ref value);
                 array[offset++] += value.Int16_0;
                 array[offset++] += value.Int16_1;
                 array[offset++] += value.Int16_2;
@@ -3221,7 +3291,7 @@ namespace Foundations.RandomNumbers
             if (count == 0)
                 return;
 
-            Next();
+            Next(ref value);
 
             array[offset++] += value.Int16_0; 
             if (--count == 0) return;
@@ -3257,9 +3327,11 @@ namespace Foundations.RandomNumbers
             mask |= mask << 16;
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while (count > 0)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
 
                 if (value.Int16_0 < range) 
@@ -3300,10 +3372,13 @@ namespace Foundations.RandomNumbers
         /// Gets a sequence of Int16 values.
         /// </summary>
         public IEnumerable<Int16> Int16s()
-        {
+        {            
+            ValueUnion value = new();
+
+            
             while (true)
             {
-                Next();
+                Next(ref value);
                 yield return value.Int16_0;
                 yield return value.Int16_1;
                 yield return value.Int16_2;
@@ -3334,9 +3409,11 @@ namespace Foundations.RandomNumbers
             mask |= mask << 16;
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while(true)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
                 if (value.Int16_0 < range) yield return (Int16)(minimum + value.Int16_0);
                 if (value.Int16_1 < range) yield return (Int16)(minimum + value.Int16_1);
@@ -3439,7 +3516,8 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public Byte Byte()
         {
-            Next();
+            ValueUnion value = new();
+            Next(ref value);
             return value.Byte_0;
         }
 
@@ -3544,10 +3622,11 @@ namespace Foundations.RandomNumbers
             fixed (Byte* ptr = &array[offset])
             {
                 var p = (ulong*)ptr;
+                ValueUnion value = new();
 
                 while (count >= 8)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ = value.UInt64_0;
                     count -= 8;
                 }
@@ -3555,7 +3634,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
-                Next();
+                Next(ref value);
                 ulong sample = value.UInt64_0;
                 var p1 = (Byte*)p;
                 var p2 = (Byte*)&sample;
@@ -3592,9 +3671,11 @@ namespace Foundations.RandomNumbers
             mask |= mask << 16;
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while (count > 0)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
 
                 if (value.Byte_0 < range) 
@@ -3691,13 +3772,15 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             fixed (Byte* ptr = &array[offset])
             {
                 var p = (ulong*)ptr;
 
                 while (count >= 8)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0;
                     count -= 8;
                 }
@@ -3740,6 +3823,7 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
             ulong mask = GetRangeMask(range);
             mask |= mask << 8;
             mask |= mask << 16;
@@ -3751,7 +3835,7 @@ namespace Foundations.RandomNumbers
 
                 while (count >= 8)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0 & mask;
                     count -= 8;
                 }
@@ -3817,9 +3901,11 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             while (count >= 8)
             {
-                Next();
+                Next(ref value);
                 array[offset++] += value.Byte_0;
                 array[offset++] += value.Byte_1;
                 array[offset++] += value.Byte_2;
@@ -3834,7 +3920,7 @@ namespace Foundations.RandomNumbers
             if (count == 0)
                 return;
 
-            Next();
+            Next(ref value);
 
             array[offset++] += value.Byte_0; 
             if (--count == 0) return;
@@ -3883,9 +3969,11 @@ namespace Foundations.RandomNumbers
             mask |= mask << 16;
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while (count > 0)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
 
                 if (value.Byte_0 < range) 
@@ -3950,10 +4038,13 @@ namespace Foundations.RandomNumbers
         /// Gets a sequence of Byte values.
         /// </summary>
         public IEnumerable<Byte> Bytes()
-        {
+        {            
+            ValueUnion value = new();
+
+            
             while (true)
             {
-                Next();
+                Next(ref value);
                 yield return value.Byte_0;
                 yield return value.Byte_1;
                 yield return value.Byte_2;
@@ -3989,9 +4080,11 @@ namespace Foundations.RandomNumbers
             mask |= mask << 16;
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while(true)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
                 if (value.Byte_0 < range) yield return (Byte)(minimum + value.Byte_0);
                 if (value.Byte_1 < range) yield return (Byte)(minimum + value.Byte_1);
@@ -4063,7 +4156,8 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public SByte SByte()
         {
-            Next();
+            ValueUnion value = new();
+            Next(ref value);
             return value.SByte_0;
         }
 
@@ -4176,10 +4270,11 @@ namespace Foundations.RandomNumbers
             fixed (SByte* ptr = &array[offset])
             {
                 var p = (ulong*)ptr;
+                ValueUnion value = new();
 
                 while (count >= 8)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ = value.UInt64_0;
                     count -= 8;
                 }
@@ -4187,7 +4282,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
-                Next();
+                Next(ref value);
                 ulong sample = value.UInt64_0;
                 var p1 = (SByte*)p;
                 var p2 = (SByte*)&sample;
@@ -4224,9 +4319,11 @@ namespace Foundations.RandomNumbers
             mask |= mask << 16;
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while (count > 0)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
 
                 if (value.SByte_0 < range) 
@@ -4323,13 +4420,15 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             fixed (SByte* ptr = &array[offset])
             {
                 var p = (ulong*)ptr;
 
                 while (count >= 8)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0;
                     count -= 8;
                 }
@@ -4372,6 +4471,7 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
             ulong mask = GetRangeMask(range);
             mask |= mask << 8;
             mask |= mask << 16;
@@ -4383,7 +4483,7 @@ namespace Foundations.RandomNumbers
 
                 while (count >= 8)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= value.UInt64_0 & mask;
                     count -= 8;
                 }
@@ -4449,9 +4549,11 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             while (count >= 8)
             {
-                Next();
+                Next(ref value);
                 array[offset++] += value.SByte_0;
                 array[offset++] += value.SByte_1;
                 array[offset++] += value.SByte_2;
@@ -4466,7 +4568,7 @@ namespace Foundations.RandomNumbers
             if (count == 0)
                 return;
 
-            Next();
+            Next(ref value);
 
             array[offset++] += value.SByte_0; 
             if (--count == 0) return;
@@ -4515,9 +4617,11 @@ namespace Foundations.RandomNumbers
             mask |= mask << 16;
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while (count > 0)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
 
                 if (value.SByte_0 < range) 
@@ -4582,10 +4686,13 @@ namespace Foundations.RandomNumbers
         /// Gets a sequence of SByte values.
         /// </summary>
         public IEnumerable<SByte> SBytes()
-        {
+        {            
+            ValueUnion value = new();
+
+            
             while (true)
             {
-                Next();
+                Next(ref value);
                 yield return value.SByte_0;
                 yield return value.SByte_1;
                 yield return value.SByte_2;
@@ -4621,9 +4728,11 @@ namespace Foundations.RandomNumbers
             mask |= mask << 16;
             mask |= mask << 32;
 
+            ValueUnion value = new();
+
             while(true)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 &= mask;
                 if (value.SByte_0 < range) yield return (SByte)(minimum + value.SByte_0);
                 if (value.SByte_1 < range) yield return (SByte)(minimum + value.SByte_1);
@@ -4730,7 +4839,8 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public Double Double()
         {
-            Next();
+            ValueUnion value = new();
+            Next(ref value);
             return (Double)(BitConverter.Int64BitsToDouble((value.Int64_0 & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000) - 1.0);
         }
 
@@ -4818,10 +4928,11 @@ namespace Foundations.RandomNumbers
             {
                 var p = (ulong*)ptr;
                 var f = ptr;
+                ValueUnion value = new();
 
                 while (count >= 1)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ = (value.UInt64_0 & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000;
                     *f++ -= 1d;
                     count -= 1;
@@ -4946,7 +5057,7 @@ namespace Foundations.RandomNumbers
         /// Gets a sequence of Double values.
         /// </summary>
         public IEnumerable<Double> Doubles()
-        {
+        {            
             while (true)
             {
                 yield return Double();
@@ -5037,7 +5148,8 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public Single Single()
         {
-            Next();
+            ValueUnion value = new();
+            Next(ref value);
             return (Single)(BitConverter.Int64BitsToDouble((value.Int64_0 & 0x000FFFFFFFFFFFFF) | 0x3FF0000000000000) - 1.0);
         }
 
@@ -5125,10 +5237,11 @@ namespace Foundations.RandomNumbers
             {
                 var p = (ulong*)ptr;
                 var f = ptr;
+                ValueUnion value = new();
 
                 while (count >= 2)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
                     *f++ -= 1f;
                     *f++ -= 1f;
@@ -5138,7 +5251,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
-                Next();
+                Next(ref value);
                 ulong sample = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
                 var p1 = (Single*)p;
                 var p2 = (Single*)&sample;
@@ -5166,9 +5279,11 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             while (count >= 2)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
                 array[offset++] = minimum + (value.Single_0 - 1f) * range;
                 array[offset++] = minimum + (value.Single_1 - 1f) * range;
@@ -5177,7 +5292,7 @@ namespace Foundations.RandomNumbers
 
             if (count >= 1)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
                 array[offset++] = minimum + (value.Single_0 - 1f) * range;
             }
@@ -5230,9 +5345,11 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             while (count >= 2)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
 				var sample = value.Single_0 - 1f;
                 array[offset++] += sample;
@@ -5243,7 +5360,7 @@ namespace Foundations.RandomNumbers
 
             if (count >= 1)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
 				var sample = value.Single_0 - 1f;
                 array[offset] += sample;
@@ -5270,9 +5387,11 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             while (count >= 2)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
 				var sample = minimum + (value.Single_0 - 1f) * range;
                 array[offset++] += sample;
@@ -5283,7 +5402,7 @@ namespace Foundations.RandomNumbers
 
             if (count >= 1)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
 				var sample = minimum + (value.Single_0 - 1f) * range;
                 array[offset] += sample;
@@ -5302,10 +5421,13 @@ namespace Foundations.RandomNumbers
         /// Gets a sequence of Single values.
         /// </summary>
         public IEnumerable<Single> Singles()
-        {
+        {            
+            ValueUnion value = new();
+
+            
             while (true)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
                 yield return value.Single_0 - 1f;
                 yield return value.Single_1 - 1f;
@@ -5331,9 +5453,11 @@ namespace Foundations.RandomNumbers
             if (System.Single.MaxValue - range < minimum)
                 throw new ArgumentOutOfRangeException(nameof(range));
 
+            ValueUnion value = new();
+
             while(true)
             {
-                Next();
+                Next(ref value);
                 value.UInt64_0 = (value.UInt64_0 & 0x007FFFFF007FFFFF) | 0x3F8000003F800000;
                 yield return minimum + (value.Single_0 - 1f) * range;
                 yield return minimum + (value.Single_1 - 1f) * range;
@@ -5611,7 +5735,7 @@ namespace Foundations.RandomNumbers
         /// Gets a sequence of Decimal values.
         /// </summary>
         public IEnumerable<Decimal> Decimals()
-        {
+        {            
             while (true)
             {
                 yield return Decimal();
@@ -5701,7 +5825,8 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public Boolean Boolean()
         {
-            Next();
+            ValueUnion value = new();
+            Next(ref value);
             return (value.UInt64_0 & 1UL) != 0;
         }
 
@@ -5733,13 +5858,15 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             fixed (Boolean* ptr = &array[offset])
             {
                 var p = ptr;
 
                 while (count >= 64)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ = (value.UInt32_0 & 0x1) != 0;
                     *p++ = (value.UInt32_0 & 0x2) != 0;
                     *p++ = (value.UInt32_0 & 0x4) != 0;
@@ -5810,7 +5937,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
-                Next();
+                Next(ref value);
 
                 switch (count)
                 {
@@ -6035,13 +6162,15 @@ namespace Foundations.RandomNumbers
             if (count < 0 || count > array.Length - offset) 
                 throw new ArgumentOutOfRangeException(nameof(count));
 
+            ValueUnion value = new();
+
             fixed (Boolean* ptr = &array[offset])
             {
                 var p = ptr;
 
                 while (count >= 64)
                 {
-                    Next();
+                    Next(ref value);
                     *p++ ^= (value.UInt32_0 & 0x1) != 0;
                     *p++ ^= (value.UInt32_0 & 0x2) != 0;
                     *p++ ^= (value.UInt32_0 & 0x4) != 0;
@@ -6112,7 +6241,7 @@ namespace Foundations.RandomNumbers
                 if (count == 0)
                     return;
 
-                Next();
+                Next(ref value);
 
                 switch (count)
                 {
@@ -6314,9 +6443,11 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public IEnumerable<Boolean> Booleans()
         {
+            ValueUnion value = new();
+
             while (true)
             {
-                Next();
+                Next(ref value);
                 yield return (value.UInt32_0 & 0x1) != 0;
                 yield return (value.UInt32_0 & 0x2) != 0;
                 yield return (value.UInt32_0 & 0x4) != 0;
@@ -6397,7 +6528,7 @@ namespace Foundations.RandomNumbers
             return data;
         }
 
-        private void Next()
+        private void Next(ref ValueUnion value)
         {
             source.Next(ref value);
         }
@@ -6407,7 +6538,8 @@ namespace Foundations.RandomNumbers
         /// </summary>
         public ValueUnion ValueUnion()
         {
-            Next();
+            ValueUnion value = new();
+            Next(ref value);
             return value;
         }
 
