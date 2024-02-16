@@ -1,5 +1,5 @@
 ﻿<#@ template debug="false" hostspecific="false" language="C#" #>
-<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Core.dll" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
@@ -9,8 +9,10 @@
 GCD.cs
 
 <#@ include file="../../License.txt" #>
+
 */
 
+using System;
 using System.Numerics;
 
 namespace Foundations
@@ -21,6 +23,10 @@ namespace Foundations
 	public static partial class Numbers
     {
 <#
+MakeGCD("sbyte");
+MakeGCD("byte");
+MakeGCD("short");
+MakeGCD("ushort");
 MakeGCD("int");
 MakeGCD("uint");
 MakeGCD("long");
@@ -39,14 +45,14 @@ void MakeGCD(string T)
         public static <#= T #> GCD(<#= T #> p, <#= T #> q)
         {
             if (p == 0 || q == 0) return 0;
-<#+ if (T[0] != 'u') { #>
-            p = p < 0 ? -p : p;
-            q = q < 0 ? -q : q;
+<#+ if (T[0] != 'u' && T[0] != 'b') 
+{ #>
+            (p, q) = (<#= T #>.Abs(p), <#= T #>.Abs(q));
 <#+ } #>
 
             while (true)
             {
-                var m = p % q;
+                var m = (<#= T #>)(p % q);
                 if (m == 0) return q;
                 p = q;
                 q = m;

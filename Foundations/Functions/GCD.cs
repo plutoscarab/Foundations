@@ -13,6 +13,7 @@ INSTEAD, EDIT THE .tt FILE WITH THE SIMILAR NAME AND RE-RUN THE TEXT TEMPLATING
 FILE GENERATOR. IF YOU SAVE THE FILE IN VISUAL STUDIO IT WILL DO THIS FOR YOU.
 */
 
+using System;
 using System.Numerics;
 
 namespace Foundations
@@ -25,15 +26,80 @@ namespace Foundations
         /// <summary>
         /// Greatest common divisor.
         /// </summary>
-        public static int GCD(int p, int q)
+        public static sbyte GCD(sbyte p, sbyte q)
         {
             if (p == 0 || q == 0) return 0;
-            p = p < 0 ? -p : p;
-            q = q < 0 ? -q : q;
+            (p, q) = (sbyte.Abs(p), sbyte.Abs(q));
 
             while (true)
             {
-                var m = p % q;
+                var m = (sbyte)(p % q);
+                if (m == 0) return q;
+                p = q;
+                q = m;
+            }
+        }
+
+        /// <summary>
+        /// Greatest common divisor.
+        /// </summary>
+        public static byte GCD(byte p, byte q)
+        {
+            if (p == 0 || q == 0) return 0;
+
+            while (true)
+            {
+                var m = (byte)(p % q);
+                if (m == 0) return q;
+                p = q;
+                q = m;
+            }
+        }
+
+        /// <summary>
+        /// Greatest common divisor.
+        /// </summary>
+        public static short GCD(short p, short q)
+        {
+            if (p == 0 || q == 0) return 0;
+            (p, q) = (short.Abs(p), short.Abs(q));
+
+            while (true)
+            {
+                var m = (short)(p % q);
+                if (m == 0) return q;
+                p = q;
+                q = m;
+            }
+        }
+
+        /// <summary>
+        /// Greatest common divisor.
+        /// </summary>
+        public static ushort GCD(ushort p, ushort q)
+        {
+            if (p == 0 || q == 0) return 0;
+
+            while (true)
+            {
+                var m = (ushort)(p % q);
+                if (m == 0) return q;
+                p = q;
+                q = m;
+            }
+        }
+
+        /// <summary>
+        /// Greatest common divisor.
+        /// </summary>
+        public static int GCD(int p, int q)
+        {
+            if (p == 0 || q == 0) return 0;
+            (p, q) = (int.Abs(p), int.Abs(q));
+
+            while (true)
+            {
+                var m = (int)(p % q);
                 if (m == 0) return q;
                 p = q;
                 q = m;
@@ -49,7 +115,7 @@ namespace Foundations
 
             while (true)
             {
-                var m = p % q;
+                var m = (uint)(p % q);
                 if (m == 0) return q;
                 p = q;
                 q = m;
@@ -62,12 +128,11 @@ namespace Foundations
         public static long GCD(long p, long q)
         {
             if (p == 0 || q == 0) return 0;
-            p = p < 0 ? -p : p;
-            q = q < 0 ? -q : q;
+            (p, q) = (long.Abs(p), long.Abs(q));
 
             while (true)
             {
-                var m = p % q;
+                var m = (long)(p % q);
                 if (m == 0) return q;
                 p = q;
                 q = m;
@@ -83,7 +148,7 @@ namespace Foundations
 
             while (true)
             {
-                var m = p % q;
+                var m = (ulong)(p % q);
                 if (m == 0) return q;
                 p = q;
                 q = m;
@@ -96,12 +161,11 @@ namespace Foundations
         public static BigInteger GCD(BigInteger p, BigInteger q)
         {
             if (p == 0 || q == 0) return 0;
-            p = p < 0 ? -p : p;
-            q = q < 0 ? -q : q;
+            (p, q) = (BigInteger.Abs(p), BigInteger.Abs(q));
 
             while (true)
             {
-                var m = p % q;
+                var m = (BigInteger)(p % q);
                 if (m == 0) return q;
                 p = q;
                 q = m;
