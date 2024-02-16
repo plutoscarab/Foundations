@@ -12,7 +12,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 
 using System.Collections.Generic;
 using Foundations.RandomNumbers;
-using Foundations.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Foundations.Coding
 {

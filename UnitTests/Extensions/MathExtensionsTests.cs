@@ -13,7 +13,7 @@ INSTEAD, EDIT THE .tt FILE WITH THE SIMILAR NAME AND RE-RUN THE TEXT TEMPLATING
 FILE GENERATOR. IF YOU SAVE THE FILE IN VISUAL STUDIO IT WILL DO THIS FOR YOU.
 */
 
-using Foundations.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Foundations.RandomNumbers;
 
 namespace Foundations

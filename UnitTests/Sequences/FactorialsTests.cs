@@ -16,7 +16,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using Foundations.Types;
-using Foundations.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Foundations
 {

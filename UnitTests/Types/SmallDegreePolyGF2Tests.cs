@@ -13,7 +13,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 using System;
 using System.Diagnostics;
 using System.Linq;
-using Foundations.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Foundations.Types
 {

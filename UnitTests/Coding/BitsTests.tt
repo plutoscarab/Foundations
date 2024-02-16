@@ -14,7 +14,7 @@ BitsTests.cs
 
 using System;
 using System.Collections.Generic;
-using Foundations.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Foundations.Coding;
 using Foundations.RandomNumbers;
 

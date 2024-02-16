@@ -12,7 +12,7 @@ MathExtensions.cs
 
 */
 
-using Foundations.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Foundations.RandomNumbers;
 
 namespace Foundations

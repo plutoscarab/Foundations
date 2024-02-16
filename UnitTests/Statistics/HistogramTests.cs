@@ -15,7 +15,7 @@ FILE GENERATOR. IF YOU SAVE THE FILE IN VISUAL STUDIO IT WILL DO THIS FOR YOU.
 
 using System;
 using System.Collections.Generic;
-using Foundations.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Foundations.Statistics
 {

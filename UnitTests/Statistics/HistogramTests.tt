@@ -13,7 +13,7 @@ HistogramTests.cs
 
 using System;
 using System.Collections.Generic;
-using Foundations.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Foundations.Statistics
 {

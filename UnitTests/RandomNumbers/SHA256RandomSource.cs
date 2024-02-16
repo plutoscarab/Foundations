@@ -11,7 +11,7 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 
 using Foundations.RandomNumbers;
 using Foundations.Types;
-using Foundations.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
 namespace Foundations.UnitTests.Objects
