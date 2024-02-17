@@ -132,8 +132,7 @@ namespace Foundations.Collections
         /// </summary>
         public void Remove(TValue value)
         {
-            TKey key;
-            TValue last = ExtractLast(out key);
+            TValue last = ExtractLast(out TKey key);
             if (value.Equals(last)) return;
             int index = values[value];
             values[index] = last;
@@ -148,8 +147,16 @@ namespace Foundations.Collections
 		{
 			get
 			{
-				return !keys.Any();
+				return keys.Count == 0;
 			}
 		}
+
+        public TKey RootKey
+        {
+            get
+            {
+                return keys[0];
+            }
+        }
 	}
 }
