@@ -145,17 +145,11 @@ namespace Foundations.Types
             {
                 if (s.Length > 0) s.Append(" + ");
 
-                if (e == 0) s.Append("1");
-                else s.Append("x" + Superscript(e));
+                if (e == 0) s.Append('1');
+                else s.Append("x" + e.ToSuperscript());
             }
 
             return s.ToString();
-        }
-
-        internal static string Superscript(int n)
-        {
-            if (n == 1) return "";
-            return new string(n.ToString().Select(c => "⁰¹²³⁴⁵⁶⁷⁸⁹"[c - '0']).ToArray());
         }
 
         /// <summary>

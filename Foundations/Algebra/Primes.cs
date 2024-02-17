@@ -11,7 +11,7 @@ public class Primes
     {
         if (n < 2) return false;
 
-        foreach (var p in All())
+        foreach (var p in Sequences.PrimesInt32())
         {
             if (p * p > n)
                 return true;
@@ -23,28 +23,11 @@ public class Primes
         throw new NotImplementedException();
     }
 
-    public static IEnumerable<int> All()
-    {
-        yield return 2;
-        yield return 3;
-        yield return 5;
-        yield return 7;
-        var n = 11;
-
-        while (true)
-        {
-            if (Contains(n)) yield return n;
-            n += 2;
-            if (Contains(n)) yield return n;
-            n += 4;
-        }
-    }
-
     public static IEnumerable<(int Prime, long Order)> Powers()
     {
         var heap = new MinTree<long, int>();
 
-        foreach (var p in All())
+        foreach (var p in Sequences.PrimesInt32())
         {
             while (!heap.IsEmpty && heap.RootKey < p)
             {
@@ -77,7 +60,7 @@ public class Primes
     {
         prime = k = 0;
 
-        foreach (var p in Primes.All())
+        foreach (var p in Sequences.PrimesInt32())
         {
             prime = p;
 

@@ -37,7 +37,7 @@ namespace Foundations.Statistics
         /// </summary>
         public double PDF(double x)
         {
-            return Math.Exp(-x * x / 2) / Sqrt2π;
+            return Math.Exp(-x * x / 2) * OverSqrt2π;
         }
 
 		/// <summary>
@@ -45,7 +45,7 @@ namespace Foundations.Statistics
 		/// </summary>
 		public double CDF(double x)
 		{
-			return (1 + Special.Erf(x / Sqrt2)) / 2;
+			return (1 + Special.Erf(x * OverSqrt2)) / 2;
 		}
 
         /// <summary>

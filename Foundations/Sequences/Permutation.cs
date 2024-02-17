@@ -12,7 +12,6 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Foundations.RandomNumbers;
 
 namespace Foundations
@@ -23,7 +22,7 @@ namespace Foundations
     /// </summary>
     public static partial class Permutation
     {
-        private static Generator gen = new Generator().Synchronized();
+        private static readonly Generator gen = new Generator().Synchronized();
 
         /// <summary>
         /// Creates a random permutation.

@@ -61,6 +61,4 @@ Implements finite fields of orders that are powers of primes. Can automatically 
 # Miscellaneous
 
 ### Primes class
-Supplies the prime numbers as a sequence.
-
-### ReadOnlyList class
+Enumeration of powers of primes, and rudimentary primality testing.

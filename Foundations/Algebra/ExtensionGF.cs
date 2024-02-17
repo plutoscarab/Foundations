@@ -154,7 +154,7 @@ public class ExtensionGF : FiniteField
     {
         var field = (PrimeGF)f[0].Field;
         var n = f.Length - 1;
-        var ns = Primes.All().TakeWhile(p => p * p <= n).Where(p => (n % p) == 0).Select(p => n / p).ToList();
+        var ns = Sequences.PrimesInt32().TakeWhile(p => p * p <= n).Where(p => (n % p) == 0).Select(p => n / p).ToList();
         if (Primes.Contains(n)) ns.Add(1);
 
         foreach (var ni in ns)

@@ -75,17 +75,11 @@ namespace Foundations.Types
                 if ((Coefficients & (1ul << i)) == 0) continue;
                 if (s.Length > 0) s.Append(" + ");
 
-                if (i == 0) s.Append("1");
-                else s.Append("x" + Superscript(i));
+                if (i == 0) s.Append('1');
+                else s.Append("x" + i.ToSuperscript());
             }
 
             return s.ToString();
-        }
-
-        public static string Superscript(int n)
-        {
-            if (n == 1) return "";
-            return new string(n.ToString().Select(c => "⁰¹²³⁴⁵⁶⁷⁸⁹"[c - '0']).ToArray());
         }
 
         /// <summary>

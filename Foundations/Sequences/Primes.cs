@@ -18,7 +18,7 @@ using System.Linq;
 using Foundations.Types;
 
 using Num = System.Int64;
-using Nums = System.Collections.Generic.IEnumerable<System.Int64>;
+using Nums = System.Collections.Generic.IEnumerable<long>;
 
 namespace Foundations
 {
@@ -72,7 +72,7 @@ namespace Foundations
             }
         }
 
-        private static IEnumerable<long> PrimeSieve(long min, long max)
+        private static Nums PrimeSieve(long min, long max)
         {
             int sqrt = (int)Math.Sqrt(max);
             int n = (int)(max - min);
@@ -162,8 +162,7 @@ namespace Foundations
             if (n == 1)
                 yield break;
 
-            if (n < 2)
-                throw new ArgumentOutOfRangeException();
+            ArgumentOutOfRangeException.ThrowIfLessThan(n, 2);
 
             foreach (var prime in Primes())
             {
@@ -193,10 +192,10 @@ namespace Foundations
 
         private const int packedDivisor = 30;
 
-        private static int[] packedModulus = new[] { 1, 7, 11, 13, 17, 19, 23, 29 };
+        private static readonly int[] packedModulus = [1, 7, 11, 13, 17, 19, 23, 29];
 
-        private static byte[] smallPrimesPacked = new byte[]
-        {
+        private static readonly byte[] smallPrimesPacked =
+        [
             254,223,239,126,182,219,61,249,213,79,30,243,234,
             166,237,158,230,12,211,211,59,221,89,165,106,103,
             146,189,120,30,166,86,86,227,173,45,222,42,76,85,
@@ -348,6 +347,6 @@ namespace Foundations
             8,64,50,101,11,156,136,2,66,76,20,96,52,133,19,
             33,80,113,72,161,229,20,110,72,32,50,138,24,24,
             69,106,50,32,130,1,
-        };
+        ];
     }
 }

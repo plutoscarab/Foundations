@@ -91,7 +91,7 @@ namespace Foundations.Types
                         Trace.Write(f.Value);
                     else
                         Trace.Write($"({f.Value})");
-                    Trace.Write(SmallDegreePolyGF2.Superscript(f.Exponent));
+                    Trace.Write(f.Exponent.ToSuperscript());
                 }
 
                 Trace.WriteLine("");
