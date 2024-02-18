@@ -120,7 +120,7 @@ public class ExtensionGF : FiniteField
     private static FFValue[] PowMod(FFValue[] p, long n, FFValue[] modulus)
     {
         var field = modulus[0].Field;
-        if (n == 0) return new[] { field.Element(1) };
+        if (n == 0) return [field.One];
         if (n == 1) return Mod(p, modulus);
         if ((n & 1) == 1) return Mod(Multiply(p, PowMod(p, n - 1, modulus)), modulus);
         var sqrt = PowMod(p, n / 2, modulus);
@@ -233,16 +233,7 @@ public class ExtensionGF : FiniteField
                 }
                 else
                 {
-                    if (coeff < 0)
-                    {
-                        s.Append('−');
-
-                        if (s.Length > 1)
-                        {
-                            s.Append(' ');
-                        }
-                    }
-                    else if (s.Length > 0)
+                    if (s.Length > 0)
                     {
                         s.Append("+ ");
                     }
@@ -411,24 +402,6 @@ public class ExtensionGF : FiniteField
                     g[i] = field.Element(d);
                     yield return g;
                 }
-
-        // Quadranomials.
-        if (p > 2)
-        {
-            for (var i = 2; i < n; i++)
-                for (var j = 1; j < i; j++)
-                    for (var c = 1; c < p; c++)
-                        for (var d = 1; d < p; d++)
-                            for (var e = 1; e < p; e++)
-                            {
-                                var g = field.ZeroPoly(n);
-                                g[n] = field.One;
-                                g[0] = field.Element(c);
-                                g[i] = field.Element(d);
-                                g[j] = field.Element(e);
-                                yield return g;
-                            }
-        }
 
         // Pentanomials.
         for (var i = 3; i < n; i++)

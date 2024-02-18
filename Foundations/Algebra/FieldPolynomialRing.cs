@@ -7,15 +7,10 @@ using System.Numerics;
 
 namespace Foundations.Algebra;
 
-public class FieldPolynomialRing<T> : PolynomialRing<T>
+public class FieldPolynomialRing<T>(Field<T> coefficientField) : PolynomialRing<T>(coefficientField)
     where T : IEquatable<T>
 {
-    public readonly Field<T> CoefficientField;
-
-    public FieldPolynomialRing(Field<T> coefficientField) : base(coefficientField)
-    {
-        CoefficientField = coefficientField;
-    }
+    public readonly Field<T> CoefficientField = coefficientField;
 
     public static (Polynomial<T> Quotient, Polynomial<T> Remainder) DivMod(Polynomial<T> left, Polynomial<T> right)
     {
@@ -39,7 +34,7 @@ public class FieldPolynomialRing<T> : PolynomialRing<T>
             var lc = left.Terms[^1];
             var rc = right.Terms[^1];
             var c = field.Divide(lc.Coefficient, rc.Coefficient);
-            var e = lc.Exponents[0] - (rc.Exponents.Any() ? rc.Exponents[0] : 0);
+            var e = lc.Exponents[0] - (rc.Exponents.IsEmpty ? 0 : rc.Exponents[0]);
             var m = new Monomial<T>(field, c, e);
             quotient.Add(m);
             var s = right * m;
@@ -65,15 +60,15 @@ public class FieldPolynomialRing<T> : PolynomialRing<T>
         return a;
     }
 
-    public Polynomial<T> Divide(Polynomial<T> left, Polynomial<T> right)
+    public static Polynomial<T> Divide(Polynomial<T> left, Polynomial<T> right)
     {
-        var (q, _) = FieldPolynomialRing<T>.DivMod(left, right);
+        var (q, _) = DivMod(left, right);
         return q;
     }
 
-    public Polynomial<T> Mod(Polynomial<T> left, Polynomial<T> right)
+    public static Polynomial<T> Mod(Polynomial<T> left, Polynomial<T> right)
     {
-        var (_, r) = FieldPolynomialRing<T>.DivMod(left, right);
+        var (_, r) = DivMod(left, right);
         return r;
     }
 
@@ -90,7 +85,7 @@ public class FieldPolynomialRing<T> : PolynomialRing<T>
         {
             var c = pf.Create(f.Indeterminates, f.Terms[^1].Coefficient);
             yield return c;
-            f = pf.Divide(f, c);
+            f = Divide(f, c);
         }
 
         // Factor out powers of x if there is no degree-0 coefficient.
@@ -98,14 +93,16 @@ public class FieldPolynomialRing<T> : PolynomialRing<T>
 
         if (f.Terms[0].Degree > 0)
         {
-            var xd = pf.Create(f.Indeterminates, new Monomial<T>(pf.CoefficientRing, pf.CoefficientRing.One, f.Terms[0].Degree));
+            var xd = pf.Create(f.Indeterminates, new Monomial<T>(pf.CoefficientRing, pf.CoefficientRing.One, 
+                f.Terms[0].Degree));
+
             yield return xd;
-            f = pf.Divide(f, xd);
+            f = Divide(f, xd);
         }
 
         stack.Push(f);
 
-        while (stack.Any())
+        while (stack.Count != 0)
         {
             f = stack.Pop();
 
@@ -123,7 +120,7 @@ public class FieldPolynomialRing<T> : PolynomialRing<T>
             if (g.Degree > 0)
             {
                 stack.Push(g);
-                stack.Push(pf.Divide(f, g));
+                stack.Push(Divide(f, g));
                 continue;
             }
 
@@ -159,7 +156,7 @@ public class FieldPolynomialRing<T> : PolynomialRing<T>
                     if (g.Degree > 0)
                     {
                         yield return g;
-                        gi = pf.Divide(gi, g);
+                        gi = Divide(gi, g);
                         continue;
                     }
 
@@ -178,7 +175,7 @@ public class FieldPolynomialRing<T> : PolynomialRing<T>
                             else
                                 stack.Push(g);
 
-                            gi = pf.Divide(gi, g);
+                            gi = Divide(gi, g);
                             continue;
                         }
                     }
@@ -201,7 +198,7 @@ public class FieldPolynomialRing<T> : PolynomialRing<T>
 
         var pf = p.Ring as FieldPolynomialRing<T>;
         var c = pf!.Create(p.Indeterminates, lc);
-        return pf!.Divide(p, c);
+        return Divide(p, c);
     }
 
     public Polynomial<T> ModPow(Polynomial<T> p, BigInteger n, Polynomial<T> modulus)
@@ -212,23 +209,21 @@ public class FieldPolynomialRing<T> : PolynomialRing<T>
         if (n == 0)
             return p.Ring.One;
 
-        var pf = p.Ring as FieldPolynomialRing<T>;
-
         if (n == 1)
-            return pf!.Mod(p, modulus);
+            return Mod(p, modulus);
 
         if (n.IsEven)
         {
             var h = ModPow(p, n / 2, modulus);
-            return pf!.Mod(h * h, modulus);
+            return Mod(h * h, modulus);
         }
 
-        return pf!.Mod(p * ModPow(p, n - 1, modulus), modulus);
+        return Mod(p * ModPow(p, n - 1, modulus), modulus);
     }
 
     public Polynomial<T> ModPow(Polynomial<T> value, List<(int, int)> backReferences, Polynomial<T> modulus)
     {
-        List<Polynomial<T>> temp = new() { value };
+        List<Polynomial<T>> temp = [value];
         Polynomial<T> t = value;
         var i = 0;
 
@@ -253,7 +248,7 @@ public class FieldPolynomialRing<T> : PolynomialRing<T>
         var q = (f.Ring.CoefficientRing as FiniteField)!.Order;
         var x = pf!.Create(f.Indeterminates, new Monomial<T>(pf.CoefficientRing, pf.CoefficientRing.One, 1));
         var n = f.Degree;
-        List<Polynomial<T>> result = new();
+        List<Polynomial<T>> result = [];
         
         for (var i = 1; i <= n; i++)
         {
@@ -267,7 +262,7 @@ public class FieldPolynomialRing<T> : PolynomialRing<T>
             var s = pf.ModPow(x, power, f) - x;
             var g = s.Equals(pf.Zero) ? f : Monic(GCD(f, s));
             result.Add(g);
-            f = pf.Divide(f, g);
+            f = Divide(f, g);
         }
 
         return result;
@@ -275,9 +270,12 @@ public class FieldPolynomialRing<T> : PolynomialRing<T>
 
     public static Polynomial<T> Divide(Polynomial<T> p, T n)
     {
-        var f = p as FieldPolynomialRing<T>;
-        if (f is null) throw new ArgumentException(nameof(p));
-        var terms = p.Terms.Select(term => new Monomial<T>(term.Ring, f.CoefficientField.Divide(term.Coefficient, n), term.Exponents));
+        if (p is not FieldPolynomialRing<T> f) 
+            throw new ArgumentException(null, nameof(p));
+
+        var terms = p.Terms.Select(term => new Monomial<T>(term.Ring, f.CoefficientField.Divide(term.Coefficient, n), 
+            term.Exponents));
+
         return f.Create(p.Indeterminates, terms);
     }
 }

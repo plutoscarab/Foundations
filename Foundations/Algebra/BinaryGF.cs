@@ -1,6 +1,4 @@
 
-using System.Linq;
-
 namespace Foundations.Algebra;
 
 public class BinaryGF : ExtensionGF

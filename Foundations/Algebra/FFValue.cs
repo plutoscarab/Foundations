@@ -5,8 +5,10 @@ namespace Foundations.Algebra;
 
 public record struct FFValue(FiniteField Field, long Value)
 {
-    public readonly long Checked(FiniteField field) => field.Order == Field.Order ? Value : 
-        throw new ArgumentException(null, nameof(field));
+    public readonly long Checked(FiniteField field) => 
+        field.Order == Field.Order ? 
+            Value : 
+            throw new ArgumentException(null, nameof(field));
 
     public override readonly string ToString() => Field.ValueStr(this);
 

@@ -19,12 +19,11 @@ public abstract class Ring<T> : IEquatable<Ring<T>>
     public abstract bool Equals(Ring<T> other);
     public virtual T RandomSmallNonzeroElement(Random rand) => One;
     public abstract bool HasIntegerRepresentation { get; }
-    public virtual T FromInteger(BigInteger n) => default!;
+    public abstract T FromInteger(BigInteger n);
 
     public virtual T Pow(T value, int n)
     {
-        if (n < 0)
-            throw new ArgumentOutOfRangeException();
+        ArgumentOutOfRangeException.ThrowIfNegative(n);
 
         if (n == 0)
             return One;

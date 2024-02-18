@@ -232,7 +232,10 @@ public class Polynomial<T> : IEquatable<Polynomial<T>>, IEqualityOperators<Polyn
             return value;
 
         if ((multiple & 1) == 0)
-            return Scale(Scale(value, multiple / 2), 2);
+        {
+            var sqrt = Scale(value, multiple / 2);
+            return Ring.CoefficientRing.Multiply(sqrt, sqrt);
+        }
 
         return Ring.CoefficientRing.Multiply(value, Scale(value, multiple - 1));
     }

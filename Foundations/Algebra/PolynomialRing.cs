@@ -223,8 +223,9 @@ public class PolynomialRing<T> : Ring<Polynomial<T>>, IEquatable<PolynomialRing<
 
         var ms = m.ToList();
         var degree = ms.Count != 0 ? ms.Max(t => t.Degree) : 0;
+        var gs = m.GroupBy(t => t.Signature(degree)).ToList();
 
-        var terms = m.GroupBy(t => t.Signature(degree))
+        var terms = gs
             .Select(g => new Monomial<T>(ring,
                 g.Select(t => t.Coefficient).Aggregate(ring.Add), g.First().Exponents))
             .Where(t => !t.Coefficient.Equals(ring.Zero))
@@ -268,7 +269,7 @@ public class PolynomialRing<T> : Ring<Polynomial<T>>, IEquatable<PolynomialRing<
             }
         }
 
-        return Create(new[] { Indeterminate.DefaultInd[PolynomialRingDepth.Depth] }, terms);
+        return Create([Indeterminate.DefaultInd[PolynomialRingDepth.Depth]], terms);
     }
 
     public override bool HasIntegerRepresentation => CoefficientRing.HasIntegerRepresentation;
@@ -277,11 +278,14 @@ public class PolynomialRing<T> : Ring<Polynomial<T>>, IEquatable<PolynomialRing<
 
     public MultivariatePolynomialRing<T> AsMultivariate() => new(CoefficientRing);
 
-    public IEnumerable<Polynomial<T>> All(int score, params Indeterminate[] indeterminates)
+    public IEnumerable<Polynomial<T>> All(params Indeterminate[] indeterminates) =>
+        Enumerable.Range(1, int.MaxValue - 1).SelectMany(s => All(s, indeterminates));
+
+    private IEnumerable<Polynomial<T>> All(int score, params Indeterminate[] indeterminates)
     {
         foreach (var coeff in WithScore(score))
         {
-            var terms = coeff.Zip(AllExponents(indeterminates.Length)).Select(t => new Monomial<T>(CoefficientRing, CoefficientRing.FromInteger(t.First), t.Second));
+            var terms = coeff.Zip(AllExponents(indeterminates.Length)).Select(t => new Monomial<T>(CoefficientRing, t.First, t.Second));
             yield return Create(indeterminates, terms);
         }
 
@@ -321,40 +325,45 @@ public class PolynomialRing<T> : Ring<Polynomial<T>>, IEquatable<PolynomialRing<
         }
     }
 
-    private static IEnumerable<int[]> All() =>
-            from score in Enumerable.Range(1, int.MaxValue - 1)
-            from poly in WithScore(score)
-            select poly;
-
-    private static IEnumerable<int[]> WithScore(int score) =>
+    private IEnumerable<T[]> WithScore(int score) =>
         from count in Enumerable.Range(0, score)
         from poly in WithTotalAndTermCount(score - count, count)
         select poly;
 
-    private static IEnumerable<int[]> WithTotalAndTermCount(int coeffTotal, int count) =>
+    private IEnumerable<T[]> WithTotalAndTermCount(int coeffTotal, int count) =>
         (
             from coeff in Enumerable.Range(1, coeffTotal - 1)
             from d in Enumerable.Range(0, count)
             from poly in WithTotalAndTermCount(coeffTotal - coeff, d)
-            select new[] { AddTerm(poly, count, coeff), AddTerm(poly, count, -coeff) })
+            select ring.ElementsHaveSign ? [AddTerm(poly, count, coeff), AddTerm(poly, count, -coeff)] :
+                new[] { AddTerm(poly, count, coeff) } 
+        )
         .SelectMany(_ => _)
-        .Concat(new[] { Monomial(count, coeffTotal), Monomial(count, -coeffTotal) });
+        .Concat(ring.ElementsHaveSign ? [Monomial(count, coeffTotal), Monomial(count, -coeffTotal)] : [Monomial(count, coeffTotal)]);
 
-    private static int[] Monomial(int index, int coeff)
+    private T[] Monomial(int index, int coeff)
     {
-        if (index < 0) throw new ArgumentOutOfRangeException(nameof(index));
-        var result = new int[index + 1];
-        result[index] = coeff;
+        ArgumentOutOfRangeException.ThrowIfNegative(index, nameof(index));
+        var result = new T[index + 1];
+
+        for (var i = 0; i < index; i++)
+            result[i] = CoefficientRing.Zero;
+
+        result[index] = ring.FromInteger(coeff);
         return result;
     }
 
-    private static int[] AddTerm(int[] poly, int index, int coeff)
+    private T[] AddTerm(T[] poly, int index, int coeff)
     {
-        if (poly is null) throw new ArgumentNullException(nameof(poly));
-        if (index < poly.Length) throw new ArgumentOutOfRangeException(nameof(index));
-        var result = new int[index + 1];
+        ArgumentNullException.ThrowIfNull(poly, nameof(poly));
+        ArgumentOutOfRangeException.ThrowIfLessThan(index, poly.Length, nameof(index));
+        var result = new T[index + 1];
         Array.Copy(poly, result, poly.Length);
-        result[index] = coeff;
+
+        for (var i = poly.Length; i < index; i++)
+            result[i] = CoefficientRing.Zero;
+
+        result[index] = ring.FromInteger(coeff);
         return result;
     }
 }
