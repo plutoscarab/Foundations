@@ -185,4 +185,40 @@ public partial struct Nat :
     }
 
     public static Nat Min(Nat a, Nat b) => a < b ? a : b;
+
+    public static bool TryParse(string s, out Nat n)
+    {
+        n = Zero;
+
+        if (s is null)
+            return false;
+
+        foreach (var ch in s)
+        {
+            if (ch == '_') 
+                continue;
+
+            if (!char.IsDigit(ch))
+                return false;
+
+            n = n * 10 + (int)char.GetNumericValue(ch);
+        }
+
+        return true;
+    }
+
+    public static Nat Parse(string s)
+    {
+        ArgumentNullException.ThrowIfNull(s, nameof(s));
+
+        if (TryParse(s, out var n))
+            return n;
+
+        throw new ArgumentException("String only contain digits and underscore.", nameof(s));
+    }
+
+    public static Nat GCD(Nat p, Nat q)
+    {
+        return (Nat)BigInteger.GreatestCommonDivisor(p.b, q.b);
+    }
 }

@@ -4,24 +4,27 @@
 ### Nat struct
 A natural number.
 
-### Integer class
+### Integer.cs
 Implements a bijection between natural numbers and integers.
 
-### List class
+### List.cs
 Implements a bijection between natural numbers and finite lists of natural numbers.
+This is actually a family of bijections with a parameter to determine the balance
+between the list length and the size of the values.
 
-### Poly class
-Implements an enumeration of polynomials with integer coefficients.
-Bijection not yet implemented.
-
-### Rational class
+### Rational.cs
 Implements a bijection between natural numbers and non-negative rational numbers.
+This differs from the pair bijection in Tuple.cs because pairs such as (2,4) are not
+included since 2/4 is equivalent to 1/2.
 
-### Set class
+### Set.cs
 Implements a bijection between natural numbers and finite sets of natural numbers.
+This is actually a family of bijections with a parameter to determine the balnce
+between the set size and the size of the values.
 
-### Tuple class
-Implements a bijection between natural numbers and ordered n-tuples of natural numbers.
+### Tuple.cs
+Implements bijections between natural numbers and ordered n-tuples of natural numbers.
 
-### Word class
-Implements a bijection between natural numbers and finite lists of values from a finite alphabet.
+### Word.cs
+Implements a bijection between natural numbers and finite lists of values from a finite alphabet,
+e.g. lists of bytes or lists of characters.

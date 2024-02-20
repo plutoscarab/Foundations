@@ -21,6 +21,6 @@ public partial struct Nat
     /// Enumerate all integers in the order of the natural number bijection,
     /// i.e. 0, -1, 1, -2, 2, -3, ...
     /// </summary>
-    public static IEnumerable<BigInteger> AllIntegers() =>
+    public static IEnumerable<BigInteger> AllSigned() =>
         All().Select(n => n.ToSigned());
 }

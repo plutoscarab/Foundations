@@ -7,14 +7,12 @@ namespace Foundations.Bijections;
 
 public partial struct Nat
 {
-    const int DefaultDilution = 10;
+    const int DefaultBias = 10;
 
-    public Nat(List<Nat> list, int dilution = DefaultDilution)
+    public Nat(List<Nat> list, int bias = DefaultBias)
     {
-        if (dilution < 1)
-        {
-            throw new ArgumentOutOfRangeException(nameof(dilution));
-        }
+        ArgumentOutOfRangeException.ThrowIfLessThan(bias, 2, nameof(bias));
+        ArgumentOutOfRangeException.ThrowIfEqual(bias, int.MaxValue, nameof(bias));
 
         if (list.Count == 0)
         {
@@ -22,39 +20,51 @@ public partial struct Nat
             return;
         }
 
-        // Create Nat is if list were tuple.
-        var n = FromTuple([.. list]);
+        List<int> digits = [];
 
-        // Add unary-encoded length.
-        b = n.b * 2 + 1;
-        b <<= list.Count - 1;
+        for (var i = 0; i < list.Count; i++)
+        {
+            if (i > 0) digits.Add(bias);
+            var word = list[i].ToWord(bias);
+            digits.AddRange(word);
+        }
+
+        var n = 1 + FromWord(digits, bias + 1);
+        b = n.b;
     }
 
-    public readonly List<Nat> ToList(int dilution = DefaultDilution)
+    public readonly List<Nat> ToList(int bias = DefaultBias)
     {
-        if (dilution < 1)
+        ArgumentOutOfRangeException.ThrowIfLessThan(bias, 2, nameof(bias));
+        ArgumentOutOfRangeException.ThrowIfEqual(bias, int.MaxValue, nameof(bias));
+
+        if (IsZero) 
+            return [];
+
+        var digits = (this - 1).ToWord(bias + 1);
+        List<int> word = [];
+        List<Nat> result = [];
+
+        for (var i = 0; i < digits.Count; i++)
         {
-            throw new ArgumentOutOfRangeException(nameof(dilution));
+            if (digits[i] == bias)
+            {
+                result.Add(FromWord(word, bias));
+                word.Clear();
+            }
+            else
+            {
+                word.Add(digits[i]);
+            }
         }
 
-        if (IsZero) return [];
-
-        // Get unary-encoded length.
-        var len = 1;
-        var m = this;
-
-        while (m.IsEven)
-        {
-            len++;
-            m >>= 1;
-        }
-
-        m >>= 1;
-        
-        // Decode tuple.
-        return [.. m.ToTuple(len)];
+        result.Add(FromWord(word, bias));
+        return result;
     }
 
-    public readonly List<T> ToList<T>(Func<Nat, T> selector, int dilution = DefaultDilution) =>
-        ToList(dilution).Select(selector).ToList();
+    public readonly List<T> ToList<T>(Func<Nat, T> selector, int bias = DefaultBias) =>
+        ToList(bias).Select(selector).ToList();
+
+    public static IEnumerable<List<Nat>> AllLists(int bias = DefaultBias) =>
+        All().Select(n => n.ToList(bias));
 }

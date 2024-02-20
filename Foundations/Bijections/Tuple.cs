@@ -115,8 +115,7 @@ public partial struct Nat
 
     public readonly Nat[] ToTuple(int length)
     {
-        if (length < 1)
-            throw new ArgumentOutOfRangeException(nameof(length));
+        ArgumentOutOfRangeException.ThrowIfLessThan(length, 1, nameof(length));
 
         switch (length)
         {
@@ -142,8 +141,8 @@ public partial struct Nat
 
     public static Nat FromTuple(Nat[] tuple)
     {
-        if ((tuple ?? throw new ArgumentNullException(nameof(tuple))).Length < 1)
-            throw new ArgumentException(null, nameof(tuple));
+        ArgumentNullException.ThrowIfNull(tuple, nameof(tuple));
+        ArgumentOutOfRangeException.ThrowIfLessThan(tuple.Length, 1, nameof(tuple.Length));
 
         switch (tuple.Length)
         {

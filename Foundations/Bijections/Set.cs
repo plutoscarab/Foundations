@@ -35,10 +35,12 @@ public partial struct Nat
         return list;
     }
 
-    public static Nat FromSet(HashSet<Nat> set, int dilution = DefaultDilution) => new(SetToList(set), dilution);
+    public Nat(HashSet<Nat> set, int bias = DefaultBias) : this(SetToList(set), bias)
+    {
+    }
 
-    public readonly HashSet<Nat> ToSet(int dilution = DefaultDilution) => ListToSet(ToList(dilution));
+    public readonly HashSet<Nat> ToSet(int bias = DefaultBias) => ListToSet(ToList(bias));
 
-    public static IEnumerable<HashSet<Nat>> AllSets(int dilution = DefaultDilution) =>
-        All().Select(n => n.ToSet(dilution));
+    public static IEnumerable<HashSet<Nat>> AllSets(int bias = DefaultBias) =>
+        All().Select(n => n.ToSet(bias));
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Foundations.Bijections;
 
@@ -9,87 +10,44 @@ public partial struct Nat
 {
     public static Nat FromRational(Nat p, Nat q)
     {
-        if (q.IsZero) throw new ArgumentOutOfRangeException(nameof(q));
+        ArgumentOutOfRangeException.ThrowIfEqual(Zero, q, nameof(q));
+        List<Nat> list = [];
 
-        List<byte> arr = [];
-        var i = 0;
-        var b = 1;
-        var byt = 0;
-
-        while (true)
+        while (!q.IsZero)
         {
-            var (div, rem) = Nat.DivRem(p, q);
-
-            for (var d = 0; d < div; d++)
-            {
-                byt |= b << i;
-                ++i;
-
-                if (i == 8)
-                {
-                    arr.Add((byte)byt);
-                    byt = 0;
-                    i = 0;
-                }
-            }
-
-            b ^= 1;
-
-            if (rem.IsZero)
-                break;
-
+            var (div, rem) = DivRem(p, q);
+            if (list.Count > 0) --div;
+            list.Add(div);
             (p, q) = (q, rem);
         }
 
-        if (b == 1)
-        {
-            if (i == 0)
-                arr[^1] |= 0x80;
-            else
-                byt |= b << (i - 1);
-        }
+        if (list.Count > 1)
+            list[^1]--;
 
-        arr.Add((byte)byt);
-
-        if (byt >= 0x80)
-            arr.Add(0);
-
-        return new([.. arr]);
+        return new Nat(list, 2) - 1;
     }
 
     public readonly (Nat, Nat) ToRational()
     {
-        var last = 1;
-        var k = 0;
-        int a = 0, b = 1, c = 1, d = 0;
+        var list = (this + 1).ToList(2);
 
-        foreach (var item in ToByteArray())
+        if (list.Count > 1)
+            list[^1]++;
+
+        for (var i = 1; i < list.Count; i++)
+            list[i]++;
+
+        Nat p = 0, q = 1, r = 1, s = 0;
+
+        foreach (var d in list)
         {
-            for (var i = 0; i < 8; i++)
-            {
-                var p = (item >> i) & 1;
-
-                if (p != last)
-                {
-                    (a, b) = (b, b * k + a);
-                    (c, d) = (d, d * k + c);
-                    last ^= 1;
-                    k = 0;
-                }
-
-                ++k;
-            }
+            (p, q) = (q, q * d + p);
+            (r, s) = (s, s * d + r);
         }
 
-        if (last == 1)
-        {
-            (a, b) = (b, b * k + a);
-            (c, d) = (d, d * k + c);
-        }
-
-        return (b, d);
+        return (q, s);
     }
 
-    public static IEnumerable<(Nat, Nat)> AllRationals() =>
+    public static IEnumerable<(Nat, Nat)> AllRational() =>
         All().Select(n => n.ToRational());
 }
