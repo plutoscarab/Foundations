@@ -1,7 +1,4 @@
 
-using System;
-using System.Numerics;
-
 namespace Foundations.Algebra;
 
 public class RingInt32 : Ring<int>

@@ -1,11 +1,4 @@
 
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-
 namespace Foundations.Algebra;
 
 public class Polynomial<T> : IEquatable<Polynomial<T>>, IEqualityOperators<Polynomial<T>, Polynomial<T>, bool>

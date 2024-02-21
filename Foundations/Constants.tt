@@ -5,15 +5,6 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 
-/*
-Constants.cs
-
-<#@ include file="../License.txt" #>
-
-*/
-
-using System;
-
 namespace Foundations
 {<#
 Make("Constants", "double", "d", "Double");

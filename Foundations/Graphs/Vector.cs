@@ -1,6 +1,4 @@
 
-using System;
-
 namespace Foundations.Graphs.DOT;
 
 internal record Vector(double X, double Y)

@@ -1,7 +1,4 @@
 
-using System;
-using System.Numerics;
-
 namespace Foundations.Algebra;
 
 public abstract class Ring<T> : IEquatable<Ring<T>>
@@ -39,4 +36,10 @@ public abstract class Ring<T> : IEquatable<Ring<T>>
 
         return Multiply(value, Pow(value, n - 1));
     }
+
+    public override bool Equals(object obj) =>
+        obj is Ring<T> r && Equals(r);
+
+    public override int GetHashCode() =>
+        nameof(Ring<T>).GetHashCode();
 }

@@ -1,9 +1,5 @@
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-
-namespace Foundations.Bijections;
+namespace Foundations;
 
 public partial struct Nat
 {

@@ -1,15 +1,9 @@
 ﻿<#@ template debug="false" hostspecific="false" language="C#" #>
-<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Core.dll" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
-
-/*
-UniformGenerator.cs
-
-<#@ include file="../../License.txt" #>
-*/
 
 using System;
 using System.Collections.Generic;
@@ -146,7 +140,7 @@ void Next(string T, int bits)
         if (bits == 64)
         {
 #>
-            return (<#= T #>)((range * (UInt128)UInt64()).Hi);
+            return (<#= T #>)((range * (UInt128)UInt64()) >> 64);
 <#+     } 
         else 
         { 

@@ -1,6 +1,4 @@
 
-using System.Collections.Generic;
-
 namespace Foundations.Graphs.DOT;
 
 internal record Graph(bool IsDirected, IList<Node> Nodes, IList<Edge> Edges)

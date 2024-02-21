@@ -5,16 +5,6 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 
-/*
-GCD.cs
-
-<#@ include file="../../License.txt" #>
-
-*/
-
-using System;
-using System.Numerics;
-
 namespace Foundations
 {
     /// <summary>
@@ -32,6 +22,7 @@ MakeGCD("uint");
 MakeGCD("long");
 MakeGCD("ulong");
 MakeGCD("BigInteger");
+MakeGCD("Nat");
 #>
     }
 }
@@ -44,6 +35,16 @@ void MakeGCD(string T)
         /// </summary>
         public static <#= T #> GCD(<#= T #> p, <#= T #> q)
         {
+<#+
+if (char.IsUpper(T[0]))
+{
+#>
+            return <#= T #>.GreatestCommonDivisor(p, q);
+<#+
+}
+else
+{
+#>
             if (p == 0 || q == 0) return 0;
 <#+ if (T[0] != 'u' && T[0] != 'b') 
 { #>
@@ -57,6 +58,9 @@ void MakeGCD(string T)
                 p = q;
                 q = m;
             }
+<#+
+}
+#>            
         }
 
 <#+

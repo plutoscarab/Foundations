@@ -1,9 +1,5 @@
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Foundations.Parsers;
 
 internal delegate Result<T> Parser<T>(Cursor cursor);

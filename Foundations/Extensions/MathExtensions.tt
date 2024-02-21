@@ -1,15 +1,9 @@
 ﻿<#@ template debug="false" hostspecific="false" language="C#" #>
-<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Core.dll" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
-
-/*
-MathExtensions.cs
-
-<#@ include file="../../License.txt" #>
-*/
 
 namespace Foundations
 {

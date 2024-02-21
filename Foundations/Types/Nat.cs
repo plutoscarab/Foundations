@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace Foundations.Bijections;
+namespace Foundations;
 
 public partial struct Nat :
     IEquatable<Nat>,
@@ -217,8 +217,10 @@ public partial struct Nat :
         throw new ArgumentException("String only contain digits and underscore.", nameof(s));
     }
 
-    public static Nat GCD(Nat p, Nat q)
+    public static Nat GreatestCommonDivisor(Nat p, Nat q)
     {
         return (Nat)BigInteger.GreatestCommonDivisor(p.b, q.b);
     }
+
+    public static Nat Abs(Nat n) => n;
 }

@@ -39,7 +39,7 @@ public class RationalTests
         var (p, q) = ((Nat)12345).ToRational();
         Assert.AreNotEqual(Nat.Zero, p);
         Assert.AreNotEqual(Nat.Zero, q);
-        var g = Nat.GCD(p, q);
+        var g = Nat.GreatestCommonDivisor(p, q);
         Assert.AreEqual(Nat.One, g);
     }
 
@@ -84,7 +84,7 @@ public class RationalTests
     {
         var p = (Nat)(BigInteger)(1 / Math.Pow(rand.NextDouble(), 5));
         var q = (Nat)(BigInteger)(1 / Math.Pow(rand.NextDouble(), 5));
-        var g = Nat.GCD(p, q);
+        var g = Nat.GreatestCommonDivisor(p, q);
         return (p / g, q / g);
     }
 

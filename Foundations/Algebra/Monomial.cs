@@ -1,9 +1,4 @@
 
-using System;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-
 namespace Foundations.Algebra;
 
 public class Monomial<T> : IEquatable<Monomial<T>>

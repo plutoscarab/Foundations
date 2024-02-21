@@ -1,6 +1,4 @@
 
-using System;
-
 namespace Foundations.Algebra;
 
 public record struct FFValue(FiniteField Field, long Value)

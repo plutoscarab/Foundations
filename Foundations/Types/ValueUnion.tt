@@ -1,17 +1,10 @@
 ﻿<#@ template debug="false" hostspecific="false" language="C#" #>
-<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Core.dll" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 
-/*
-ValueUnion.cs
-
-<#@ include file="../../License.txt" #>
-*/
-
-using System;
 using System.Runtime.InteropServices;
 
 namespace Foundations.Types

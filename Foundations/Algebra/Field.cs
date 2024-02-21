@@ -1,6 +1,4 @@
 
-using System;
-
 namespace Foundations.Algebra;
 
 public abstract class Field<T> : Ring<T>

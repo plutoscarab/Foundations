@@ -1,18 +1,9 @@
 <#@ template debug="false" hostspecific="false" language="C#" #>
-<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Core.dll" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
-
-/*
-ValueTypes.cs
-
-<#@ include file="../../License.txt" #>
-*/
-
-using System;
-using System.Collections.Generic;
 
 namespace Foundations.Types
 {
@@ -100,36 +91,30 @@ void Type(string name, string generics, bool constructor, bool equatable, params
 	var args = arglist.Select(arg => arg.Split(':')).ToArray();
     var tname = name + generics;
     var sname = tname.Replace("<", "{").Replace(">", "}");
-#>
-	public partial struct <#= tname #><#= equatable ? $" : IEquatable<{tname}>" : "" #>
-	{
-<#+
-	foreach (var arg in args)
-	{
-#>
-		/// <summary><#= arg[2] #></summary>
-		public readonly <#= arg[0] #> <#= arg[1] #>;
-
-<#+
-	}
 
     if (constructor)
     {
 #>
-		/// <summary>Create an instance of <see cref="<#= sname #>"/>.</summary>
-		public <#= name #>(<#= string.Join(", ", args.Select(arg => arg[0] + " " + Param(arg[1]))) #>)
-		{
+	public readonly partial struct <#= tname #>(<#= string.Join(", ", args.Select(arg => arg[0] + " " + Param(arg[1]))) #>)<#= equatable ? " : IEquatable<" + tname + ">" : "" #>
+	{
 <#+
+    }
+    else
+    {
+#>
+	public readonly partial struct <#= tname #><#= equatable ? " : IEquatable<" + tname + ">" : "" #>
+	{
+<#+
+    }
+
 	foreach (var arg in args)
 	{
 #>
-			<#= arg[1] #> = <#= Param(arg[1]) #>;
+		/// <summary><#= arg[2] #></summary>
+		public readonly <#= arg[0] #> <#= arg[1] #><#= constructor ? " = " + Param(arg[1]) : "" #>;
+
 <#+
 	}
-#>
-		}
-<#+ 
-    }
     
     if (equatable) 
     { 
@@ -138,22 +123,13 @@ void Type(string name, string generics, bool constructor, bool equatable, params
 		/// <summary>Implementation of <see	cref="object.GetHashCode"/>.</summary>
 		public override int GetHashCode()
 		{
-			int h = <#= name.GetHashCode() #>;
-<#+
-	foreach (var arg in args)
-	{
-#>
-			h = HashHelper.Mixer(h + <#= arg[1] #>.GetHashCode());
-<#+
-	}
-#>
-			return HashHelper.Finisher(h);
+            return HashCode.Combine(<#= string.Join(", ", args.Select(arg => arg[1])) #>);
 		}
 
 		/// <summary>Implementation of <see cref="object.Equals(object)"/>.</summary>
 		public override bool Equals(object obj)
 		{
-			return obj is <#= tname #> && Equals((<#= tname #>)obj);
+			return obj is <#= tname #> other && Equals(other);
 		}
 
 		/// <summary>Implementation of <see cref="IEquatable{U}.Equals"/>.</summary>

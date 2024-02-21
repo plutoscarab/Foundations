@@ -5,16 +5,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 
-/*
-Generator.cs
-
-<#@ include file="../../License.txt" #>
-
-*/
-
 using Foundations.Types;
-using System;
-using System.Collections.Generic;
 
 namespace Foundations.RandomNumbers
 {

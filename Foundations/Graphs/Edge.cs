@@ -1,6 +1,4 @@
 
-using System.Collections.Generic;
-
 namespace Foundations.Graphs.DOT;
 
 internal record Edge(int Id, int Node1, int Node2)

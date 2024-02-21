@@ -1,11 +1,4 @@
 
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Data;
-using System.Linq;
-using System.Text;
-
 namespace Foundations.Algebra;
 
 public class ExtensionGF : FiniteField

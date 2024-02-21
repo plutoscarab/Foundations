@@ -1,17 +1,9 @@
 ﻿<#@ template debug="false" hostspecific="false" language="C#" #>
-<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Core.dll" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
-
-/*
-UIntModPow2.cs
-
-<#@ include file="../../License.txt" #>
-*/
-
-using System;
 
 namespace Foundations.Types
 {
@@ -24,7 +16,7 @@ void Make(int n)
 {
     var T = "UInt" + n;
     if (n == 16 || n == 32) T += "Ex";
-    var mod = $"& 0x{(1L<<n)-1:X}";
+    var mod = "& 0b" + new string('1', n);
     var U = n <= 8 ? "byte" : n <= 16 ? "ushort" : n <= 32 ? "uint" : "ulong";    
     var L = n <= 16 ? "int" : "long";
 #>
@@ -77,13 +69,13 @@ void Make(int n)
         /// <summary>
         /// Implementation of <see cref="object.ToString"/>.
         /// </summary>
-        public override string ToString()
+        public override readonly string ToString()
         { return Value.ToString(); }
         
         /// <summary>
         /// Implementation of <see cref="object.GetHashCode"/>.
         /// </summary>
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         { return Value.GetHashCode(); }
 
         /// <summary>
@@ -95,7 +87,7 @@ void Make(int n)
         /// <summary>
         /// Implementation of <see cref="IEquatable{<#= T #>}"/>.
         /// </summary>
-        public bool Equals(<#= T #> other)
+        public readonly bool Equals(<#= T #> other)
         { return Value == other.Value; }
 
         /// <summary>
@@ -113,7 +105,7 @@ void Make(int n)
         /// <summary>
         /// Implementation of <see cref="IComparable{<#= T #>}"/>.
         /// </summary>
-        public int CompareTo(<#= T #> other)
+        public readonly int CompareTo(<#= T #> other)
         {
             return Value.CompareTo(other.Value);
         }
@@ -129,7 +121,7 @@ void Make(int n)
         /// <summary>
         /// Add.
         /// </summary>
-        public <#= T #> Add(<#= T #> other)
+        public readonly <#= T #> Add(<#= T #> other)
         {
             return this + other;
         }
@@ -145,7 +137,7 @@ void Make(int n)
         /// <summary>
         /// Subtract.
         /// </summary>
-        public <#= T #> Subtract(<#= T #> other)
+        public readonly <#= T #> Subtract(<#= T #> other)
         {
             return this - other;
         }
@@ -169,7 +161,7 @@ void Make(int n)
         /// <summary>
         /// Multiply.
         /// </summary>
-        public <#= T #> Multiply(<#= T #> other)
+        public readonly <#= T #> Multiply(<#= T #> other)
         {
             return this * other;
         }
@@ -185,7 +177,7 @@ void Make(int n)
         /// <summary>
         /// Divide.
         /// </summary>
-        public <#= T #> Divide(<#= T #> other)
+        public readonly <#= T #> Divide(<#= T #> other)
         {
             return this / other;
         }
@@ -201,7 +193,7 @@ void Make(int n)
         /// <summary>
         /// Modulo.
         /// </summary>
-        public <#= T #> Modulo(<#= T #> other)
+        public readonly <#= T #> Mod(<#= T #> other)
         {
             return this % other;
         }
@@ -212,7 +204,8 @@ void Make(int n)
         /// </summary>
         public static <#= T #> Pow(<#= T #> value, int exponent)
         {
-            if (exponent < 0) throw new ArgumentOutOfRangeException(nameof(exponent));
+            ArgumentOutOfRangeException.ThrowIfLessThan(exponent, 0, nameof(exponent));
+            
             if (exponent == 0) return 1;
             if (value.Value == 0) return 0;
             <#= L #> result = 1;
@@ -245,7 +238,7 @@ void Make(int n)
         /// <summary>
         /// Bitwise AND.
         /// </summary>
-        public <#= T #> And(<#= T #> other)
+        public readonly <#= T #> And(<#= T #> other)
         {
             return this & other;
         }
@@ -261,7 +254,7 @@ void Make(int n)
         /// <summary>
         /// Bitwise OR.
         /// </summary>
-        public <#= T #> Or(<#= T #> other)
+        public readonly <#= T #> Or(<#= T #> other)
         {
             return this | other;
         }
@@ -277,7 +270,7 @@ void Make(int n)
         /// <summary>
         /// Bitwise XOR.
         /// </summary>
-        public <#= T #> Xor(<#= T #> other)
+        public readonly <#= T #> Xor(<#= T #> other)
         {
             return this ^ other;
         }
@@ -293,7 +286,7 @@ void Make(int n)
         /// <summary>
         /// Bitwise NOT.
         /// </summary>
-        public <#= T #> Not()
+        public readonly <#= T #> Not()
         {
             return ~this;
         }
