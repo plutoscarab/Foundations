@@ -84,33 +84,26 @@ public static partial class Special
         }
 
         ComplexQuadSum s = new();
-        s.Add(p0);
-        s.Add(p1 / z);
-        s.Add(p2 / (z + 1));
-        s.Add(p3 / (z + 2));
-        s.Add(p4 / (z + 3));
-        s.Add(p5 / (z + 4));
-        s.Add(p6 / (z + 5));
-        s.Add(p7 / (z + 6));
-        s.Add(p8 / (z + 7));
-        s.Add(p9 / (z + 8));
-        s.Add(p10 / (z + 9));
-        s.Add(p11 / (z + 10));
-        s.Add(p12 / (z + 11));
-        s.Add(p13 / (z + 12));
-        s.Add(p14 / (z + 13));
-        s.Add(p15 / (z + 14));
-        s.Add(p16 / (z + 15));
-        s.Add(p17 / (z + 16));
-        s.Add(p18 / (z + 17));
-        s.Add(p19 / (z + 18));
-        /*
-        ComplexQuad s = p0 + p1 / z + p2 / (z + 1) + p3 / (z + 2) + p4 / (z + 3) +
-            p5 / (z + 4) + p6 / (z + 5) + p7 / (z + 6) + p8 / (z + 7) + p9 / (z + 8) +
-            p10 / (z + 9) + p11 / (z + 10) + p12 / (z + 11) + p13 / (z + 12) +
-            p14 / (z + 13) + p15 / (z + 14) + p16 / (z + 15) + p17 / (z + 16) +
-            p18 / (z + 17) + p19 / (z + 18);
-        */
+        s += p0;
+        s += p1 / z;
+        s += p2 / (z + 1);
+        s += p3 / (z + 2);
+        s += p4 / (z + 3);
+        s += p5 / (z + 4);
+        s += p6 / (z + 5);
+        s += p7 / (z + 6);
+        s += p8 / (z + 7);
+        s += p9 / (z + 8);
+        s += p10 / (z + 9);
+        s += p11 / (z + 10);
+        s += p12 / (z + 11);
+        s += p13 / (z + 12);
+        s += p14 / (z + 13);
+        s += p15 / (z + 14);
+        s += p16 / (z + 15);
+        s += p17 / (z + 16);
+        s += p18 / (z + 17);
+        s += p19 / (z + 18);
 
         ComplexQuad r = z + (g - 0.5);
         r = s.Value * ComplexQuad.Pow(r, z - 0.5) / ComplexQuad.Exp(r);

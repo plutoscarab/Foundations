@@ -17,7 +17,7 @@ public static partial class Special
         {
             var d = Binomial(-Quad.OneHalf, l);
             var old = r.Value;
-            r.Add(d * (1 - 2 * (l & 1)) * (Zeta(Quad.Two * l + 2) - 1));
+            r += d * (1 - 2 * (l & 1)) * (Zeta(Quad.Two * l + 2) - 1);
             if (old == r.Value) break;
         }
 
@@ -28,7 +28,7 @@ public static partial class Special
         {
             var d = Binomial(-Quad.OneHalf, l);
             var old = r.Value;
-            r.Add(d * (1 - 2 * (l & 1)) * (Zeta(Quad.Two * l + 1) - 1));
+            r += d * (1 - 2 * (l & 1)) * (Zeta(Quad.Two * l + 1) - 1);
             if (old == r.Value) break;
         }
 
@@ -39,7 +39,7 @@ public static partial class Special
         {
             var d = Binomial(-Quad.OneHalf, l);
             var old = r.Value;
-            r.Add(d * (1 - 2 * (l & 1)) * (Zeta(Quad.Two * l) - 1));
+            r += d * (1 - 2 * (l & 1)) * (Zeta(Quad.Two * l) - 1);
             if (old == r.Value) break;
         }
 
@@ -50,12 +50,12 @@ public static partial class Special
         {
             var d = Binomial(-Quad.OneHalf, l) + Binomial(Quad.OneHalf, l);
             var old = r.Value;
-            r.Add(d * (1 - 2 * (l & 1)) * (Zeta(Quad.Two * l - 1) - 1));
+            r += d * (1 - 2 * (l & 1)) * (Zeta(Quad.Two * l - 1) - 1);
             if (old == r.Value) break;
         }
 
         K[3] = 2 * r.Value - K[1];
-        r.Value = 0;
+        r = Quad.Zero;
 
         for (var n = 2; n < K.Length - 2; n++)
         {
@@ -65,16 +65,16 @@ public static partial class Special
 
                 for (var s = 0; s <= n + 1; s++)
                 {
-                    d.Add(Binomial(n + Quad.One, s) * Binomial((s - 1) / Quad.Two, l));
+                    d += Binomial(n + Quad.One, s) * Binomial((s - 1) / Quad.Two, l);
                 }
 
                 var old = r.Value;
-                r.Add(d.Value * (1 - 2 * (l & 1)) * (Zeta(Quad.Two * l - n) - 1));
+                r += d.Value * (1 - 2 * (l & 1)) * (Zeta(Quad.Two * l - n) - 1);
                 if (old == r.Value) break;
             }
 
             K[n + 2] = 2 * r.Value - K[n];
-            r.Value = 0;
+            r = Quad.Zero;
         }
 
         var C = new Quad[K.Length - 1];
@@ -113,7 +113,7 @@ public static partial class Special
 
             for (var k = 0; k < N; k++)
             {
-                s.Add(-1 / (x + k));
+                s -= 1 / (x + k);
             }
 
             return s.Value;
@@ -122,19 +122,19 @@ public static partial class Special
         DoubleSum sum = new(x.Log() - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
-        sum.Add(-xp / 12);
+        sum -= xp / 12;
         xp *= xx;
-        sum.Add(xp / 120);
+        sum += xp / 120;
         xp *= xx;
-        sum.Add(-xp / 252);
+        sum -= xp / 252;
         xp *= xx;
-        sum.Add(xp / 240);
+        sum += xp / 240;
         xp *= xx;
-        sum.Add(-xp / 132);
+        sum -= xp / 132;
         xp *= xx;
-        sum.Add(xp * 691 / 32760);
+        sum += xp * 691 / 32760;
         xp *= xx;
-        sum.Add(-xp / 12);
+        sum -= xp / 12;
         return sum.Value;
     }
 
@@ -163,7 +163,7 @@ public static partial class Special
 
             for (var k = 0; k < N; k++)
             {
-                s.Add(-1 / (x + k));
+                s -= 1 / (x + k);
             }
 
             return s.Value;
@@ -172,19 +172,19 @@ public static partial class Special
         ComplexSum sum = new(x.Log() - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
-        sum.Add(-xp / 12);
+        sum -= xp / 12;
         xp *= xx;
-        sum.Add(xp / 120);
+        sum += xp / 120;
         xp *= xx;
-        sum.Add(-xp / 252);
+        sum -= xp / 252;
         xp *= xx;
-        sum.Add(xp / 240);
+        sum += xp / 240;
         xp *= xx;
-        sum.Add(-xp / 132);
+        sum -= xp / 132;
         xp *= xx;
-        sum.Add(xp * 691 / 32760);
+        sum += xp * 691 / 32760;
         xp *= xx;
-        sum.Add(-xp / 12);
+        sum -= xp / 12;
         return sum.Value;
     }
 
@@ -213,7 +213,7 @@ public static partial class Special
 
             for (var k = 0; k < N; k++)
             {
-                s.Add(-1 / (x + k));
+                s -= 1 / (x + k);
             }
 
             return s.Value;
@@ -222,19 +222,19 @@ public static partial class Special
         QuadSum sum = new(x.Log() - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
-        sum.Add(-xp / 12);
+        sum -= xp / 12;
         xp *= xx;
-        sum.Add(xp / 120);
+        sum += xp / 120;
         xp *= xx;
-        sum.Add(-xp / 252);
+        sum -= xp / 252;
         xp *= xx;
-        sum.Add(xp / 240);
+        sum += xp / 240;
         xp *= xx;
-        sum.Add(-xp / 132);
+        sum -= xp / 132;
         xp *= xx;
-        sum.Add(xp * 691 / 32760);
+        sum += xp * 691 / 32760;
         xp *= xx;
-        sum.Add(-xp / 12);
+        sum -= xp / 12;
         return sum.Value;
     }
 
@@ -263,7 +263,7 @@ public static partial class Special
 
             for (var k = 0; k < N; k++)
             {
-                s.Add(-1 / (x + k));
+                s -= 1 / (x + k);
             }
 
             return s.Value;
@@ -272,19 +272,19 @@ public static partial class Special
         ComplexQuadSum sum = new(x.Log() - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
-        sum.Add(-xp / 12);
+        sum -= xp / 12;
         xp *= xx;
-        sum.Add(xp / 120);
+        sum += xp / 120;
         xp *= xx;
-        sum.Add(-xp / 252);
+        sum -= xp / 252;
         xp *= xx;
-        sum.Add(xp / 240);
+        sum += xp / 240;
         xp *= xx;
-        sum.Add(-xp / 132);
+        sum -= xp / 132;
         xp *= xx;
-        sum.Add(xp * 691 / 32760);
+        sum += xp * 691 / 32760;
         xp *= xx;
-        sum.Add(-xp / 12);
+        sum -= xp / 12;
         return sum.Value;
     }
 }

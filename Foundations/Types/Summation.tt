@@ -1,0 +1,60 @@
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core.dll" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+namespace Foundations;
+<#
+Make("ComplexQuad");
+Make("Complex");
+Make("Quad");
+Make("Double");
+Make("Single");
+#>
+<#+
+void Make(string T)
+{
+#>
+
+public readonly struct <#= T #>Sum(<#= T #> value)
+{
+    public readonly <#= T #> Value = value;
+
+    private readonly <#= T #> Error = (<#= T #>)0;
+
+    public <#= T #>Sum(<#= T #> value, <#= T #> error) : this(value)
+    {
+        Error = error;
+    }
+
+    public static <#= T #>Sum operator +(<#= T #>Sum sum, <#= T #> other)
+    {
+        other -= sum.Error;
+        var total = sum.Value + other;
+        return new(total, (total - sum.Value) - other);
+    }
+
+    public static <#= T #>Sum operator -(<#= T #>Sum sum, <#= T #> other)
+    {
+        return sum + (-other);
+    }
+
+    public static <#= T #>Sum operator *(<#= T #>Sum sum, <#= T #> other)
+    {
+        return new(sum.Value * other, sum.Error * other);
+    }
+
+    public static <#= T #>Sum operator /(<#= T #>Sum sum, <#= T #> other)
+    {
+        return new(sum.Value / other, sum.Error / other);
+    }
+
+    public static implicit operator <#= T #>Sum(<#= T #> value) => new(value);
+
+    public static explicit operator <#= T #>(<#= T #>Sum sum) => sum.Value;
+}
+<#+
+}
+#>

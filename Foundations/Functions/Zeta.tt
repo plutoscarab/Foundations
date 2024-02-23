@@ -23,25 +23,6 @@ void Make(string T, string math, string re, string im, string consts, string rea
 {
     var U = T == "double" ? "Double" : T == "float" ? "Single" : T;
 #>
-    public struct <#= U #>Sum(<#= T #> value)
-    {
-        public <#= T #> Value = value;
-
-        private <#= T #> error = (<#= T #>)0;
-
-        public void Add(<#= T #> term)
-        {
-            term -= error;
-            var total = Value + term;
-            error = (total - Value) - term;
-            Value = total;
-        }
-
-        public static implicit operator <#= U #>Sum(<#= T #> value) => new(value);
-
-        public static implicit operator <#= T #>(<#= U #>Sum sum) => sum.Value;
-    }
-
     public static <#= T #> Zeta(<#= T #> s)
     {
 <#+ if (re == "") { #>
@@ -98,7 +79,7 @@ void Make(string T, string math, string re, string im, string consts, string rea
         for (var k = n + 1; k <= 2 * n; k++)
         {
             var term = (2 * (k & 1) - 1) * ek[k - n] * <#= math #>.Exp(-s * <#= math #>.Log((<#= T #>)k));
-            sum.Add(term);
+            sum += term;
         }
 
         sum *= <#= math #>.Pow((<#= T #>)2, -n);
@@ -106,11 +87,11 @@ void Make(string T, string math, string re, string im, string consts, string rea
         for (var k = 1; k <= n; k++)
         {
             var term = (2 * (k & 1) - 1) * <#= math #>.Exp(-s * <#= math #>.Log((<#= T #>)k));
-            sum.Add(term);
+            sum += term;
         }
 
         sum /= 1 - <#= math #>.Pow(2, 1 - s);
-        return sum;
+        return (<#= T #>)sum;
     }
 
 <#+

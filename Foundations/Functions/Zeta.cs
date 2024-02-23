@@ -3,25 +3,6 @@ namespace Foundations.Functions;
 
 public static partial class Special
 {
-    public struct ComplexQuadSum(ComplexQuad value)
-    {
-        public ComplexQuad Value = value;
-
-        private ComplexQuad error = (ComplexQuad)0;
-
-        public void Add(ComplexQuad term)
-        {
-            term -= error;
-            var total = Value + term;
-            error = (total - Value) - term;
-            Value = total;
-        }
-
-        public static implicit operator ComplexQuadSum(ComplexQuad value) => new(value);
-
-        public static implicit operator ComplexQuad(ComplexQuadSum sum) => sum.Value;
-    }
-
     public static ComplexQuad Zeta(ComplexQuad s)
     {
         var fs = Quad.Floor(s.Re);
@@ -61,7 +42,7 @@ public static partial class Special
         for (var k = n + 1; k <= 2 * n; k++)
         {
             var term = (2 * (k & 1) - 1) * ek[k - n] * ComplexQuad.Exp(-s * ComplexQuad.Log((ComplexQuad)k));
-            sum.Add(term);
+            sum += term;
         }
 
         sum *= ComplexQuad.Pow((ComplexQuad)2, -n);
@@ -69,30 +50,11 @@ public static partial class Special
         for (var k = 1; k <= n; k++)
         {
             var term = (2 * (k & 1) - 1) * ComplexQuad.Exp(-s * ComplexQuad.Log((ComplexQuad)k));
-            sum.Add(term);
+            sum += term;
         }
 
         sum /= 1 - ComplexQuad.Pow(2, 1 - s);
-        return sum;
-    }
-
-    public struct ComplexSum(Complex value)
-    {
-        public Complex Value = value;
-
-        private Complex error = (Complex)0;
-
-        public void Add(Complex term)
-        {
-            term -= error;
-            var total = Value + term;
-            error = (total - Value) - term;
-            Value = total;
-        }
-
-        public static implicit operator ComplexSum(Complex value) => new(value);
-
-        public static implicit operator Complex(ComplexSum sum) => sum.Value;
+        return (ComplexQuad)sum;
     }
 
     public static Complex Zeta(Complex s)
@@ -134,7 +96,7 @@ public static partial class Special
         for (var k = n + 1; k <= 2 * n; k++)
         {
             var term = (2 * (k & 1) - 1) * ek[k - n] * Complex.Exp(-s * Complex.Log((Complex)k));
-            sum.Add(term);
+            sum += term;
         }
 
         sum *= Complex.Pow((Complex)2, -n);
@@ -142,30 +104,11 @@ public static partial class Special
         for (var k = 1; k <= n; k++)
         {
             var term = (2 * (k & 1) - 1) * Complex.Exp(-s * Complex.Log((Complex)k));
-            sum.Add(term);
+            sum += term;
         }
 
         sum /= 1 - Complex.Pow(2, 1 - s);
-        return sum;
-    }
-
-    public struct QuadSum(Quad value)
-    {
-        public Quad Value = value;
-
-        private Quad error = (Quad)0;
-
-        public void Add(Quad term)
-        {
-            term -= error;
-            var total = Value + term;
-            error = (total - Value) - term;
-            Value = total;
-        }
-
-        public static implicit operator QuadSum(Quad value) => new(value);
-
-        public static implicit operator Quad(QuadSum sum) => sum.Value;
+        return (Complex)sum;
     }
 
     public static Quad Zeta(Quad s)
@@ -201,7 +144,7 @@ public static partial class Special
         for (var k = n + 1; k <= 2 * n; k++)
         {
             var term = (2 * (k & 1) - 1) * ek[k - n] * Quad.Exp(-s * Quad.Log((Quad)k));
-            sum.Add(term);
+            sum += term;
         }
 
         sum *= Quad.Pow((Quad)2, -n);
@@ -209,30 +152,11 @@ public static partial class Special
         for (var k = 1; k <= n; k++)
         {
             var term = (2 * (k & 1) - 1) * Quad.Exp(-s * Quad.Log((Quad)k));
-            sum.Add(term);
+            sum += term;
         }
 
         sum /= 1 - Quad.Pow(2, 1 - s);
-        return sum;
-    }
-
-    public struct DoubleSum(double value)
-    {
-        public double Value = value;
-
-        private double error = (double)0;
-
-        public void Add(double term)
-        {
-            term -= error;
-            var total = Value + term;
-            error = (total - Value) - term;
-            Value = total;
-        }
-
-        public static implicit operator DoubleSum(double value) => new(value);
-
-        public static implicit operator double(DoubleSum sum) => sum.Value;
+        return (Quad)sum;
     }
 
     public static double Zeta(double s)
@@ -268,7 +192,7 @@ public static partial class Special
         for (var k = n + 1; k <= 2 * n; k++)
         {
             var term = (2 * (k & 1) - 1) * ek[k - n] * Math.Exp(-s * Math.Log((double)k));
-            sum.Add(term);
+            sum += term;
         }
 
         sum *= Math.Pow((double)2, -n);
@@ -276,30 +200,11 @@ public static partial class Special
         for (var k = 1; k <= n; k++)
         {
             var term = (2 * (k & 1) - 1) * Math.Exp(-s * Math.Log((double)k));
-            sum.Add(term);
+            sum += term;
         }
 
         sum /= 1 - Math.Pow(2, 1 - s);
-        return sum;
-    }
-
-    public struct SingleSum(float value)
-    {
-        public float Value = value;
-
-        private float error = (float)0;
-
-        public void Add(float term)
-        {
-            term -= error;
-            var total = Value + term;
-            error = (total - Value) - term;
-            Value = total;
-        }
-
-        public static implicit operator SingleSum(float value) => new(value);
-
-        public static implicit operator float(SingleSum sum) => sum.Value;
+        return (double)sum;
     }
 
     public static float Zeta(float s)
@@ -335,7 +240,7 @@ public static partial class Special
         for (var k = n + 1; k <= 2 * n; k++)
         {
             var term = (2 * (k & 1) - 1) * ek[k - n] * MathF.Exp(-s * MathF.Log((float)k));
-            sum.Add(term);
+            sum += term;
         }
 
         sum *= MathF.Pow((float)2, -n);
@@ -343,11 +248,11 @@ public static partial class Special
         for (var k = 1; k <= n; k++)
         {
             var term = (2 * (k & 1) - 1) * MathF.Exp(-s * MathF.Log((float)k));
-            sum.Add(term);
+            sum += term;
         }
 
         sum /= 1 - MathF.Pow(2, 1 - s);
-        return sum;
+        return (float)sum;
     }
 
 }
