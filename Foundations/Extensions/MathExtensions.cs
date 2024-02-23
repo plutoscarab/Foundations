@@ -1,4 +1,6 @@
 ﻿
+using System.Numerics;
+
 namespace Foundations
 {
     /// <summary>
@@ -63,11 +65,27 @@ namespace Foundations
         }
 
         /// <summary>
+        /// Get the value of <see cref="System.Math.Abs(Complex)"/> for this <see cref="System.Double"/> value.
+        /// </summary>
+        public static System.Double Abs(this Complex value)
+        {
+            return Complex.Abs(value);
+        }
+
+        /// <summary>
         /// Get the value of <see cref="System.Math.Acos(System.Double)"/> for this <see cref="System.Double"/> value.
         /// </summary>
         public static System.Double Acos(this System.Double d)
         {
             return System.Math.Acos(d);
+        }
+
+        /// <summary>
+        /// Get the value of <see cref="System.Math.Acos(Complex)"/> for this <see cref="System.Double"/> value.
+        /// </summary>
+        public static Complex Acos(this Complex d)
+        {
+            return Complex.Acos(d);
         }
 
         /// <summary>
@@ -79,11 +97,27 @@ namespace Foundations
         }
 
         /// <summary>
+        /// Get the value of <see cref="System.Math.Asin(Complex)"/> for this <see cref="System.Double"/> value.
+        /// </summary>
+        public static Complex Asin(this Complex d)
+        {
+            return Complex.Asin(d);
+        }
+
+        /// <summary>
         /// Get the value of <see cref="System.Math.Atan(System.Double)"/> for this <see cref="System.Double"/> value.
         /// </summary>
         public static System.Double Atan(this System.Double d)
         {
             return System.Math.Atan(d);
+        }
+
+        /// <summary>
+        /// Get the value of <see cref="System.Math.Atan(Complex)"/> for this <see cref="System.Double"/> value.
+        /// </summary>
+        public static Complex Atan(this Complex d)
+        {
+            return Complex.Atan(d);
         }
 
         /// <summary>
@@ -127,11 +161,27 @@ namespace Foundations
         }
 
         /// <summary>
+        /// Get the value of <see cref="System.Math.Cos(Complex)"/> for this <see cref="System.Double"/> value.
+        /// </summary>
+        public static Complex Cos(this Complex d)
+        {
+            return Complex.Cos(d);
+        }
+
+        /// <summary>
         /// Get the value of <see cref="System.Math.Cosh(System.Double)"/> for this <see cref="System.Double"/> value.
         /// </summary>
         public static System.Double Cosh(this System.Double value)
         {
             return System.Math.Cosh(value);
+        }
+
+        /// <summary>
+        /// Get the value of <see cref="System.Math.Cosh(Complex)"/> for this <see cref="System.Double"/> value.
+        /// </summary>
+        public static Complex Cosh(this Complex value)
+        {
+            return Complex.Cosh(value);
         }
 
         /// <summary>
@@ -156,6 +206,14 @@ namespace Foundations
         public static System.Double Exp(this System.Double d)
         {
             return System.Math.Exp(d);
+        }
+
+        /// <summary>
+        /// Get the value of <see cref="System.Math.Exp(Complex)"/> for this <see cref="System.Double"/> value.
+        /// </summary>
+        public static Complex Exp(this Complex d)
+        {
+            return Complex.Exp(d);
         }
 
         /// <summary>
@@ -191,6 +249,14 @@ namespace Foundations
         }
 
         /// <summary>
+        /// Get the value of <see cref="System.Math.Log(Complex, Complex)"/> for this <see cref="System.Double"/> value.
+        /// </summary>
+        public static Complex Log(this Complex a, double newBase)
+        {
+            return Complex.Log(a, newBase);
+        }
+
+        /// <summary>
         /// Get the value of <see cref="System.Math.Log(System.Double)"/> for this <see cref="System.Double"/> value.
         /// </summary>
         public static System.Double Log(this System.Double d)
@@ -199,11 +265,27 @@ namespace Foundations
         }
 
         /// <summary>
+        /// Get the value of <see cref="System.Math.Log(Complex)"/> for this <see cref="System.Double"/> value.
+        /// </summary>
+        public static Complex Log(this Complex d)
+        {
+            return Complex.Log(d);
+        }
+
+        /// <summary>
         /// Get the value of <see cref="System.Math.Log10(System.Double)"/> for this <see cref="System.Double"/> value.
         /// </summary>
         public static System.Double Log10(this System.Double d)
         {
             return System.Math.Log10(d);
+        }
+
+        /// <summary>
+        /// Get the value of <see cref="System.Math.Log10(Complex)"/> for this <see cref="System.Double"/> value.
+        /// </summary>
+        public static Complex Log10(this Complex d)
+        {
+            return Complex.Log10(d);
         }
 
         /// <summary>
@@ -391,6 +473,14 @@ namespace Foundations
         }
 
         /// <summary>
+        /// Get the value of <see cref="System.Math.Pow(Complex, Complex)"/> for this <see cref="System.Double"/> value.
+        /// </summary>
+        public static Complex Pow(this Complex x, Complex y)
+        {
+            return Complex.Pow(x, y);
+        }
+
+        /// <summary>
         /// Get the value of <see cref="System.Math.Round(System.Double, System.Int32)"/> for this <see cref="System.Double"/> value.
         /// </summary>
         public static System.Double Round(this System.Double value, System.Int32 digits)
@@ -519,11 +609,27 @@ namespace Foundations
         }
 
         /// <summary>
+        /// Get the value of <see cref="System.Math.Sin(Complex)"/> for this <see cref="System.Double"/> value.
+        /// </summary>
+        public static Complex Sin(this Complex a)
+        {
+            return Complex.Sin(a);
+        }
+
+        /// <summary>
         /// Get the value of <see cref="System.Math.Sinh(System.Double)"/> for this <see cref="System.Double"/> value.
         /// </summary>
         public static System.Double Sinh(this System.Double value)
         {
             return System.Math.Sinh(value);
+        }
+
+        /// <summary>
+        /// Get the value of <see cref="System.Math.Sinh(Complex)"/> for this <see cref="System.Double"/> value.
+        /// </summary>
+        public static Complex Sinh(this Complex value)
+        {
+            return Complex.Sinh(value);
         }
 
         /// <summary>
@@ -535,6 +641,14 @@ namespace Foundations
         }
 
         /// <summary>
+        /// Get the value of <see cref="System.Math.Sqrt(Complex)"/> for this <see cref="System.Double"/> value.
+        /// </summary>
+        public static Complex Sqrt(this Complex d)
+        {
+            return Complex.Sqrt(d);
+        }
+
+        /// <summary>
         /// Get the value of <see cref="System.Math.Tan(System.Double)"/> for this <see cref="System.Double"/> value.
         /// </summary>
         public static System.Double Tan(this System.Double a)
@@ -543,11 +657,27 @@ namespace Foundations
         }
 
         /// <summary>
+        /// Get the value of <see cref="System.Math.Tan(Complex)"/> for this <see cref="System.Double"/> value.
+        /// </summary>
+        public static Complex Tan(this Complex a)
+        {
+            return Complex.Tan(a);
+        }
+
+        /// <summary>
         /// Get the value of <see cref="System.Math.Tanh(System.Double)"/> for this <see cref="System.Double"/> value.
         /// </summary>
         public static System.Double Tanh(this System.Double value)
         {
             return System.Math.Tanh(value);
+        }
+
+        /// <summary>
+        /// Get the value of <see cref="System.Math.Tanh(Complex)"/> for this <see cref="System.Double"/> value.
+        /// </summary>
+        public static Complex Tanh(this Complex value)
+        {
+            return Complex.Tanh(value);
         }
 
         /// <summary>

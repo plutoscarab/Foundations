@@ -86,6 +86,10 @@ public struct ComplexQuad
         }
     }
 
+    public readonly Quad Real => Re;
+
+    public readonly Quad Imaginary => Im;
+
     /// <summary>
     /// Covert from a UInt64 value.
     /// </summary>

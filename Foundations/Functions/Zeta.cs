@@ -283,5 +283,72 @@ public static partial class Special
         return sum;
     }
 
+    public struct SingleSum(float value)
+    {
+        public float Value = value;
+
+        private float error = (float)0;
+
+        public void Add(float term)
+        {
+            term -= error;
+            var total = Value + term;
+            error = (total - Value) - term;
+            Value = total;
+        }
+
+        public static implicit operator SingleSum(float value) => new(value);
+
+        public static implicit operator float(SingleSum sum) => sum.Value;
+    }
+
+    public static float Zeta(float s)
+    {
+        var fs = MathF.Floor(s);
+
+        if (s == fs && s < 0)
+        {
+            if (s == 2 * MathF.Floor(s / 2))
+                return (float)0;
+
+            var k = -(int)fs;
+            return (float)(float)((1 - 2 * (k & 1)) * Sequences.BernoulliNumbers().ElementAt(k + 1) / (k + 1));
+        }
+
+        var n = 50 + (int)MathF.Abs(s);
+
+        if (s < .5)
+            return Zeta(1 - s) / (2 * MathF.Pow(2 * MathF.PI, -s) * MathF.Cos(MathF.PI * s / 2) * Gamma(s));
+        
+        var ek = new float[n + 1];
+        ek[n] = 1;
+        float e = 1;
+
+        for (var j = n; j > 1; j--)
+        {
+            e = e * j / (n - j + 1);
+            ek[j - 1] = ek[j] + e;
+        }
+
+        SingleSum sum = new(0);
+
+        for (var k = n + 1; k <= 2 * n; k++)
+        {
+            var term = (2 * (k & 1) - 1) * ek[k - n] * MathF.Exp(-s * MathF.Log((float)k));
+            sum.Add(term);
+        }
+
+        sum *= MathF.Pow((float)2, -n);
+
+        for (var k = 1; k <= n; k++)
+        {
+            var term = (2 * (k & 1) - 1) * MathF.Exp(-s * MathF.Log((float)k));
+            sum.Add(term);
+        }
+
+        sum /= 1 - MathF.Pow(2, 1 - s);
+        return sum;
+    }
+
 }
 

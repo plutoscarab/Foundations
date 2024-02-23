@@ -1,7 +1,5 @@
-
+﻿
 namespace Foundations.Functions;
-
-using static Foundations.QuadConstants;
 
 public static partial class Special
 {
@@ -90,44 +88,203 @@ public static partial class Special
         return C;
     }
 
-    public static Quad Digamma(Quad x)
+    public static Double Digamma(Double x)
     {
-        // Chebyshev polynomial representation of ψ(x + 2) requires 1 ≤ x ≤ 3
-
         if (x < .5)
-            return Digamma(1 - x) - π / Quad.Tan(π * x);
-
-        if (x < 1)
-            return Digamma(1 + x) - 1 / x;
-
-        if (x > 3)
-            return .5 * (Digamma(x / 2) + Digamma((x + 1) / 2)) + Ln2;
+            return Digamma(1 - x) - Constants.π / Math.Tan(Constants.π * x);
 
         // Special values
 
         if (x == 1)
-            return -γ;
+            return -Constants.γ;
 
         if (x == 2)
-            return 1 - γ;
+            return 1 - Constants.γ;
 
         if (x == 3)
-            return 1.5 - γ;
-            
-        x -= 2;
-        Quad t0 = 1;
-        var t1 = x;
-        var sum = new QuadSum(0.0);
+            return 1.5 - Constants.γ;
 
-        foreach (var k in DigammaChebyshevCoefficients)
+        // Shift to asymptotic range.
+
+        if (x < 20)
         {
-            sum.Add(k * t0);
-            (t0, t1) = (t1, 2 * x * t1 - t0);
+            var N = 20 - (int)x;
+            DoubleSum s = new(Digamma(x + N));
+
+            for (var k = 0; k < N; k++)
+            {
+                s.Add(-1 / (x + k));
+            }
+
+            return s.Value;
         }
 
+        DoubleSum sum = new(x.Log() - 1 / (2 * x));
+        var xx = 1 / (x * x);
+        var xp = xx;
+        sum.Add(-xp / 12);
+        xp *= xx;
+        sum.Add(xp / 120);
+        xp *= xx;
+        sum.Add(-xp / 252);
+        xp *= xx;
+        sum.Add(xp / 240);
+        xp *= xx;
+        sum.Add(-xp / 132);
+        xp *= xx;
+        sum.Add(xp * 691 / 32760);
+        xp *= xx;
+        sum.Add(-xp / 12);
         return sum.Value;
     }
 
-    public static double Digamma(double x) =>
-        (double)Digamma((Quad)x);
+    public static Complex Digamma(Complex x)
+    {
+        if (x.Real < .5)
+            return Digamma(1 - x) - Constants.π / Complex.Tan(Constants.π * x);
+
+        // Special values
+
+        if (x == 1)
+            return -Constants.γ;
+
+        if (x == 2)
+            return 1 - Constants.γ;
+
+        if (x == 3)
+            return 1.5 - Constants.γ;
+
+        // Shift to asymptotic range.
+
+        if (x.Abs() < 40)
+        {
+            var N = 40 - (int)x.Real;
+            ComplexSum s = new(Digamma(x + N));
+
+            for (var k = 0; k < N; k++)
+            {
+                s.Add(-1 / (x + k));
+            }
+
+            return s.Value;
+        }
+
+        ComplexSum sum = new(x.Log() - 1 / (2 * x));
+        var xx = 1 / (x * x);
+        var xp = xx;
+        sum.Add(-xp / 12);
+        xp *= xx;
+        sum.Add(xp / 120);
+        xp *= xx;
+        sum.Add(-xp / 252);
+        xp *= xx;
+        sum.Add(xp / 240);
+        xp *= xx;
+        sum.Add(-xp / 132);
+        xp *= xx;
+        sum.Add(xp * 691 / 32760);
+        xp *= xx;
+        sum.Add(-xp / 12);
+        return sum.Value;
+    }
+
+    public static Quad Digamma(Quad x)
+    {
+        if (x < .5)
+            return Digamma(1 - x) - QuadConstants.π / Quad.Tan(QuadConstants.π * x);
+
+        // Special values
+
+        if (x == 1)
+            return -QuadConstants.γ;
+
+        if (x == 2)
+            return 1 - QuadConstants.γ;
+
+        if (x == 3)
+            return 1.5 - QuadConstants.γ;
+
+        // Shift to asymptotic range.
+
+        if (x < 250)
+        {
+            var N = 250 - (int)x;
+            QuadSum s = new(Digamma(x + N));
+
+            for (var k = 0; k < N; k++)
+            {
+                s.Add(-1 / (x + k));
+            }
+
+            return s.Value;
+        }
+
+        QuadSum sum = new(x.Log() - 1 / (2 * x));
+        var xx = 1 / (x * x);
+        var xp = xx;
+        sum.Add(-xp / 12);
+        xp *= xx;
+        sum.Add(xp / 120);
+        xp *= xx;
+        sum.Add(-xp / 252);
+        xp *= xx;
+        sum.Add(xp / 240);
+        xp *= xx;
+        sum.Add(-xp / 132);
+        xp *= xx;
+        sum.Add(xp * 691 / 32760);
+        xp *= xx;
+        sum.Add(-xp / 12);
+        return sum.Value;
+    }
+
+    public static ComplexQuad Digamma(ComplexQuad x)
+    {
+        if (x.Real < .5)
+            return Digamma(1 - x) - QuadConstants.π / ComplexQuad.Tan(QuadConstants.π * x);
+
+        // Special values
+
+        if (x == 1)
+            return -QuadConstants.γ;
+
+        if (x == 2)
+            return 1 - QuadConstants.γ;
+
+        if (x == 3)
+            return 1.5 - QuadConstants.γ;
+
+        // Shift to asymptotic range.
+
+        if (x.Abs() < 250)
+        {
+            var N = 250 - (int)x.Real;
+            ComplexQuadSum s = new(Digamma(x + N));
+
+            for (var k = 0; k < N; k++)
+            {
+                s.Add(-1 / (x + k));
+            }
+
+            return s.Value;
+        }
+
+        ComplexQuadSum sum = new(x.Log() - 1 / (2 * x));
+        var xx = 1 / (x * x);
+        var xp = xx;
+        sum.Add(-xp / 12);
+        xp *= xx;
+        sum.Add(xp / 120);
+        xp *= xx;
+        sum.Add(-xp / 252);
+        xp *= xx;
+        sum.Add(xp / 240);
+        xp *= xx;
+        sum.Add(-xp / 132);
+        xp *= xx;
+        sum.Add(xp * 691 / 32760);
+        xp *= xx;
+        sum.Add(-xp / 12);
+        return sum.Value;
+    }
 }

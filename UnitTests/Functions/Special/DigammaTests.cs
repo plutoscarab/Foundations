@@ -49,7 +49,9 @@ public class DigammaTests
         p = Digamma(1.0);
         p = Digamma(2.0);
         p = Digamma(3.0);
-        p = Digamma(2.7);
+        p = Digamma(Constants.Sqrt2);
         var q = Digamma(QuadConstants.Sqrt2);
+        var z = Digamma(new ComplexQuad(1, 1));
+        var s = Digamma(new Complex(1, 1));
     }
 }

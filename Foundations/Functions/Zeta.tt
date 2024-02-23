@@ -14,13 +14,14 @@ Make("ComplexQuad", "ComplexQuad", ".Re", ".Im", "QuadConstants", "Quad", "Quad"
 Make("Complex", "Complex", ".Real", ".Imaginary", "Math", "Math", "double");
 Make("Quad", "Quad", "", "", "QuadConstants", "Quad", "Quad");
 Make("double", "Math", "", "", "Math", "Math", "double");
+Make("float", "MathF", "", "", "MathF", "MathF", "float");
 #>
 }
 
 <#+
 void Make(string T, string math, string re, string im, string consts, string realMath, string realT)
 {
-    var U = T.Substring(0, 1).ToUpper() + T.Substring(1);
+    var U = T == "double" ? "Double" : T == "float" ? "Single" : T;
 #>
     public struct <#= U #>Sum(<#= T #> value)
     {

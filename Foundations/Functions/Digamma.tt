@@ -1,0 +1,162 @@
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core.dll" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+namespace Foundations.Functions;
+
+public static partial class Special
+{
+    /// <summary>
+    /// From Appendix E of CHEBYSHEV SERIES EXPANSION OF INVERSE POLYNOMIALS
+    /// by RICHARD J. MATHAR
+    /// at https://arxiv.org/pdf/math/0403344.pdf
+    /// </summary>
+    public static Quad[] GetDigammaChebyshevCoefficients(int count)
+    {
+        QuadSum r = Quad.Zero;
+        var K = new Quad[count + 1];
+
+        for (var l = 0; true; l++)
+        {
+            var d = Binomial(-Quad.OneHalf, l);
+            var old = r.Value;
+            r.Add(d * (1 - 2 * (l & 1)) * (Zeta(Quad.Two * l + 2) - 1));
+            if (old == r.Value) break;
+        }
+
+        K[0] = r.Value;
+        r = Quad.Zero;
+
+        for (var l = 1; true; l++)
+        {
+            var d = Binomial(-Quad.OneHalf, l);
+            var old = r.Value;
+            r.Add(d * (1 - 2 * (l & 1)) * (Zeta(Quad.Two * l + 1) - 1));
+            if (old == r.Value) break;
+        }
+
+        K[1] = r.Value;
+        r = Quad.Zero;
+
+        for (var l = 1; true; l++)
+        {
+            var d = Binomial(-Quad.OneHalf, l);
+            var old = r.Value;
+            r.Add(d * (1 - 2 * (l & 1)) * (Zeta(Quad.Two * l) - 1));
+            if (old == r.Value) break;
+        }
+
+        K[2] = 2 * r.Value - K[0];
+        r = Quad.Zero;
+
+        for (var l = 2; true; l++)
+        {
+            var d = Binomial(-Quad.OneHalf, l) + Binomial(Quad.OneHalf, l);
+            var old = r.Value;
+            r.Add(d * (1 - 2 * (l & 1)) * (Zeta(Quad.Two * l - 1) - 1));
+            if (old == r.Value) break;
+        }
+
+        K[3] = 2 * r.Value - K[1];
+        r.Value = 0;
+
+        for (var n = 2; n < K.Length - 2; n++)
+        {
+            for (var l = (n + 3) / 2; true; l++)
+            {
+                QuadSum d = Quad.Zero;
+
+                for (var s = 0; s <= n + 1; s++)
+                {
+                    d.Add(Binomial(n + Quad.One, s) * Binomial((s - 1) / Quad.Two, l));
+                }
+
+                var old = r.Value;
+                r.Add(d.Value * (1 - 2 * (l & 1)) * (Zeta(Quad.Two * l - n) - 1));
+                if (old == r.Value) break;
+            }
+
+            K[n + 2] = 2 * r.Value - K[n];
+            r.Value = 0;
+        }
+
+        var C = new Quad[K.Length - 1];
+        C[0] = 1 - QuadConstants.γ - K[1];
+
+        for (var n = 1; n < K.Length - 1; n++)
+        {
+            C[n] = (2 * (n & 1) - 1) * (K[n - 1] + K[n + 1]);
+        }
+
+        return C;
+    }
+<#
+Make("Double", 20, "Math", "");
+Make("Complex", 40, "Complex", "");
+Make("Quad", 250, "Quad", "Quad");
+Make("ComplexQuad", 250, "ComplexQuad", "Quad");
+#>
+}
+<#+
+void Make(string T, int offset, string math, string consts)
+{
+    var complex = T.Contains("Complex");
+    var re = complex ? "x.Real" : "x";
+    var abs = complex ? "x.Abs()" : "x";
+#>
+
+    public static <#= T #> Digamma(<#= T #> x)
+    {
+        if (<#= re #> < .5)
+            return Digamma(1 - x) - <#= consts #>Constants.π / <#= math #>.Tan(<#= consts #>Constants.π * x);
+
+        // Special values
+
+        if (x == 1)
+            return -<#= consts #>Constants.γ;
+
+        if (x == 2)
+            return 1 - <#= consts #>Constants.γ;
+
+        if (x == 3)
+            return 1.5 - <#= consts #>Constants.γ;
+
+        // Shift to asymptotic range.
+
+        if (<#= abs #> < <#= offset #>)
+        {
+            var N = <#= offset #> - (int)<#= re #>;
+            <#= T #>Sum s = new(Digamma(x + N));
+
+            for (var k = 0; k < N; k++)
+            {
+                s.Add(-1 / (x + k));
+            }
+
+            return s.Value;
+        }
+
+        <#= T #>Sum sum = new(x.Log() - 1 / (2 * x));
+        var xx = 1 / (x * x);
+        var xp = xx;
+        sum.Add(-xp / 12);
+        xp *= xx;
+        sum.Add(xp / 120);
+        xp *= xx;
+        sum.Add(-xp / 252);
+        xp *= xx;
+        sum.Add(xp / 240);
+        xp *= xx;
+        sum.Add(-xp / 132);
+        xp *= xx;
+        sum.Add(xp * 691 / 32760);
+        xp *= xx;
+        sum.Add(-xp / 12);
+        return sum.Value;
+    }
+<#+
+}
+#>

@@ -5,6 +5,8 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 
+using System.Numerics;
+
 namespace Foundations
 {
     /// <summary>
@@ -13,6 +15,8 @@ namespace Foundations
     public static partial class MathExtensions
     {
 <#
+    var noComplex = new[] { "Atan2", "Round", "Truncate", "Floor", "Ceiling", "Sign", "IEEERemainder", "Max", "Min" };
+
     foreach (var method in typeof(Math).GetMethods().Where(m => m.IsStatic).OrderBy(m => m.Name))
     {
         var args = method.GetParameters();
@@ -28,13 +32,20 @@ namespace Foundations
 
         for (int i = 0; i < args.Length; i++)
         {
-            if (i > 0) { paramList.Append(", "); argList.Append(", "); typeList.Append(", "); }
+            if (i > 0) 
+            { 
+                paramList.Append(", "); 
+                argList.Append(", "); 
+                typeList.Append(", "); 
+            }
+
             if (args[i].IsOut) 
             {
                 paramList.Append("out ");
                 argList.Append("out ");
                 typeList.Append("out ");
             }
+
             var argType = args[i].ParameterType.ToString().Replace("&", "");
             typeList.Append(argType);
             paramList.Append(argType + " " + args[i].Name);
@@ -50,6 +61,24 @@ namespace Foundations
         }
 
 <#
+        if (args[0].ParameterType.ToString().Contains("Double") && !noComplex.Contains(methodName))
+        {
+            typeList = typeList.Replace("System.Double", "Complex");
+            paramList = paramList.Replace("System.Double", "Complex").Replace(", Complex newBase", ", double newBase");
+            argList = argList.Replace("System.Double", "Complex");
+            var returnType = method.ReturnType.ToString();
+            if (methodName != "Abs") returnType = returnType.Replace("System.Double", "Complex");
+#>
+        /// <summary>
+        /// Get the value of <see cref="System.Math.<#= method.Name #>(<#= typeList #>)"/> for this <see cref="<#= method.ReturnType #>"/> value.
+        /// </summary>
+        public static <#= returnType #> <#= methodName #>(this <#= paramList #>)
+        {
+            return Complex.<#= method.Name #>(<#= argList #>);
+        }
+
+<#        
+        }
     }
 #>
     }

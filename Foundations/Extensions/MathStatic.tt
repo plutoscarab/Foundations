@@ -10,7 +10,7 @@ namespace Foundations
 <#
 Make("Decimal", "M", 96);
 Copy("Decimal", "M");
-Wrap("Single", "static partial class", "MathF", "Double");
+// Wrap("Single", "static partial class", "MathF", "Double");
 Wrap("Half", "static partial class", "MathH", "Double");
 #>
 }
