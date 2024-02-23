@@ -403,7 +403,7 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
         if (r.q == 1) return r.p;
         if (r.p == 0) return 0;
         BigInteger div = BigInteger.DivRem(BigInteger.Abs(r.p), r.q, out BigInteger rem);
-        if (r.p < 0) return div;
+        if (r.p < 0) return -div;
         return div + 1;
     }
 
@@ -506,6 +506,37 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
 
         decimal d = (decimal)t;
         decimal f = t >= 0 ? 1m : -1m;
+
+        foreach (var digit in r.BaseExpansion(10))
+        {
+            var g = f / 10m;
+
+            if (g == 0m)
+            {
+                if (digit < 5)
+                    break;
+
+                d += f;
+                break;
+            }
+
+            f = g;
+            d += f * digit;
+        }
+
+        return d;
+    }
+
+    /// <summary>
+    /// Explicitly casts a <see cref="Rational"/> to a <see cref="Foundations.Quad"/>.
+    /// </summary>
+    public static explicit operator Quad(Rational r)
+    {
+        var t = Truncate(r);
+        r = Abs(r - t);
+
+        Quad d = (Quad)t;
+        Quad f = t >= 0 ? 1 : -1;
 
         foreach (var digit in r.BaseExpansion(10))
         {

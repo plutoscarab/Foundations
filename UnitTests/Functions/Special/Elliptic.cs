@@ -32,7 +32,7 @@ namespace Foundations.UnitTests.Functions
         public void EllipticFLargeArgumentTest()
         {
             var x = 1436.699529559065124036301546242965863291805609504612854879;
-            var f = Elliptic.F(1000, .8);
+            var f = Elliptic.F(1000.0, .8);
             Assert.IsTrue(Math.Abs(x - f) < 1e-12);
             f = Elliptic.FDouble(.8)(1000);
             Assert.IsTrue(Math.Abs(x - f) < 1e-12);

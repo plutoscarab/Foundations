@@ -11,6 +11,7 @@ namespace Foundations
 Make("Decimal", "M", 96);
 Copy("Decimal", "M");
 Wrap("Single", "static partial class", "MathF", "Double");
+Wrap("Half", "static partial class", "MathH", "Double");
 #>
 }
 <#+
@@ -46,14 +47,13 @@ void Wrap(string T, string cls, string math, string from)
     /// </summary>
     public <#= cls #> <#= math #>
     {
-<#+
+<#+    
     foreach (var method in typeof(Math).GetMethods().Where(m => m.IsStatic).OrderBy(m => m.Name)
-        .GroupBy(m => m.Name)
-        .Where(m => m.Count() == 1 && m.First().GetParameters().Count() == 1 && m.First().GetParameters().First().ParameterType.Name == from))
+        .Where(m => m.GetParameters().Count() == 1 && m.GetParameters().First().ParameterType.Name == from))
     {
 #>
-        /// <summary><see cref="<#= T #>"/> wrapper for System.Math.<#= method.Key #>.</summary>
-        public static <#= T #> <#= method.Key #>(<#= T #> x) => (<#= T #>)Math.<#= method.Key #>((double)x);
+        /// <summary><see cref="<#= T #>"/> wrapper for System.Math.<#= method.Name #>.</summary>
+        public static <#= T #> <#= method.Name #>(<#= T #> x) => (<#= T #>)Math.<#= method.Name #>((double)x);
 
 <#+
     }
@@ -95,9 +95,9 @@ void Make(string T, string suffix, int precision)
         /// </summary>
         public static <#= T #> Sqrt(<#= T #> x)
         {
-            if (x < 0<#= suffix #>) throw new ArgumentOutOfRangeException();
+            ArgumentOutOfRangeException.ThrowIfLessThan(x, 0<#= suffix #>, nameof(x));
 			var s = (<#= T #>)Math.Sqrt((double)x);
-<#+ for (int i = 0; i < Math.Log(precision / 53, 2); i++) { #>
+<#+ for (int i = 0; i < 1 + Math.Log(precision / 53, 2); i++) { #>
             s = (x / s + s) / 2<#= suffix #>;
 <#+ } #>
 			return (x / s + s) / 2<#= suffix #>;

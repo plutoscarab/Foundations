@@ -313,6 +313,304 @@ namespace Foundations.Functions
             return (1 - 3 * E2 / 14 + E3 / 6 + 9 * E2 * E2 / 88 - 3 * E4 / 22 - 9 * E2 * E3 / 52 + 3 * E5 / 26) / (Math.Pow(4, m) * Math.Pow(A, 1.5)) + 6 * sum;
         }
 
+        /// <summary>
+        /// Symmetric elliptic integral of the first kind.
+        /// </summary>
+        public static ComplexQuad RF(ComplexQuad x, ComplexQuad y, ComplexQuad z)
+        {
+            switch ((x == 0 ? 1 : 0) + (y == 0 ? 1 : 0) + (z == 0 ? 1 : 0))
+            {
+                case 2:
+                    return double.PositiveInfinity;
+            }
+
+            ComplexQuad
+                A0 = (x + y + z) / 3,
+                A = A0;
+
+            double
+                r = 10 * Machine.ε,
+                Q = Math.Pow(3 * r, -1 / 8d) * Math.Max(Math.Max(ComplexQuad.Abs(A - x), ComplexQuad.Abs(A - y)), ComplexQuad.Abs(A - z));
+
+            while (Q >= ComplexQuad.Abs(A))
+            {
+                ComplexQuad
+                    sx = ComplexQuad.Sqrt(x),
+                    sy = ComplexQuad.Sqrt(y),
+                    sz = ComplexQuad.Sqrt(z),
+                    λ = sx * sy + sy * sz + sz * sx;
+
+                A = (A + λ) / 4;
+                x = (x + λ) / 4;
+                y = (y + λ) / 4;
+                z = (z + λ) / 4;
+                Q /= 4;
+            }
+
+            ComplexQuad
+                X = 1 - x / A,
+                Y = 1 - y / A,
+                Z = - X - Y,
+                E2 = Z * Z - X * Y,
+                E3 = X * Y * Z;
+
+            return (1 + E3 * (1 / 14d + 3 * E3 / 104) + E2 * (1 / 10d + 3 * E3 / 44 + E2 * (1 / 24d + E3 / 16 + 5 * E2 / 208))) / ComplexQuad.Sqrt(A);
+        }
+
+        /// <summary>
+        /// Symmetric elliptic integral of the second kind.
+        /// </summary>
+        public static ComplexQuad RD(ComplexQuad x, ComplexQuad y, ComplexQuad z)
+        {
+            if ((x == 0 && y == 0) || z == 0)
+			{
+				throw new ArgumentOutOfRangeException();
+			}
+
+            ComplexQuad
+                A0 = (x + y + 3 * z) / 5,
+                A = A0,
+				sum = 0;
+
+            double
+                r = 10 * Machine.ε,
+                Q = Math.Pow(r / 4, -1 / 6d) * Math.Max(Math.Max(ComplexQuad.Abs(A - x), ComplexQuad.Abs(A - y)), ComplexQuad.Abs(A - z));
+
+			var m = 0;
+
+            while (Q >= ComplexQuad.Abs(A))
+            {
+                ComplexQuad
+                    sx = ComplexQuad.Sqrt(x),
+                    sy = ComplexQuad.Sqrt(y),
+                    sz = ComplexQuad.Sqrt(z),
+                    λ = sx * sy + sy * sz + sz * sx;
+
+				sum += 1 / (Math.Pow(4, m) * sz * (z + λ));
+				m++;
+                A = (A + λ) / 4;
+                x = (x + λ) / 4;
+                y = (y + λ) / 4;
+                z = (z + λ) / 4;
+                Q /= 4;
+            }
+
+            ComplexQuad
+                X = (A0 - x) / (A * Math.Pow(4, m)),
+                Y = (A0 - y) / (A * Math.Pow(4, m)),
+                Z = -(X + Y) / 3,
+                XY = X * Y,
+				ZZ = Z * Z,
+				E2 = XY - 6 * ZZ,
+				E3 = (3 * XY - 8 * ZZ) * Z,
+				E4 = 3 * (XY - ZZ) * ZZ,
+				E5 = XY * ZZ * Z;
+
+            return (1 + E2 * (9 * E2 / 88 - 9 * E3 / 52 - 3 / 14d) + E3 / 6 - 3 * E4 / 22 + 3 * E5 / 26) / (Math.Pow(4, m) * ComplexQuad.Pow(A, 1.5)) + 3 * sum;
+        }
+
+        /// <summary>
+        /// Symmetric elliptic integral of the third kind.
+        /// </summary>
+        public static ComplexQuad RJ(ComplexQuad x, ComplexQuad y, ComplexQuad z, ComplexQuad p)
+        {
+            ComplexQuad
+                A0 = (x + y + z + 2 * p) / 5,
+				δ = (p - x) * (p - y) * (p - z),
+                A = A0,
+				sum = 0;
+
+            double
+                r = 10 * Machine.ε,
+                Q = Math.Pow(r / 4, -1 / 6d) * Math.Max(Math.Max(Math.Max(ComplexQuad.Abs(A - x), ComplexQuad.Abs(A - y)), ComplexQuad.Abs(A - z)), ComplexQuad.Abs(A - p));
+
+			var m = 0;
+
+            while (Q >= ComplexQuad.Abs(A))
+            {
+                ComplexQuad
+                    sx = ComplexQuad.Sqrt(x),
+                    sy = ComplexQuad.Sqrt(y),
+                    sz = ComplexQuad.Sqrt(z),
+					sp = ComplexQuad.Sqrt(p),
+                    λ = sx * sy + sy * sz + sz * sx,
+					d = (sp + sx) * (sp + sy) * (sp + sz),
+					e = δ / (d * d * Math.Pow(4, 3 * m));
+
+				sum += RF(1, 1 + e, 1 + e) / (d * Math.Pow(4, m));
+				m++;
+                A = (A + λ) / 4;
+                x = (x + λ) / 4;
+                y = (y + λ) / 4;
+                z = (z + λ) / 4;
+                p = (p + λ) / 4;
+                Q /= 4;
+            }
+
+            ComplexQuad
+                X = (A0 - x) / (A * Math.Pow(4, m)),
+                Y = (A0 - y) / (A * Math.Pow(4, m)),
+				Z = (A0 - z) / (A * Math.Pow(4, m)),
+                P = (-X - Y - Z) / 2,
+                XYZ = X * Y * Z,
+				E2 = X * Y + Y * Z + X * Z - 3 * P * P,
+				PPP = P * P * P,
+				E3 = XYZ + 2 * E2 * P + 4 * PPP,
+				E4 = (2 * XYZ + E2 * P + 3 * PPP) * P,
+				E5 = XYZ * P * P;
+
+            return (1 - 3 * E2 / 14 + E3 / 6 + 9 * E2 * E2 / 88 - 3 * E4 / 22 - 9 * E2 * E3 / 52 + 3 * E5 / 26) / (Math.Pow(4, m) * ComplexQuad.Pow(A, 1.5)) + 6 * sum;
+        }
+
+        /// <summary>
+        /// Symmetric elliptic integral of the first kind.
+        /// </summary>
+        public static Quad RF(Quad x, Quad y, Quad z)
+        {
+            switch ((x == 0 ? 1 : 0) + (y == 0 ? 1 : 0) + (z == 0 ? 1 : 0))
+            {
+                case 2:
+                    return double.PositiveInfinity;
+            }
+
+            Quad
+                A0 = (x + y + z) / 3,
+                A = A0;
+
+            double
+                r = 10 * Machine.ε,
+                Q = Math.Pow(3 * r, -1 / 8d) * Math.Max(Math.Max(Quad.Abs(A - x), Quad.Abs(A - y)), Quad.Abs(A - z));
+
+            while (Q >= Quad.Abs(A))
+            {
+                Quad
+                    sx = Quad.Sqrt(x),
+                    sy = Quad.Sqrt(y),
+                    sz = Quad.Sqrt(z),
+                    λ = sx * sy + sy * sz + sz * sx;
+
+                A = (A + λ) / 4;
+                x = (x + λ) / 4;
+                y = (y + λ) / 4;
+                z = (z + λ) / 4;
+                Q /= 4;
+            }
+
+            Quad
+                X = 1 - x / A,
+                Y = 1 - y / A,
+                Z = - X - Y,
+                E2 = Z * Z - X * Y,
+                E3 = X * Y * Z;
+
+            return (1 + E3 * (1 / 14d + 3 * E3 / 104) + E2 * (1 / 10d + 3 * E3 / 44 + E2 * (1 / 24d + E3 / 16 + 5 * E2 / 208))) / Quad.Sqrt(A);
+        }
+
+        /// <summary>
+        /// Symmetric elliptic integral of the second kind.
+        /// </summary>
+        public static Quad RD(Quad x, Quad y, Quad z)
+        {
+            if ((x == 0 && y == 0) || z == 0)
+			{
+				throw new ArgumentOutOfRangeException();
+			}
+
+            Quad
+                A0 = (x + y + 3 * z) / 5,
+                A = A0,
+				sum = 0;
+
+            double
+                r = 10 * Machine.ε,
+                Q = Math.Pow(r / 4, -1 / 6d) * Math.Max(Math.Max(Quad.Abs(A - x), Quad.Abs(A - y)), Quad.Abs(A - z));
+
+			var m = 0;
+
+            while (Q >= Quad.Abs(A))
+            {
+                Quad
+                    sx = Quad.Sqrt(x),
+                    sy = Quad.Sqrt(y),
+                    sz = Quad.Sqrt(z),
+                    λ = sx * sy + sy * sz + sz * sx;
+
+				sum += 1 / (Math.Pow(4, m) * sz * (z + λ));
+				m++;
+                A = (A + λ) / 4;
+                x = (x + λ) / 4;
+                y = (y + λ) / 4;
+                z = (z + λ) / 4;
+                Q /= 4;
+            }
+
+            Quad
+                X = (A0 - x) / (A * Math.Pow(4, m)),
+                Y = (A0 - y) / (A * Math.Pow(4, m)),
+                Z = -(X + Y) / 3,
+                XY = X * Y,
+				ZZ = Z * Z,
+				E2 = XY - 6 * ZZ,
+				E3 = (3 * XY - 8 * ZZ) * Z,
+				E4 = 3 * (XY - ZZ) * ZZ,
+				E5 = XY * ZZ * Z;
+
+            return (1 + E2 * (9 * E2 / 88 - 9 * E3 / 52 - 3 / 14d) + E3 / 6 - 3 * E4 / 22 + 3 * E5 / 26) / (Math.Pow(4, m) * Quad.Pow(A, 1.5)) + 3 * sum;
+        }
+
+        /// <summary>
+        /// Symmetric elliptic integral of the third kind.
+        /// </summary>
+        public static Quad RJ(Quad x, Quad y, Quad z, Quad p)
+        {
+            Quad
+                A0 = (x + y + z + 2 * p) / 5,
+				δ = (p - x) * (p - y) * (p - z),
+                A = A0,
+				sum = 0;
+
+            double
+                r = 10 * Machine.ε,
+                Q = Math.Pow(r / 4, -1 / 6d) * Math.Max(Math.Max(Math.Max(Quad.Abs(A - x), Quad.Abs(A - y)), Quad.Abs(A - z)), Quad.Abs(A - p));
+
+			var m = 0;
+
+            while (Q >= Quad.Abs(A))
+            {
+                Quad
+                    sx = Quad.Sqrt(x),
+                    sy = Quad.Sqrt(y),
+                    sz = Quad.Sqrt(z),
+					sp = Quad.Sqrt(p),
+                    λ = sx * sy + sy * sz + sz * sx,
+					d = (sp + sx) * (sp + sy) * (sp + sz),
+					e = δ / (d * d * Math.Pow(4, 3 * m));
+
+				sum += RF(1, 1 + e, 1 + e) / (d * Math.Pow(4, m));
+				m++;
+                A = (A + λ) / 4;
+                x = (x + λ) / 4;
+                y = (y + λ) / 4;
+                z = (z + λ) / 4;
+                p = (p + λ) / 4;
+                Q /= 4;
+            }
+
+            Quad
+                X = (A0 - x) / (A * Math.Pow(4, m)),
+                Y = (A0 - y) / (A * Math.Pow(4, m)),
+				Z = (A0 - z) / (A * Math.Pow(4, m)),
+                P = (-X - Y - Z) / 2,
+                XYZ = X * Y * Z,
+				E2 = X * Y + Y * Z + X * Z - 3 * P * P,
+				PPP = P * P * P,
+				E3 = XYZ + 2 * E2 * P + 4 * PPP,
+				E4 = (2 * XYZ + E2 * P + 3 * PPP) * P,
+				E5 = XYZ * P * P;
+
+            return (1 - 3 * E2 / 14 + E3 / 6 + 9 * E2 * E2 / 88 - 3 * E4 / 22 - 9 * E2 * E3 / 52 + 3 * E5 / 26) / (Math.Pow(4, m) * Quad.Pow(A, 1.5)) + 6 * sum;
+        }
+
     }
 }
 

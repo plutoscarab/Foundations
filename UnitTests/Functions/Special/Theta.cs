@@ -385,7 +385,7 @@ namespace Foundations.UnitTests.Functions
             th = Theta.θ1(Complex.Zero, .5);
             Assert.AreEqual(0, th.Imaginary);
             Assert.AreEqual(ex, th.Real);
-            th = Theta.θ1(0, .5);
+            th = Theta.θ1(0.0, .5);
             Assert.AreEqual(0, th.Imaginary);
             Assert.AreEqual(ex, th.Real);
             th = Theta.θ1ComplexForNome(.5)(0);
@@ -402,7 +402,7 @@ namespace Foundations.UnitTests.Functions
             th = Theta.θ2(Complex.Zero, .5);
             Assert.AreEqual(0, th.Imaginary);
             Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
-            th = Theta.θ2(0, .5);
+            th = Theta.θ2(0.0, .5);
             Assert.AreEqual(0, th.Imaginary);
             Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
             th = Theta.θ2ComplexForNome(.5)(0);
@@ -419,7 +419,7 @@ namespace Foundations.UnitTests.Functions
             th = Theta.θ3(Complex.Zero, .5);
             Assert.AreEqual(0, th.Imaginary);
             Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
-            th = Theta.θ3(0, .5);
+            th = Theta.θ3(0.0, .5);
             Assert.AreEqual(0, th.Imaginary);
             Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
             th = Theta.θ3ComplexForNome(.5)(0);
@@ -436,7 +436,7 @@ namespace Foundations.UnitTests.Functions
             th = Theta.θ4(Complex.Zero, .5);
             Assert.AreEqual(0, th.Imaginary);
             Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
-            th = Theta.θ4(0, .5);
+            th = Theta.θ4(0.0, .5);
             Assert.AreEqual(0, th.Imaginary);
             Assert.IsTrue(Math.Abs(ex - th.Real) < 1e-14);
             th = Theta.θ4ComplexForNome(.5)(0);

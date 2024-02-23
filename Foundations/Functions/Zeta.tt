@@ -1,0 +1,117 @@
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core.dll" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+namespace Foundations.Functions;
+
+public static partial class Special
+{
+<#
+Make("ComplexQuad", "ComplexQuad", ".Re", ".Im", "QuadConstants", "Quad", "Quad");
+Make("Complex", "Complex", ".Real", ".Imaginary", "Math", "Math", "double");
+Make("Quad", "Quad", "", "", "QuadConstants", "Quad", "Quad");
+Make("double", "Math", "", "", "Math", "Math", "double");
+#>
+}
+
+<#+
+void Make(string T, string math, string re, string im, string consts, string realMath, string realT)
+{
+    var U = T.Substring(0, 1).ToUpper() + T.Substring(1);
+#>
+    public struct <#= U #>Sum(<#= T #> value)
+    {
+        public <#= T #> Value = value;
+
+        private <#= T #> error = (<#= T #>)0;
+
+        public void Add(<#= T #> term)
+        {
+            term -= error;
+            var total = Value + term;
+            error = (total - Value) - term;
+            Value = total;
+        }
+
+        public static implicit operator <#= U #>Sum(<#= T #> value) => new(value);
+
+        public static implicit operator <#= T #>(<#= U #>Sum sum) => sum.Value;
+    }
+
+    public static <#= T #> Zeta(<#= T #> s)
+    {
+<#+ if (re == "") { #>
+        var fs = <#= math #>.Floor(s);
+
+        if (s == fs && s < 0)
+        {
+            if (s == 2 * <#= math #>.Floor(s / 2))
+                return (<#= T #>)0;
+
+            var k = -(int)fs;
+            return (<#= T #>)(<#= realT #>)((1 - 2 * (k & 1)) * Sequences.BernoulliNumbers().ElementAt(k + 1) / (k + 1));
+        }
+
+        var n = 50 + (int)<#= math #>.Abs(s);
+
+        if (s < .5)
+            return Zeta(1 - s) / (2 * <#= math #>.Pow(2 * <#= consts #>.PI, -s) * <#= math #>.Cos(<#= consts #>.PI * s / 2) * Gamma(s));
+<#+ } else { #>
+        var fs = <#= realMath #>.Floor(s<#= re #>);
+
+        if (s == s<#= re #> && s == fs && s<#= re #> < 0)
+        {
+            if (s<#= re #> == 2 * <#= realMath #>.Floor(s<#= re #> / 2))
+                return (<#= T #>)0;
+
+            var k = -(int)fs;
+            return (<#= T #>)(<#= realT #>)((1 - 2 * (k & 1)) * Sequences.BernoulliNumbers().ElementAt(k + 1) / (k + 1));
+        }
+            
+        var n = 100 + 2 * (int)<#= math #>.Abs(s<#= re #>) + 2 * (int)<#= math #>.Abs(s<#= im #>);
+
+        if (s<#= re #> < .5)
+        {
+            var gamma = Gamma(s);
+            var tpp = <#= math #>.Pow(2 * <#= consts #>.PI, -s);
+            var cos = <#= math #>.Cos(<#= consts #>.PI * s / 2);
+            var chi = 2 * tpp * cos * gamma;
+            return Zeta(1 - s) / chi;
+        }
+<#+ } #>        
+        var ek = new <#= T #>[n + 1];
+        ek[n] = 1;
+        <#= T #> e = 1;
+
+        for (var j = n; j > 1; j--)
+        {
+            e = e * j / (n - j + 1);
+            ek[j - 1] = ek[j] + e;
+        }
+
+        <#= U #>Sum sum = new(0);
+
+        for (var k = n + 1; k <= 2 * n; k++)
+        {
+            var term = (2 * (k & 1) - 1) * ek[k - n] * <#= math #>.Exp(-s * <#= math #>.Log((<#= T #>)k));
+            sum.Add(term);
+        }
+
+        sum *= <#= math #>.Pow((<#= T #>)2, -n);
+
+        for (var k = 1; k <= n; k++)
+        {
+            var term = (2 * (k & 1) - 1) * <#= math #>.Exp(-s * <#= math #>.Log((<#= T #>)k));
+            sum.Add(term);
+        }
+
+        sum /= 1 - <#= math #>.Pow(2, 1 - s);
+        return sum;
+    }
+
+<#+
+}
+#>

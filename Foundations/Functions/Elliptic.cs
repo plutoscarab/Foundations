@@ -144,6 +144,102 @@ namespace Foundations.Functions
         }
 
         /// <summary>
+        /// Incomplete elliptic integral of the first kind F(φ | m).
+        /// </summary>
+        /// <param name="φ">Argument.</param>
+        /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
+        public static ComplexQuad F(ComplexQuad φ, double m)
+        {
+            if (Quad.Abs(φ.Re) > π / 2)
+            {
+                int n = (int)Quad.Round(φ.Re / π);
+                return F(φ - n * π, m) + n * 2 * K(m);
+            }
+
+            ComplexQuad
+                sinφ = ComplexQuad.Sin(φ),
+                cosφ = ComplexQuad.Cos(φ);
+
+            return sinφ * CarlsonSymmetric.RF(cosφ * cosφ, 1 - m * sinφ * sinφ, 1);
+        }
+
+        /// <summary>
+        /// Get a function F(φ) that computes the incomplete elliptic integral of the first kind F(φ | m)
+        /// for a constant parameter m. Use this instead of F(φ, m) if you use the same value of m many times.
+        /// </summary>
+        /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
+        public static Func<ComplexQuad, ComplexQuad> FComplexQuad(double m)
+        {
+            var k = K(m);
+
+            return φ => 
+            {
+                ComplexQuad offset = 0;
+
+                if (Quad.Abs(φ.Re) > π / 2)
+                {
+                    int n = (int)Quad.Round(φ.Re / π);
+                    φ -= n * π;
+                    offset = n * 2 * k;
+                }
+
+                ComplexQuad
+                    sinφ = ComplexQuad.Sin(φ),
+                    cosφ = ComplexQuad.Cos(φ);
+
+                return sinφ * CarlsonSymmetric.RF(cosφ * cosφ, 1 - m * sinφ * sinφ, 1) + offset;
+            };
+        }
+
+        /// <summary>
+        /// Incomplete elliptic integral of the first kind F(φ | m).
+        /// </summary>
+        /// <param name="φ">Argument.</param>
+        /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
+        public static Quad F(Quad φ, double m)
+        {
+            if (Quad.Abs(φ) > π / 2)
+            {
+                int n = (int)Quad.Round(φ / π);
+                return F(φ - n * π, m) + n * 2 * K(m);
+            }
+
+            Quad
+                sinφ = Quad.Sin(φ),
+                cosφ = Quad.Cos(φ);
+
+            return sinφ * CarlsonSymmetric.RF(cosφ * cosφ, 1 - m * sinφ * sinφ, 1);
+        }
+
+        /// <summary>
+        /// Get a function F(φ) that computes the incomplete elliptic integral of the first kind F(φ | m)
+        /// for a constant parameter m. Use this instead of F(φ, m) if you use the same value of m many times.
+        /// </summary>
+        /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
+        public static Func<Quad, Quad> FQuad(double m)
+        {
+            var k = K(m);
+
+            return φ => 
+            {
+                Quad offset = 0;
+
+                if (Quad.Abs(φ) > π / 2)
+                {
+                    int n = (int)Quad.Round(φ / π);
+                    φ -= n * π;
+                    offset = n * 2 * k;
+                }
+
+                Quad
+                    sinφ = Quad.Sin(φ),
+                    cosφ = Quad.Cos(φ);
+
+                return sinφ * CarlsonSymmetric.RF(cosφ * cosφ, 1 - m * sinφ * sinφ, 1) + offset;
+            };
+        }
+
+        /// <summary>
         /// Incomplete elliptic integral of the second kind E(φ | m).
         /// </summary>
         /// <param name="φ">Argument.</param>
@@ -176,6 +272,38 @@ namespace Foundations.Functions
         }
 
         /// <summary>
+        /// Incomplete elliptic integral of the second kind E(φ | m).
+        /// </summary>
+        /// <param name="φ">Argument.</param>
+        /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
+        public static ComplexQuad E(ComplexQuad φ, double m)
+        {
+			if (φ == 0) return 0;
+
+            ComplexQuad
+                sinφ = ComplexQuad.Sin(φ),
+                c = 1 / (sinφ * sinφ);
+
+            return CarlsonSymmetric.RF(c - 1, c - m, c) - (m / 3) * CarlsonSymmetric.RD(c - 1, c - m, c);
+        }
+
+        /// <summary>
+        /// Incomplete elliptic integral of the second kind E(φ | m).
+        /// </summary>
+        /// <param name="φ">Argument.</param>
+        /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
+        public static Quad E(Quad φ, double m)
+        {
+			if (φ == 0) return 0;
+
+            Quad
+                sinφ = Quad.Sin(φ),
+                c = 1 / (sinφ * sinφ);
+
+            return CarlsonSymmetric.RF(c - 1, c - m, c) - (m / 3) * CarlsonSymmetric.RD(c - 1, c - m, c);
+        }
+
+        /// <summary>
         /// Incomplete elliptic integral of the third kind Π(φ | m, n).
         /// </summary>
         /// <param name="φ">Argument.</param>
@@ -200,6 +328,36 @@ namespace Foundations.Functions
         {
             Double
                 sinφ = Math.Sin(φ),
+                c = 1 / (sinφ * sinφ);
+
+            return CarlsonSymmetric.RF(c - 1, c - m, c) - (n / 3) * CarlsonSymmetric.RJ(c - 1, c - m, c, c + n);
+        }
+
+        /// <summary>
+        /// Incomplete elliptic integral of the third kind Π(φ | m, n).
+        /// </summary>
+        /// <param name="φ">Argument.</param>
+        /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
+		/// <param name="n" />
+        public static ComplexQuad Π(ComplexQuad φ, double m, ComplexQuad n)
+        {
+            ComplexQuad
+                sinφ = ComplexQuad.Sin(φ),
+                c = 1 / (sinφ * sinφ);
+
+            return CarlsonSymmetric.RF(c - 1, c - m, c) - (n / 3) * CarlsonSymmetric.RJ(c - 1, c - m, c, c + n);
+        }
+
+        /// <summary>
+        /// Incomplete elliptic integral of the third kind Π(φ | m, n).
+        /// </summary>
+        /// <param name="φ">Argument.</param>
+        /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
+		/// <param name="n" />
+        public static Quad Π(Quad φ, double m, Quad n)
+        {
+            Quad
+                sinφ = Quad.Sin(φ),
                 c = 1 / (sinφ * sinφ);
 
             return CarlsonSymmetric.RF(c - 1, c - m, c) - (n / 3) * CarlsonSymmetric.RJ(c - 1, c - m, c, c + n);

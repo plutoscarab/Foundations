@@ -1,196 +1,189 @@
 ﻿
-/*
-Primes.cs
-http://oeis.org/A000040
+// http://oeis.org/A000040
 
-*/
-
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using Foundations.Types;
 
 using Num = System.Int64;
 using Nums = System.Collections.Generic.IEnumerable<long>;
 
-namespace Foundations
+namespace Foundations;
+
+/// <summary>
+/// Various well-known sequences.
+/// </summary>
+public static partial class Sequences
 {
-    /// <summary>
-    /// Various well-known sequences.
-    /// </summary>
-	public static partial class Sequences
+    private static IEnumerable<int> PrimeSieve(int n)
     {
-        private static IEnumerable<int> PrimeSieve(int n)
+        if (n < 65536)
         {
-            if (n < 65536)
+            yield return 2;
+            yield return 3;
+            yield return 5;
+
+            for (int i = 0; i < smallPrimesPacked.Length; i++)
             {
-                yield return 2;
-                yield return 3;
-                yield return 5;
+                int spp = smallPrimesPacked[i];
 
-                for (int i = 0; i < smallPrimesPacked.Length; i++)
+                for (int j = 0; j < 8; j++)
                 {
-                    int spp = smallPrimesPacked[i];
-
-                    for (int j = 0; j < 8; j++)
+                    if ((spp & 1) == 1)
                     {
-                        if ((spp & 1) == 1)
-                        {
-                            yield return packedDivisor * i + packedModulus[j];
-                        }
-
-                        spp >>= 1;
+                        yield return packedDivisor * i + packedModulus[j];
                     }
-                }
 
-                yield break;
+                    spp >>= 1;
+                }
             }
 
-            var isComp = new BitArray(n);
-            int p = 1;
+            yield break;
+        }
 
-            while (++p < n)
+        var isComp = new BitArray(n);
+        int p = 1;
+
+        while (++p < n)
+        {
+            if (isComp[p])
+                continue;
+
+            yield return p;
+            int q = p * p;
+
+            while (q > 0 && q < n)
             {
-                if (isComp[p])
-                    continue;
+                isComp[q] = true;
+                q += p;
+            }
+        }
+    }
 
+    private static Nums PrimeSieve(long min, long max)
+    {
+        int sqrt = (int)Math.Sqrt(max);
+        int n = (int)(max - min);
+        var isComp = new BitArray(n);
+
+        foreach (int p in PrimeSieve(sqrt + 1))
+        {
+            int q = (int)(p * (min / p) - min);
+            if (q < 0) q += p;
+
+            if (p >= min && !isComp[q])
+            {
+                yield return q + min;
+            }
+
+            while (q < n)
+            {
+                isComp[q] = true;
+                q += p;
+            }
+        }
+
+        for (int p = 0; p < n; p++)
+        {
+            if (!isComp[p])
+                yield return p + min;
+        }
+    }
+
+    /// <summary>
+    /// Generate all prime numbers less than System.Int64.MaxValue.
+    /// </summary>
+    /// <returns></returns>
+    public static Nums Primes()
+    {
+        foreach (var n in Primes(2))
+        {
+            yield return n;
+        }
+    }
+
+    /// <summary>
+    /// Generate all prime numbers less than System.Int32.MaxValue.
+    /// </summary>
+    /// <returns></returns>
+    public static IEnumerable<int> PrimesInt32()
+    {
+        foreach (var n in Primes(2).TakeWhile(p => p <= int.MaxValue))
+        {
+            yield return (int)n;
+        }
+    }
+
+    /// <summary>
+    /// Generate prime numbers less than System.Int64.MaxValue.
+    /// </summary>
+    public static Nums Primes(Num startingWith)
+    {
+        while (startingWith < long.MaxValue)
+        {
+            long max = Math.Max(1000000, startingWith + 1000000 * (long)Math.Log(startingWith));
+            if (max < 0) max = long.MaxValue;
+
+            foreach (long p in PrimeSieve(startingWith, max))
                 yield return p;
-                int q = p * p;
 
-                while (q > 0 && q < n)
-                {
-                    isComp[q] = true;
-                    q += p;
-                }
-            }
+            startingWith = max;
         }
+    }
 
-        private static Nums PrimeSieve(long min, long max)
+    /// <summary>
+    /// Generate prime numbers less than System.Int32.MaxValue.
+    /// </summary>
+    public static IEnumerable<int> PrimesInt32(int startingWith)
+    {
+        foreach (var n in Primes(startingWith).TakeWhile(p => p <= int.MaxValue))
         {
-            int sqrt = (int)Math.Sqrt(max);
-            int n = (int)(max - min);
-            var isComp = new BitArray(n);
-
-            foreach (int p in PrimeSieve(sqrt + 1))
-            {
-                int q = (int)(p * (min / p) - min);
-                if (q < 0) q += p;
-
-                if (p >= min && !isComp[q])
-                {
-                    yield return q + min;
-                }
-
-                while (q < n)
-                {
-                    isComp[q] = true;
-                    q += p;
-                }
-            }
-
-            for (int p = 0; p < n; p++)
-            {
-                if (!isComp[p])
-                    yield return p + min;
-            }
+            yield return (int)n;
         }
+    }
 
-        /// <summary>
-        /// Generate all prime numbers less than System.Int64.MaxValue.
-        /// </summary>
-        /// <returns></returns>
-        public static Nums Primes()
+    /// <summary>
+    /// Determine prime factorization of a number.
+    /// </summary>
+    public static IEnumerable<Factor<Num>> PrimeFactors(Num n)
+    {
+        if (n == 1)
+            yield break;
+
+        ArgumentOutOfRangeException.ThrowIfLessThan(n, 2);
+
+        foreach (var prime in Primes())
         {
-            foreach (var n in Primes(2))
+            int count = 0;
+
+            while ((n % prime) == 0)
             {
-                yield return n;
+                count++;
+                n /= prime;
             }
-        }
 
-        /// <summary>
-        /// Generate all prime numbers less than System.Int32.MaxValue.
-        /// </summary>
-        /// <returns></returns>
-        public static IEnumerable<int> PrimesInt32()
-        {
-            foreach (var n in Primes(2).TakeWhile(p => p <= int.MaxValue))
-            {
-                yield return (int)n;
-            }
-        }
+            if (count > 0)
+                yield return new Factor<Num>(prime, count);
 
-        /// <summary>
-        /// Generate prime numbers less than System.Int64.MaxValue.
-        /// </summary>
-		public static Nums Primes(Num startingWith)
-        {
-            while (startingWith < long.MaxValue)
-            {
-                long max = Math.Max(1000000, startingWith + 1000000 * (long)Math.Log(startingWith));
-                if (max < 0) max = long.MaxValue;
-
-                foreach (long p in PrimeSieve(startingWith, max))
-                    yield return p;
-
-                startingWith = max;
-            }
-        }
-
-        /// <summary>
-        /// Generate prime numbers less than System.Int32.MaxValue.
-        /// </summary>
-        public static IEnumerable<int> PrimesInt32(int startingWith)
-        {
-            foreach (var n in Primes(startingWith).TakeWhile(p => p <= int.MaxValue))
-            {
-                yield return (int)n;
-            }
-        }
-
-        /// <summary>
-        /// Determine prime factorization of a number.
-        /// </summary>
-		public static IEnumerable<Factor<Num>> PrimeFactors(Num n)
-        {
             if (n == 1)
                 yield break;
 
-            ArgumentOutOfRangeException.ThrowIfLessThan(n, 2);
+            var s = prime * prime;
 
-            foreach (var prime in Primes())
+            if (s > n || s < 0)
             {
-                int count = 0;
-
-                while ((n % prime) == 0)
-                {
-                    count++;
-                    n /= prime;
-                }
-
-                if (count > 0)
-                    yield return new Factor<Num>(prime, count);
-
-                if (n == 1)
-                    yield break;
-
-                var s = prime * prime;
-
-                if (s > n || s < 0)
-                {
-                    yield return new Factor<Num>(n, 1);
-                    yield break;
-                }
+                yield return new Factor<Num>(n, 1);
+                yield break;
             }
         }
+    }
 
-        private const int packedDivisor = 30;
+    private const int packedDivisor = 30;
 
-        private static readonly int[] packedModulus = [1, 7, 11, 13, 17, 19, 23, 29];
+    private static readonly int[] packedModulus = [1, 7, 11, 13, 17, 19, 23, 29];
 
-        private static readonly byte[] smallPrimesPacked =
-        [
-            254,223,239,126,182,219,61,249,213,79,30,243,234,
+    private static readonly byte[] smallPrimesPacked =
+    [
+        254,223,239,126,182,219,61,249,213,79,30,243,234,
             166,237,158,230,12,211,211,59,221,89,165,106,103,
             146,189,120,30,166,86,86,227,173,45,222,42,76,85,
             217,163,240,159,3,84,161,248,46,253,68,233,102,246,
@@ -342,5 +335,4 @@ namespace Foundations
             33,80,113,72,161,229,20,110,72,32,50,138,24,24,
             69,106,50,32,130,1,
         ];
-    }
 }

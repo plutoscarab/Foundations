@@ -12,16 +12,18 @@ namespace Foundations.Functions
     /// <summary>
     /// Miscellaneous special functions.
     /// </summary>
-	public static class Special
+	public static partial class Special
 	{
 <#
-MakeErf("Double", "Math", "", ".Real");
-MakeErf("Complex", "Complex", ".Real", "");
+MakeErf("Double", "Math", "Math", "", ".Real", "Complex.ImaginaryOne");
+MakeErf("Complex", "Complex", "Math", ".Real", "", "Complex.ImaginaryOne");
+MakeErf("ComplexQuad", "ComplexQuad", "Quad", ".Re", "", "ComplexQuad.I");
+MakeErf("Quad", "Quad", "Quad", "", ".Re", "ComplexQuad.I");
 #>
     }
 }
 <#+
-void MakeErf(string T, string math, string real, string asReal)
+void MakeErf(string T, string math, string realMath, string real, string asReal, string imaginaryOne)
 {
 #>
 
@@ -58,7 +60,7 @@ void MakeErf(string T, string math, string real, string asReal)
 				t = (k - 0.5) / (1 + k / (zz + t));
 			}
 
-			return (1 - <#= math #>.Exp(<#= math #>.Log(z) - zz) / (t + zz) / Sqrtπ) * Math.Sign(z<#= real #>);
+			return (1 - <#= math #>.Exp(<#= math #>.Log(z) - zz) / (t + zz) / Sqrtπ) * <#= realMath #>.Sign(z<#= real #>);
 		}
 
 		/// <summary>
@@ -88,7 +90,7 @@ void MakeErf(string T, string math, string real, string asReal)
         public static <#= T #> Erfi(<#= T #> z)
         {
 <#+ Optimization(T, "z", "Erfi"); #>
-            return (-Complex.ImaginaryOne * Erf(Complex.ImaginaryOne * z))<#= asReal #>;
+            return (-<#= imaginaryOne #> * Erf(<#= imaginaryOne #> * z))<#= asReal #>;
         }
 <#+
 }
@@ -103,5 +105,12 @@ void Optimization(string T, string z, string fn)
 
 <#+
     }
+	else if (T == "ComplexQuad")
+	{
+#>
+			if (<#= z #>.Im == 0)
+				return <#= fn #>(<#= z #>.Re);	
+<#+
+	}
 }
 #>

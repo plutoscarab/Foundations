@@ -1,10 +1,4 @@
 ﻿
-/*
-PrimesTests.cs
-
-*/
-
-using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

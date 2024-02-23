@@ -1,30 +1,22 @@
 ﻿
-/*
-Factorials.cs
-https://oeis.org/A000142
+// https://oeis.org/A000142
 
-*/
+namespace Foundations;
 
-using System;
-using System.Collections.Generic;
-using System.Numerics;
-
-namespace Foundations
+public static partial class Sequences
 {
-    public static partial class Sequences 
-    {
-        private static readonly long[] flong =
-        [
-            1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800,
+    private static readonly long[] flong =
+    [
+        1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800,
             39916800, 479001600, 6227020800, 87178291200,
             1307674368000, 20922789888000, 355687428096000,
             6402373705728000, 121645100408832000,
             2432902008176640000,
         ];
 
-        private static readonly double[] fdbl =
-        [
-            1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, 479001600,
+    private static readonly double[] fdbl =
+    [
+        1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, 479001600,
             6227020800, 87178291200, 1307674368000, 20922789888000, 355687428096000,
             6.402373705728E+15, 1.21645100408832E+17, 2.43290200817664E+18,
             5.109094217170944E+19, 1.1240007277776077E+21, 2.5852016738884974E+22,
@@ -79,9 +71,9 @@ namespace Foundations
             2.526075744973198E+302, 4.2690680090047051E+304, 7.2574156153079978E+306,
         ];
 
-        private static readonly double[] overf =
-        [
-            1, 1, 0.5, 0.16666666666666666, 0.041666666666666664, 0.0083333333333333332,
+    private static readonly double[] overf =
+    [
+        1, 1, 0.5, 0.16666666666666666, 0.041666666666666664, 0.0083333333333333332,
             0.0013888888888888889, 0.00019841269841269841, 2.48015873015873E-05,
             2.7557319223985893E-06, 2.7557319223985888E-07, 2.505210838544172E-08,
             2.08767569878681E-09, 1.6059043836821613E-10, 1.1470745597729725E-11,
@@ -139,45 +131,44 @@ namespace Foundations
             3.9587094804657568E-303, 2.34243164524601E-305, 1.3779009677917706E-307,
         ];
 
-        /// <summary>
-        /// Factorials, 1, 1, 1*2, 1*2*3, 1*2*3*4, etc.
-        /// </summary>
-        public static IEnumerable<long> Factorials()
-        {
-            foreach (var f in flong) yield return f;
-        }
+    /// <summary>
+    /// Factorials, 1, 1, 1*2, 1*2*3, 1*2*3*4, etc.
+    /// </summary>
+    public static IEnumerable<long> Factorials()
+    {
+        foreach (var f in flong) yield return f;
+    }
 
-        /// <summary>
-        /// Factorials, 1, 1, 1*2, 1*2*3, 1*2*3*4, etc.
-        /// </summary>
-        public static IEnumerable<double> FactorialsD()
-        {
-            foreach (var f in fdbl) yield return f;
-        }
+    /// <summary>
+    /// Factorials, 1, 1, 1*2, 1*2*3, 1*2*3*4, etc.
+    /// </summary>
+    public static IEnumerable<double> FactorialsD()
+    {
+        foreach (var f in fdbl) yield return f;
+    }
 
-        /// <summary>
-        /// Factorials, 1, 1, 1*2, 1*2*3, 1*2*3*4, etc.
-        /// </summary>
-        public static IEnumerable<BigInteger> FactorialsB()
-        {
-            yield return 1; // 0!
-            yield return 1; // 1!
-            BigInteger p = 1, f = 1;
+    /// <summary>
+    /// Factorials, 1, 1, 1*2, 1*2*3, 1*2*3*4, etc.
+    /// </summary>
+    public static IEnumerable<BigInteger> FactorialsB()
+    {
+        yield return 1; // 0!
+        yield return 1; // 1!
+        BigInteger p = 1, f = 1;
 
-            while (true)
-            {
-                f++;
-                p *= f;
-                yield return p;
-            }
-        }
-
-        /// <summary>
-        /// Reciprocals of factorials.
-        /// </summary>
-        public static IEnumerable<double> OverFactorials()
+        while (true)
         {
-            foreach (var f in overf) yield return f;
+            f++;
+            p *= f;
+            yield return p;
         }
+    }
+
+    /// <summary>
+    /// Reciprocals of factorials.
+    /// </summary>
+    public static IEnumerable<double> OverFactorials()
+    {
+        foreach (var f in overf) yield return f;
     }
 }

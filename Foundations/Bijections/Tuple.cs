@@ -1,4 +1,6 @@
 
+using static Foundations.Functions.Special;
+
 namespace Foundations;
 
 public partial struct Nat
@@ -51,23 +53,6 @@ public partial struct Nat
         item3 = list[2] - list[3] - 1;
         item4 = list[1] - list[2] - 1;
         item5 = list[0] - list[1] - 1;
-    }
-
-    public static Nat Binomial(Nat n, Nat k)
-    {
-        if (n < k) return Zero;
-        if (k == 0) return One;
-        k = Min(k, n - k);
-        if (k == 1) return n;
-        Nat i = 0, p = 1;
-
-        while (true)
-        {
-            if (i >= k)
-                return p;
-
-            (i, p) = (i + 1, (n - i) * p / (i + 1));
-        }
     }
 
     private static Nat UpperBinomial(Nat k, Nat n)

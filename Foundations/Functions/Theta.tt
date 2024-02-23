@@ -19,18 +19,30 @@ namespace Foundations.Functions
 MakeTheta1("Complex", "Complex", "Complex", "Complex");
 MakeTheta1("Complex", "Complex", "Double", "Math");
 MakeTheta1("Double", "Math", "Double", "Math");
+MakeTheta1("Quad", "Quad", "Quad", "Quad");
+MakeTheta1("Quad", "Quad", "Double", "Math");
+MakeTheta1("ComplexQuad", "ComplexQuad", "ComplexQuad", "ComplexQuad");
 
 MakeTheta2("Complex", "Complex", "Complex", "Complex");
 MakeTheta2("Complex", "Complex", "Double", "Math");
 MakeTheta2("Double", "Math", "Double", "Math");
+MakeTheta2("Quad", "Quad", "Quad", "Quad");
+MakeTheta2("Quad", "Quad", "Double", "Math");
+MakeTheta2("ComplexQuad", "ComplexQuad", "ComplexQuad", "ComplexQuad");
 
 MakeTheta3("Complex", "Complex", "Complex", "Complex");
 MakeTheta3("Complex", "Complex", "Double", "Math");
 MakeTheta3("Double", "Math", "Double", "Math");
+MakeTheta3("Quad", "Quad", "Quad", "Quad");
+MakeTheta3("Quad", "Quad", "Double", "Math");
+MakeTheta3("ComplexQuad", "ComplexQuad", "ComplexQuad", "ComplexQuad");
 
 MakeTheta4("Complex", "Complex", "Complex", "Complex");
 MakeTheta4("Complex", "Complex", "Double", "Math");
 MakeTheta4("Double", "Math", "Double", "Math");
+MakeTheta4("Quad", "Quad", "Quad", "Quad");
+MakeTheta4("Quad", "Quad", "Double", "Math");
+MakeTheta4("ComplexQuad", "ComplexQuad", "ComplexQuad", "ComplexQuad");
 #>
     }
 }

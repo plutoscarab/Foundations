@@ -23,7 +23,9 @@ namespace Foundations.Functions
     {
 <# 
 MakeR("Complex", "Complex"); 
-MakeR("double", "Math"); 
+MakeR("double", "Math");
+MakeR("ComplexQuad", "ComplexQuad");
+MakeR("Quad", "Quad");
 #>
     }
 }

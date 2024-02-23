@@ -53,17 +53,25 @@ namespace Foundations.Functions
             return Math.Exp(-π * Kprime / K);
         }
 <#
-MakeF("Complex", "{0}.Real", "Complex");
-MakeF("Double", "{0}", "Math");
+MakeF("Complex", "{0}.Real", "Complex", "Math");
+MakeF("Double", "{0}", "Math", "Math");
+MakeF("ComplexQuad", "{0}.Re", "ComplexQuad", "Quad");
+MakeF("Quad", "{0}", "Quad", "Quad");
+
 MakeE("Complex", "{0}.Real", "Complex");
 MakeE("Double", "{0}", "Math");
+MakeE("ComplexQuad", "{0}.Re", "ComplexQuad");
+MakeE("Quad", "{0}", "Quad");
+
 MakeΠ("Complex", "{0}.Real", "Complex");
 MakeΠ("Double", "{0}", "Math");
+MakeΠ("ComplexQuad", "{0}.Re", "ComplexQuad");
+MakeΠ("Quad", "{0}", "Quad");
 #>
     }
 }
 <#+
-public void MakeF(string T, string realFmt, string math)
+public void MakeF(string T, string realFmt, string math, string realMath)
 {
     var φreal = string.Format(realFmt, "φ");
 #>
@@ -75,9 +83,9 @@ public void MakeF(string T, string realFmt, string math)
         /// <param name="m">Parameter, equal to k², the square of the modulus.</param>
         public static <#= T #> F(<#= T #> φ, double m)
         {
-            if (Math.Abs(<#= φreal #>) > π / 2)
+            if (<#= realMath #>.Abs(<#= φreal #>) > π / 2)
             {
-                int n = (int)Math.Round(<#= φreal #> / π);
+                int n = (int)<#= realMath #>.Round(<#= φreal #> / π);
                 return F(φ - n * π, m) + n * 2 * K(m);
             }
 
@@ -101,9 +109,9 @@ public void MakeF(string T, string realFmt, string math)
             {
                 <#= T #> offset = 0;
 
-                if (Math.Abs(<#= φreal #>) > π / 2)
+                if (<#= realMath #>.Abs(<#= φreal #>) > π / 2)
                 {
-                    int n = (int)Math.Round(<#= φreal #> / π);
+                    int n = (int)<#= realMath #>.Round(<#= φreal #> / π);
                     φ -= n * π;
                     offset = n * 2 * k;
                 }

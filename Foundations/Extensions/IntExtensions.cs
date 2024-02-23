@@ -22,4 +22,6 @@ public static class IntExtensions
         if ((e & 1) == 0) { var h = Pow(n, e / 2); return h * h; }
         return n * Pow(n, e - 1);
     }
+
+    public static int Parity(this int n) => 1 - 2 * (n & 1);
 }
