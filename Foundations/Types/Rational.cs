@@ -348,21 +348,23 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
     }
 
     /// <summary>
+    /// Implicitly casts a <see cref="System.Single"/> to a <see cref="Rational"/>.
+    /// The result is a Rational identical to the original Single when the Rational 
+    /// is converted to a Single, but is not necessarily exactly equal to the Single as-is.
+    /// </summary>
+    public static implicit operator Rational(float f)
+    {
+        return Best(f);
+    }
+
+    /// <summary>
     /// Implicitly casts a <see cref="System.Double"/> to a <see cref="Rational"/>.
     /// The result is a Rational identical to the original Double when the Rational 
     /// is converted to a Double, but is not necessarily exactly equal to the Double as-is.
     /// </summary>
     public static implicit operator Rational(double d)
     {
-        Rational r = Zero;
-
-        foreach (var c in ContinuedFraction.Convergents(d))
-        {
-            r = c;
-            if (d == (double)c) break;
-        }
-
-        return r;
+        return Best(d);
     }
 
     /// <summary>
@@ -671,5 +673,104 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
     public static Rational Next(Rational x)
     {
         return Reciprocal(Floor(x) * Two + One - x);
+    }
+
+    public static Rational Best(double d) => Best(FromDoubleBits(d));
+
+    public static Rational Best(float f) => Best(FromSingleBits(f));
+
+    private static Rational Best((BigInteger P, BigInteger Q) r) => Best(new(r.P * 2 - 1, r.Q * 2), new Rational(r.P * 2 + 1, r.Q * 2));
+
+    /// <summary>
+    /// Gets the rational value with the smallest denominator that lies between a given min and max value.
+    /// </summary>
+    public static Rational Best(Rational lo, Rational hi)
+    {
+        var clo = ((ContinuedFraction)lo).ToList();
+        var chi = ((ContinuedFraction)hi).ToList();
+        var matching = clo.Zip(chi).TakeWhile(_ => _.First == _.Second).Count();
+        var cf = clo.Take(matching).ToList();
+        var min = BigInteger.Min(clo[matching], chi[matching]);
+        cf.Add(min + 1);
+        new ContinuedFraction(cf).ToRatio(out var r);
+        return r;
+    }
+
+    public static (BigInteger P, BigInteger Q) FromSingleBits(float d)
+    {
+        if (float.IsNaN(d))
+            throw new ArgumentException(nameof(d));
+
+        if (float.IsPositiveInfinity(d))
+            throw new ArgumentException(nameof(d));
+
+        if (float.IsNegativeInfinity(d))
+            throw new ArgumentException(nameof(d));
+
+        if (d == 0.0f)
+            return (0, 1);
+
+        int n = BitConverter.SingleToInt32Bits(d);
+        bool negative = n < 0;
+        int exp = (int)(n >> 23) & 0xFF;
+        int mantissa = n & 0x7FFFFF;
+
+        if (exp == 0)
+        {
+            exp = -126;
+        }
+        else
+        {
+            mantissa |= 0x800000;
+            exp -= 127;
+        }
+
+        exp -= 23;
+        int numerator = mantissa;
+        if (negative) numerator *= -1;
+
+        if (exp >= 0)
+            return new(numerator * BigInteger.Pow(2, exp), 1);
+
+        return new(numerator, BigInteger.Pow(2, -exp));
+    }
+
+    public static (BigInteger P, BigInteger Q) FromDoubleBits(double d)
+    {
+        if (double.IsNaN(d))
+            throw new ArgumentException(nameof(d));
+
+        if (double.IsPositiveInfinity(d))
+            throw new ArgumentException(nameof(d));
+
+        if (double.IsNegativeInfinity(d))
+            throw new ArgumentException(nameof(d));
+
+        if (d == 0.0)
+            return (0, 1);
+
+        long n = BitConverter.DoubleToInt64Bits(d);
+        bool negative = n < 0;
+        int exp = (int)(n >> 52) & 0x7FF;
+        long mantissa = n & 0xFFFFFFFFFFFFF;
+
+        if (exp == 0)
+        {
+            exp = -1022;
+        }
+        else
+        {
+            mantissa |= 0x10000000000000;
+            exp -= 1023;
+        }
+
+        exp -= 52;
+        long numerator = mantissa;
+        if (negative) numerator *= -1;
+
+        if (exp >= 0)
+            return (numerator * BigInteger.Pow(2, exp), 1);
+
+        return (numerator, BigInteger.Pow(2, -exp));
     }
 }
