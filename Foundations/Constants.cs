@@ -6,6 +6,9 @@ namespace Foundations
     /// </summary>
     public static class Constants
     {
+        /// <summary>Digits in base-36 number system.</summary>
+        public const string Base36Digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
         /// <summary>PI</summary>
         public const double π          = 3.1415926535897931;
 
@@ -119,7 +122,6 @@ namespace Foundations
 
         /// <summary>Base-10 logarithm of 2.</summary>
         public const double OverLog2       = 3.3219280948873622;
-
     }
 
     /// <summary>
@@ -127,6 +129,7 @@ namespace Foundations
     /// </summary>
     public static class DecimalConstants
     {
+
         /// <summary>PI</summary>
         public const decimal π          = 3.1415926535897932384626433833m;
 
@@ -240,7 +243,6 @@ namespace Foundations
 
         /// <summary>Base-10 logarithm of 2.</summary>
         public const decimal OverLog2       = 3.3219280948873623478703194298m;
-
     }
 
     /// <summary>
@@ -248,6 +250,7 @@ namespace Foundations
     /// </summary>
     public static class SingleConstants
     {
+
         /// <summary>PI</summary>
         public const float π          = 3.14159274f;
 
@@ -361,7 +364,6 @@ namespace Foundations
 
         /// <summary>Base-10 logarithm of 2.</summary>
         public const float OverLog2       = 3.321928f;
-
     }
 
     /// <summary>
@@ -369,6 +371,7 @@ namespace Foundations
     /// </summary>
     public static class QuadConstants
     {
+
         /// <summary>PI</summary>
         public static readonly Quad π          = Quad.Parse("3.1415926535897932384626433832795028841971693993751058209749445923");
 
@@ -482,6 +485,5 @@ namespace Foundations
 
         /// <summary>Base-10 logarithm of 2.</summary>
         public static readonly Quad OverLog2       = 1 / Quad.Parse("0.3010299956639811952137388947244930267681898814621085413104274611");
-
     }
 }

@@ -155,10 +155,10 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
     /// <summary>
     /// Gets a radix-based representation of this <see cref="Rational"/> .
     /// </summary>
-    public readonly string ToString(int radix, int maxDigits)
+    public readonly string ToString(int radix, int places)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(radix, 2, nameof(radix));
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(radix, 16, nameof(radix));
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(radix, 36, nameof(radix));
         var (p, q) = (P, Q);
         StringBuilder s = new();
 
@@ -169,16 +169,18 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
         }
 
         var (d, r) = BigInteger.DivRem(p, q);
-        s.Append(d);
+        var whole = d;
+        var ws = d.ToString(radix);
 
         if (r == 0)
+        {
+            s.Append(ws);
             return s.ToString();
+        }
 
-        var whole = d;
-        s.Append('.');
         List<int> digits = [];
         
-        while (p != 0 && maxDigits-- >= 0)
+        while (p != 0 && places-- >= 0)
         {
             (d, r) = BigInteger.DivRem(r * radix, q);
             digits.Add((int)d);
@@ -204,9 +206,14 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
             }
         }
 
+        foreach (var digit in whole.GetDigits(radix))
+            s.Append(Constants.Base36Digits[digit]);
+
+        s.Append('.');
+
         for (var i = 0; i < digits.Count - 1; i++)
-            s.Append(digits[i]);
-            
+            s.Append(Constants.Base36Digits[digits[i]]);
+
         return s.ToString();
     }
 

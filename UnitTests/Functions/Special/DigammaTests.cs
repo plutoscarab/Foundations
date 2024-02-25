@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.IO;
 using System.Numerics;
+using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using static Foundations.Functions.Special;
@@ -15,7 +16,10 @@ public class DigammaTests
     public void GetDigammaChebyshevCoefficientsTest()
     {
         var c = GetDigammaChebyshevCoefficients(30);
-        using var file = new IndentedTextWriter(File.CreateText(@"C:\Users\bretm\github\Foundations\Foundations\Functions\DigammaChebyshevCoefficients.cs"));
+        
+        using var file = new IndentedTextWriter(File.CreateText(Path.Combine(Assembly.GetExecutingAssembly().Location,
+            @"..\..\..\..\..\Foundations\Functions\DigammaChebyshevCoefficients.cs")));
+
         file.WriteLine();
         file.WriteLine("namespace Foundations.Functions;");
         file.WriteLine();

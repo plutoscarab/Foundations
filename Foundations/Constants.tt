@@ -56,6 +56,14 @@ void Make(string className, string typeName, string systemType, Func<string, obj
     public static class <#= className #>
     {
 <#+
+    if (className == "Constants")
+    {
+#>
+        /// <summary>Digits in base-36 number system.</summary>
+        public const string Base36Digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+<#+    
+    }
+
     var type = Type.GetType(systemType);
     object instance = null;
     string con;
@@ -73,9 +81,9 @@ void Make(string className, string typeName, string systemType, Func<string, obj
     {
         var t = c.Split(',');
 #>
+
         /// <summary><#= t[0].Trim() #></summary>
         public <#= con #><#= typeName #> <#= t[1].Trim().PadRight(10) #> = <#= toObject(t[2].Trim()) #>;
-
 <#+        
     }
 
@@ -84,9 +92,9 @@ void Make(string className, string typeName, string systemType, Func<string, obj
         var t = c.Split(',');
         if (t[1].Trim() == "e") t[1] = "E";
 #>
+
         /// <summary><#= t[0].Trim() #></summary>
         public <#= con #><#= typeName #> Over<#= t[1].Trim().PadRight(10) #> = <#= recip(t[2].Trim()) #>;
-
 <#+        
     }
 #>

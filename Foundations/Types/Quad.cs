@@ -1,6 +1,5 @@
 
 using System.Runtime.InteropServices;
-using System.Diagnostics;
 
 namespace Foundations;
 
@@ -421,10 +420,10 @@ public struct Quad : IEquatable<Quad>, IComparable<Quad>
         }
     }
 
-    public readonly string ToString(int numberBase)
+    public readonly string ToString(int radix)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(numberBase, 2, nameof(numberBase));
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(numberBase, 36, nameof(numberBase));
+        ArgumentOutOfRangeException.ThrowIfLessThan(radix, 2, nameof(radix));
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(radix, 36, nameof(radix));
 
         if (IsNaN(this))
             return double.NaN.ToString();
@@ -441,7 +440,7 @@ public struct Quad : IEquatable<Quad>, IComparable<Quad>
         if (exponent == 0 && mantissa == Mantissa.Zero &negative == false && signif == 0)
             return "uninitialized";
 
-        Quad nb = numberBase;
+        Quad nb = radix;
         StringBuilder s = new(45);
 
         if (negative)
@@ -458,7 +457,7 @@ public struct Quad : IEquatable<Quad>, IComparable<Quad>
         Quad div = IntPower(nb, exp);
         Quad mant = abs / div;
 
-        if ((int)mant >= numberBase)
+        if ((int)mant >= radix)
         {
             exp++;
             mant /= nb;
@@ -474,13 +473,38 @@ public struct Quad : IEquatable<Quad>, IComparable<Quad>
 
         int trailz = 0;
         bool emitdec = false;
+        const int len = 38;
+        var digits = new int[len];
 
-        for (int i = 0; i < 37; i++)
+        for (var i = 0; i < len; i++)
         {
             int digit = (int)mant;
+            digits[i] = digit;
+            mant = nb * Frac(mant);
+        }
 
-            if (digit < 0 || digit >= numberBase)
-                Debugger.Break();
+        if (digits[^1] * 2 >= radix)
+        {
+            for (var i = len - 2; i >= 0; i--)
+            {
+                if (++digits[i] < radix)
+                    break;
+
+                digits[i] = 0;
+
+                if (i == 0)
+                {
+                    Array.Resize(ref digits, len + 1);
+                    Array.Copy(digits, 0, digits, 1, len);
+                    digits[0] = 1;
+                    dec++;
+                }
+            }
+        }
+
+        for (var i = 0; i < len - 1; i++)
+        {
+            var digit = digits[i];
 
             if (digit == 0 && dec <= 0)
             {
@@ -505,15 +529,15 @@ public struct Quad : IEquatable<Quad>, IComparable<Quad>
                 if (--dec == 0)
                     emitdec = true;
             }
-
-            mant = nb * Frac(mant);
         }
 
         if (exp != 0)
         {
             s.Append('^');
-            if (exp >= 0) s.Append('+');
-            s.Append(exp);
+            if (exp > 0) s.Append('+'); else s.Append('-');
+
+            foreach (var d in exp.GetDigits(radix))
+                s.Append(Constants.Base36Digits[d]);
         }
 
         return s.ToString();
