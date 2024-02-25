@@ -11,9 +11,11 @@ public static class IntExtensions
 
     public static string ToSuperscript(this long n) => ((BigInteger)n).ToSubscript();
 
-    public static string ToSubscript(this BigInteger n) => new(n.ToString().Select(c => "₀₁₂₃₄₅₆₇₈₉"[c - '0']).ToArray());
+    public static string ToSubscript(this BigInteger n) => 
+        n < 0 ? "₋" + (-n).ToSuperscript() : new(n.ToString().Select(c => "₀₁₂₃₄₅₆₇₈₉"[c - '0']).ToArray());
 
-    public static string ToSuperscript(this BigInteger n) => new(n.ToString().Select(c => "⁰¹²³⁴⁵⁶⁷⁸⁹"[c - '0']).ToArray());
+    public static string ToSuperscript(this BigInteger n) => 
+        n < 0 ? "⁻" + (-n).ToSuperscript() : new(n.ToString().Select(c => "⁰¹²³⁴⁵⁶⁷⁸⁹"[c - '0']).ToArray());
 
     public static int Pow(this int n, int e)
     {

@@ -23,6 +23,7 @@ MakeGCD("long");
 MakeGCD("ulong");
 MakeGCD("BigInteger");
 MakeGCD("Nat");
+MakeGCD("Int128");
 #>
     }
 }
@@ -36,7 +37,7 @@ void MakeGCD(string T)
         public static <#= T #> GCD(<#= T #> p, <#= T #> q)
         {
 <#+
-if (char.IsUpper(T[0]))
+if (char.IsUpper(T[0]) && !char.IsDigit(T[T.Length - 1]))
 {
 #>
             return <#= T #>.GreatestCommonDivisor(p, q);
@@ -57,8 +58,7 @@ else
                 if (m == 0) return q;
                 p = q;
                 q = m;
-            }
-<#+
+            }<#+
 }
 #>            
         }

@@ -354,7 +354,7 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
     /// </summary>
     public static implicit operator Rational(float f)
     {
-        return Best(f);
+        return FromFloatingPoint(f);
     }
 
     /// <summary>
@@ -364,7 +364,7 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
     /// </summary>
     public static implicit operator Rational(double d)
     {
-        return Best(d);
+        return FromFloatingPoint(d);
     }
 
     /// <summary>
@@ -675,11 +675,11 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
         return Reciprocal(Floor(x) * Two + One - x);
     }
 
-    public static Rational Best(double d) => Best(FromDoubleBits(d));
+    public static Rational Best(double d) => Best(FromFloatingPoint(d));
 
-    public static Rational Best(float f) => Best(FromSingleBits(f));
+    public static Rational Best(float f) => Best(FromFloatingPoint(f));
 
-    private static Rational Best((BigInteger P, BigInteger Q) r) => Best(new(r.P * 2 - 1, r.Q * 2), new Rational(r.P * 2 + 1, r.Q * 2));
+    private static Rational Best(Rational r) => Best(new(r.P * 2 - 1, r.Q * 2), new Rational(r.P * 2 + 1, r.Q * 2));
 
     /// <summary>
     /// Gets the rational value with the smallest denominator that lies between a given min and max value.
@@ -696,19 +696,48 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
         return r;
     }
 
-    public static (BigInteger P, BigInteger Q) FromSingleBits(float d)
+    public static (long Mantissa, short Exponent) DecomposeFloatingPoint(float d)
     {
-        if (float.IsNaN(d))
-            throw new ArgumentException(nameof(d));
-
-        if (float.IsPositiveInfinity(d))
-            throw new ArgumentException(nameof(d));
-
-        if (float.IsNegativeInfinity(d))
+        if (float.IsNaN(d) || float.IsInfinity(d))
             throw new ArgumentException(nameof(d));
 
         if (d == 0.0f)
-            return (0, 1);
+            return (0, 0);
+
+        int n = BitConverter.SingleToInt32Bits(d);
+        bool negative = n < 0;
+        int exp = (int)(n >> 23) & 0xFF;
+        int mantissa = n & 0x7FFFFF;
+
+        if (exp == 0)
+        {
+            exp = -126;
+        }
+        else
+        {
+            mantissa |= 0x800000;
+            exp -= 127;
+        }
+
+        exp -= 23;
+        int numerator = mantissa;
+        if (negative) numerator *= -1;
+        return (numerator, (short)exp);
+    }
+
+    public static Rational FromFloatingPoint(float d)
+    {
+        if (float.IsNaN(d))
+            return NaN;
+
+        if (float.IsPositiveInfinity(d))
+            return PositiveInfinity;
+
+        if (float.IsNegativeInfinity(d))
+            return NegativeInfinity;
+
+        if (d == 0.0f)
+            return Zero;
 
         int n = BitConverter.SingleToInt32Bits(d);
         bool negative = n < 0;
@@ -730,24 +759,53 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
         if (negative) numerator *= -1;
 
         if (exp >= 0)
-            return new(numerator * BigInteger.Pow(2, exp), 1);
+            return new(numerator * BigInteger.Pow(2, exp), 1, false);
 
-        return new(numerator, BigInteger.Pow(2, -exp));
+        return new(numerator, BigInteger.Pow(2, -exp), false);
     }
 
-    public static (BigInteger P, BigInteger Q) FromDoubleBits(double d)
+    public static (long Mantissa, short Exponent) DecomposeFloatingPoint(double d)
     {
-        if (double.IsNaN(d))
-            throw new ArgumentException(nameof(d));
-
-        if (double.IsPositiveInfinity(d))
-            throw new ArgumentException(nameof(d));
-
-        if (double.IsNegativeInfinity(d))
+        if (double.IsNaN(d) || double.IsInfinity(d))
             throw new ArgumentException(nameof(d));
 
         if (d == 0.0)
-            return (0, 1);
+            return (0, 0);
+
+        long n = BitConverter.DoubleToInt64Bits(d);
+        bool negative = n < 0;
+        int exp = (int)(n >> 52) & 0x7FF;
+        long mantissa = n & 0xFFFFFFFFFFFFF;
+
+        if (exp == 0)
+        {
+            exp = -1022;
+        }
+        else
+        {
+            mantissa |= 0x10000000000000;
+            exp -= 1023;
+        }
+
+        exp -= 52;
+        long numerator = mantissa;
+        if (negative) numerator *= -1;
+        return (numerator, (short)exp);
+    }
+
+    public static Rational FromFloatingPoint(double d)
+    {
+        if (double.IsNaN(d))
+            return NaN;
+
+        if (double.IsPositiveInfinity(d))
+            return PositiveInfinity;
+
+        if (double.IsNegativeInfinity(d))
+            return NegativeInfinity;
+
+        if (d == 0.0)
+            return Zero;
 
         long n = BitConverter.DoubleToInt64Bits(d);
         bool negative = n < 0;
@@ -769,8 +827,8 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
         if (negative) numerator *= -1;
 
         if (exp >= 0)
-            return (numerator * BigInteger.Pow(2, exp), 1);
+            return new(numerator * BigInteger.Pow(2, exp), 1, false);
 
-        return (numerator, BigInteger.Pow(2, -exp));
+        return new(numerator, BigInteger.Pow(2, -exp), false);
     }
 }

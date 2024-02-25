@@ -1,10 +1,4 @@
 ﻿
-/*
-Rational.cs
-
-
-*/
-
 using Foundations.RandomNumbers;
 using Foundations.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -306,7 +300,7 @@ namespace Foundations.UnitTests.Types
         [TestMethod]
         public void RationalFromDouble()
         {
-            Assert.AreEqual(new Rational(2, 3), (Rational)(2d / 3d));
+            Assert.AreEqual(new Rational(2, 3), Rational.Best(2d / 3d));
         }
 
         [TestMethod]

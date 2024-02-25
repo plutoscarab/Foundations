@@ -1,5 +1,4 @@
 
-using System;
 using System.CodeDom.Compiler;
 using System.IO;
 using System.Numerics;
@@ -53,5 +52,19 @@ public class DigammaTests
         var q = Digamma(QuadConstants.Sqrt2);
         var z = Digamma(new ComplexQuad(1, 1));
         var s = Digamma(new Complex(1, 1));
+    }
+
+    [TestMethod]
+    public void HarmonicNumbersTest()
+    {
+        QuadSum q = Quad.Zero;
+        Quad h, hq;
+
+        for (var i = 2; i < 100; i++)
+        {
+            q += Quad.One / (i - 1);
+            h = Digamma((Quad)i) + QuadConstants.γ;
+            hq = h - q.Value;
+        }
     }
 }

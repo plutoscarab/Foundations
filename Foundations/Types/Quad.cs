@@ -54,7 +54,7 @@ internal struct DoubleBytes
 /// Quadruple-precision floating-point number. 144 bits of precision with one sign
 /// bit, 16 exponent bits, and 127 mantissa bits.
 /// </summary>
-public struct Quad
+public struct Quad : IEquatable<Quad>, IComparable<Quad>
 {
     const ulong msb = 0x8000000000000000;
 
@@ -66,61 +66,61 @@ public struct Quad
     /// <summary>
     /// Represents a value that is not a number (NaN).
     /// </summary>
-    public static Quad NaN = new Quad(double.NaN);
+    public static readonly Quad NaN = new(double.NaN);
 
     /// <summary>
     /// Represents positive infinity.
     /// </summary>
-    public static Quad PositiveInfinity = new Quad(double.PositiveInfinity);
+    public static readonly Quad PositiveInfinity = new(double.PositiveInfinity);
 
     /// <summary>
     /// Represents negative infinity.
     /// </summary>
-    public static Quad NegativeInfinity = new Quad(double.NegativeInfinity);
+    public static readonly Quad NegativeInfinity = new(double.NegativeInfinity);
 
     /// <summary>
     /// Represents the smallest possible Real greater than zero.
     /// </summary>
-    public static Quad Epsilon = new Quad(false, short.MinValue, msb, 0);
+    public static readonly Quad Epsilon = new(false, short.MinValue, msb, 0);
 
     /// <summary>
     /// Represents the most positive valid value of Real.
     /// </summary>
-    public static Quad MaxValue = new Quad(false, short.MaxValue - 1, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF);
+    public static readonly Quad MaxValue = new(false, short.MaxValue - 1, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF);
 
     /// <summary>
     /// Represents the most negative valid value of Real.
     /// </summary>
-    public static Quad MinValue = new Quad(true, short.MaxValue - 1, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF);
+    public static readonly Quad MinValue = new(true, short.MaxValue - 1, 0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF);
 
     /// <summary>
     /// Represents zero.
     /// </summary>
-    public static Quad Zero = new Quad(false, short.MinValue, 0, 0);
+    public static readonly Quad Zero = new(false, short.MinValue, 0, 0);
 
     /// <summary>
     /// Represents one.
     /// </summary>
-    public static Quad One = new Quad(1);
-    public static Quad NegativeOne = new Quad(-1);
+    public static readonly Quad One = new(1);
+    public static readonly Quad NegativeOne = new(-1);
 
     /// <summary>
     /// Represents two.
     /// </summary>
-    public static Quad Two = new Quad(2);
-    public static Quad OneHalf = new Quad(0.5);
+    public static readonly Quad Two = new(2);
+    public static readonly Quad OneHalf = new(0.5);
 
     /// <summary>
     /// Represents the natural logarithmic base.
     /// </summary>
-    public static Quad E = new Quad(0x4000, 0xadf8, 0x5458, 0xa2bb, 0x4a9a, 0xafdc, 0x5620, 0x273d, 0x3cf1);
+    public static readonly Quad E = new(0x4000, 0xadf8, 0x5458, 0xa2bb, 0x4a9a, 0xafdc, 0x5620, 0x273d, 0x3cf1);
 
     /// <summary>
     /// Represents the ratio of a circle's circumference to its diameter in Euclidean geometry.
     /// </summary>
-    public static Quad OneOverLn10 = new Quad(false, -1, 0xde5bd8a937287195, 0x355baaafad33dc6e);
+    public static readonly Quad OneOverLn10 = new(false, -1, 0xde5bd8a937287195, 0x355baaafad33dc6e);
 
-    public static Quad Omega = new Quad(false, 0, 0x91304d7c74b2ba5e, 0xafddaa6286dc28e2);
+    public static readonly Quad Omega = new(false, 0, 0x91304d7c74b2ba5e, 0xafddaa6286dc28e2);
 
     public Quad() : this(0)
     {
@@ -141,9 +141,11 @@ public struct Quad
     {
         this.negative = negative;
         this.exponent = exponent;
-        this.mantissa = new Mantissa(mantHi, mantLo);
-        if (this.mantissa != Mantissa.Zero)
+        mantissa = new Mantissa(mantHi, mantLo);
+
+        if (mantissa != Mantissa.Zero)
             this.exponent -= (short)this.mantissa.Normalize();
+            
         signif = 128;
     }
 
@@ -151,13 +153,14 @@ public struct Quad
     {
         negative = this.negative;
         exponent = this.exponent;
-        mantHi = this.mantissa.Hi;
-        mantLo = this.mantissa.Lo;
+        mantHi = mantissa.Hi;
+        mantLo = mantissa.Lo;
     }
 
     public Quad(long i)
     {
         signif = 128;
+
         if (i == 0)
         {
             negative = false;
@@ -168,10 +171,12 @@ public struct Quad
 
         negative = i < 0;
         exponent = 64;
+
         if (i > long.MinValue)
             mantissa = new Mantissa((ulong)Math.Abs(i), 0);
         else
             mantissa = new Mantissa((ulong)long.MaxValue + 1UL, 0);
+
         exponent -= (short)mantissa.Normalize();
     }
 
@@ -184,6 +189,7 @@ public struct Quad
     {
         negative = false;
         signif = 128;
+
         if (u == 0)
         {
             exponent = short.MinValue;
@@ -199,19 +205,20 @@ public struct Quad
     public Quad(double d)
     {
         signif = 128;
-        if (Double.IsNaN(d))
+
+        if (double.IsNaN(d))
         {
             negative = false;
             exponent = short.MaxValue;
             mantissa = Mantissa.MaxValue;
         }
-        else if (Double.IsPositiveInfinity(d))
+        else if (double.IsPositiveInfinity(d))
         {
             negative = false;
             exponent = short.MaxValue;
             mantissa = new Mantissa(msb, 0);
         }
-        else if (Double.IsNegativeInfinity(d))
+        else if (double.IsNegativeInfinity(d))
         {
             negative = true;
             exponent = short.MaxValue;
@@ -225,10 +232,11 @@ public struct Quad
         }
         else
         {
-            DoubleBytes db = new DoubleBytes(d);
+            DoubleBytes db = new(d);
             negative = d < 0;
             exponent = (short)(((db.Word3 >> 4) & 0x7FF) - 0x3FE);
             ulong mantHi;
+
             if (exponent > -0x3FE)
                 mantHi = (db.Bytes << 11) | msb;
             else
@@ -243,6 +251,7 @@ public struct Quad
                     }
                 }
             }
+
             mantissa = new Mantissa(mantHi, 0);
         }
     }
@@ -264,38 +273,53 @@ public struct Quad
     {
         const string digits = "0123456789ABCDEF";
 
-        if (s == null) throw new ArgumentNullException();
-        if (s.Length == 0) throw new ArithmeticException();
-        if (numberBase < 2 || numberBase > 16) throw new ArgumentOutOfRangeException();
+        ArgumentNullException.ThrowIfNull(s, nameof(s));
+        ArgumentOutOfRangeException.ThrowIfEqual(s.Length, 0, nameof(s.Length));
+        ArgumentOutOfRangeException.ThrowIfLessThan(numberBase, 2, nameof(numberBase));
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(numberBase, 16, nameof(numberBase));
 
         int b = numberBase;
         Quad n = 0, f = 1;
         int i = 0;
+
         if (s[i] == '-')
         {
             i++;
         }
+
         int D = -1, E = -1;
         int exp = 0;
+        
         for (; i < s.Length; i++)
         {
             if (s[i] == '^')
             {
-                if (E != -1) throw new FormatException();
+                if (E != -1) 
+                    throw new FormatException();
+
                 E = i;
                 i++;
-                if (i >= s.Length) throw new FormatException();
-                if (s[i] != '+' && s[i] != '-') throw new FormatException();
+
+                if (i >= s.Length) 
+                    throw new FormatException();
+
+                if (s[i] != '+' && s[i] != '-') 
+                    throw new FormatException();
             }
             else if (s[i] == '.')
             {
-                if (D != -1 || E != -1) throw new FormatException();
+                if (D != -1 || E != -1) 
+                    throw new FormatException();
+
                 D = i;
             }
             else
             {
                 int d = digits.IndexOf(s[i]);
-                if (d == -1 || d >= b) throw new FormatException();
+
+                if (d == -1 || d >= b) 
+                    throw new FormatException();
+
                 if (E != -1)
                 {
                     exp = exp * b + d;
@@ -311,97 +335,58 @@ public struct Quad
                 }
             }
         }
+
         if (E != -1)
         {
             if (s[E + 1] == '-')
                 exp *= -1;
             n *= Quad.Pow(b, exp);
         }
+
         if (s[0] == '-')
             n *= -1;
+
         negative = n.negative;
         exponent = n.exponent;
         mantissa = n.mantissa;
         signif = 128;
     }
 
-    public static implicit operator Quad(ulong u)
-    {
-        return new Quad(u);
-    }
+    public static implicit operator Quad(ulong u) => new(u);
 
-    public static implicit operator Quad(int i)
-    {
-        return new Quad((long)i);
-    }
+    public static implicit operator Quad(int i) => new((long)i);
 
-    public static explicit operator Quad(string s)
-    {
-        return new Quad(s);
-    }
+    public static explicit operator Quad(string s) => new(s);
 
-    public static implicit operator Quad(double d)
-    {
-        return new Quad(d);
-    }
+    public static implicit operator Quad(double d) => new(d);
 
-    public static implicit operator Quad(decimal d)
-    {
-        return new Quad(d);
-    }
+    public static implicit operator Quad(decimal d) => new(d);
 
-    public static implicit operator Quad(BigInteger b)
-    {
-        return new Quad(b);
-    }
+    public static implicit operator Quad(BigInteger b) => new(b);
 
     public static explicit operator int(Quad r)
     {
         r = Truncate(r);
-        if (r < int.MinValue || r > int.MaxValue)
-            throw new ArgumentOutOfRangeException();
+        ArgumentOutOfRangeException.ThrowIfLessThan(r, int.MinValue, nameof(r));
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(r, int.MaxValue, nameof(r));
         return (int)(r.mantissa >> (128 - r.exponent)).Lo * (r.negative ? -1 : 1);
     }
 
-    public static bool IsNaN(Quad r)
-    {
-        return r.exponent == short.MaxValue && !IsInfinity(r);
-    }
+    public static bool IsNaN(Quad r) => r.exponent == short.MaxValue && !IsInfinity(r);
 
-    public static bool IsInfinity(Quad r)
-    {
-        return IsPositiveInfinity(r) || IsNegativeInfinity(r);
-    }
+    public static bool IsInfinity(Quad r) => IsPositiveInfinity(r) || IsNegativeInfinity(r);
 
-    public static bool IsPositiveInfinity(Quad r)
-    {
-        return r == Quad.PositiveInfinity;
-    }
+    public static bool IsPositiveInfinity(Quad r) => r == PositiveInfinity;
 
-    public static bool IsNegativeInfinity(Quad r)
-    {
-        return r == Quad.NegativeInfinity;
-    }
+    public static bool IsNegativeInfinity(Quad r) => r == NegativeInfinity;
 
-    public static bool IsZero(Quad r)
-    {
-        return r.exponent == short.MinValue && r.mantissa == Mantissa.Zero;
-    }
+    public static bool IsZero(Quad r) => r.exponent == short.MinValue && r.mantissa == Mantissa.Zero;
 
-    public bool IsZero()
-    {
-        return IsZero(this);
-    }
+    public readonly bool IsZero() => IsZero(this);
 
-    public static bool IsNegative(Quad r)
-    {
-        return r.negative;
-    }
+    public static bool IsNegative(Quad r) => r.negative;
 
-    public bool IsNegative()
-    {
-        return IsNegative(this);
-    }
+    public readonly bool IsNegative() => IsNegative(this);
 
     public static bool operator ==(Quad a, Quad b)
     {
@@ -414,32 +399,18 @@ public struct Quad
         return !(a == b);
     }
 
-    public override bool Equals(object o)
-    {
-        if (!(o is Quad))
-            return false;
-        return this == (Quad)o;
-    }
+    public readonly override bool Equals(object o) => o is Quad q && this == q;
 
-    public override int GetHashCode()
-    {
-        return base.GetHashCode();
-    }
+    public readonly override int GetHashCode() => HashCode.Combine(mantissa, exponent, negative);
 
-    public override string ToString()
-    {
-        return ToString(10);
-    }
+    public readonly override string ToString() => ToString(10);
 
-    public static Quad Parse(string s)
-    {
-        return new(s);
-    }
+    public static Quad Parse(string s) => new(s);
 
     public readonly string ToString(int numberBase)
     {
-        if (numberBase < 2 || numberBase > 26)
-            throw new ArgumentOutOfRangeException();
+        ArgumentOutOfRangeException.ThrowIfLessThan(numberBase, 2, nameof(numberBase));
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(numberBase, 16, nameof(numberBase));
 
         if (IsNaN(this))
             return double.NaN.ToString();
@@ -453,39 +424,50 @@ public struct Quad
         if (IsZero(this))
             return "0";
 
-        if (this.exponent == 0 && this.mantissa == Mantissa.Zero && this.negative == false && this.signif == 0)
+        if (exponent == 0 && mantissa == Mantissa.Zero &negative == false && signif == 0)
             return "uninitialized";
 
         Quad nb = numberBase;
         StringBuilder s = new(45);
+
         if (negative)
             s.Append('-');
+
         Quad abs = Abs(this);
         int exp;
+
         if (this == Zero)
             exp = 0;
         else
             exp = (int)Ceiling(Log(abs, nb)) - 1;
+
         Quad div = IntPower(nb, exp);
         Quad mant = abs / div;
+
         if ((int)mant >= numberBase)
         {
             exp++;
             mant /= nb;
         }
+
         int dec = 1;
+
         if (exp >= 0 && exp <= 20)
         {
             dec += exp;
             exp = 0;
         }
+
         int trailz = 0;
         bool emitdec = false;
+
         for (int i = 0; i < 37; i++)
         {
             int digit = (int)mant;
+
             if (digit < 0 || digit >= numberBase)
                 Debugger.Break();
+
             if (digit == 0 && dec <= 0)
             {
                 trailz++;
@@ -497,31 +479,37 @@ public struct Quad
                     s.Append('.');
                     emitdec = false;
                 }
+
                 while (trailz > 0)
                 {
                     s.Append('0');
                     trailz--;
                 }
+
                 s.Append("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"[digit]);
+
                 if (--dec == 0)
                     emitdec = true;
             }
+
             mant = nb * Frac(mant);
         }
+
         if (exp != 0)
         {
             s.Append('E');
             if (exp >= 0) s.Append('+');
             s.Append(exp);
         }
+
         return s.ToString();
     }
 
     public static implicit operator ulong(Quad r)
     {
         r = r.Floor();
-        if (r < ulong.MinValue || r > ulong.MaxValue)
-            throw new ArgumentOutOfRangeException();
+        ArgumentOutOfRangeException.ThrowIfLessThan(r, (Quad)ulong.MinValue, nameof(r));
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(r, (Quad)ulong.MaxValue, nameof(r));
 
         return r.mantissa.Hi >> (64 - r.exponent);
     }
@@ -543,7 +531,8 @@ public struct Quad
             r.mantissa.ShiftRight();
         }
 
-        DoubleBytes db = new DoubleBytes();
+        DoubleBytes db = new();
+
         if (r.exponent == -0x3FE)
         {
             db.Word3 = (ushort)((r.negative ? 0x8000 : 0) | ((r.exponent + 0x3FE) << 4) | ((byte)(r.mantissa.Hi >> 60) & 0xF));
@@ -558,6 +547,7 @@ public struct Quad
             db.Word1 = (ushort)(r.mantissa.Hi >> 27);
             db.Word0 = (ushort)(r.mantissa.Hi >> 11);
         }
+
         return db.Double;
     }
 
@@ -583,13 +573,15 @@ public struct Quad
             return NaN;
 
         Quad r = a;
+
         if (b.exponent > a.exponent)
         {
             a = b; b = r; r = a;
         }
-        r.signif = Math.Min(a.signif, b.signif);
 
+        r.signif = Math.Min(a.signif, b.signif);
         int shift = a.exponent - b.exponent;
+
         if (shift > 127)
             return a;
 
@@ -599,6 +591,7 @@ public struct Quad
         b.mantissa.ShiftRight(shift);
 
         r.mantissa = a.mantissa + b.mantissa;
+
         if (r.mantissa.Overflow)
         {
             r.mantissa.ShiftRightWithMsb();
@@ -621,6 +614,7 @@ public struct Quad
         }
 
         int exp = exponent - mantissa.Normalize();
+
         if (exp < short.MinValue)
         {
             negative = false;
@@ -645,6 +639,7 @@ public struct Quad
 
         bool negate = false;
         Quad r = a;
+
         if (b.exponent > a.exponent)
         {
             a = b; b = r; r = a;
@@ -652,6 +647,7 @@ public struct Quad
         }
 
         int shift = a.exponent - b.exponent;
+        
         if (shift > 127)
             return negate ? -a : a;
 
@@ -670,8 +666,10 @@ public struct Quad
 
         r.mantissa = a.mantissa - b.mantissa;
         r.Normalize();
+
         if (negate)
             r.negative = !r.negative;
+
         return r;
     }
 
@@ -695,16 +693,21 @@ public struct Quad
         bool carry = r.mantissa.Overflow;
         r.mantissa += Mantissa.Multiply(a.mantissa.Hi, b.mantissa.Lo) >> 64;
         carry |= r.mantissa.Overflow;
+
         if (carry)
         {
             exponent++;
             r.mantissa.ShiftRightWithMsb();
         }
+
         exponent -= (short)r.mantissa.Normalize();
+
         if (exponent >= short.MaxValue)
             return r.negative ? NegativeInfinity : PositiveInfinity;
+
         if (exponent <= short.MinValue)
             return Zero;
+
         r.exponent = (short)exponent;
         return r;
     }
@@ -716,6 +719,7 @@ public struct Quad
             hi = lo = 0;
             return;
         }
+
         uint a = (uint)(x >> 32);
         uint b = (uint)x;
         uint c = (uint)(y >> 32);
@@ -727,8 +731,12 @@ public struct Quad
         ulong h = (ulong)a * c;
         lo = l + (m << 32);
         hi = h + (m >> 32);
-        if (lo < l) hi++;
-        if (m < m1 || m < m2) hi += 0x100000000;
+
+        if (lo < l) 
+            hi++;
+
+        if (m < m1 || m < m2) 
+            hi += 0x100000000;
     }
 
     public static Quad operator /(Quad a, Quad b)
@@ -758,7 +766,8 @@ public struct Quad
         r.mantissa = Mantissa.Zero;
         exponent -= a.mantissa.Normalize();
         exponent -= b.mantissa.Normalize();
-        Mantissa mask = new Mantissa(msb, 0);
+        Mantissa mask = new(msb, 0);
+
         for (int i = 0; i < 128; i++)
         {
             if (a.mantissa >= b.mantissa)
@@ -769,11 +778,15 @@ public struct Quad
             mask.ShiftRight();
             b.mantissa.ShiftRight();
         }
+
         exponent -= (short)r.mantissa.Normalize();
+
         if (exponent >= short.MaxValue)
             return r.negative ? NegativeInfinity : PositiveInfinity;
+
         if (exponent <= short.MinValue)
             return Zero;
+
         r.exponent = (short)exponent;
         return r;
     }
@@ -847,7 +860,7 @@ public struct Quad
 
     public int SignificantBits
     {
-        get
+        readonly get
         {
             return signif;
         }
@@ -861,55 +874,58 @@ public struct Quad
     {
         if (r.negative)
             return NaN;
+
         if (IsNaN(r))
             return NaN;
+
         if (IsInfinity(r))
             return r;
+
         if (IsZero(r))
             return Zero;
 
         short exponent = r.exponent;
         r.exponent = 0;
         Quad x = r;
+
         while (true)
         {
             Quad y = x;
             x += r / x;
             x.exponent--;
+
             if (x.exponent == y.exponent && x.mantissa.Hi == y.mantissa.Hi)
             {
                 long diff = (long)(x.mantissa.Lo - y.mantissa.Lo);
-                if (diff != long.MinValue)
-                    if (Math.Abs(diff) < 5)
-                        break;
+
+                if (diff != long.MinValue && Math.Abs(diff) < 5)
+                    break;
             }
         }
+
         x.exponent = (short)(exponent >> 1);
+
         if ((exponent & 1) != 0)
         {
             x *= QuadConstants.Sqrt2;
         }
+
         x.Signif(122);
         return x;
     }
 
-    public Quad Sqrt()
-    {
-        return Sqrt(this);
-    }
+    public readonly Quad Sqrt() => Sqrt(this);
 
     public static Quad Abs(Quad r)
     {
         if (IsNaN(r))
             return NaN;
+
         r.negative = false;
         return r;
     }
 
-    public Quad Abs()
-    {
-        return Abs(this);
-    }
+    public readonly Quad Abs() => Abs(this);
 
     public static Quad Truncate(Quad r)
     {
@@ -927,10 +943,7 @@ public struct Quad
         return r;
     }
 
-    public Quad Truncate()
-    {
-        return Truncate(this);
-    }
+    public readonly Quad Truncate() => Truncate(this);
 
     public static Quad Ceiling(Quad r)
     {
@@ -952,10 +965,7 @@ public struct Quad
         return frac ? r + One : r;
     }
 
-    public Quad Ceiling()
-    {
-        return Ceiling(this);
-    }
+    public readonly Quad Ceiling() => Ceiling(this);
 
     public static Quad Floor(Quad r)
     {
@@ -977,30 +987,15 @@ public struct Quad
         return frac ? r - One : r;
     }
 
-    public Quad Floor()
-    {
-        return Floor(this);
-    }
+    public readonly Quad Floor() => Floor(this);
 
-    public static Quad Frac(Quad r)
-    {
-        return r - Truncate(r);
-    }
+    public static Quad Frac(Quad r) => r - Truncate(r);
 
-    public Quad Frac()
-    {
-        return Frac(this);
-    }
+    public readonly Quad Frac() => Frac(this);
 
-    public static bool IsInteger(Quad r)
-    {
-        return r == Truncate(r);
-    }
+    public static bool IsInteger(Quad r) => r == Truncate(r);
 
-    public bool IsInteger()
-    {
-        return IsInteger(this);
-    }
+    public readonly bool IsInteger() => IsInteger(this);
 
     public static bool IsOdd(Quad r)
     {
@@ -1016,25 +1011,20 @@ public struct Quad
         return (r.mantissa & (Mantissa.One << (128 - r.exponent))) != Mantissa.Zero;
     }
 
-    public bool IsOdd()
-    {
-        return IsOdd(this);
-    }
+    public readonly bool IsOdd() => IsOdd(this);
 
     public static Quad Round(Quad r)
     {
         Quad f = Frac(r);
         r = Floor(r + OneHalf);
-        if (Abs(f) == OneHalf)
-            if (IsOdd(r))
+
+        if (Abs(f) == OneHalf && IsOdd(r))
                 r -= One;
+
         return r;
     }
 
-    public Quad Round()
-    {
-        return Round(this);
-    }
+    public readonly Quad Round() => Round(this);
 
     public static Quad Min(Quad a, Quad b)
     {
@@ -1049,20 +1039,17 @@ public struct Quad
     public static Quad Sign(Quad r)
     {
         if (IsNaN(r))
-            return Quad.NaN;
+            return NaN;
 
         if (r == Zero)
             return 0;
 
-        return r.negative ? Quad.NegativeOne : Quad.One;
+        return r.negative ? NegativeOne : One;
     }
 
-    public Quad Sign()
-    {
-        return Sign(this);
-    }
+    public readonly Quad Sign() => Sign(this);
 
-    static byte[] randBytes = new byte[16];
+    static readonly byte[] randBytes = new byte[16];
 
     public static Quad NextReal(Random rand)
     {
@@ -1072,8 +1059,10 @@ public struct Quad
         r.exponent = 0;
         ulong hi = BitConverter.ToUInt64(randBytes, 0);
         ulong lo = BitConverter.ToUInt64(randBytes, 8);
+
         if (hi == 0 && lo == 0)
             return Zero;
+
         r.mantissa = new Mantissa(hi, lo);
         r.signif = 128;
         r.Normalize();
@@ -1097,12 +1086,16 @@ public struct Quad
     {
         if (IsNaN(r))
             return NaN;
+
         if (r.negative)
             return NaN;
+
         if (IsZero(r))
             return NaN;
+
         if (IsPositiveInfinity(r))
             return r;
+
         if (r == One)
             return Zero;
 
@@ -1113,6 +1106,7 @@ public struct Quad
         Quad num = One;
         Quad den = One;
         Quad sum = One;
+
         while (true)
         {
             num *= y2;
@@ -1122,56 +1116,43 @@ public struct Quad
                 break;
             sum += term;
         }
+
         sum = Two * y * sum + e;
         sum.Signif(122);
         return sum;
     }
 
-    public Quad Log()
-    {
-        return Log(this);
-    }
+    public readonly Quad Log() => Log(this);
 
-    public static Quad Log(Quad a, Quad b)
-    {
-        return Log(a) / Log(b);
-    }
+    public static Quad Log(Quad a, Quad b) => Log(a) / Log(b);
 
-    public static Quad Log10(Quad r)
-    {
-        return Log(r) * OneOverLn10;
-    }
+    public static Quad Log10(Quad r) => Log(r) * OneOverLn10;
 
-    public Quad Log10()
-    {
-        return Log10(this);
-    }
+    public readonly Quad Log10() => Log10(this);
 
-    public static Quad Log2(Quad r)
-    {
-        return Log(r) * QuadConstants.OverLn2;
-    }
+    public static Quad Log2(Quad r) => Log(r) * QuadConstants.OverLn2;
 
-    public Quad Log2()
-    {
-        return Log2(this);
-    }
+    public readonly Quad Log2() => Log2(this);
 
     private static Quad IntPower(Quad r, Quad n)
     {
         if (n == 0)
             return One;
+
         if (n < 0)
             return One / IntPower(r, -n);
+
         if (IsOdd(n))
             return r * IntPower(r, n - One);
+
         n.exponent--;
         r = IntPower(r, n);
         return r * r;
     }
 
-    private static Quad expMax = new Quad(22712);
-    private static Quad negExpMax = new Quad(-22713);
+    private static Quad expMax = new(22712);
+
+    private static Quad negExpMax = new(-22713);
 
     public static Quad Exp(Quad r)
     {
@@ -1194,6 +1175,7 @@ public struct Quad
         Quad count = Zero;
         Quad fac = One;
         Quad power = One;
+
         while (true)
         {
             power *= f;
@@ -1204,15 +1186,13 @@ public struct Quad
                 break;
             sum += term;
         }
+
         sum *= ez;
         sum.Signif(119);
         return sum;
     }
 
-    public Quad Exp()
-    {
-        return Exp(this);
-    }
+    public readonly Quad Exp() => Exp(this);
 
     public static Quad Mod(Quad a, Quad b)
     {
@@ -1221,28 +1201,29 @@ public struct Quad
         return a - q;
     }
 
-    public Quad Mod(Quad b)
-    {
-        return Mod(this, b);
-    }
+    public readonly Quad Mod(Quad b) => Mod(this, b);
 
     public static Quad Sin(Quad r)
     {
         if (r.exponent > 63)
             return r;
+
         bool neg = r.negative;
         r.negative = false;
         r = Mod(r, QuadConstants.Twoπ);
+
         if (r > QuadConstants.π)
         {
             neg = !neg;
             r -= QuadConstants.π;
         }
+
         Quad r2 = -(r * r);
         Quad num = r;
         Quad den = One;
         Quad count = One;
         Quad sum = r;
+
         while (true)
         {
             num *= r2;
@@ -1255,52 +1236,43 @@ public struct Quad
                 break;
             sum += term;
         }
+
         r = sum;
-        if (neg) r.negative = true;
+        
+        if (neg) 
+            r.negative = true;
+
         r.Signif(122);
         return r;
     }
 
-    public Quad Sin()
-    {
-        return Sin(this);
-    }
+    public readonly Quad Sin() => Sin(this);
 
-    public static Quad Cos(Quad r)
-    {
-        return Sin(QuadConstants.Halfπ - r);
-    }
+    public static Quad Cos(Quad r) => Sin(QuadConstants.Halfπ - r);
 
-    public Quad Cos()
-    {
-        return Cos(this);
-    }
+    public readonly Quad Cos() => Cos(this);
 
     public static Quad Tan(Quad r)
     {
         return Sin(r) / Cos(r);
     }
 
-    public Quad Tan()
-    {
-        return Tan(this);
-    }
+    public readonly Quad Tan() => Tan(this);
 
     public static Quad Asin(Quad r)
     {
         Quad a = Abs(r);
+
         if (a > 1)
             return NaN;
+
         if (a == 1)
             return r.Sign() * QuadConstants.Halfπ;
 
         return r.Sign() * Atan(a / Sqrt(One - a * a));
     }
 
-    public Quad Asin()
-    {
-        return Asin(this);
-    }
+    public readonly Quad Asin() => Asin(this);
 
     public static Quad Acos(Quad r)
     {
@@ -1316,20 +1288,21 @@ public struct Quad
         return QuadConstants.Halfπ - Asin(r);
     }
 
-    public Quad Acos()
-    {
-        return Acos(this);
-    }
+    public readonly Quad Acos() => Acos(this);
 
     public static Quad Atan(Quad r)
     {
         Quad a = Abs(r);
+
         if (a > One)
             return r.Sign() * (QuadConstants.Halfπ - Atan(1 / a));
+
         if (a == One)
             return r > Zero ? QuadConstants.π / 4 : -QuadConstants.π / 4;
+
         if (a > QuadConstants.Sqrt2 - One)
             return r.Sign() * (QuadConstants.π / 4 - Atan((1 - a) / (1 + a)));
+
         if (a.exponent < -64)
             return a;
 
@@ -1337,22 +1310,23 @@ public struct Quad
         Quad r2 = -r * r;
         Quad power = r;
         int n = 1;
+
         while (true)
         {
             n += 2;
             power *= r2;
             Quad term = power / n;
+
             if (term == Zero || term.exponent < sum.exponent - 128)
                 break;
+
             sum += term;
         }
+
         return sum;
     }
 
-    public Quad Atan()
-    {
-        return Atan(this);
-    }
+    public readonly Quad Atan() => Atan(this);
 
     public static Quad Atan2(Quad y, Quad x)
     {
@@ -1376,28 +1350,36 @@ public struct Quad
 
     public static Quad Pow(Quad a, Quad b)
     {
-        if (IsZero(b)) return One;
-        if (IsZero(a)) return Zero;
+        if (IsZero(b)) 
+            return One;
+
+        if (IsZero(a)) 
+            return Zero;
+
         return Exp(b * Log(a));
     }
 
     public static Quad Pow(Quad a, int b)
     {
-        if (b == 0) return One;
-        if (IsZero(a)) return Zero;
-        if (b < 0) return Quad.One / Pow(a, -b);
+        if (b == 0) 
+            return One;
+
+        if (IsZero(a)) 
+            return Zero;
+
+        if (b < 0) 
+            return Quad.One / Pow(a, -b);
+
         if ((b & 1) == 0)
         {
             Quad p = Pow(a, b / 2);
             return p * p;
         }
+
         return a * Pow(a, b - 1);
     }
 
-    public Quad Pow(Quad b)
-    {
-        return Pow(this, b);
-    }
+    public readonly Quad Pow(Quad b) => Pow(this, b);
 
     public static Quad Sinh(Quad r)
     {
@@ -1415,10 +1397,7 @@ public struct Quad
         return r;
     }
 
-    public Quad Sinh()
-    {
-        return Sinh(this);
-    }
+    public readonly Quad Sinh() => Sinh(this);
 
     public static Quad Cosh(Quad r)
     {
@@ -1433,10 +1412,7 @@ public struct Quad
         return r;
     }
 
-    public Quad Cosh()
-    {
-        return Cosh(this);
-    }
+    public readonly Quad Cosh() => Cosh(this);
 
     public static Quad Tanh(Quad r)
     {
@@ -1457,23 +1433,29 @@ public struct Quad
         return r;
     }
 
-    public Quad Tanh()
-    {
-        return Tanh(this);
-    }
+    public readonly Quad Tanh() => Tanh(this);
 
     internal Quad Mask(int wordSize)
     {
-        if (this.exponent <= 0 || this.exponent >= 128 + wordSize)
-            return Quad.Zero;
+        if (exponent <= 0 || exponent >= 128 + wordSize)
+            return Zero;
 
-        Quad r = this.Truncate();
+        Quad r = Truncate();
+
         while (r.exponent > wordSize)
         {
             r.mantissa <<= 1;
             r.exponent--;
         }
+
         r.Normalize();
         return r;
     }
+
+    public readonly int CompareTo(Quad other) =>
+        this == other ? 0 :
+        this < other ? -1 :
+        +1;
+
+    public readonly bool Equals(Quad other) => this == other;
 }

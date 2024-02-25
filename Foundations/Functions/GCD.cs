@@ -20,8 +20,7 @@ namespace Foundations
                 if (m == 0) return q;
                 p = q;
                 q = m;
-            }
-            
+            }            
         }
 
         /// <summary>
@@ -37,8 +36,7 @@ namespace Foundations
                 if (m == 0) return q;
                 p = q;
                 q = m;
-            }
-            
+            }            
         }
 
         /// <summary>
@@ -55,8 +53,7 @@ namespace Foundations
                 if (m == 0) return q;
                 p = q;
                 q = m;
-            }
-            
+            }            
         }
 
         /// <summary>
@@ -72,8 +69,7 @@ namespace Foundations
                 if (m == 0) return q;
                 p = q;
                 q = m;
-            }
-            
+            }            
         }
 
         /// <summary>
@@ -90,8 +86,7 @@ namespace Foundations
                 if (m == 0) return q;
                 p = q;
                 q = m;
-            }
-            
+            }            
         }
 
         /// <summary>
@@ -107,8 +102,7 @@ namespace Foundations
                 if (m == 0) return q;
                 p = q;
                 q = m;
-            }
-            
+            }            
         }
 
         /// <summary>
@@ -125,8 +119,7 @@ namespace Foundations
                 if (m == 0) return q;
                 p = q;
                 q = m;
-            }
-            
+            }            
         }
 
         /// <summary>
@@ -142,8 +135,7 @@ namespace Foundations
                 if (m == 0) return q;
                 p = q;
                 q = m;
-            }
-            
+            }            
         }
 
         /// <summary>
@@ -162,6 +154,23 @@ namespace Foundations
         {
             return Nat.GreatestCommonDivisor(p, q);
             
+        }
+
+        /// <summary>
+        /// Greatest common divisor.
+        /// </summary>
+        public static Int128 GCD(Int128 p, Int128 q)
+        {
+            if (p == 0 || q == 0) return 0;
+            (p, q) = (Int128.Abs(p), Int128.Abs(q));
+
+            while (true)
+            {
+                var m = (Int128)(p % q);
+                if (m == 0) return q;
+                p = q;
+                q = m;
+            }            
         }
 
     }
