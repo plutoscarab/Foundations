@@ -69,7 +69,7 @@ public class PolynomialRing<T> : Ring<Polynomial<T>>, IEquatable<PolynomialRing<
         return new(this, ind, terms);
     }
 
-    static readonly MethodInfo powMethod = typeof(IntExtensions).GetMethod("Pow")!;
+    static readonly MethodInfo powMethod = typeof(Int32Extensions).GetMethod("Pow")!;
 
     private List<Monomial<T>> GetTerms(Dictionary<string, int> map, Expression expr)
     {

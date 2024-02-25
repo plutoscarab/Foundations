@@ -142,19 +142,19 @@ void Make(string T, int offset, string math, string consts)
         <#= T #>Sum sum = new(x.Log() - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
-        sum -= xp / 12;
+        sum -= xp * Sequences.BernoulliTableOverN<#= consts #>[2];
         xp *= xx;
-        sum += xp / 120;
+        sum -= xp * Sequences.BernoulliTableOverN<#= consts #>[4];
         xp *= xx;
-        sum -= xp / 252;
+        sum -= xp * Sequences.BernoulliTableOverN<#= consts #>[6];
         xp *= xx;
-        sum += xp / 240;
+        sum -= xp * Sequences.BernoulliTableOverN<#= consts #>[8];
         xp *= xx;
-        sum -= xp / 132;
+        sum -= xp * Sequences.BernoulliTableOverN<#= consts #>[10];
         xp *= xx;
-        sum += xp * 691 / 32760;
+        sum -= xp * Sequences.BernoulliTableOverN<#= consts #>[12];
         xp *= xx;
-        sum -= xp / 12;
+        sum -= xp * Sequences.BernoulliTableOverN<#= consts #>[14];
         return sum.Value;
     }
 <#+

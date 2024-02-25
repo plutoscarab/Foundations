@@ -122,19 +122,19 @@ public static partial class Special
         DoubleSum sum = new(x.Log() - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
-        sum -= xp / 12;
+        sum -= xp * Sequences.BernoulliTableOverN[2];
         xp *= xx;
-        sum += xp / 120;
+        sum -= xp * Sequences.BernoulliTableOverN[4];
         xp *= xx;
-        sum -= xp / 252;
+        sum -= xp * Sequences.BernoulliTableOverN[6];
         xp *= xx;
-        sum += xp / 240;
+        sum -= xp * Sequences.BernoulliTableOverN[8];
         xp *= xx;
-        sum -= xp / 132;
+        sum -= xp * Sequences.BernoulliTableOverN[10];
         xp *= xx;
-        sum += xp * 691 / 32760;
+        sum -= xp * Sequences.BernoulliTableOverN[12];
         xp *= xx;
-        sum -= xp / 12;
+        sum -= xp * Sequences.BernoulliTableOverN[14];
         return sum.Value;
     }
 
@@ -172,19 +172,19 @@ public static partial class Special
         ComplexSum sum = new(x.Log() - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
-        sum -= xp / 12;
+        sum -= xp * Sequences.BernoulliTableOverN[2];
         xp *= xx;
-        sum += xp / 120;
+        sum -= xp * Sequences.BernoulliTableOverN[4];
         xp *= xx;
-        sum -= xp / 252;
+        sum -= xp * Sequences.BernoulliTableOverN[6];
         xp *= xx;
-        sum += xp / 240;
+        sum -= xp * Sequences.BernoulliTableOverN[8];
         xp *= xx;
-        sum -= xp / 132;
+        sum -= xp * Sequences.BernoulliTableOverN[10];
         xp *= xx;
-        sum += xp * 691 / 32760;
+        sum -= xp * Sequences.BernoulliTableOverN[12];
         xp *= xx;
-        sum -= xp / 12;
+        sum -= xp * Sequences.BernoulliTableOverN[14];
         return sum.Value;
     }
 
@@ -222,19 +222,19 @@ public static partial class Special
         QuadSum sum = new(x.Log() - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
-        sum -= xp / 12;
+        sum -= xp * Sequences.BernoulliTableOverNQuad[2];
         xp *= xx;
-        sum += xp / 120;
+        sum -= xp * Sequences.BernoulliTableOverNQuad[4];
         xp *= xx;
-        sum -= xp / 252;
+        sum -= xp * Sequences.BernoulliTableOverNQuad[6];
         xp *= xx;
-        sum += xp / 240;
+        sum -= xp * Sequences.BernoulliTableOverNQuad[8];
         xp *= xx;
-        sum -= xp / 132;
+        sum -= xp * Sequences.BernoulliTableOverNQuad[10];
         xp *= xx;
-        sum += xp * 691 / 32760;
+        sum -= xp * Sequences.BernoulliTableOverNQuad[12];
         xp *= xx;
-        sum -= xp / 12;
+        sum -= xp * Sequences.BernoulliTableOverNQuad[14];
         return sum.Value;
     }
 
@@ -272,19 +272,19 @@ public static partial class Special
         ComplexQuadSum sum = new(x.Log() - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
-        sum -= xp / 12;
+        sum -= xp * Sequences.BernoulliTableOverNQuad[2];
         xp *= xx;
-        sum += xp / 120;
+        sum -= xp * Sequences.BernoulliTableOverNQuad[4];
         xp *= xx;
-        sum -= xp / 252;
+        sum -= xp * Sequences.BernoulliTableOverNQuad[6];
         xp *= xx;
-        sum += xp / 240;
+        sum -= xp * Sequences.BernoulliTableOverNQuad[8];
         xp *= xx;
-        sum -= xp / 132;
+        sum -= xp * Sequences.BernoulliTableOverNQuad[10];
         xp *= xx;
-        sum += xp * 691 / 32760;
+        sum -= xp * Sequences.BernoulliTableOverNQuad[12];
         xp *= xx;
-        sum -= xp / 12;
+        sum -= xp * Sequences.BernoulliTableOverNQuad[14];
         return sum.Value;
     }
 }

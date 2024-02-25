@@ -1,0 +1,43 @@
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core.dll" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+using System.Runtime.CompilerServices;
+
+namespace Foundations;
+<#
+Make("SByte", "sbyte");
+Make("Byte", "byte");
+Make("Int16", "short");
+Make("UInt16", "ushort");
+Make("Int32", "int");
+Make("UInt32", "uint");
+Make("Int64", "long");
+Make("UInt64", "ulong");
+Make("Int128", "Int128");
+Make("UInt128", "UInt128");
+Make("IntPtr", "nint");
+Make("UIntPtr", "nuint");
+#>
+<#+
+void Make(string T, string t)
+{
+#>
+
+public static partial class <#= T #>Extensions
+{
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsEven(this <#= t #> value) => (value & 1) == 0;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsOdd(this <#= t #> value) => (value & 1) != 0;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int Parity(this <#= t #> value) => 1 - 2 * (int)(value & 1);
+}
+<#+
+}
+#>

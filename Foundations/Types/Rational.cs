@@ -153,6 +153,64 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
     }
 
     /// <summary>
+    /// Gets a radix-based representation of this <see cref="Rational"/> .
+    /// </summary>
+    public readonly string ToString(int radix, int maxDigits)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(radix, 2, nameof(radix));
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(radix, 16, nameof(radix));
+        var (p, q) = (P, Q);
+        StringBuilder s = new();
+
+        if (p < 0) 
+        {
+            s.Append('-');
+            p = -p;
+        }
+
+        var (d, r) = BigInteger.DivRem(p, q);
+        s.Append(d);
+
+        if (r == 0)
+            return s.ToString();
+
+        var whole = d;
+        s.Append('.');
+        List<int> digits = [];
+        
+        while (p != 0 && maxDigits-- >= 0)
+        {
+            (d, r) = BigInteger.DivRem(r * radix, q);
+            digits.Add((int)d);
+        }
+
+        if (digits[^1] * 2 >= radix)
+        {
+            var i = digits.Count - 2;
+
+            while (true)
+            {
+                if (++digits[i] < radix)
+                    break;
+
+                digits[i] = 0;
+                --i;
+
+                if (i < 0)
+                {
+                    whole += whole.Sign;
+                    break;
+                }
+            }
+        }
+
+        for (var i = 0; i < digits.Count - 1; i++)
+            s.Append(digits[i]);
+            
+        return s.ToString();
+    }
+
+    /// <summary>
     /// Determine whether this <see cref="Rational"/> is equal to another value.
     /// </summary>
     public override readonly bool Equals(object obj)

@@ -407,10 +407,24 @@ public struct Quad : IEquatable<Quad>, IComparable<Quad>
 
     public static Quad Parse(string s) => new(s);
 
+    public static bool TryParse(string s, out Quad q)
+    {
+        try
+        {
+            q = Parse(s);
+            return true;
+        }
+        catch
+        {
+            q = default;
+            return false;
+        }
+    }
+
     public readonly string ToString(int numberBase)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(numberBase, 2, nameof(numberBase));
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(numberBase, 16, nameof(numberBase));
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(numberBase, 36, nameof(numberBase));
 
         if (IsNaN(this))
             return double.NaN.ToString();
@@ -497,7 +511,7 @@ public struct Quad : IEquatable<Quad>, IComparable<Quad>
 
         if (exp != 0)
         {
-            s.Append('E');
+            s.Append('^');
             if (exp >= 0) s.Append('+');
             s.Append(exp);
         }
