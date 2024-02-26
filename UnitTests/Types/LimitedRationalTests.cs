@@ -197,7 +197,8 @@ public class LimitedRationalTests
     public void SinhTest()
     {
         var x = LimitedRational.Sinh(0.4m);
-        var s = x.ToString();
+        var y = LimitedRational.Cosh(0.4m);
+        var z = y * y - x * x - 1;
     }
 
     [TestMethod]
