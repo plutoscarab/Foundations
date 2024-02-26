@@ -214,7 +214,12 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
         for (var i = 0; i < digits.Count - 1; i++)
             s.Append(Constants.Base36Digits[digits[i]]);
 
-        return s.ToString();
+        var t = s.ToString().TrimEnd('0');
+
+        if (t[^1] == '.')
+            return t[..^1];
+
+        return t;
     }
 
     /// <summary>
@@ -247,9 +252,41 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
     }
 
     /// <summary>
+    /// Implicitly casts a <see cref="Int32"/> to a <see cref="Rational"/>.
+    /// </summary>
+    public static implicit operator Rational(int n)
+    {
+        return CreateRaw(n, BigInteger.One);
+    }
+
+    /// <summary>
     /// Implicitly casts a <see cref="Int64"/> to a <see cref="Rational"/>.
     /// </summary>
     public static implicit operator Rational(long n)
+    {
+        return CreateRaw(n, BigInteger.One);
+    }
+
+    /// <summary>
+    /// Implicitly casts a <see cref="UInt64"/> to a <see cref="Rational"/>.
+    /// </summary>
+    public static implicit operator Rational(ulong n)
+    {
+        return CreateRaw(n, BigInteger.One);
+    }
+
+    /// <summary>
+    /// Implicitly casts a <see cref="Int128"/> to a <see cref="Rational"/>.
+    /// </summary>
+    public static implicit operator Rational(Int128 n)
+    {
+        return CreateRaw(n, BigInteger.One);
+    }
+
+    /// <summary>
+    /// Implicitly casts a <see cref="UInt128"/> to a <see cref="Rational"/>.
+    /// </summary>
+    public static implicit operator Rational(UInt128 n)
     {
         return CreateRaw(n, BigInteger.One);
     }
@@ -479,7 +516,7 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
     /// </summary>
     public static BigInteger Truncate(Rational r)
     {
-        if (r < 0) return Ceiling(r);
+        if (r < Zero) return Ceiling(r);
         return Floor(r);
     }
 
@@ -488,7 +525,7 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
     /// </summary>
     public static Rational Frac(Rational r)
     {
-        return r - Rational.Floor(r);
+        return r - Floor(r);
     }
 
     /// <summary>
@@ -496,7 +533,7 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
     /// </summary>
     public static BigInteger Round(Rational r)
     {
-        return Rational.Floor(r + OneHalf);
+        return Floor(r + OneHalf);
     }
 
     /// <summary>
@@ -504,22 +541,22 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
     /// </summary>
     public static IEnumerable<int> FractionalDigits(Rational r)
     {
-        r = Rational.Frac(r);
+        r = Frac(r);
 
         while (true)
         {
             if (r < OneHalf)
             {
                 yield return 0;
-                r *= 2;
+                r *= Two;
             }
             else
             {
                 yield return 1;
-                r = r * 2 - 1;
+                r = r * Two - One;
             }
 
-            if (r == 0) break;
+            if (r == Zero) break;
         }
     }
 
@@ -546,7 +583,7 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
             r *= b;
             BigInteger f = Rational.Floor(r);
             r -= f;
-            if (r == 0) break;
+            if (r == Zero) break;
             yield return (int)f;
         }
     }
