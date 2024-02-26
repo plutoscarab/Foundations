@@ -5,36 +5,40 @@ using System.Globalization;
 namespace Foundations.Types;
 
 public readonly struct LimitedRational : INumber<LimitedRational>, IExponentialFunctions<LimitedRational>,
-    ILogarithmicFunctions<LimitedRational>
+    ILogarithmicFunctions<LimitedRational>, IRootFunctions<LimitedRational>, IPowerFunctions<LimitedRational>,
+    ITrigonometricFunctions<LimitedRational>, IHyperbolicFunctions<LimitedRational>, 
+    IModulusOperators<LimitedRational, LimitedRational, LimitedRational>
 {
     static LimitedRational()
     {
-        zero = new(Rational.Zero, false);
-        one = new(Rational.One, false);
-        two = new(Rational.Two, false);
+        zero = new(0, false);
+        one = new(1, false);
+        negativeOne = new(-1, false);
+        two = new(2, false);
+        three = new(3, false);
         nan = new(Rational.NaN, false);
+        positiveInfinity = new(Rational.PositiveInfinity, false);
+        negativeInfinity = new(Rational.NegativeInfinity, false);
         SetPrecision(235);
     }
 
     private static int digits;
     private static int precisionBytes;
 
-    private static LimitedRational e;
-    private static LimitedRational pi;
-    private static LimitedRational tau;
-    private static LimitedRational log2;
-    private static LimitedRational log10;
-
     private static void SetPrecision(int precisionInDigits)
     {
-        var bits = (int)Math.Ceiling((precisionInDigits + 5) * Math.Log2(10));
+        var bits = (int)Math.Ceiling((precisionInDigits + 15) * Math.Log2(10));
         precisionBytes = (bits + 7) / 8;
         digits = precisionInDigits;
         e = Compute(ContinuedFraction.E);
         pi = Compute(ContinuedFraction.Pi);
         tau = Compute(n => ContinuedFraction.Pi(n).Transform(0, 2, 1, 0));
+        halfPi = Compute(n => ContinuedFraction.Pi(n).Transform(0, 1, 2, 0));
+        quarterPi = Compute(n => ContinuedFraction.Pi(n).Transform(0, 1, 4, 0));
+        negativeQuarterPi = -quarterPi;
         log2 = Compute(n => ContinuedFraction.Log(2, n));
         log10 = Compute(n => ContinuedFraction.Log(10, n));
+        sqrt2Minus1 = Compute(n => ContinuedFraction.Sqrt(2, 2 * n).Transform(-1, 1, 1, 0));
     }
 
     private readonly Rational r;
@@ -49,19 +53,41 @@ public readonly struct LimitedRational : INumber<LimitedRational>, IExponentialF
         this.r = r;
     }
 
-    private static readonly LimitedRational one;
-
-    public static LimitedRational One => one;
-
-    private static readonly LimitedRational two;
-
-    public static LimitedRational Two => two;
-
-    public static int Radix => 2;
-
     private static readonly LimitedRational zero;
+    private static readonly LimitedRational one;
+    private static readonly LimitedRational negativeOne;
+    private static readonly LimitedRational two;
+    private static readonly LimitedRational three;
+    private static readonly LimitedRational nan;
+    private static readonly LimitedRational positiveInfinity;
+    private static readonly LimitedRational negativeInfinity;
+    private static LimitedRational e;
+    private static LimitedRational pi;
+    private static LimitedRational tau;
+    private static LimitedRational halfPi;
+    private static LimitedRational quarterPi;
+    private static LimitedRational negativeQuarterPi;
+    private static LimitedRational log2;
+    private static LimitedRational log10;
+    private static LimitedRational sqrt2Minus1;
 
     public static LimitedRational Zero => zero;
+    public static LimitedRational One => one;
+    public static LimitedRational NegativeOne => negativeOne;
+    public static LimitedRational Two => two;
+    public static LimitedRational Three => three;
+    public static LimitedRational PositiveInfinity => positiveInfinity;
+    public static LimitedRational NegativeInfinity => negativeInfinity;
+    public static LimitedRational NaN => nan;
+    public static LimitedRational E => e;
+    public static LimitedRational Pi => pi;
+    public static LimitedRational Tau => tau;
+    public static LimitedRational HalfPi => halfPi;
+    public static LimitedRational QuarterPi => quarterPi;
+    public static LimitedRational MinusQuarterPi => negativeQuarterPi;
+    public static LimitedRational Sqrt2Minus1 => sqrt2Minus1;
+
+    public static int Radix => 2;
 
     public static LimitedRational AdditiveIdentity => zero;
 
@@ -82,12 +108,6 @@ public readonly struct LimitedRational : INumber<LimitedRational>, IExponentialF
 
         throw new InvalidOperationException();
     }
-
-    public static LimitedRational E => e;
-
-    public static LimitedRational Pi => pi;
-
-    public static LimitedRational Tau => tau;
 
 
     public static bool IsCanonical(LimitedRational value) => true;
@@ -266,7 +286,8 @@ public readonly struct LimitedRational : INumber<LimitedRational>, IExponentialF
 
     public static LimitedRational operator %(LimitedRational left, LimitedRational right)
     {
-        throw new NotImplementedException();
+        var (_, r) = DivRem(left, right);
+        return r;
     }
 
     public static bool operator ==(LimitedRational left, LimitedRational right) => left.r == right.r;
@@ -286,10 +307,6 @@ public readonly struct LimitedRational : INumber<LimitedRational>, IExponentialF
     public override int GetHashCode() => r.GetHashCode();
 
     public override string ToString() => r.ToString(10, digits);
-
-    private static readonly LimitedRational nan;
-
-    public static LimitedRational NaN => nan;
 
     public static LimitedRational Exp(LimitedRational r)
     {
@@ -339,7 +356,7 @@ public readonly struct LimitedRational : INumber<LimitedRational>, IExponentialF
     public static LimitedRational IntPower(LimitedRational x, BigInteger n) =>
         new(Rational.Pow(x.r, checked((int)n)));
 
-    public readonly LimitedRational IntPower(BigInteger n) => throw new NotImplementedException();
+    public readonly LimitedRational IntPower(BigInteger n) => IntPower(this, n);
 
     public static LimitedRational Abs(LimitedRational value) => new(Rational.Abs(value.r));
 
@@ -394,6 +411,261 @@ public readonly struct LimitedRational : INumber<LimitedRational>, IExponentialF
 
     public static LimitedRational Log2(LimitedRational x) => Log(x) / log2;
 
+    public static LimitedRational Pow(LimitedRational x, LimitedRational y)
+    {
+        if (IsZero(y))
+            return One;
+
+        if (IsZero(x))
+            return Zero;
+
+        if (IsInteger(y))
+            return IntPower(x, Truncate(y));
+
+        return Exp(y * Log(x));
+    }
+
+    public static LimitedRational Cbrt(LimitedRational x) => Exp(Log(x) / Three);
+
+    public static LimitedRational Hypot(LimitedRational x, LimitedRational y) => Sqrt(x * x + y * y);
+
+    public static LimitedRational RootN(LimitedRational x, int n) =>
+        n switch
+        {
+            0 => One,
+            1 => x,
+            -1 => One / x,
+            _ => Exp(Log(x) / n),
+        };
+
+    public static LimitedRational Sqrt(LimitedRational x) => Exp(Log(x) / Two);
+
+    public static LimitedRational Acos(LimitedRational x)
+    {
+        if (Abs(x) > 1)
+            return NaN;
+
+        if (Abs(x) == 1)
+            return Zero;
+
+        if (x < 0)
+            return HalfPi + Asin(x);
+
+        return HalfPi - Asin(x);
+    }
+
+    public static LimitedRational AcosPi(LimitedRational x) => Acos(x) / Pi;
+
+    public static LimitedRational Asin(LimitedRational x)
+    {
+        var a = Abs(x);
+
+        if (a > 1)
+            return NaN;
+
+        if (a == 1)
+            return Sign(x) * HalfPi;
+
+        return Sign(x) * Atan(a / Sqrt(One - a * a));
+    }
+
+    public static LimitedRational AsinPi(LimitedRational x) => Asin(x) / Pi;
+    
+    public static int Sign(LimitedRational x) => Rational.Sign(x.r);
+
+    public static LimitedRational Atan(LimitedRational x)
+    {
+        var a = Abs(x);
+
+        if (a > One)
+            return Sign(x) * (HalfPi - Atan(One / a));
+
+        if (a == One)
+            return x > Zero ? QuarterPi : MinusQuarterPi;
+
+        if (a > Sqrt2Minus1)
+            return Sign(x) * (QuarterPi - Atan((One - a) / (One + a)));
+
+        var sum = x;
+        var r2 = -x * x;
+        var power = x;
+        var n = 1;
+
+        while (true)
+        {
+            n += 2;
+            power *= r2;
+            var term = power / n;
+
+            if (term == Zero)
+                return sum;
+
+            sum += term;
+        }
+    }
+
+    public static LimitedRational AtanPi(LimitedRational x) => Atan(x) / Pi;
+
+    public static LimitedRational Cos(LimitedRational x)
+    {
+        x %= Tau;
+
+        if (x > Pi) 
+            x -= Tau;
+
+        var sum = One;
+        var xx = -x * x;
+        int n = 0;
+        var term = One;
+
+        while (true)
+        {
+            term *= xx / ((n + 1) * (n + 2));
+
+            if (term == Zero)
+                return sum;
+
+            sum += term;
+            n += 2;
+        }
+    }
+
+    public static LimitedRational CosPi(LimitedRational x) => Cos(x * Pi);
+
+    public static LimitedRational operator /(LimitedRational x, int n) => new(x.r / n);
+
+    public static (BigInteger, LimitedRational) DivRem(LimitedRational x, LimitedRational y)
+    {
+        var d = Rational.Floor(x.r / y.r);
+        var r = x - (LimitedRational)d * y;
+        return (d, r);
+    }
+
+    public static LimitedRational Sin(LimitedRational x)
+    {
+        x %= Tau;
+
+        if (x > Pi) 
+            x -= Tau;
+
+        var sum = x;
+        var xx = -x * x;
+        int n = 1;
+        var term = x;
+
+        while (true)
+        {
+            term *= xx / ((n + 1) * (n + 2));
+
+            if (term == Zero)
+                return sum;
+
+            sum += term;
+            n += 2;
+        }
+    }
+
+    public static (LimitedRational Sin, LimitedRational Cos) SinCos(LimitedRational x) => (Sin(x), Cos(x));
+
+    public static (LimitedRational SinPi, LimitedRational CosPi) SinCosPi(LimitedRational x) => (SinPi(x), CosPi(x));
+
+    public static LimitedRational SinPi(LimitedRational x) => Sin(x * Pi);
+
+    public static LimitedRational Tan(LimitedRational x)
+    {
+        var (sin, cos) = SinCos(x);
+        return sin / cos;
+    }
+
+    public static LimitedRational TanPi(LimitedRational x) => Tan(x * Pi);
+
+    public static LimitedRational Acosh(LimitedRational x)
+    {
+        if (IsNaN(x))
+            return NaN;
+
+        if (IsNegativeInfinity(x))
+            return NaN;
+
+        if (IsPositiveInfinity(x))
+            return x;
+
+        if (x.r.P.Sign < 0)
+            return NaN;
+
+        if (x.r.P < x.r.Q)
+            return NaN;
+
+        return Log(x + Sqrt(x * x - One));
+    }
+
+    public static LimitedRational Asinh(LimitedRational x)
+    {
+        if (IsNaN(x))
+            return NaN;
+
+        if (IsInfinity(x))
+            return x;
+
+        return Log(x + Sqrt(x * x + One));
+    }
+
+    public static LimitedRational Atanh(LimitedRational x)
+    {
+        if (Abs(x) >= One)
+            return NaN;
+
+        return Log((One + x) / (One - x)) / Two;
+    }
+
+    public static LimitedRational Cosh(LimitedRational x)
+    {
+        x = Exp(x);
+
+        if (IsInfinity(x))
+            return PositiveInfinity;
+            
+        if (x == Zero)
+            return NegativeInfinity;
+
+        x += One / x;
+        return x / Two;
+    }
+
+    public static LimitedRational Sinh(LimitedRational x)
+    {
+        x = Exp(x);
+
+        if (IsInfinity(x))
+            return PositiveInfinity;
+
+        if (x == Zero)
+            return NegativeInfinity;
+
+        x -= One / x;
+        return x / Two;
+    }
+
+    public static LimitedRational Tanh(LimitedRational x)
+    {
+        if (IsNaN(x))
+            return NaN;
+
+        if (x == Zero)
+            return Zero;
+
+        x = Exp(2 * x);
+
+        if (IsInfinity(x))
+            return One;
+
+        if (x == Zero)
+            return NegativeOne;
+
+        x = (x - One) / (x + One);
+        return x;
+    }
+
     public static implicit operator LimitedRational(double x) => new((Rational)x);
 
     public static implicit operator LimitedRational(float x) => new((Rational)x);
@@ -407,4 +679,6 @@ public readonly struct LimitedRational : INumber<LimitedRational>, IExponentialF
     public static implicit operator LimitedRational(ulong x) => new((Rational)x);
 
     public static explicit operator LimitedRational(Rational x) => new(x);
+
+    public static explicit operator LimitedRational(BigInteger x) => new(x);
 }

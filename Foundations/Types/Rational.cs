@@ -217,7 +217,10 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
         var t = s.ToString().TrimEnd('0');
 
         if (t[^1] == '.')
-            return t[..^1];
+        {
+            t = t[..^1];
+            return t == "-0" ? "0" : t;
+        }
 
         return t;
     }
