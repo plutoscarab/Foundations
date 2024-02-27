@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+      <OutputType>library</OutputType>
+      <TargetFramework>net8.0</TargetFramework>
+    </PropertyGroup>
+  
+    <ItemGroup>
+      <PackageReference Include="Mono.TextTransform" Version="1.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="Natural.fs" />
+    </ItemGroup>
+  
+  </Project>
