@@ -12,6 +12,7 @@ Make("Complex");
 Make("Quad");
 Make("Double");
 Make("Single");
+Make("Decimal");
 #>
 <#+
 void Make(string T)
@@ -54,6 +55,8 @@ public readonly struct <#= T #>Sum(<#= T #> value)
     public static implicit operator <#= T #>Sum(<#= T #> value) => new(value);
 
     public static explicit operator <#= T #>(<#= T #>Sum sum) => sum.Value;
+
+    public bool Equals(<#= T #>Sum other) => Value == other.Value;
 }
 <#+
 }

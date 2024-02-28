@@ -1,6 +1,7 @@
 
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -122,6 +123,73 @@ public class BernoulliNumbersTests
                 line += "-0.5, ";
             else
                 line += "0.0, ";
+
+            n += 2;
+        }
+
+        file.WriteLine(line);
+        file.Outdent();
+        file.WriteLine("];");
+        file.WriteLine();
+        file.WriteLine("public static readonly ImmutableList<decimal> BernoulliTableDecimal =");
+        file.WriteLine("[");
+        file.Indent();
+        var style = NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent;
+        n = 0;
+        line = "";
+
+        foreach (var b in list)
+        {
+            if (b.EndsWith("+30"))
+                break;
+
+            var sd = decimal.Parse(b.Replace("^", "E"), style).ToString() + "m";
+
+            if (line.Length + sd.Length > 106)
+            {
+                file.WriteLine(line);
+                line = "";
+            }
+
+            line += sd + ", ";
+
+            if (n == 0)
+                line += "-0.5m, ";
+            else
+                line += "0.0m, ";
+
+            n += 2;
+        }
+
+        file.WriteLine(line);
+        file.Outdent();
+        file.WriteLine("];");
+        file.WriteLine();
+        file.WriteLine("public static readonly ImmutableList<decimal> BernoulliTableOverNDecimal =");
+        file.WriteLine("[");
+        file.Indent();
+        n = 0;
+        line = "";
+
+        foreach (var b in list)
+        {
+            if (b.EndsWith("+30"))
+                break;
+                
+            var sd = n == 0 ? "decimal.MaxValue" : (decimal.Parse(b.Replace("^", "E"), style) / n).ToString() + "m";
+
+            if (line.Length + sd.Length > 106)
+            {
+                file.WriteLine(line);
+                line = "";
+            }
+
+            line += sd + ", ";
+
+            if (n == 0)
+                line += "-0.5m, ";
+            else
+                line += "0.0m, ";
 
             n += 2;
         }

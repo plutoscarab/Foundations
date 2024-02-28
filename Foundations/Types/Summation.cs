@@ -37,6 +37,8 @@ public readonly struct ComplexQuadSum(ComplexQuad value)
     public static implicit operator ComplexQuadSum(ComplexQuad value) => new(value);
 
     public static explicit operator ComplexQuad(ComplexQuadSum sum) => sum.Value;
+
+    public bool Equals(ComplexQuadSum other) => Value == other.Value;
 }
 
 public readonly struct ComplexSum(Complex value)
@@ -75,6 +77,8 @@ public readonly struct ComplexSum(Complex value)
     public static implicit operator ComplexSum(Complex value) => new(value);
 
     public static explicit operator Complex(ComplexSum sum) => sum.Value;
+
+    public bool Equals(ComplexSum other) => Value == other.Value;
 }
 
 public readonly struct QuadSum(Quad value)
@@ -113,6 +117,8 @@ public readonly struct QuadSum(Quad value)
     public static implicit operator QuadSum(Quad value) => new(value);
 
     public static explicit operator Quad(QuadSum sum) => sum.Value;
+
+    public bool Equals(QuadSum other) => Value == other.Value;
 }
 
 public readonly struct DoubleSum(Double value)
@@ -151,6 +157,8 @@ public readonly struct DoubleSum(Double value)
     public static implicit operator DoubleSum(Double value) => new(value);
 
     public static explicit operator Double(DoubleSum sum) => sum.Value;
+
+    public bool Equals(DoubleSum other) => Value == other.Value;
 }
 
 public readonly struct SingleSum(Single value)
@@ -189,4 +197,46 @@ public readonly struct SingleSum(Single value)
     public static implicit operator SingleSum(Single value) => new(value);
 
     public static explicit operator Single(SingleSum sum) => sum.Value;
+
+    public bool Equals(SingleSum other) => Value == other.Value;
+}
+
+public readonly struct DecimalSum(Decimal value)
+{
+    public readonly Decimal Value = value;
+
+    private readonly Decimal Error = (Decimal)0;
+
+    public DecimalSum(Decimal value, Decimal error) : this(value)
+    {
+        Error = error;
+    }
+
+    public static DecimalSum operator +(DecimalSum sum, Decimal other)
+    {
+        other -= sum.Error;
+        var total = sum.Value + other;
+        return new(total, (total - sum.Value) - other);
+    }
+
+    public static DecimalSum operator -(DecimalSum sum, Decimal other)
+    {
+        return sum + (-other);
+    }
+
+    public static DecimalSum operator *(DecimalSum sum, Decimal other)
+    {
+        return new(sum.Value * other, sum.Error * other);
+    }
+
+    public static DecimalSum operator /(DecimalSum sum, Decimal other)
+    {
+        return new(sum.Value / other, sum.Error / other);
+    }
+
+    public static implicit operator DecimalSum(Decimal value) => new(value);
+
+    public static explicit operator Decimal(DecimalSum sum) => sum.Value;
+
+    public bool Equals(DecimalSum other) => Value == other.Value;
 }

@@ -7,6 +7,15 @@
 
 namespace Foundations
 {
+    public static partial class MathM
+    {
+        public static (decimal Scaled, int Log2) Log2Normalize(decimal x)
+        {
+            var log = (int)Math.Round(Math.Log2((double)x));
+            x /= (decimal)Math.Pow(2.0, log);
+            return (x, log);
+        }
+    }
 <#
 Make("Decimal", "M", 96);
 Copy("Decimal", "M");
@@ -102,6 +111,99 @@ void Make(string T, string suffix, int precision)
 <#+ } #>
 			return (x / s + s) / 2<#= suffix #>;
         }
+
+        public static <#= T #> Log(<#= T #> x)
+        {
+            ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(x, 0<#= suffix #>, nameof(x));
+
+            if (x == 1<#= suffix #>)
+                return 0<#= suffix #>;
+
+            (x, var e) = Math<#= suffix #>.Log2Normalize(x);
+            var y = (x - 1<#= suffix #>) / (x + 1<#= suffix #>);
+            var y2 = y * y;
+            var num = 1<#= suffix #>;
+            var den = 1<#= suffix #>;
+            <#= T #>Sum sum = 1<#= suffix #>;
+
+            while (true)
+            {
+                num *= y2;
+                den += 2<#= suffix #>;
+                var term = num / den;
+                (var old, sum) = (sum, sum + term);
+
+                if (old.Equals(sum))
+                    break;
+            }
+
+            sum *= 2<#= suffix #> * y;
+            sum += e * <#= T #>Constants.Ln2;
+            return sum.Value;
+        }
+
+        public static <#= T #> Mod(<#= T #> x, <#= T #> y)
+        {
+            var div = Math<#= suffix #>.Floor(x / y);
+            return x - y * div;
+        }
+
+        public static <#= T #> Sin(<#= T #> x)
+        {
+            var neg = x < 0<#= suffix #>;
+            x = Math<#= suffix #>.Abs(x);
+            x = Math<#= suffix #>.Mod(x, <#= T #>Constants.Twoπ);
+
+            if (x > <#= T #>Constants.π)
+            {
+                neg = !neg;
+                x -= <#= T #>Constants.π;
+            }
+
+            var xx = -(x * x);
+            var num = x;
+            var den = 1<#= suffix #>;
+            var count = 1<#= suffix #>;
+            <#= T #>Sum sum = x;
+
+            while (true)
+            {
+                num *= xx;
+                count += 1<#= suffix #>;
+                den *= count;
+                count += 1<#= suffix #>;
+                den *= count;
+                var term = num / den;
+                sum += term;
+                (var old, sum) = (sum, sum + term);
+
+                if (old.Equals(sum))
+                    break;
+            }
+
+            x = neg ? -sum.Value : sum.Value;
+            return x;
+        }
+
+        public static <#= T #> Cos(<#= T #> x) => Sin(<#= T #>Constants.Halfπ - x);
+
+        public static (<#= T #>, <#= T #>) SinCos(<#= T #> x)
+        {
+            var s = Sin(x);
+            var c = Math<#= suffix #>.Sqrt(1 - s * s);
+            x = Math<#= suffix #>.Mod(x, <#= T #>Constants.Twoπ);
+            
+            if (x > <#= T #>Constants.Halfπ && x < <#= T #>Constants.ThreeHalfπ)
+                c = -c;
+
+            return (s, c);
+        }
+
+        public static <#= T #> Tan(<#= T #> x)
+        {
+            var (s, c) = SinCos(x);
+            return s / c;
+        }
     }
 
     /// <summary>
@@ -109,10 +211,11 @@ void Make(string T, string suffix, int precision)
     /// </summary>
     public static partial class MathExtensions
     {
-        /// <summary>
-        /// Square root.
-        /// </summary>
         public static <#= T #> Sqrt(this <#= T #> x) => Math<#= suffix #>.Sqrt(x);
+        public static <#= T #> Log(this <#= T #> x) => Math<#= suffix #>.Log(x);
+        public static <#= T #> Sin(this <#= T #> x) => Math<#= suffix #>.Sin(x);
+        public static <#= T #> Cos(this <#= T #> x) => Math<#= suffix #>.Cos(x);
+        public static <#= T #> Tan(this <#= T #> x) => Math<#= suffix #>.Tan(x);
     }
 
 <#+

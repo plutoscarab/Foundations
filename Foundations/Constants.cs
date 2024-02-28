@@ -21,6 +21,9 @@ namespace Foundations
         /// <summary>π/2</summary>
         public const double Halfπ      = 1.5707963267948966;
 
+        /// <summary>3π/2</summary>
+        public const double ThreeHalfπ = 4.71238898038469;
+
         /// <summary>Base of natural logarithm.</summary>
         public const double e          = 2.7182818284590451;
 
@@ -77,6 +80,9 @@ namespace Foundations
 
         /// <summary>π/2</summary>
         public const double OverHalfπ      = 0.63661977236758138;
+
+        /// <summary>3π/2</summary>
+        public const double OverThreeHalfπ = 0.21220659078919379;
 
         /// <summary>Base of natural logarithm.</summary>
         public const double OverE          = 0.36787944117144233;
@@ -142,6 +148,9 @@ namespace Foundations
         /// <summary>π/2</summary>
         public const decimal Halfπ      = 1.5707963267948966192313216916m;
 
+        /// <summary>3π/2</summary>
+        public const decimal ThreeHalfπ = 4.7123889803846898576939650749m;
+
         /// <summary>Base of natural logarithm.</summary>
         public const decimal e          = 2.7182818284590452353602874714m;
 
@@ -198,6 +207,9 @@ namespace Foundations
 
         /// <summary>π/2</summary>
         public const decimal OverHalfπ      = 0.6366197723675813430755350535m;
+
+        /// <summary>3π/2</summary>
+        public const decimal OverThreeHalfπ = 0.2122065907891937810251783512m;
 
         /// <summary>Base of natural logarithm.</summary>
         public const decimal OverE          = 0.3678794411714423215955237702m;
@@ -263,6 +275,9 @@ namespace Foundations
         /// <summary>π/2</summary>
         public const float Halfπ      = 1.57079637f;
 
+        /// <summary>3π/2</summary>
+        public const float ThreeHalfπ = 4.712389f;
+
         /// <summary>Base of natural logarithm.</summary>
         public const float e          = 2.71828175f;
 
@@ -319,6 +334,9 @@ namespace Foundations
 
         /// <summary>π/2</summary>
         public const float OverHalfπ      = 0.636619747f;
+
+        /// <summary>3π/2</summary>
+        public const float OverThreeHalfπ = 0.212206587f;
 
         /// <summary>Base of natural logarithm.</summary>
         public const float OverE          = 0.36787945f;
@@ -384,6 +402,9 @@ namespace Foundations
         /// <summary>π/2</summary>
         public static readonly Quad Halfπ      = Quad.Parse("1.5707963267948966192313216916397514420985846996875529104874722961");
 
+        /// <summary>3π/2</summary>
+        public static readonly Quad ThreeHalfπ = Quad.Parse("4.7123889803846898576939650749192543262957540990626587314624168884");
+
         /// <summary>Base of natural logarithm.</summary>
         public static readonly Quad e          = Quad.Parse("2.7182818284590452353602874713526624977572470936999595749669676277");
 
@@ -440,6 +461,9 @@ namespace Foundations
 
         /// <summary>π/2</summary>
         public static readonly Quad OverHalfπ      = 1 / Quad.Parse("1.5707963267948966192313216916397514420985846996875529104874722961");
+
+        /// <summary>3π/2</summary>
+        public static readonly Quad OverThreeHalfπ = 1 / Quad.Parse("4.7123889803846898576939650749192543262957540990626587314624168884");
 
         /// <summary>Base of natural logarithm.</summary>
         public static readonly Quad OverE          = 1 / Quad.Parse("2.7182818284590452353602874713526624977572470936999595749669676277");

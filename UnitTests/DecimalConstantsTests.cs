@@ -5,6 +5,7 @@ DecimalConstantsTests.cs
 */
 
 using System;
+using Foundations.Functions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Foundations
@@ -70,16 +71,17 @@ namespace Foundations
         [TestMethod]
         public void GammaTest()
         {
-            var s = -DecimalConstants.γ;
+            DecimalSum s = 0m;
 
             for (int i = 1; i < 10000; i++)
             {
                 s += 1m / i;
             }
 
-            s -= (decimal)Math.Log(9999);
-            Assert.IsTrue(s < 0.0001m);
-            Assert.IsTrue(s > -0.0001m);
+            s -= Special.Digamma(10000m);
+            s -= DecimalConstants.γ;
+            Assert.IsTrue(s.Value < 0.0000000001m);
+            Assert.IsTrue(s.Value > -0.0000000001m);
         }
     }
 }

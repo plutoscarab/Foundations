@@ -94,14 +94,15 @@ public static partial class Special
         return C;
     }
 <#
-Make("Double", 20, "Math", "");
-Make("Complex", 40, "Complex", "");
-Make("Quad", 250, "Quad", "Quad");
-Make("ComplexQuad", 250, "ComplexQuad", "Quad");
+Make("Double", 20, "Math", "", "Double");
+Make("Complex", 40, "Complex", "", "Double");
+Make("Quad", 250, "Quad", "Quad", "Quad");
+Make("ComplexQuad", 250, "ComplexQuad", "Quad", "Quad");
+Make("Decimal", 40, "MathM", "Decimal", "Decimal");
 #>
 }
 <#+
-void Make(string T, int offset, string math, string consts)
+void Make(string T, int offset, string math, string consts, string realT)
 {
     var complex = T.Contains("Complex");
     var re = complex ? "x.Real" : "x";
@@ -110,7 +111,7 @@ void Make(string T, int offset, string math, string consts)
 
     public static <#= T #> Digamma(<#= T #> x)
     {
-        if (<#= re #> < .5)
+        if (<#= re #> < (<#= realT #>).5)
             return Digamma(1 - x) - <#= consts #>Constants.π / <#= math #>.Tan(<#= consts #>Constants.π * x);
 
         // Special values
@@ -122,7 +123,7 @@ void Make(string T, int offset, string math, string consts)
             return 1 - <#= consts #>Constants.γ;
 
         if (x == 3)
-            return 1.5 - <#= consts #>Constants.γ;
+            return (<#= realT #>)1.5 - <#= consts #>Constants.γ;
 
         // Shift to asymptotic range.
 
@@ -139,7 +140,7 @@ void Make(string T, int offset, string math, string consts)
             return s.Value;
         }
 
-        <#= T #>Sum sum = new(x.Log() - 1 / (2 * x));
+        <#= T #>Sum sum = new(<#= math #>.Log(x) - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
         sum -= xp * Sequences.BernoulliTableOverN<#= consts #>[2];

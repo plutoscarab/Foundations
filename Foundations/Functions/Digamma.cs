@@ -90,7 +90,7 @@ public static partial class Special
 
     public static Double Digamma(Double x)
     {
-        if (x < .5)
+        if (x < (Double).5)
             return Digamma(1 - x) - Constants.π / Math.Tan(Constants.π * x);
 
         // Special values
@@ -102,7 +102,7 @@ public static partial class Special
             return 1 - Constants.γ;
 
         if (x == 3)
-            return 1.5 - Constants.γ;
+            return (Double)1.5 - Constants.γ;
 
         // Shift to asymptotic range.
 
@@ -119,7 +119,7 @@ public static partial class Special
             return s.Value;
         }
 
-        DoubleSum sum = new(x.Log() - 1 / (2 * x));
+        DoubleSum sum = new(Math.Log(x) - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
         sum -= xp * Sequences.BernoulliTableOverN[2];
@@ -140,7 +140,7 @@ public static partial class Special
 
     public static Complex Digamma(Complex x)
     {
-        if (x.Real < .5)
+        if (x.Real < (Double).5)
             return Digamma(1 - x) - Constants.π / Complex.Tan(Constants.π * x);
 
         // Special values
@@ -152,7 +152,7 @@ public static partial class Special
             return 1 - Constants.γ;
 
         if (x == 3)
-            return 1.5 - Constants.γ;
+            return (Double)1.5 - Constants.γ;
 
         // Shift to asymptotic range.
 
@@ -169,7 +169,7 @@ public static partial class Special
             return s.Value;
         }
 
-        ComplexSum sum = new(x.Log() - 1 / (2 * x));
+        ComplexSum sum = new(Complex.Log(x) - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
         sum -= xp * Sequences.BernoulliTableOverN[2];
@@ -190,7 +190,7 @@ public static partial class Special
 
     public static Quad Digamma(Quad x)
     {
-        if (x < .5)
+        if (x < (Quad).5)
             return Digamma(1 - x) - QuadConstants.π / Quad.Tan(QuadConstants.π * x);
 
         // Special values
@@ -202,7 +202,7 @@ public static partial class Special
             return 1 - QuadConstants.γ;
 
         if (x == 3)
-            return 1.5 - QuadConstants.γ;
+            return (Quad)1.5 - QuadConstants.γ;
 
         // Shift to asymptotic range.
 
@@ -219,7 +219,7 @@ public static partial class Special
             return s.Value;
         }
 
-        QuadSum sum = new(x.Log() - 1 / (2 * x));
+        QuadSum sum = new(Quad.Log(x) - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
         sum -= xp * Sequences.BernoulliTableOverNQuad[2];
@@ -240,7 +240,7 @@ public static partial class Special
 
     public static ComplexQuad Digamma(ComplexQuad x)
     {
-        if (x.Real < .5)
+        if (x.Real < (Quad).5)
             return Digamma(1 - x) - QuadConstants.π / ComplexQuad.Tan(QuadConstants.π * x);
 
         // Special values
@@ -252,7 +252,7 @@ public static partial class Special
             return 1 - QuadConstants.γ;
 
         if (x == 3)
-            return 1.5 - QuadConstants.γ;
+            return (Quad)1.5 - QuadConstants.γ;
 
         // Shift to asymptotic range.
 
@@ -269,7 +269,7 @@ public static partial class Special
             return s.Value;
         }
 
-        ComplexQuadSum sum = new(x.Log() - 1 / (2 * x));
+        ComplexQuadSum sum = new(ComplexQuad.Log(x) - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
         sum -= xp * Sequences.BernoulliTableOverNQuad[2];
@@ -285,6 +285,56 @@ public static partial class Special
         sum -= xp * Sequences.BernoulliTableOverNQuad[12];
         xp *= xx;
         sum -= xp * Sequences.BernoulliTableOverNQuad[14];
+        return sum.Value;
+    }
+
+    public static Decimal Digamma(Decimal x)
+    {
+        if (x < (Decimal).5)
+            return Digamma(1 - x) - DecimalConstants.π / MathM.Tan(DecimalConstants.π * x);
+
+        // Special values
+
+        if (x == 1)
+            return -DecimalConstants.γ;
+
+        if (x == 2)
+            return 1 - DecimalConstants.γ;
+
+        if (x == 3)
+            return (Decimal)1.5 - DecimalConstants.γ;
+
+        // Shift to asymptotic range.
+
+        if (x < 40)
+        {
+            var N = 40 - (int)x;
+            DecimalSum s = new(Digamma(x + N));
+
+            for (var k = 0; k < N; k++)
+            {
+                s -= 1 / (x + k);
+            }
+
+            return s.Value;
+        }
+
+        DecimalSum sum = new(MathM.Log(x) - 1 / (2 * x));
+        var xx = 1 / (x * x);
+        var xp = xx;
+        sum -= xp * Sequences.BernoulliTableOverNDecimal[2];
+        xp *= xx;
+        sum -= xp * Sequences.BernoulliTableOverNDecimal[4];
+        xp *= xx;
+        sum -= xp * Sequences.BernoulliTableOverNDecimal[6];
+        xp *= xx;
+        sum -= xp * Sequences.BernoulliTableOverNDecimal[8];
+        xp *= xx;
+        sum -= xp * Sequences.BernoulliTableOverNDecimal[10];
+        xp *= xx;
+        sum -= xp * Sequences.BernoulliTableOverNDecimal[12];
+        xp *= xx;
+        sum -= xp * Sequences.BernoulliTableOverNDecimal[14];
         return sum.Value;
     }
 }

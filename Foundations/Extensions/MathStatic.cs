@@ -1,6 +1,15 @@
 ﻿
 namespace Foundations
 {
+    public static partial class MathM
+    {
+        public static (decimal Scaled, int Log2) Log2Normalize(decimal x)
+        {
+            var log = (int)Math.Round(Math.Log2((double)x));
+            x /= (decimal)Math.Pow(2.0, log);
+            return (x, log);
+        }
+    }
     /// <summary>
     /// Implementations of <see cref="System.Math"/> methods for <see cref="System.Decimal"/> arguments.
     /// </summary>
@@ -16,6 +25,99 @@ namespace Foundations
             s = (x / s + s) / 2M;
 			return (x / s + s) / 2M;
         }
+
+        public static Decimal Log(Decimal x)
+        {
+            ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(x, 0M, nameof(x));
+
+            if (x == 1M)
+                return 0M;
+
+            (x, var e) = MathM.Log2Normalize(x);
+            var y = (x - 1M) / (x + 1M);
+            var y2 = y * y;
+            var num = 1M;
+            var den = 1M;
+            DecimalSum sum = 1M;
+
+            while (true)
+            {
+                num *= y2;
+                den += 2M;
+                var term = num / den;
+                (var old, sum) = (sum, sum + term);
+
+                if (old.Equals(sum))
+                    break;
+            }
+
+            sum *= 2M * y;
+            sum += e * DecimalConstants.Ln2;
+            return sum.Value;
+        }
+
+        public static Decimal Mod(Decimal x, Decimal y)
+        {
+            var div = MathM.Floor(x / y);
+            return x - y * div;
+        }
+
+        public static Decimal Sin(Decimal x)
+        {
+            var neg = x < 0M;
+            x = MathM.Abs(x);
+            x = MathM.Mod(x, DecimalConstants.Twoπ);
+
+            if (x > DecimalConstants.π)
+            {
+                neg = !neg;
+                x -= DecimalConstants.π;
+            }
+
+            var xx = -(x * x);
+            var num = x;
+            var den = 1M;
+            var count = 1M;
+            DecimalSum sum = x;
+
+            while (true)
+            {
+                num *= xx;
+                count += 1M;
+                den *= count;
+                count += 1M;
+                den *= count;
+                var term = num / den;
+                sum += term;
+                (var old, sum) = (sum, sum + term);
+
+                if (old.Equals(sum))
+                    break;
+            }
+
+            x = neg ? -sum.Value : sum.Value;
+            return x;
+        }
+
+        public static Decimal Cos(Decimal x) => Sin(DecimalConstants.Halfπ - x);
+
+        public static (Decimal, Decimal) SinCos(Decimal x)
+        {
+            var s = Sin(x);
+            var c = MathM.Sqrt(1 - s * s);
+            x = MathM.Mod(x, DecimalConstants.Twoπ);
+            
+            if (x > DecimalConstants.Halfπ && x < DecimalConstants.ThreeHalfπ)
+                c = -c;
+
+            return (s, c);
+        }
+
+        public static Decimal Tan(Decimal x)
+        {
+            var (s, c) = SinCos(x);
+            return s / c;
+        }
     }
 
     /// <summary>
@@ -23,10 +125,11 @@ namespace Foundations
     /// </summary>
     public static partial class MathExtensions
     {
-        /// <summary>
-        /// Square root.
-        /// </summary>
         public static Decimal Sqrt(this Decimal x) => MathM.Sqrt(x);
+        public static Decimal Log(this Decimal x) => MathM.Log(x);
+        public static Decimal Sin(this Decimal x) => MathM.Sin(x);
+        public static Decimal Cos(this Decimal x) => MathM.Cos(x);
+        public static Decimal Tan(this Decimal x) => MathM.Tan(x);
     }
 
     /// <summary>
