@@ -10,7 +10,7 @@ public static partial class Special
     /// </summary>
     public static Quad[] GetDigammaChebyshevCoefficients(int count)
     {
-        QuadSum r = Quad.Zero;
+        Sum<Quad> r = Quad.Zero;
         var K = new Quad[count + 1];
 
         for (var l = 0; true; l++)
@@ -61,7 +61,7 @@ public static partial class Special
         {
             for (var l = (n + 3) / 2; true; l++)
             {
-                QuadSum d = Quad.Zero;
+                Sum<Quad> d = Quad.Zero;
 
                 for (var s = 0; s <= n + 1; s++)
                 {
@@ -109,7 +109,7 @@ public static partial class Special
         if (x < 20)
         {
             var N = 20 - (int)x;
-            DoubleSum s = new(Digamma(x + N));
+            Sum<Double> s = new(Digamma(x + N));
 
             for (var k = 0; k < N; k++)
             {
@@ -119,7 +119,7 @@ public static partial class Special
             return s.Value;
         }
 
-        DoubleSum sum = new(Math.Log(x) - 1 / (2 * x));
+        Sum<Double> sum = new(Math.Log(x) - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
         sum -= xp * Sequences.BernoulliTableOverN[2];
@@ -159,7 +159,7 @@ public static partial class Special
         if (x.Abs() < 40)
         {
             var N = 40 - (int)x.Real;
-            ComplexSum s = new(Digamma(x + N));
+            Sum<Complex> s = new(Digamma(x + N));
 
             for (var k = 0; k < N; k++)
             {
@@ -169,7 +169,7 @@ public static partial class Special
             return s.Value;
         }
 
-        ComplexSum sum = new(Complex.Log(x) - 1 / (2 * x));
+        Sum<Complex> sum = new(Complex.Log(x) - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
         sum -= xp * Sequences.BernoulliTableOverN[2];
@@ -209,7 +209,7 @@ public static partial class Special
         if (x < 250)
         {
             var N = 250 - (int)x;
-            QuadSum s = new(Digamma(x + N));
+            Sum<Quad> s = new(Digamma(x + N));
 
             for (var k = 0; k < N; k++)
             {
@@ -219,7 +219,7 @@ public static partial class Special
             return s.Value;
         }
 
-        QuadSum sum = new(Quad.Log(x) - 1 / (2 * x));
+        Sum<Quad> sum = new(Quad.Log(x) - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
         sum -= xp * Sequences.BernoulliTableOverNQuad[2];
@@ -259,7 +259,7 @@ public static partial class Special
         if (x.Abs() < 250)
         {
             var N = 250 - (int)x.Real;
-            ComplexQuadSum s = new(Digamma(x + N));
+            Sum<ComplexQuad> s = new(Digamma(x + N));
 
             for (var k = 0; k < N; k++)
             {
@@ -269,7 +269,7 @@ public static partial class Special
             return s.Value;
         }
 
-        ComplexQuadSum sum = new(ComplexQuad.Log(x) - 1 / (2 * x));
+        Sum<ComplexQuad> sum = new(ComplexQuad.Log(x) - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
         sum -= xp * Sequences.BernoulliTableOverNQuad[2];
@@ -309,7 +309,7 @@ public static partial class Special
         if (x < 40)
         {
             var N = 40 - (int)x;
-            DecimalSum s = new(Digamma(x + N));
+            Sum<Decimal> s = new(Digamma(x + N));
 
             for (var k = 0; k < N; k++)
             {
@@ -319,7 +319,7 @@ public static partial class Special
             return s.Value;
         }
 
-        DecimalSum sum = new(MathM.Log(x) - 1 / (2 * x));
+        Sum<Decimal> sum = new(MathM.Log(x) - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
         sum -= xp * Sequences.BernoulliTableOverNDecimal[2];

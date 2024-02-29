@@ -16,7 +16,7 @@ public static partial class Special
     /// </summary>
     public static Quad[] GetDigammaChebyshevCoefficients(int count)
     {
-        QuadSum r = Quad.Zero;
+        Sum<Quad> r = Quad.Zero;
         var K = new Quad[count + 1];
 
         for (var l = 0; true; l++)
@@ -67,7 +67,7 @@ public static partial class Special
         {
             for (var l = (n + 3) / 2; true; l++)
             {
-                QuadSum d = Quad.Zero;
+                Sum<Quad> d = Quad.Zero;
 
                 for (var s = 0; s <= n + 1; s++)
                 {
@@ -130,7 +130,7 @@ void Make(string T, int offset, string math, string consts, string realT)
         if (<#= abs #> < <#= offset #>)
         {
             var N = <#= offset #> - (int)<#= re #>;
-            <#= T #>Sum s = new(Digamma(x + N));
+            Sum<<#= T #>> s = new(Digamma(x + N));
 
             for (var k = 0; k < N; k++)
             {
@@ -140,7 +140,7 @@ void Make(string T, int offset, string math, string consts, string realT)
             return s.Value;
         }
 
-        <#= T #>Sum sum = new(<#= math #>.Log(x) - 1 / (2 * x));
+        Sum<<#= T #>> sum = new(<#= math #>.Log(x) - 1 / (2 * x));
         var xx = 1 / (x * x);
         var xp = xx;
         sum -= xp * Sequences.BernoulliTableOverN<#= consts #>[2];

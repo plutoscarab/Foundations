@@ -71,7 +71,7 @@ namespace Foundations
         [TestMethod]
         public void GammaTest()
         {
-            DecimalSum s = 0m;
+            Sum<decimal> s = 0m;
 
             for (int i = 1; i < 10000; i++)
             {

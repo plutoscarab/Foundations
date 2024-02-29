@@ -53,7 +53,9 @@ internal struct DoubleBytes
 /// Quadruple-precision floating-point number. 144 bits of precision with one sign
 /// bit, 16 exponent bits, and 127 mantissa bits.
 /// </summary>
-public struct Quad : IEquatable<Quad>, IComparable<Quad>
+public struct Quad : IEquatable<Quad>, IComparable<Quad>, IAdditionOperators<Quad, Quad, Quad>, 
+    ISubtractionOperators<Quad, Quad, Quad>, IUnaryNegationOperators<Quad, Quad>, IMultiplyOperators<Quad, Quad, Quad>, 
+    IDivisionOperators<Quad, Quad, Quad>, IAdditiveIdentity<Quad, Quad>, IEqualityOperators<Quad, Quad, bool>
 {
     const ulong msb = 0x8000000000000000;
 
@@ -907,6 +909,8 @@ public struct Quad : IEquatable<Quad>, IComparable<Quad>
             Signif(Math.Max(0, value));
         }
     }
+
+    public static Quad AdditiveIdentity => Zero;
 
     public static Quad Sqrt(Quad r)
     {

@@ -4,7 +4,10 @@ namespace Foundations;
 /// <summary>
 /// A quad-precision complex number.
 /// </summary>
-public struct ComplexQuad
+public struct ComplexQuad : IAdditionOperators<ComplexQuad, ComplexQuad, ComplexQuad>, 
+    ISubtractionOperators<ComplexQuad, ComplexQuad, ComplexQuad>, IUnaryNegationOperators<ComplexQuad, ComplexQuad>, 
+    IMultiplyOperators<ComplexQuad, ComplexQuad, ComplexQuad>, IDivisionOperators<ComplexQuad, ComplexQuad, ComplexQuad>, 
+    IAdditiveIdentity<ComplexQuad, ComplexQuad>, IEqualityOperators<ComplexQuad, ComplexQuad, bool>
 {
     public Quad Re;
     public Quad Im;
@@ -89,6 +92,8 @@ public struct ComplexQuad
     public readonly Quad Real => Re;
 
     public readonly Quad Imaginary => Im;
+
+    public static ComplexQuad AdditiveIdentity => Zero;
 
     /// <summary>
     /// Covert from a UInt64 value.

@@ -74,7 +74,7 @@ void Make(string T, string math, string re, string im, string consts, string rea
             ek[j - 1] = ek[j] + e;
         }
 
-        <#= U #>Sum sum = new(0);
+        Sum<<#= U #>> sum = new(0);
 
         for (var k = n + 1; k <= 2 * n; k++)
         {

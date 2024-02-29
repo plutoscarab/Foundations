@@ -38,7 +38,7 @@ namespace Foundations
             var y2 = y * y;
             var num = 1M;
             var den = 1M;
-            DecimalSum sum = 1M;
+            Sum<Decimal> sum = 1M;
 
             while (true)
             {
@@ -78,7 +78,7 @@ namespace Foundations
             var num = x;
             var den = 1M;
             var count = 1M;
-            DecimalSum sum = x;
+            Sum<Decimal> sum = x;
 
             while (true)
             {

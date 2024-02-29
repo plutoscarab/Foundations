@@ -83,7 +83,7 @@ public static partial class Special
             return g;
         }
 
-        ComplexQuadSum s = new();
+        Sum<ComplexQuad> s = new();
         s += p0;
         s += p1 / z;
         s += p2 / (z + 1);

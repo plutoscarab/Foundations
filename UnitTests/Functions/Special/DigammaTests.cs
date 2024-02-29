@@ -61,7 +61,7 @@ public class DigammaTests
     [TestMethod]
     public void HarmonicNumbersTest()
     {
-        QuadSum q = Quad.Zero;
+        Sum<Quad> q = Quad.Zero;
         Quad h, hq;
 
         for (var i = 2; i < 100; i++)

@@ -37,7 +37,7 @@ public static partial class Special
             ek[j - 1] = ek[j] + e;
         }
 
-        ComplexQuadSum sum = new(0);
+        Sum<ComplexQuad> sum = new(0);
 
         for (var k = n + 1; k <= 2 * n; k++)
         {
@@ -91,7 +91,7 @@ public static partial class Special
             ek[j - 1] = ek[j] + e;
         }
 
-        ComplexSum sum = new(0);
+        Sum<Complex> sum = new(0);
 
         for (var k = n + 1; k <= 2 * n; k++)
         {
@@ -139,7 +139,7 @@ public static partial class Special
             ek[j - 1] = ek[j] + e;
         }
 
-        QuadSum sum = new(0);
+        Sum<Quad> sum = new(0);
 
         for (var k = n + 1; k <= 2 * n; k++)
         {
@@ -187,7 +187,7 @@ public static partial class Special
             ek[j - 1] = ek[j] + e;
         }
 
-        DoubleSum sum = new(0);
+        Sum<Double> sum = new(0);
 
         for (var k = n + 1; k <= 2 * n; k++)
         {
@@ -235,7 +235,7 @@ public static partial class Special
             ek[j - 1] = ek[j] + e;
         }
 
-        SingleSum sum = new(0);
+        Sum<Single> sum = new(0);
 
         for (var k = n + 1; k <= 2 * n; k++)
         {

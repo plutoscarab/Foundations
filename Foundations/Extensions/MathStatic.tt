@@ -124,7 +124,7 @@ void Make(string T, string suffix, int precision)
             var y2 = y * y;
             var num = 1<#= suffix #>;
             var den = 1<#= suffix #>;
-            <#= T #>Sum sum = 1<#= suffix #>;
+            Sum<<#= T #>> sum = 1<#= suffix #>;
 
             while (true)
             {
@@ -164,7 +164,7 @@ void Make(string T, string suffix, int precision)
             var num = x;
             var den = 1<#= suffix #>;
             var count = 1<#= suffix #>;
-            <#= T #>Sum sum = x;
+            Sum<<#= T #>> sum = x;
 
             while (true)
             {
