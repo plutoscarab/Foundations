@@ -2,9 +2,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            // Use IntelliSense to find out which attributes exist for C# debugging
-            // Use hover for the description of the existing attributes
-            // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md
             "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
@@ -14,6 +11,17 @@
             "args": [],
             "cwd": "${workspaceFolder}/UnitTests",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": "FMath",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "fbuild",
+            "program": "${workspaceFolder}/FMath/bin/Debug/net8.0/FMath.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/FMath",
             "console": "internalConsole",
             "stopAtEntry": false
         },
