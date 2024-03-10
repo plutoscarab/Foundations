@@ -780,9 +780,9 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
         return Reciprocal(Floor(x) * Two + One - x);
     }
 
-    public static Rational Best(double d) => Best(FromFloatingPoint(d));
+    public static Rational Best(double d) => Best(FromFloatingPoint(d, false));
 
-    public static Rational Best(float f) => Best(FromFloatingPoint(f));
+    public static Rational Best(float f) => Best(FromFloatingPoint(f, false));
 
     private static Rational Best(Rational r) => Best(new(r.P * 2 - 1, r.Q * 2), new Rational(r.P * 2 + 1, r.Q * 2));
 
@@ -830,7 +830,7 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
         return (numerator, (short)exp);
     }
 
-    public static Rational FromFloatingPoint(float d)
+    public static Rational FromFloatingPoint(float d, bool reduce = true)
     {
         if (float.IsNaN(d))
             return NaN;
@@ -866,13 +866,13 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
         if (exp >= 0)
             return new(numerator * BigInteger.Pow(2, exp), 1, false);
 
-        return new(numerator, BigInteger.Pow(2, -exp), false);
+        return reduce ? new(numerator, BigInteger.Pow(2, -exp)) : new(numerator, BigInteger.Pow(2, -exp), false);
     }
 
     public static (long Mantissa, short Exponent) DecomposeFloatingPoint(double d)
     {
         if (double.IsNaN(d) || double.IsInfinity(d))
-            throw new ArgumentException(nameof(d));
+            throw new ArgumentException(null, nameof(d));
 
         if (d == 0.0)
             return (0, 0);
@@ -898,7 +898,7 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
         return (numerator, (short)exp);
     }
 
-    public static Rational FromFloatingPoint(double d)
+    public static Rational FromFloatingPoint(double d, bool reduce = true)
     {
         if (double.IsNaN(d))
             return NaN;
@@ -934,6 +934,6 @@ public readonly struct Rational : IEquatable<Rational>, IComparable<Rational>
         if (exp >= 0)
             return new(numerator * BigInteger.Pow(2, exp), 1, false);
 
-        return new(numerator, BigInteger.Pow(2, -exp), false);
+        return reduce ? new(numerator, BigInteger.Pow(2, -exp)) : new(numerator, BigInteger.Pow(2, -exp), false);
     }
 }

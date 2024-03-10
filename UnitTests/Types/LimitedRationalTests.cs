@@ -207,4 +207,18 @@ public class LimitedRationalTests
         var x = LimitedRational.Asinh(1.4m);
         var y = LimitedRational.Sinh(x);
     }
+
+    [TestMethod]
+    public void MullerTest()
+    {
+        LimitedRational a = new(new(11, 2));
+        LimitedRational b = new(new(61, 11));
+
+        for (var i = 0; i < 100; i++)
+        {
+            (a, b) = (b, 111 - (1130 - 3000 / a) / b);
+        }
+
+        Assert.AreEqual("5.9999", b.ToString()[..6]);
+    }
 }
