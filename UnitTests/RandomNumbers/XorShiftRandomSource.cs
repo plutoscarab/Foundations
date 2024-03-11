@@ -7,7 +7,6 @@ XorShiftRandomSourceTests.cs
 
 using Foundations.RandomNumbers;
 using Foundations.Types;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
 
 namespace Foundations.UnitTests.Objects

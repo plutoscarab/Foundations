@@ -7,15 +7,10 @@
 
 /*
 MixingFunctionsTests.cs
-
-<#@ include file="../../License.txt" #>
-
 */
 
-using System;
 using System.Collections.Generic;
 using Foundations.Functions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Foundations.RandomNumbers
 {

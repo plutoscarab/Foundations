@@ -1,8 +1,6 @@
 ﻿
 using Foundations.RandomNumbers;
 using Foundations.Types;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Numerics;
 
 namespace Foundations.UnitTests.Types

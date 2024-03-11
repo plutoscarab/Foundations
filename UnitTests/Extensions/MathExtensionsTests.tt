@@ -7,12 +7,8 @@
 
 /*
 MathExtensions.cs
-
-<#@ include file="../../License.txt" #>
-
 */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Foundations.RandomNumbers;
 
 namespace Foundations

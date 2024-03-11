@@ -6,9 +6,6 @@ SystemRandomSource.cs
 */
 
 using Foundations.RandomNumbers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Diagnostics;
 
 namespace Foundations.UnitTests.Objects
 {

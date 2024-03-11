@@ -7,14 +7,9 @@
 
 /*
 BitsTests.cs
-
-<#@ include file="../../License.txt" #>
-
 */
 
-using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Foundations.Coding;
 using Foundations.RandomNumbers;
 

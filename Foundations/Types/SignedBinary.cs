@@ -6,27 +6,10 @@ using Foundations.Types;
 
 namespace Foundations;
 
-public sealed class Sequence<T>(IEnumerable<T> Items, int StartIndex) : IEnumerable<T>
+public sealed class Sequence<T>(IEnumerable<T> Items) : IEnumerable<T>
 {
     private readonly List<T> cached = [];
-    private readonly IEnumerator<T> next = Initialize(Items, StartIndex);
-
-    private static IEnumerator<T> Initialize(IEnumerable<T> items, int startIndex)
-    {
-        var e = items.GetEnumerator();
-
-        for (var i = 0; i < startIndex; i++)
-        {
-            if (!e.MoveNext())
-                break;
-        }
-
-        return e;
-    }
-
-    public Sequence(IEnumerable<T> items) : this(items, 0)
-    {
-    }
+    private readonly IEnumerator<T> next = Items.GetEnumerator();
 
     private IEnumerable<T> Items()
     {

@@ -4,9 +4,6 @@ RulerTests.cs
 
 */
 
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Foundations
 {
     /// <summary />

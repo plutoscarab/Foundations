@@ -1,11 +1,8 @@
 ﻿
 /*
 CarlsonSymmetric.cs
-
-
 */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Numerics;
 
 using static Foundations.Functions.CarlsonSymmetric;

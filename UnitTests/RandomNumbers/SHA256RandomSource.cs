@@ -1,14 +1,10 @@
 ﻿
 /*
 SHA256RandomSourceTests.cs
-
-
 */
 
 using Foundations.RandomNumbers;
 using Foundations.Types;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 
 namespace Foundations.UnitTests.Objects
 {

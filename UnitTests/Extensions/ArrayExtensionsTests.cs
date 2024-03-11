@@ -1,11 +1,7 @@
 ﻿
 /*
 ArrayExtensionsTests.cs
-
 */
-
-using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Foundations
 {

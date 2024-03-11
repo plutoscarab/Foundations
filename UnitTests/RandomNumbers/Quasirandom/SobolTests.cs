@@ -1,13 +1,9 @@
 ﻿
 /*
 SobolTests.cs
-
 */
 
-using System;
-using System.Diagnostics;
 using Foundations.Types;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Foundations.RandomNumbers
 {

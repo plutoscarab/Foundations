@@ -1,8 +1,5 @@
 
-using System;
-using System.Linq;
 using Foundations.Types;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Foundations;
 
@@ -12,10 +9,14 @@ public class SignedBinaryTests
     [TestMethod]
     public void AverageTest()
     {
-        var a = new SignedBinaryStream(new Sequence<int>([1, 0, -1]));      // 3/8
-        var b = new SignedBinaryStream(new Sequence<int>([0, 0, 0, 1]));    // 1/16
-        var avg = SignedBinaryStream.Average(a, b).Take(10).ToArray();
-        Assert.IsTrue(Enumerable.SequenceEqual([0, 1, 0, 0, -1, 0, 0, 0, 0, 0], avg));  // 7/32
+        for (var i = 0; i < 100; i++)
+        {
+            var x = Random.Shared.NextDouble() * 2 - 1;
+            var y = Random.Shared.NextDouble() * 2 - 1;
+            var e = ((Rational)x + (Rational)y) / 2;
+            var v = SignedBinaryStream.Average(new SignedBinaryStream(x), new SignedBinaryStream(y));
+            Assert.AreEqual(e, v.Value(53));
+        }
     }
 
     [TestMethod]

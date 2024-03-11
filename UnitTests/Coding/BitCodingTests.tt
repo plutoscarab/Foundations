@@ -7,14 +7,9 @@
 
 /*
 BitCodingTests.cs
-
-<#@ include file="../../License.txt" #>
-
 */
 
-using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Foundations.RandomNumbers;
 
 namespace Foundations.Coding

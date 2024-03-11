@@ -4,13 +4,8 @@ FactorialsTests.cs
 
 */
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Numerics;
-using Foundations.Types;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Foundations
 {

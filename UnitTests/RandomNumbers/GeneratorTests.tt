@@ -7,9 +7,6 @@
 
 /*
 Generator.cs
-
-<#@ include file="../../License.txt" #>
-
 */
 
 using Foundations.RandomNumbers;

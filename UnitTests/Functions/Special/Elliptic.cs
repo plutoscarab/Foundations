@@ -1,13 +1,9 @@
 ﻿
 /*
 Elliptic.cs
-
-
 */
 
 using Foundations.Functions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Numerics;
 
 namespace Foundations.UnitTests.Functions

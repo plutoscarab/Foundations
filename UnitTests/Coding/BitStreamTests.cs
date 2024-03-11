@@ -1,12 +1,10 @@
 ﻿
 /*
 BitStreamTests.cs
-
 */
 
 using System.Collections.Generic;
 using Foundations.RandomNumbers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Foundations.Coding
 {

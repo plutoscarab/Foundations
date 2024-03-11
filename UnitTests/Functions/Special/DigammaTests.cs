@@ -3,7 +3,6 @@ using System.CodeDom.Compiler;
 using System.IO;
 using System.Numerics;
 using System.Reflection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using static Foundations.Functions.Special;
 

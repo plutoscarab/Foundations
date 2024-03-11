@@ -4,9 +4,7 @@ DecimalConstantsTests.cs
 
 */
 
-using System;
 using Foundations.Functions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Foundations
 {

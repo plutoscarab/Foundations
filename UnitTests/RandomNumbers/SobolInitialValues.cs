@@ -1,12 +1,8 @@
 ﻿
 /*
 SobolInitialValues.cs
-
 */
 
-using System;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Foundations.Types;
 using System.Diagnostics;
 

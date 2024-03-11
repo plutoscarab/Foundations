@@ -5,8 +5,6 @@ PolyGF2Tests.cs
 */
 
 using System.Diagnostics;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Foundations.RandomNumbers;
 
 namespace Foundations.Types
