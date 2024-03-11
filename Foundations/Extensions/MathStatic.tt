@@ -5,6 +5,8 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 
+using Foundations.Types;
+
 namespace Foundations
 {
     public static partial class MathM

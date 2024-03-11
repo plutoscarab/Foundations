@@ -1,7 +1,7 @@
 
 using static Foundations.Functions.Special;
 
-namespace Foundations;
+namespace Foundations.Types;
 
 public partial struct Nat
 {

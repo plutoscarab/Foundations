@@ -1,5 +1,5 @@
 
-namespace Foundations;
+namespace Foundations.Types;
 
 /// <summary>
 /// A quad-precision complex number.

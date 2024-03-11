@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Foundations.Bijections;
+namespace Foundations.Types;
 
 [TestClass]
 public class ListTests

@@ -1,9 +1,5 @@
 
-using System;
-using System.Collections.Generic;
-using System.Numerics;
-
-namespace Foundations;
+namespace Foundations.Types;
 
 public partial struct Nat :
     IEquatable<Nat>,

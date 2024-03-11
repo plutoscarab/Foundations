@@ -3,6 +3,7 @@ using System.CodeDom.Compiler;
 using System.IO;
 using System.Numerics;
 using System.Reflection;
+using Foundations.Types;
 
 using static Foundations.Functions.Special;
 

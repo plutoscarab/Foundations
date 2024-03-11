@@ -58,6 +58,8 @@ public class BernoulliNumbersTests
         using var file = new IndentedTextWriter(File.CreateText(path));
         ((StreamWriter)file.InnerWriter).AutoFlush = true;
         file.WriteLine();
+        file.WriteLine("using Foundations.Types;");
+        file.WriteLine();
         file.WriteLine("namespace Foundations;");
         file.WriteLine();
         file.WriteLine("public static partial class Sequences");

@@ -1,5 +1,5 @@
 ﻿
-namespace Foundations;
+namespace Foundations.Types;
 
 public readonly struct Sum<T>(T value) where T : IAdditionOperators<T, T, T>, ISubtractionOperators<T, T, T>,
     IUnaryNegationOperators<T, T>, IMultiplyOperators<T, T, T>, IDivisionOperators<T, T, T>, IAdditiveIdentity<T, T>,

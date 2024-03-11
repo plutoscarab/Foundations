@@ -1,4 +1,6 @@
 ﻿
+using Foundations.Types;
+
 namespace Foundations
 {
     public static partial class MathM

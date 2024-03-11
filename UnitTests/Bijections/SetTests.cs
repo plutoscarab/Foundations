@@ -1,7 +1,7 @@
 
 using System.Collections.Generic;
 
-namespace Foundations.Bijections;
+namespace Foundations.Types;
 
 [TestClass]
 public class SetTests

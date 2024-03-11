@@ -1,7 +1,7 @@
 
 using System.Diagnostics;
 
-namespace Foundations;
+namespace Foundations.Types;
 
 internal struct Mantissa
 {

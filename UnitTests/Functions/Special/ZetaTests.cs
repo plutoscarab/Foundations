@@ -1,5 +1,6 @@
 
 using static Foundations.Functions.Special;
+using Foundations.Types;
 
 namespace Foundations.Functions;
 

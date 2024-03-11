@@ -1,4 +1,6 @@
 ﻿
+using Foundations.Types;
+
 namespace Foundations.Functions
 {
     /// <summary>

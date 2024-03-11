@@ -1,7 +1,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace Foundations;
+namespace Foundations.Types;
 
 [StructLayout(LayoutKind.Explicit)]
 internal struct DoubleBytes

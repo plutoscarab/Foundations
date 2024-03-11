@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace Foundations.Bijections;
+namespace Foundations.Types;
 
 [TestClass]
 public class RationalTests

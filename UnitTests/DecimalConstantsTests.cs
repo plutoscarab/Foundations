@@ -5,6 +5,7 @@ DecimalConstantsTests.cs
 */
 
 using Foundations.Functions;
+using Foundations.Types;
 
 namespace Foundations
 {

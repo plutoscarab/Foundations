@@ -1,5 +1,5 @@
 
-namespace Foundations;
+namespace Foundations.Types;
 
 public partial struct Nat
 {

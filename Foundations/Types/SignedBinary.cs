@@ -2,9 +2,8 @@
 // Implementation of Coinductive Definitions and Real Numbers, BSc Final Year Project Report, Michael Herrmann, June 2009
 
 using System.Collections;
-using Foundations.Types;
 
-namespace Foundations;
+namespace Foundations.Types;
 
 public sealed class Sequence<T>(IEnumerable<T> Items) : IEnumerable<T>
 {

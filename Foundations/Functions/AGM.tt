@@ -1,0 +1,64 @@
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core.dll" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+namespace Foundations.Functions;
+
+using Foundations.Types;
+
+public static partial class Special
+{
+    public static float AGM(float x, float y) => (float)AGM((double)x, (double)y);
+<#
+Make("double", "Math");
+Make("Quad", "Quad");
+Make("Complex", "Complex");
+Make("ComplexQuad", "ComplexQuad");
+#>
+
+    public static LimitedRational AGM(LimitedRational x, LimitedRational y)
+    {
+        (x, y) = ((x + y) / 2, LimitedRational.Sqrt(x * y));
+        (x, y) = ((x + y) / 2, LimitedRational.Sqrt(x * y));
+        (x, y) = ((x + y) / 2, LimitedRational.Sqrt(x * y));
+        (x, y) = ((x + y) / 2, LimitedRational.Sqrt(x * y));
+        (x, y) = ((x + y) / 2, LimitedRational.Sqrt(x * y));
+        (x, y) = ((x + y) / 2, LimitedRational.Sqrt(x * y));
+        (x, y) = ((x + y) / 2, LimitedRational.Sqrt(x * y));
+        (x, y) = ((x + y) / 2, LimitedRational.Sqrt(x * y));
+        var i = 0;
+
+        while (x.ToString() != y.ToString() && i++ < 10)
+        {
+            (x, y) = ((x + y) / 2, LimitedRational.Sqrt(x * y));
+        }
+ 
+        return x;
+    }
+}
+<#+
+void Make(string T, string math)
+{
+#>
+
+    public static <#= T #> AGM(<#= T #> x, <#= T #> y)
+    {
+        var i = 0;
+
+        while (x != y && i++ < 100)
+        {
+            (var ox, var oy, x, y) = (x, y, (x + y) / 2, <#= math #>.Sqrt(x * y));
+            (x, y) = ((x + y) / 2, <#= math #>.Sqrt(x * y));
+
+            if (x == ox || y == oy || x == oy || y == ox)
+                break;
+        }
+
+        return x;
+    }
+<#+
+}
+#>

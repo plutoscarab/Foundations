@@ -3,6 +3,8 @@ using static Foundations.Constants;
 using static Foundations.Functions.Elliptic;
 using static Foundations.Functions.Theta;
 
+using Foundations.Types;
+
 namespace Foundations.Functions
 {
     /// <summary>
