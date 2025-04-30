@@ -10,12 +10,12 @@ public static partial class Sequences
     public static IEnumerable<Rational> BernoulliNumbers()
     {
         yield return Rational.One;
-        yield return -Rational.OneHalf;
         List<Rational> list = [Rational.OneHalf];
         long d = 2;
 
         while (true)
         {
+            yield return list[0];
             ++d;
             list.Add(new(1, d));
 
@@ -23,8 +23,6 @@ public static partial class Sequences
             {
                 list[i] = (i + 1) * (list[i] - list[i + 1]);
             }
-
-            yield return list[0];
         }
     }
 

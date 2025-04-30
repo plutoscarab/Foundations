@@ -69,15 +69,4 @@ public static partial class Sequences
             n += k;
         }
     }
-
-    public static IEnumerable<long> PartialSums(IEnumerable<long> sequence)
-    {
-        var n = 0L;
-
-        foreach (var s in sequence)
-        {
-            yield return n;
-            n += s;
-        }
-    }
 }

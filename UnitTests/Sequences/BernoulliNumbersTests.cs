@@ -17,7 +17,7 @@ public class BernoulliNumbersTests
     {
         var bs = Sequences.BernoulliNumbers().Take(10).ToList();
         Assert.AreEqual(Rational.One, bs[0]);
-        Assert.AreEqual(-Rational.OneHalf, bs[1]);
+        Assert.AreEqual(Rational.OneHalf, bs[1]);
         Assert.AreEqual(new Rational(1, 6), bs[2]);
         Assert.AreEqual(Rational.Zero, bs[3]);
         Assert.AreEqual(new Rational(-1, 30), bs[4]);
