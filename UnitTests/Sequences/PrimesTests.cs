@@ -11,8 +11,8 @@ namespace Foundations
         {
             var n = Sequences.Primes().Skip(99999).First();
             Assert.AreEqual(1299709L, n);
-            //var n = Sequences.Primes().Skip(999999).First();
-            //Assert.AreEqual(15485863L, n);
+            n = Sequences.Primes().Skip(999999).First();
+            Assert.AreEqual(15485863L, n);
         }
     }
 }
