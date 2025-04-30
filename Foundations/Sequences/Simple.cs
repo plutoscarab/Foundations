@@ -14,6 +14,17 @@ public static partial class Sequences
         }
     }
 
+    public static IEnumerable<long> PositiveIntegers()
+    {
+        var n = 1L;
+
+        while (n >= 0)
+        {
+            yield return n;
+            n++;
+        }
+    }
+
     public static IEnumerable<long> Evens()
     {
         var n = 0L;
