@@ -30,7 +30,8 @@ namespace Foundations.Coding
     Test("Levenshtein");
     Test("EliasFibonacci");
     Test("BaerCode0");
-    Test("BaerCodeNet1");
+    Test("BaerCodeNeg1");
+    Test("WallaceTree");
     ParameterizedTest("TruncatedBinary", "6000");
     ParameterizedTest("Golomb", "141");
     ParameterizedTest("Rice", "8");

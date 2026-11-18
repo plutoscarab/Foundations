@@ -51,6 +51,18 @@ namespace Foundations.Coding
         }
 
         [TestMethod]
+        public void LevenshteinTest()
+        {
+            EncodingTest(Codes.Levenshtein);
+        }
+
+        [TestMethod]
+        public void EliasFibonacciTest()
+        {
+            EncodingTest(Codes.EliasFibonacci);
+        }
+
+        [TestMethod]
         public void BaerCode0Test()
         {
             EncodingTest(Codes.BaerCode0);
@@ -63,15 +75,9 @@ namespace Foundations.Coding
         }
 
         [TestMethod]
-        public void LevenshteinTest()
+        public void WallaceTreeTest()
         {
-            EncodingTest(Codes.Levenshtein);
-        }
-
-        [TestMethod]
-        public void EliasFibonacciTest()
-        {
-            EncodingTest(Codes.EliasFibonacci);
+            EncodingTest(Codes.WallaceTree);
         }
 
         [TestMethod]
