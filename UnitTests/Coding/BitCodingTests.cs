@@ -51,6 +51,18 @@ namespace Foundations.Coding
         }
 
         [TestMethod]
+        public void BaerCode0Test()
+        {
+            EncodingTest(Codes.BaerCode0);
+        }
+
+        [TestMethod]
+        public void BaerCodeNeg1Test()
+        {
+            EncodingTest(Codes.BaerCodeNeg1);
+        }
+
+        [TestMethod]
         public void LevenshteinTest()
         {
             EncodingTest(Codes.Levenshtein);

@@ -19,7 +19,7 @@ included since 2/4 is equivalent to 1/2.
 
 ### Set.cs
 Implements a bijection between natural numbers and finite sets of natural numbers.
-This is actually a family of bijections with a parameter to determine the balnce
+This is actually a family of bijections with a parameter to determine the balance
 between the set size and the size of the values.
 
 ### Tuple.cs

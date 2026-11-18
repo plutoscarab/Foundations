@@ -13,7 +13,7 @@ public static partial class Codes
 }
 
 /// <summary>
-/// EliasFibonacci code. Value is precided by Fibonacci-coded bit length.
+/// EliasFibonacci code. Value is preceded by Fibonacci-coded bit length.
 /// </summary>
 public sealed partial class EliasFibonacci : IBitEncoding
 {

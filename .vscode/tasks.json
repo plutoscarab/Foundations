@@ -2,6 +2,31 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "T4: Transform current template",
+            "type": "process",
+            "command": "powershell.exe",
+            "args": [
+                "-NoProfile", "-ExecutionPolicy", "Bypass",
+                "-File", "${workspaceFolder}/.vscode/TransformTemplates.ps1",
+                "-Template", "${file}"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "T4: Watch templates",
+            "type": "process",
+            "command": "powershell.exe",
+            "args": [
+                "-NoProfile", "-ExecutionPolicy", "Bypass",
+                "-File", "${workspaceFolder}/.vscode/TransformTemplates.ps1",
+                "-Watch"
+            ],
+            "isBackground": true,
+            "runOptions": { "runOn": "folderOpen", "instanceLimit": 1 },
+            "presentation": { "reveal": "silent", "panel": "dedicated" },
+            "problemMatcher": []
+        },
+        {
             "label": "test",
             "command": "dotnet",
             "group": { "kind": "test", "isDefault": true },

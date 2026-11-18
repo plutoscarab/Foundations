@@ -1,0 +1,111 @@
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ output extension=".cs" #>
+// Generated from RandomSourceUniformityTests.tt. Edit the template to make changes.
+
+using Foundations.RandomNumbers;
+using System.Collections.Generic;
+
+namespace Foundations.UnitTests.RandomNumbers;
+
+[TestClass]
+public sealed class RandomSourceUniformityTests
+{
+    private const int Seed = 42;
+    private const int SampleSize = 10000;
+
+    public static IEnumerable<object[]> RandomSources()
+    {
+        return typeof(IRandomSource).Assembly.GetTypes()
+            .Where(type => type.IsClass && !type.IsAbstract && !type.ContainsGenericParameters &&
+                typeof(IRandomSource).IsAssignableFrom(type))
+            .OrderBy(type => type.FullName, StringComparer.Ordinal)
+            .Select(type => new object[] { type });
+    }
+<# foreach (var test in new[] { "KolmogorovSmirnov", "CramerVonMises", "AndersonDarling" }) { #>
+
+    [DataTestMethod]
+    [DynamicData(nameof(RandomSources), DynamicDataSourceType.Method)]
+    public void <#= test #>(Type sourceType)
+    {
+        var sample = SortedSample(sourceType);
+<# if (test == "KolmogorovSmirnov") { #>
+        var statistic = 0.0;
+
+        for (var i = 0; i < sample.Length; i++)
+        {
+            var lowerDifference = sample[i] - (double)i / sample.Length;
+            var upperDifference = (double)(i + 1) / sample.Length - sample[i];
+            statistic = Math.Max(statistic, Math.Max(lowerDifference, upperDifference));
+        }
+
+        // The DKW bound gives a conservative, finite-sample 1% cutoff.
+        var criticalValue = Math.Sqrt(Math.Log(200.0) / (2 * sample.Length));
+<# } else if (test == "CramerVonMises") { #>
+        var statistic = 1.0 / (12 * sample.Length);
+
+        for (var i = 0; i < sample.Length; i++)
+        {
+            var difference = sample[i] - (2.0 * i + 1) / (2 * sample.Length);
+            statistic += difference * difference;
+        }
+
+        // Asymptotic 1% cutoff for a fully specified continuous distribution.
+        // https://twa.ckirby.su.domains/papers/2010_Anderson-Darling.pdf
+        const double criticalValue = 0.74346;
+<# } else { #>
+        var sum = 0.0;
+
+        for (var i = 0; i < sample.Length; i++)
+        {
+            // A zero observation contributes an infinite statistic, without clipping.
+            sum += (2.0 * i + 1) *
+                (Math.Log(sample[i]) + Math.Log(1 - sample[sample.Length - 1 - i]));
+        }
+
+        var statistic = -sample.Length - sum / sample.Length;
+
+        // Asymptotic 1% cutoff for a fully specified continuous distribution.
+        // https://twa.ckirby.su.domains/papers/2010_Anderson-Darling.pdf
+        const double criticalValue = 3.880;
+<# } #>
+        Console.WriteLine($"{sourceType.Name}: <#= test #> = {statistic:R}, cutoff = {criticalValue:R}, seed = {Seed}");
+        Assert.IsTrue(statistic < criticalValue,
+            $"{sourceType.Name}: <#= test #> = {statistic:R} exceeds {criticalValue:R} (seed {Seed}).");
+    }
+<# } #>
+
+    private static double[] SortedSample(Type sourceType)
+    {
+        var source = CreateSource(sourceType);
+        using var disposableSource = source as IDisposable;
+        var generator = new Generator(source, Seed);
+        var sample = new double[SampleSize];
+
+        for (var i = 0; i < sample.Length; i++)
+        {
+            sample[i] = generator.Double();
+            Assert.IsTrue(double.IsFinite(sample[i]) && sample[i] >= 0 && sample[i] < 1,
+                $"{sourceType.Name}: sample {i} is outside [0, 1): {sample[i]:R} (seed {Seed}).");
+        }
+
+        Array.Sort(sample);
+        return sample;
+    }
+
+    private static IRandomSource CreateSource(Type sourceType)
+    {
+        // Adapter sources need deterministic inputs as well as the Generator seed.
+        if (sourceType == typeof(SystemRandomSource))
+            return new SystemRandomSource(new Random(Seed));
+
+        if (sourceType == typeof(StreamSource))
+            return new StreamSource(new RandomStream(new Generator(new XorShiftRandomSource(), Seed)));
+
+        if (sourceType == typeof(SynchronizedRandomSource))
+            return new SynchronizedRandomSource(new XorShiftRandomSource());
+
+        // New parameterless implementations are included without editing this template.
+        // A source with required constructor arguments needs a deterministic factory above.
+        return (IRandomSource)Activator.CreateInstance(sourceType);
+    }
+}

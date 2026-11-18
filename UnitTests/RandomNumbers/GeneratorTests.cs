@@ -1,6 +1,6 @@
 ﻿
 /*
-Generator.cs
+GeneratorTests.cs
 */
 
 using Foundations.RandomNumbers;

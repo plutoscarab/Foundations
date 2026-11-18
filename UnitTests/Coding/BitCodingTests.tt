@@ -29,6 +29,8 @@ namespace Foundations.Coding
     Test("Fibonacci");
     Test("Levenshtein");
     Test("EliasFibonacci");
+    Test("BaerCode0");
+    Test("BaerCodeNet1");
     ParameterizedTest("TruncatedBinary", "6000");
     ParameterizedTest("Golomb", "141");
     ParameterizedTest("Rice", "8");
